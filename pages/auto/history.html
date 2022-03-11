@@ -65,6 +65,22 @@ command-line help that comes with your copy of <span style="color:rgb(120,123,17
 
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
+<p><b>3/11/22</b>:
+<ul>
+<li>A major change to the clonotype joining algorithm, which joins based on sharing in the
+heavy chain junction region, and which substantially increases clonotyping sensitivity.  Please 
+see <a href="../../pages/auto/help.how.html"><code>enclone help how</code></a>.  This change also
+makes <span style="color:rgb(120,123,175);font-weight:900">enclone</span> about 30% slower.</li>
+<li> Delete the following genes from the human VDJ reference: IGHV4-30-2, IGKV1D-33, IGKV1D-37, 
+IGKV1D-39, IGKV2D-28.  These are identical to other genes in the reference, except that the 
+reference provides a longer 5'-UTR in one case.  We observe that clonotypes having one of these 
+genes often have heterogeneous assignments between the gene and its duplicate, and that's bad, 
+as it implies that assignment of genes to clonotypes in these cases is effectively random.</li>
+<li>Add lvars <code>allele</code> and <code>allele_d</code>.  Please see
+<a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a>.</li>
+</ul>
+</p>
+
 <p><b>3/4/22</b>: Add ability to select functional groups by donor, see
 <a href="../../pages/auto/help.display.html"><code>enclone help display</code></a>.</p>
 

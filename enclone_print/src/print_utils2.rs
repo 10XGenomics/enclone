@@ -9,7 +9,7 @@ use crate::proc_lvar2::proc_lvar2;
 use crate::proc_lvar_auto::proc_lvar_auto;
 use amino::{aa_seq, codon_to_aa};
 use enclone_core::allowed_vars::LVARS_ALLOWED;
-use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype, GexInfo, POUT_SEP};
+use enclone_core::defs::{AlleleData, ColInfo, EncloneControl, ExactClonotype, GexInfo, POUT_SEP};
 use enclone_core::median::median_f64;
 use enclone_proto::types::DonorReferenceItem;
 use enclone_vars::decode_arith;
@@ -70,6 +70,7 @@ pub fn row_fill(
     need_gex: bool,
     fate: &Vec<HashMap<String, String>>,
     cdr3_con: &Vec<Vec<u8>>,
+    allele_data: &AlleleData,
 ) -> Result<(), String> {
     // Redefine some things to reduce dependencies.
 
@@ -686,6 +687,7 @@ pub fn row_fill(
                 varmat,
                 out_data,
                 stats,
+                allele_data,
             )? && *var == "amino"
                 && col_var
             {

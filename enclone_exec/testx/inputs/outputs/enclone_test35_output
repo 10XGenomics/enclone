@@ -4,8 +4,8 @@ width="557.44" height="380.27000000000004"
 xmlns="http://www.w3.org/2000/svg">
 <circle cx="131.03" cy="205.62" r="4.91" fill="black" />
 <circle cx="135.94" cy="214.13" r="4.91" fill="black" />
-<circle cx="135.94" cy="197.12" r="4.91" fill="blue" />
-<circle cx="140.86" cy="222.64" r="4.91" fill="red" />
+<circle cx="135.94" cy="197.12" r="4.91" fill="black" />
+<circle cx="140.86" cy="222.64" r="4.91" fill="blue" />
 <circle cx="140.86" cy="188.61" r="4.91" fill="red" />
 <circle cx="140.86" cy="205.62" r="4.91" fill="red" />
 <circle cx="145.77" cy="231.15" r="4.91" fill="red" />
@@ -53,6 +53,7 @@ xmlns="http://www.w3.org/2000/svg">
 <circle cx="175.24" cy="214.13" r="4.91" fill="red" />
 <circle cx="175.24" cy="197.12" r="4.91" fill="red" />
 <circle cx="175.24" cy="180.10" r="4.91" fill="red" />
+<circle cx="180.15" cy="137.57" r="4.91" fill="red" />
 <circle cx="180.15" cy="256.67" r="4.91" fill="red" />
 <circle cx="180.15" cy="205.62" r="4.91" fill="red" />
 <circle cx="180.15" cy="154.58" r="4.91" fill="red" />
@@ -554,7 +555,8 @@ xmlns="http://www.w3.org/2000/svg">
 <circle cx="346.98" cy="77.11" r="4.91" fill="red" />
 <circle cx="351.89" cy="85.62" r="4.91" fill="red" />
 <circle cx="356.80" cy="94.13" r="4.91" fill="red" />
-<circle cx="14.91" cy="184.14" r="4.91" fill="red" />
+<circle cx="14.91" cy="184.14" r="4.91" fill="black" />
+<circle cx="14.91" cy="167.13" r="4.91" fill="red" />
 <circle cx="19.82" cy="192.65" r="4.91" fill="red" />
 <circle cx="19.82" cy="175.63" r="4.91" fill="red" />
 <circle cx="24.73" cy="184.14" r="4.91" fill="red" />

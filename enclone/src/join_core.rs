@@ -2,6 +2,7 @@
 
 use enclone_core::defs::{CloneInfo, EncloneControl, ExactClonotype, PotentialJoin};
 use enclone_core::join_one::join_one;
+use enclone_proto::types::DonorReferenceItem;
 use equiv::EquivRel;
 use qd::Double;
 use std::collections::HashMap;
@@ -18,6 +19,7 @@ pub fn join_core(
     sr: &Vec<Vec<Double>>,
     pot: &mut Vec<PotentialJoin>,
     refdata: &RefData,
+    dref: &Vec<DonorReferenceItem>,
 ) {
     let mut eq: EquivRel = EquivRel::new((j - i) as i32);
     for k1 in i..j {
@@ -42,6 +44,7 @@ pub fn join_core(
                 sr,
                 pot,
                 &refdata,
+                dref,
             ) {
                 eq.join((k1 - i) as i32, (k2 - i) as i32);
             }

@@ -249,6 +249,7 @@ pub struct GeneralOpt {
     pub fails_only: bool,
     pub bc_joint: String,
     pub post_filter: String,
+    pub mix_only: bool,
 }
 
 // Some plot options.  Note that plot options are not allowed to affect intermediate computation.
@@ -297,6 +298,15 @@ pub struct AllelePrintOpt {
     pub con_trace: bool, // tracing for con
 }
 
+// Data about alleles
+
+#[derive(Clone, Default)]
+pub struct AlleleData {
+    pub alt_refs: Vec<(usize, usize, DnaString, usize, bool)>,
+    pub var_pos: Vec<Vec<usize>>,
+    pub var_bases: Vec<Vec<Vec<u8>>>,
+}
+
 // Join printing options.
 
 #[derive(Default, PartialEq)]
@@ -333,6 +343,8 @@ pub struct JoinAlgOpt {
     pub cdr3_normal_len: usize,
     pub auto_share: usize,
     pub comp_filt: usize,
+    pub comp_filt_bound: usize,
+    pub super_comp_filt: usize,
 }
 
 // Clonotype filtering options.
@@ -655,6 +667,14 @@ pub struct TigData0 {
     pub v_ref_id: usize, // index of V segment reference sequence in ref file
 }
 
+#[derive(Clone, Default)]
+pub struct Junction {
+    pub hcomp: usize,                // junction alignment complexity
+    pub d: Vec<usize>,               // D gene ids
+    pub vstart: usize,               // start of junction alignment on tig
+    pub indels: Vec<(usize, isize)>, // indel tig start, size (+ ins, - del)
+}
+
 #[derive(Clone)]
 pub struct TigData1 {
     pub cdr3_dna: String,           // CDR3 DNA sequence
@@ -701,7 +721,7 @@ pub struct TigData1 {
     pub mait_alpha_chain_junction_match: bool,
     pub mait_beta_chain_gene_match: bool,
     pub mait_beta_chain_junction_match: bool,
-    pub hcomp: usize,
+    pub jun: Junction,
 }
 
 impl TigData1 {
@@ -876,6 +896,8 @@ pub fn justification(x: &str) -> u8 {
         || x.contains("valumis")
         || x.contains("valbcumis")
         || x == "nbc"
+        || x == "allele"
+        || x == "allele_d"
     {
         b'l'
     } else {

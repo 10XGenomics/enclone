@@ -29,6 +29,27 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
 
     let mut args = args.clone();
     for i in 0..args.len() {
+        let test1plus = "1279053,1279061,1287192-1287195,1287200-1287203:\
+            1279050,1279058,1287196-1287197,1287204-1287205:\
+            1279051,1279059,1287198-1287199,1287206-1287207:1279052,1279060";
+        let test2plus = "1279049,1279057,1287176-1287179,1287184-1287187:\
+            1279054,1279062,1287180-1287181,1287188-1287189:\
+            1279055,1279063,1287182-1287183,1287190-1287191";
+        let test3plus = "1279065,1279073,1287144-1287147,1287152-1287155:\
+            1279066,1279074,1287156-1287157,1287148-1287149:\
+            1279067,1279075,1287150-1287151,1287158-1287159:1279068,1279076";
+        let test4plus = "1279069,1279077,1287160-1287163,1287168-1287171:\
+            1279070,1279078,1287164-1287165,1287172-1287173:\
+            1279071,1279079,1287166-1287167,1287174-1287175:1279072,1279080";
+        args[i] = args[i].replace("@test1plus", test1plus);
+        args[i] = args[i].replace("@test2plus", test2plus);
+        args[i] = args[i].replace("@test3plus", test3plus);
+        args[i] = args[i].replace("@test4plus", test4plus);
+        args[i] = args[i].replace(
+            "@testplus",
+            &format!("{};{};{};{}", test1plus, test2plus, test3plus, test4plus),
+        );
+
         let test1 = "1279053,1279061:1279050,1279058:1279051,1279059:1279052,1279060";
         let test2 = "1279049,1279057:1279054,1279062:1279055,1279063";
         let test3 = "1279065,1279073:1279066,1279074:1279067,1279075:1279068,1279076";
@@ -167,7 +188,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
     ctl.join_alg_opt.fwr1_cdr12_delta = 20.0;
     ctl.join_alg_opt.cdr3_normal_len = 42;
     ctl.join_alg_opt.auto_share = 15;
-    ctl.join_alg_opt.comp_filt = 1_000_000;
+    ctl.join_alg_opt.comp_filt = 8;
+    ctl.join_alg_opt.comp_filt_bound = 80;
 
     ctl.join_print_opt.pfreq = 1_000_000_000;
     ctl.join_print_opt.quiet = true;
@@ -439,6 +461,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
         ("MARKED", &mut ctl.clono_filt_opt.marked),
         ("MEAN", &mut ctl.clono_print_opt.mean),
         ("MIX_DONORS", &mut ctl.clono_filt_opt_def.donor),
+        ("MIX_ONLY", &mut ctl.gen_opt.mix_only),
         ("MOUSE", &mut ctl.gen_opt.mouse),
         ("NCELL", &mut ctl.gen_opt.ncell),
         ("NCROSS", &mut ctl.clono_filt_opt_def.ncross),
@@ -532,7 +555,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
         ("AUTO_SHARE", &mut ctl.join_alg_opt.auto_share),
         ("CDR3_NORMAL_LEN", &mut ctl.join_alg_opt.cdr3_normal_len),
         ("CHAINS_EXACT", &mut ctl.gen_opt.chains_exact),
-        ("COMP_FILT", &mut ctl.join_alg_opt.comp_filt),
+        ("JUN_SHARE", &mut ctl.join_alg_opt.comp_filt),
+        ("JUN_SHARE_BOUND", &mut ctl.join_alg_opt.comp_filt_bound),
         ("MAX_CDR3_DIFFS", &mut ctl.join_alg_opt.max_cdr3_diffs),
         ("MAX_DATASETS", &mut ctl.clono_filt_opt.max_datasets),
         ("MAX_DEGRADATION", &mut ctl.heur.max_degradation),
@@ -556,6 +580,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
         ("MIN_ORIGINS", &mut ctl.clono_filt_opt.min_origins),
         ("MIN_UMIS", &mut ctl.clono_filt_opt.min_umi),
         ("PFREQ", &mut ctl.join_print_opt.pfreq),
+        ("SUPER_COMP_FILT", &mut ctl.join_alg_opt.super_comp_filt),
     ];
 
     // Define arguments that set something to an i32.
@@ -914,6 +939,9 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
         println!("processing remaining args");
     }
     for i in 1..args.len() {
+        if evil_eye {
+            println!("processing {}", args[i]);
+        }
         if processed[i] {
             continue;
         }

@@ -30,7 +30,7 @@ const LOUPE_OUT_FILENAME: &str = "testx/__test_proto";
 #[test]
 fn test_executable_size() {
     PrettyTrace::new().on();
-    const ENCLONE_SIZE: usize = 98355792;
+    const ENCLONE_SIZE: usize = 99387104;
     const ENCLONE_SIZE_MAX_PER_DIFF: f64 = 1.0;
     let f = format!("../target/debug/enclone");
     let n = metadata(&f).unwrap().len() as usize;
@@ -95,7 +95,7 @@ fn test_cpu_usage() {
             gi = line.force_f64() / 1_000_000_000.0;
         }
     }
-    const REQUIRED_GI: f64 = 53.6237;
+    const REQUIRED_GI: f64 = 68.4726;
     let err = ((gi - REQUIRED_GI) / REQUIRED_GI).abs();
     let report = format!(
         "Observed GI = {:.4}, versus required GI = {:.4}, err = {:.2}%, versus max \
@@ -194,7 +194,7 @@ fn test_dupped_crates() {
     unique_sort(&mut crates);
     let n2 = crates.len();
     let d = n1 - n2;
-    const DUPPED_CRATES: usize = 24;
+    const DUPPED_CRATES: usize = 39;
     if d != DUPPED_CRATES {
         eprintln!(
             "\nThe number of duplicated crates is {}, but the required number is {}.\n",

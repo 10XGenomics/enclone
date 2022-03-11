@@ -5,6 +5,7 @@
 
 use enclone_core::defs::{CloneInfo, EncloneControl, ExactClonotype};
 use enclone_print::define_mat::define_mat;
+use enclone_proto::types::DonorReferenceItem;
 use qd::Double;
 use rayon::prelude::*;
 use std::collections::HashMap;
@@ -22,6 +23,7 @@ pub fn weak_chains(
     raw_joins: &Vec<Vec<usize>>,
     fate: &mut Vec<HashMap<String, String>>,
     refdata: &RefData,
+    dref: &Vec<DonorReferenceItem>,
 ) {
     // Note mat calculation duplicated with print_clonotypes and also doublet detection.
 
@@ -56,6 +58,7 @@ pub fn weak_chains(
             info,
             raw_joins,
             &refdata,
+            dref,
         );
         let cols = mat.len();
         if cols > 2 {

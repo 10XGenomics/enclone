@@ -7,6 +7,7 @@ use crate::weak_chains::weak_chains;
 use enclone_core::defs::{CloneInfo, EncloneControl, ExactClonotype};
 use enclone_print::define_mat::define_mat;
 use enclone_print::print_utils3::define_column_info;
+use enclone_proto::types::DonorReferenceItem;
 use equiv::EquivRel;
 use qd::Double;
 use rayon::prelude::*;
@@ -29,6 +30,7 @@ pub fn some_filters(
     disintegrated: &Vec<bool>,
     fate: &mut Vec<HashMap<String, String>>,
     refdata: &RefData,
+    dref: &Vec<DonorReferenceItem>,
 ) {
     // Delete exact subclonotypes that appear to represent doublets.
 
@@ -42,6 +44,7 @@ pub fn some_filters(
         info,
         raw_joins,
         &refdata,
+        dref,
     );
 
     // Given a signature s having at least two chains, if the total cells in the two-chain
@@ -83,6 +86,7 @@ pub fn some_filters(
             info,
             raw_joins,
             &refdata,
+            dref,
         );
 
         // Find all the signatures and cell counts associated to each.
@@ -213,6 +217,7 @@ pub fn some_filters(
         info,
         raw_joins,
         &refdata,
+        dref,
     );
     ctl.perf_stats(&tsplit, "splitting orbits 1");
 
@@ -230,6 +235,7 @@ pub fn some_filters(
         raw_joins,
         fate,
         &refdata,
+        dref,
     );
     ctl.perf_stats(&tweak, "weak chain filtering");
 
@@ -246,6 +252,7 @@ pub fn some_filters(
         info,
         raw_joins,
         &refdata,
+        dref,
     );
     ctl.perf_stats(&tsplit, "splitting orbits 2");
 
@@ -284,6 +291,7 @@ pub fn some_filters(
             info,
             raw_joins,
             &refdata,
+            dref,
         );
         let cols = mat.len();
         let rsi = define_column_info(ctl, &exacts, exact_clonotypes, &mat, refdata);
@@ -469,6 +477,7 @@ pub fn some_filters(
         info,
         raw_joins,
         &refdata,
+        dref,
     );
     ctl.perf_stats(&tsplit, "splitting orbits 3");
 }

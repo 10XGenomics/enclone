@@ -6,6 +6,7 @@
 
 use enclone_core::defs::{CloneInfo, EncloneControl, ExactClonotype};
 use enclone_print::define_mat::define_mat;
+use enclone_proto::types::DonorReferenceItem;
 use itertools::Itertools;
 use qd::Double;
 use rayon::prelude::*;
@@ -24,6 +25,7 @@ pub fn delete_doublets(
     info: &Vec<CloneInfo>,
     raw_joins: &Vec<Vec<usize>>,
     refdata: &RefData,
+    dref: &Vec<DonorReferenceItem>,
 ) {
     if ctl.clono_filt_opt_def.doublet {
         let t = Instant::now();
@@ -65,6 +67,7 @@ pub fn delete_doublets(
                 info,
                 raw_joins,
                 &refdata,
+                dref,
             );
             let nexacts = mat[0].len();
             let mut priority = Vec::<Vec<bool>>::new();

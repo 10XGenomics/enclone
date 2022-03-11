@@ -1,9 +1,9 @@
 // Copyright (c) 2022 10X Genomics, Inc. All rights reserved.
 
 use crate::align_to_vdj_ref::align_to_vdj_ref;
-use crate::defs::{EncloneControl, ExactClonotype};
+use crate::defs::{EncloneControl, ExactClonotype, Junction};
 use crate::opt_d::{jflank, opt_d};
-use bio_edit::alignment::AlignmentOperation::{Del, Ins, Subst};
+use bio_edit::alignment::AlignmentOperation::{Del, Ins, Match, Subst};
 use enclone_proto::types::DonorReferenceItem;
 use rayon::prelude::*;
 use vdj_ann::refx::RefData;
@@ -15,10 +15,10 @@ pub fn heavy_complexity(
     exact_clonotypes: &Vec<ExactClonotype>,
     ctl: &EncloneControl,
     dref: &Vec<DonorReferenceItem>,
-) -> Vec<usize> {
-    let mut results = Vec::<(usize, usize)>::new();
+) -> Vec<Junction> {
+    let mut results = Vec::<(usize, Junction)>::new();
     for i in 0..exact_clonotypes.len() {
-        results.push((i, 0));
+        results.push((i, Junction::default()));
     }
     results.par_iter_mut().for_each(|res| {
         let i = res.0;
@@ -28,7 +28,7 @@ pub fn heavy_complexity(
                 let mut seq = ex.share[r].seq_del.clone();
                 let mut vref = refdata.refs[ex.share[r].v_ref_id].to_ascii_vec();
                 if ex.share[r].v_ref_id_donor.is_some() {
-                    vref = dref[ex.share[r].v_ref_id_donor_alt_id.unwrap()]
+                    vref = dref[ex.share[r].v_ref_id_donor.unwrap()]
                         .nt_sequence
                         .clone();
                 }
@@ -66,7 +66,7 @@ pub fn heavy_complexity(
                     &mut scores,
                     &mut ds,
                     ctl,
-                    ex.share[r].v_ref_id_donor_alt_id,
+                    ex.share[r].v_ref_id_donor,
                 );
                 let mut opt = Vec::new();
                 if !ds.is_empty() {
@@ -110,21 +110,50 @@ pub fn heavy_complexity(
                 concat.append(&mut jref.clone());
                 let (ops, _score) =
                     align_to_vdj_ref(&seq, &vref, &drefx, &d2ref, &jref, &drefname, true, ctl);
+                let mut tigpos = 0;
+                let mut hcomp = 0;
+                let mut indels = Vec::<(usize, isize)>::new();
+                let mut ins_start = 0;
+                let mut del_len = 0;
                 for i in 0..ops.len() {
                     if ops[i] == Subst {
-                        res.1 += 1;
+                        hcomp += 1;
+                        tigpos += 1;
+                    } else if ops[i] == Match {
+                        tigpos += 1;
                     } else if ops[i] == Ins {
-                        res.1 += 1;
-                    } else if ops[i] == Del && (i == 0 || ops[i - 1] != Del) {
-                        res.1 += 1;
+                        hcomp += 1;
+                        if i == 0 || ops[i - 1] != Ins {
+                            ins_start = tigpos;
+                        }
+                        tigpos += 1;
+                        if i == ops.len() - 1 || ops[i + 1] != Ins {
+                            let ins_len = tigpos - ins_start;
+                            indels.push((ins_start, ins_len as isize));
+                        }
+                    } else if ops[i] == Del {
+                        if i == 0 || ops[i - 1] != Del {
+                            hcomp += 1;
+                        }
+                        del_len += 1;
+                        if i == ops.len() - 1 || ops[i + 1] != Del {
+                            indels.push((tigpos, -(del_len as isize)));
+                            del_len = 0;
+                        }
                     }
                 }
+                res.1 = Junction {
+                    hcomp: hcomp,
+                    d: ds[0].clone(),
+                    vstart: vstart,
+                    indels: indels,
+                };
             }
         }
     });
-    let mut comp = Vec::<usize>::new();
+    let mut comp = Vec::<Junction>::new();
     for i in 0..results.len() {
-        comp.push(results[i].1);
+        comp.push(results[i].1.clone());
     }
     comp
 }

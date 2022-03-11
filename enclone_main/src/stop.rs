@@ -45,6 +45,7 @@ pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<EncloneState
     let ctl = &inter.setup.ctl;
     let is_bcr = inter.ex.is_bcr;
     let tall = &inter.setup.tall.unwrap();
+    let allele_data = &inter.ex.allele_data;
 
     // Load the GEX and FB data.  This is quite horrible: the code and computation are duplicated
     // verbatim in fcell.rs.
@@ -282,6 +283,7 @@ pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<EncloneState
         &mut tests,
         &mut controls,
         &mut fate,
+        allele_data,
     )?;
 
     // Lock data structures so they can't be changed accidentally.

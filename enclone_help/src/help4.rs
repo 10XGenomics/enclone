@@ -885,6 +885,16 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) -> Result<(), String> {
         h.doc("j_id", "id of J region");
         h.doc("const_id", "id of constant region (or null, if not known)");
         h.doc2("(these are the numbers after \">\" in the VDJ reference file)");
+        h.ldoc(
+            "allele",
+            "numerical identifier of the computed donor reference allele",
+        );
+        h.doc2("for this exact subclonotype");
+        h.doc(
+            "allele_d",
+            "variant bases in the allele for this exact subclonotype,",
+        );
+        h.doc2("and a list of all the possibilities for this");
         h.ldoc("d1_name", "name of optimal D gene, or none");
         h.doc("d2_name", "name of second best D gene, or none");
         h.doc("d1_score", "score for optimal D gene");

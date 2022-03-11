@@ -359,6 +359,84 @@ code:     let xm = &ex.share[mid];
           }
           exact: format!("{:.1}", percent_ratio(denom - diffs, denom))
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     allele
+inputs:   cvar_vdj
+limits:
+class:    cvar
+level:    clono
+val:      non_negative_integer
+doc:      TBD
+brief:    donor allele for V region id
+page:     enclone help cvars
+avail:    public
+notes:
+code:     let mut allele = 0;
+          if ex.share[mid].v_ref_id_donor_alt_id.is_some() {
+              allele = ex.share[mid].v_ref_id_donor_alt_id.unwrap() + 1;
+          }
+          exact: format!("{}", allele)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     allele_d
+inputs:   cvar_vdj
+limits:
+class:    cvar
+level:    clono
+val:      string
+doc:      TBD
+brief:    donor allele evidence
+page:     enclone help cvars
+avail:    public
+notes:
+code:     let mut refs = Vec::<Vec<u8>>::new();
+          let alt_refs = &allele_data.alt_refs;
+          refs.push(refdata.refs[ex.share[mid].v_ref_id].to_ascii_vec());
+          for i in 0..alt_refs.len() {
+              // The following does not work correctly if an exact subclonotype contains cells
+              // from more than one donor.  But that is extremely rare.
+              if ex.clones[0][0].donor_index.is_some() {
+                  if alt_refs[i].0 == ex.clones[0][0].donor_index.unwrap()
+                      && alt_refs[i].1 == ex.share[mid].v_ref_id {
+                      refs.push(alt_refs[i].2.to_ascii_vec());
+                  }
+              }
+          }
+          let mut m = refs[0].len();
+          for i in 1..refs.len() {
+              m = min(m, refs[i].len());
+          }
+          let mut ps = Vec::<usize>::new();
+          let mut variant = Vec::<Vec<u8>>::new();
+          for p in 0..m {
+              let mut bases = Vec::<u8>::new();
+              for i in 0..refs.len() {
+                  bases.push(refs[i][p]);
+              }
+              let mut bases_sorted = bases.clone();
+              unique_sort(&mut bases_sorted);
+              if bases_sorted.len() > 1 {
+                  ps.push(p);
+                  variant.push(bases);
+              }
+          }
+          let mut xs = Vec::<String>::new();
+          for i in 0..refs.len() {
+              let mut x = String::new();
+              for j in 0..ps.len() {
+                  x.push(variant[j][i] as char);
+              }
+              xs.push(x);
+          }
+          let mut me = String::new();
+          for j in 0..ps.len() {
+              let base = ex.share[mid].seq_del_amino[ps[j]];
+              me.push(base as char);
+          }
+          let mut details = String::new();
+          if ps.len() > 0 {
+              details = format!("{me} : {}", xs.iter().format(","));
+          }
+          exact: details
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     barcode
 inputs:   ?
 limits:   only implemented for parseable output, and as an automatic field for clonotype tables in 

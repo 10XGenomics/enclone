@@ -132,7 +132,7 @@ set elapsed = `expr $end - $start`
 ##### FAIL IF TOO MUCH TIME USED #####
 
 echo "\ntest compile time = $compile_elapsed seconds"
-set expected = 117
+set expected = 151
 set fudge_num = 11
 set fudge_den = 10
 set expected_plus_times = `expr $expected \* $fudge_num`

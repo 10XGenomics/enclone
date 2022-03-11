@@ -319,6 +319,14 @@ sequences are different, after truncation on right to the same length or 5' UTR 
 sequences are different, after truncation on left to the same length, then the join is rejected.
 • As an exception to the key join criterion, we allow a join which has at least 15 shares, even if
 p*N > C.  The constant 15 is modifiable via the argument <span style="font-weight:bold;">AUTO_SHARES</span>.
+• As a second exception to the key join criterion, we first compute heavy chain join complexity. 
+This is done by finding the optimal D gene, allowing no D, or DD), and aligning the junction
+region on the contig to the concatenated reference.  (This choice can be visualized using the
+option <span style="font-weight:bold;">JALIGN1</span>, see <a href="../../pages/auto/help.display.html"><code>enclone help display</code></a>.)  The heavy chain join complexity hcomp is then a sum
+as follows: each inserted base counts one, each substitution counts one, and each deletion
+(regardless of length) counts one.  Then we allow a join if it has hcomp - cd ≥ 8, so long as the
+number of differences between both chains outside the junction regions is at most 80, even if p*N
+> C.
 • We do not join two clonotypes which were assigned different reference sequences unless those
 reference sequences differ by at most <span style="font-weight:bold;">2</span> positions.  This value can be controlled using the
 command-line argument <span style="font-weight:bold;">MAX_DEGRADATION</span>.
@@ -1500,6 +1508,11 @@ where each xi is one of:
 │j_id             │  id of J region                                                              │
 │const_id         │  id of constant region (or null, if not known)                               │
 │                 │  (these are the numbers after ">" in the VDJ reference file)                 │
+├─────────────────┼──────────────────────────────────────────────────────────────────────────────┤
+│allele           │  numerical identifier of the computed donor reference allele                 │
+│                 │  for this exact subclonotype                                                 │
+│allele_d         │  variant bases in the allele for this exact subclonotype,                    │
+│                 │  and a list of all the possibilities for this                                │
 ├─────────────────┼──────────────────────────────────────────────────────────────────────────────┤
 │d1_name          │  name of optimal D gene, or none                                             │
 │d2_name          │  name of second best D gene, or none                                         │

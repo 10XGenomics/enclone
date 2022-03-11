@@ -560,7 +560,7 @@ fn test_for_broken_links_and_spellcheck() {
         dref dyiid enclone executables false fcell \
         fixedtextbox foursie foursies frameshifted frameshifts frontiersin fwr fwyh ganesh \
         genomics germline ggctttgactactgg gggctttgactactgg github githubusercontent google \
-        googletagmanager grok gz html \
+        googletagmanager grok gz hcomp html \
         hypermutation hypermutations igblast igh ighd igk igl ighm igkc imgt immunoglobulins \
         indel indels inkt intradonor ireceptor \
         jsdelivr json krh levenshtein lgc linux loh lvar lvars \

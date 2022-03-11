@@ -352,3 +352,6 @@ Use this with PRE_EVAL.  It filters out cells that are not on that list.
 ===================================================================================================
 
 PCOLS_SHOW: use this list instead of PCOLS to head the parseable output
+
+SUPER_COMP_FILT=...: like JUN_SHARE but literally gates on junction sharing.  Note that this has
+verbose logging, which really should be controlled by a separate option.

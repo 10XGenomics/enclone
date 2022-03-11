@@ -47,7 +47,7 @@ pub const LVARS_ALLOWED: [&str; 38] = [
 
 // Chain variables that can be used for contigs and chains
 
-pub const CVARS_ALLOWED: [&str; 93] = [
+pub const CVARS_ALLOWED: [&str; 95] = [
     "var",
     "u",
     "u_min",
@@ -141,6 +141,8 @@ pub const CVARS_ALLOWED: [&str; 93] = [
     "d2_score",
     "d_delta",
     "d_Δ",
+    "allele",
+    "allele_d",
 ];
 
 // We should not have to specify this.

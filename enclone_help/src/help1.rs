@@ -333,6 +333,16 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) -> Result<(), String> {
              • As an exception to the key join criterion, we allow a join which has at least 15 \
              shares, even if p*N > C.  The constant 15 is modifiable via the argument \
              \\bold{AUTO_SHARES}.\n\
+             • As a second exception to the key join criterion, we first compute heavy chain join \
+             complexity.  This is done by finding the optimal D gene, allowing no D, or DD), and \
+             aligning the junction region on the contig to the concatenated reference.  \
+             (This choice can be visualized using the option \\bold{JALIGN1}, see \
+             \"enclone help display\".)  \
+             The heavy chain join complexity hcomp is then a sum as follows: each inserted base \
+             counts one, each substitution counts one, and each deletion (regardless of length) \
+             counts one.  Then we allow a join if it has hcomp - cd ≥ 8, so long as the number of \
+             differences between both chains outside the junction regions is at most 80, even \
+             if p*N > C.\n\
              • We do not join two clonotypes which were \
              assigned different reference sequences unless those reference sequences differ by \
              at most \\bold{2} positions.  This value can be controlled using the \

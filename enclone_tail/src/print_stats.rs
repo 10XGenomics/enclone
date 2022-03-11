@@ -4,6 +4,7 @@
 
 use crate::alluvial_fb::*;
 use crate::fate::print_fate;
+// use crate::sens_spec::*;
 use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype, GexInfo};
 use enclone_core::median::median;
 use io_utils::{fwrite, fwriteln};
@@ -17,6 +18,7 @@ use std::io::Write;
 use std::time::Instant;
 use string_utils::{add_commas, TextUtils};
 use tables::print_tabular_vbox;
+use vdj_ann::refx::RefData;
 use vector_utils::*;
 
 pub fn print_stats(
@@ -35,6 +37,7 @@ pub fn print_stats(
     three_chain: &mut usize,
     four_chain: &mut usize,
     opt_d_val: &Vec<(usize, Vec<Vec<Vec<usize>>>)>,
+    _refdata: &RefData,
 ) {
     // Compute some umi stats.
 
@@ -118,6 +121,7 @@ pub fn print_stats(
 
     // Print summary stats.
 
+    // let sens_spec_stats = sens_spec(&exacts, &exact_clonotypes, &refdata);
     let mut ncells = 0;
     *nclono2 = 0;
     *two_chain = 0;
@@ -474,6 +478,7 @@ pub fn print_stats(
                 "   • adjusted cell-cell merges (quadratic) = {}",
                 add_commas(adjusted)
             );
+            // fwriteln!(logx, "\n{}", sens_spec_stats);
         }
         fwriteln!(logx, "   • number of cells having 1 chain = {}", n1);
         fwriteln!(logx, "   • number of cells having 2 or 3 chains = {}", n23);
@@ -929,6 +934,34 @@ pub fn print_stats(
             let mut log = String::new();
             print_tabular_vbox(&mut log, &rows, 2, &b"r|r".to_vec(), false, false);
             logx.append(&mut log.as_bytes().to_vec());
+            let mut lights = 0;
+            let mut lights_same = 0;
+            for i in 0..groups.len() {
+                for j1 in 0..groups[i].len() {
+                    for j2 in j1 + 1..groups[i].len() {
+                        lights += 1;
+                        let m1 = groups[i][j1].0 as usize;
+                        let m2 = groups[i][j2].0 as usize;
+                        let ex1 = &exact_clonotypes[exacts[m1][0]];
+                        let ex2 = &exact_clonotypes[exacts[m2][0]];
+                        'check: for k1 in 0..ex1.share.len() {
+                            for k2 in 0..ex2.share.len() {
+                                if !ex1.share[k1].left && !ex2.share[k2].left {
+                                    if ex1.share[k1].v_ref_id == ex2.share[k2].v_ref_id {
+                                        lights_same += 1;
+                                        break 'check;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            fwriteln!(
+                logx,
+                "light chain V gene concordance within groups = {:.1}%",
+                100.0 * lights_same as f64 / lights as f64
+            );
         }
     }
 

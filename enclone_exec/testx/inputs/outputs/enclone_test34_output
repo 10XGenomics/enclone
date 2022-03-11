@@ -1,6 +1,6 @@
 <svg version="1.1"
 baseProfile="full"
-width="595.43" height="415"
+width="598.28" height="415"
 xmlns="http://www.w3.org/2000/svg">
 <circle cx="130.85" cy="208.35" r="2.95" fill="blue" />
 <circle cx="133.80" cy="213.45" r="2.95" fill="blue" />
@@ -222,7 +222,7 @@ xmlns="http://www.w3.org/2000/svg">
 <circle cx="201.59" cy="157.29" r="2.95" fill="blue" />
 <circle cx="201.59" cy="249.19" r="2.95" fill="blue" />
 <circle cx="201.59" cy="167.50" r="2.95" fill="blue" />
-<circle cx="201.59" cy="238.98" r="2.95" fill="red" />
+<circle cx="201.59" cy="238.98" r="2.95" fill="blue" />
 <circle cx="201.59" cy="218.56" r="2.95" fill="red" />
 <circle cx="201.59" cy="208.35" r="2.95" fill="red" />
 <circle cx="201.59" cy="198.14" r="2.95" fill="red" />
@@ -354,6 +354,7 @@ xmlns="http://www.w3.org/2000/svg">
 <circle cx="234.02" cy="213.45" r="2.95" fill="red" />
 <circle cx="234.02" cy="203.24" r="2.95" fill="red" />
 <circle cx="234.02" cy="162.40" r="2.95" fill="red" />
+<circle cx="234.02" cy="152.19" r="2.95" fill="red" />
 <circle cx="236.97" cy="238.98" r="2.95" fill="red" />
 <circle cx="236.97" cy="228.77" r="2.95" fill="red" />
 <circle cx="236.97" cy="187.92" r="2.95" fill="red" />
@@ -363,6 +364,7 @@ xmlns="http://www.w3.org/2000/svg">
 <circle cx="236.97" cy="249.19" r="2.95" fill="red" />
 <circle cx="236.97" cy="208.35" r="2.95" fill="red" />
 <circle cx="236.97" cy="167.50" r="2.95" fill="red" />
+<circle cx="236.97" cy="157.29" r="2.95" fill="red" />
 <circle cx="239.91" cy="233.88" r="2.95" fill="red" />
 <circle cx="239.91" cy="223.66" r="2.95" fill="red" />
 <circle cx="239.91" cy="193.03" r="2.95" fill="red" />
@@ -1155,6 +1157,7 @@ xmlns="http://www.w3.org/2000/svg">
 <circle cx="185.33" cy="52.15" r="2.95" fill="red" />
 <circle cx="188.28" cy="57.25" r="2.95" fill="red" />
 <circle cx="191.23" cy="62.36" r="2.95" fill="red" />
+<circle cx="111.68" cy="74.61" r="2.95" fill="blue" />
 <circle cx="114.63" cy="79.71" r="2.95" fill="blue" />
 <circle cx="114.63" cy="69.50" r="2.95" fill="blue" />
 <circle cx="117.57" cy="84.82" r="2.95" fill="blue" />
@@ -1170,11 +1173,11 @@ xmlns="http://www.w3.org/2000/svg">
 <circle cx="126.42" cy="79.71" r="2.95" fill="blue" />
 <circle cx="126.42" cy="69.50" r="2.95" fill="blue" />
 <circle cx="129.36" cy="84.82" r="2.95" fill="blue" />
-<circle cx="129.36" cy="74.61" r="2.95" fill="blue" />
-<circle cx="129.36" cy="64.40" r="2.95" fill="blue" />
-<circle cx="132.31" cy="89.92" r="2.95" fill="blue" />
-<circle cx="132.31" cy="79.71" r="2.95" fill="blue" />
-<circle cx="132.31" cy="69.50" r="2.95" fill="blue" />
+<circle cx="129.36" cy="74.61" r="2.95" fill="red" />
+<circle cx="129.36" cy="64.40" r="2.95" fill="red" />
+<circle cx="132.31" cy="89.92" r="2.95" fill="red" />
+<circle cx="132.31" cy="79.71" r="2.95" fill="red" />
+<circle cx="132.31" cy="69.50" r="2.95" fill="red" />
 <circle cx="135.26" cy="84.82" r="2.95" fill="red" />
 <circle cx="135.26" cy="74.61" r="2.95" fill="red" />
 <circle cx="135.26" cy="64.40" r="2.95" fill="red" />
@@ -1183,6 +1186,7 @@ xmlns="http://www.w3.org/2000/svg">
 <circle cx="141.16" cy="74.61" r="2.95" fill="red" />
 <circle cx="144.10" cy="79.71" r="2.95" fill="red" />
 <circle cx="217.50" cy="351.58" r="2.95" fill="blue" />
+<circle cx="217.50" cy="341.37" r="2.95" fill="blue" />
 <circle cx="220.45" cy="356.68" r="2.95" fill="blue" />
 <circle cx="220.45" cy="346.47" r="2.95" fill="blue" />
 <circle cx="220.45" cy="336.26" r="2.95" fill="blue" />
@@ -1197,10 +1201,10 @@ xmlns="http://www.w3.org/2000/svg">
 <circle cx="229.29" cy="341.37" r="2.95" fill="blue" />
 <circle cx="232.24" cy="356.68" r="2.95" fill="blue" />
 <circle cx="232.24" cy="346.47" r="2.95" fill="blue" />
-<circle cx="232.24" cy="336.26" r="2.95" fill="red" />
-<circle cx="235.18" cy="361.79" r="2.95" fill="red" />
-<circle cx="235.18" cy="351.58" r="2.95" fill="red" />
-<circle cx="235.18" cy="341.37" r="2.95" fill="red" />
+<circle cx="232.24" cy="336.26" r="2.95" fill="blue" />
+<circle cx="235.18" cy="361.79" r="2.95" fill="blue" />
+<circle cx="235.18" cy="351.58" r="2.95" fill="blue" />
+<circle cx="235.18" cy="341.37" r="2.95" fill="blue" />
 <circle cx="238.13" cy="356.68" r="2.95" fill="red" />
 <circle cx="238.13" cy="346.47" r="2.95" fill="red" />
 <circle cx="238.13" cy="336.26" r="2.95" fill="red" />
@@ -1471,6 +1475,7 @@ xmlns="http://www.w3.org/2000/svg">
 <circle cx="371.34" cy="191.78" r="2.95" fill="red" />
 <circle cx="374.29" cy="196.88" r="2.95" fill="red" />
 <circle cx="377.23" cy="201.99" r="2.95" fill="red" />
+<circle cx="352.39" cy="259.62" r="2.95" fill="blue" />
 <circle cx="355.34" cy="264.72" r="2.95" fill="blue" />
 <circle cx="355.34" cy="254.51" r="2.95" fill="blue" />
 <circle cx="358.29" cy="269.83" r="2.95" fill="blue" />
@@ -1479,8 +1484,8 @@ xmlns="http://www.w3.org/2000/svg">
 <circle cx="361.23" cy="254.51" r="2.95" fill="blue" />
 <circle cx="364.18" cy="269.83" r="2.95" fill="blue" />
 <circle cx="364.18" cy="259.62" r="2.95" fill="blue" />
-<circle cx="367.13" cy="264.72" r="2.95" fill="blue" />
-<circle cx="367.13" cy="254.51" r="2.95" fill="blue" />
+<circle cx="367.13" cy="264.72" r="2.95" fill="red" />
+<circle cx="367.13" cy="254.51" r="2.95" fill="red" />
 <circle cx="370.08" cy="259.62" r="2.95" fill="red" />
 <circle cx="373.02" cy="264.72" r="2.95" fill="red" />
 <circle cx="78.97" cy="346.60" r="2.95" fill="blue" />
@@ -1491,8 +1496,8 @@ xmlns="http://www.w3.org/2000/svg">
 <circle cx="84.86" cy="336.39" r="2.95" fill="blue" />
 <circle cx="87.81" cy="351.71" r="2.95" fill="blue" />
 <circle cx="87.81" cy="341.50" r="2.95" fill="blue" />
-<circle cx="90.76" cy="346.60" r="2.95" fill="red" />
-<circle cx="90.76" cy="336.39" r="2.95" fill="red" />
+<circle cx="90.76" cy="346.60" r="2.95" fill="blue" />
+<circle cx="90.76" cy="336.39" r="2.95" fill="blue" />
 <circle cx="93.71" cy="341.50" r="2.95" fill="red" />
 <circle cx="96.66" cy="346.60" r="2.95" fill="red" />
 <circle cx="21.13" cy="151.71" r="2.95" fill="blue" />
@@ -1503,8 +1508,8 @@ xmlns="http://www.w3.org/2000/svg">
 <circle cx="27.03" cy="141.50" r="2.95" fill="blue" />
 <circle cx="29.97" cy="156.81" r="2.95" fill="blue" />
 <circle cx="29.97" cy="146.60" r="2.95" fill="blue" />
-<circle cx="32.92" cy="151.71" r="2.95" fill="blue" />
-<circle cx="32.92" cy="141.50" r="2.95" fill="blue" />
+<circle cx="32.92" cy="151.71" r="2.95" fill="red" />
+<circle cx="32.92" cy="141.50" r="2.95" fill="red" />
 <circle cx="35.87" cy="146.60" r="2.95" fill="red" />
 <circle cx="38.82" cy="151.71" r="2.95" fill="red" />
 <circle cx="12.95" cy="230.29" r="2.95" fill="blue" />
@@ -1514,9 +1519,9 @@ xmlns="http://www.w3.org/2000/svg">
 <circle cx="18.84" cy="230.29" r="2.95" fill="blue" />
 <circle cx="18.84" cy="220.08" r="2.95" fill="blue" />
 <circle cx="21.79" cy="235.39" r="2.95" fill="blue" />
-<circle cx="21.79" cy="225.18" r="2.95" fill="red" />
-<circle cx="24.74" cy="230.29" r="2.95" fill="red" />
-<circle cx="24.74" cy="220.08" r="2.95" fill="red" />
+<circle cx="21.79" cy="225.18" r="2.95" fill="blue" />
+<circle cx="24.74" cy="230.29" r="2.95" fill="blue" />
+<circle cx="24.74" cy="220.08" r="2.95" fill="blue" />
 <circle cx="27.69" cy="225.18" r="2.95" fill="red" />
 <circle cx="30.63" cy="230.29" r="2.95" fill="red" />
 <circle cx="131.14" cy="36.55" r="2.95" fill="blue" />
@@ -1532,17 +1537,19 @@ xmlns="http://www.w3.org/2000/svg">
 <circle cx="145.88" cy="31.45" r="2.95" fill="red" />
 <circle cx="148.83" cy="36.55" r="2.95" fill="red" />
 <circle cx="321.12" cy="83.15" r="2.95" fill="blue" />
+<circle cx="321.12" cy="72.93" r="2.95" fill="blue" />
 <circle cx="324.07" cy="88.25" r="2.95" fill="blue" />
 <circle cx="324.07" cy="78.04" r="2.95" fill="blue" />
-<circle cx="327.01" cy="83.15" r="2.95" fill="red" />
-<circle cx="327.01" cy="72.93" r="2.95" fill="red" />
-<circle cx="329.96" cy="88.25" r="2.95" fill="red" />
+<circle cx="327.01" cy="83.15" r="2.95" fill="blue" />
+<circle cx="327.01" cy="72.93" r="2.95" fill="blue" />
+<circle cx="329.96" cy="88.25" r="2.95" fill="blue" />
 <circle cx="329.96" cy="78.04" r="2.95" fill="red" />
 <circle cx="332.91" cy="83.15" r="2.95" fill="red" />
 <circle cx="332.91" cy="72.93" r="2.95" fill="red" />
 <circle cx="335.86" cy="78.04" r="2.95" fill="red" />
 <circle cx="338.81" cy="83.15" r="2.95" fill="red" />
 <circle cx="352.09" cy="125.05" r="2.95" fill="blue" />
+<circle cx="352.09" cy="114.84" r="2.95" fill="blue" />
 <circle cx="355.03" cy="130.16" r="2.95" fill="blue" />
 <circle cx="355.03" cy="119.95" r="2.95" fill="blue" />
 <circle cx="357.98" cy="125.05" r="2.95" fill="blue" />
@@ -1556,17 +1563,19 @@ xmlns="http://www.w3.org/2000/svg">
 <circle cx="295.05" cy="55.73" r="2.95" fill="blue" />
 <circle cx="298.00" cy="60.84" r="2.95" fill="blue" />
 <circle cx="298.00" cy="50.63" r="2.95" fill="blue" />
-<circle cx="300.95" cy="55.73" r="2.95" fill="blue" />
-<circle cx="303.90" cy="60.84" r="2.95" fill="blue" />
-<circle cx="303.90" cy="50.63" r="2.95" fill="blue" />
-<circle cx="306.84" cy="55.73" r="2.95" fill="blue" />
-<circle cx="306.84" cy="45.52" r="2.95" fill="blue" />
+<circle cx="300.95" cy="55.73" r="2.95" fill="red" />
+<circle cx="300.95" cy="45.52" r="2.95" fill="red" />
+<circle cx="303.90" cy="60.84" r="2.95" fill="red" />
+<circle cx="303.90" cy="50.63" r="2.95" fill="red" />
+<circle cx="306.84" cy="55.73" r="2.95" fill="red" />
+<circle cx="306.84" cy="45.52" r="2.95" fill="red" />
 <circle cx="309.79" cy="50.63" r="2.95" fill="red" />
 <circle cx="312.74" cy="55.73" r="2.95" fill="red" />
 <circle cx="214.73" cy="391.95" r="2.95" fill="blue" />
 <circle cx="217.68" cy="397.05" r="2.95" fill="blue" />
 <circle cx="217.68" cy="386.84" r="2.95" fill="blue" />
 <circle cx="220.63" cy="391.95" r="2.95" fill="blue" />
+<circle cx="220.63" cy="381.74" r="2.95" fill="blue" />
 <circle cx="223.58" cy="397.05" r="2.95" fill="blue" />
 <circle cx="223.58" cy="386.84" r="2.95" fill="blue" />
 <circle cx="226.53" cy="391.95" r="2.95" fill="blue" />
@@ -1577,9 +1586,10 @@ xmlns="http://www.w3.org/2000/svg">
 <circle cx="374.66" cy="172.84" r="2.95" fill="blue" />
 <circle cx="374.66" cy="162.62" r="2.95" fill="blue" />
 <circle cx="377.61" cy="167.73" r="2.95" fill="blue" />
+<circle cx="377.61" cy="157.52" r="2.95" fill="blue" />
 <circle cx="380.55" cy="172.84" r="2.95" fill="blue" />
-<circle cx="380.55" cy="162.62" r="2.95" fill="red" />
-<circle cx="383.50" cy="167.73" r="2.95" fill="red" />
+<circle cx="380.55" cy="162.62" r="2.95" fill="blue" />
+<circle cx="383.50" cy="167.73" r="2.95" fill="blue" />
 <circle cx="383.50" cy="157.52" r="2.95" fill="red" />
 <circle cx="386.45" cy="162.62" r="2.95" fill="red" />
 <circle cx="389.40" cy="167.73" r="2.95" fill="red" />
@@ -1590,7 +1600,7 @@ xmlns="http://www.w3.org/2000/svg">
 <circle cx="262.76" cy="388.67" r="2.95" fill="blue" />
 <circle cx="262.76" cy="378.45" r="2.95" fill="blue" />
 <circle cx="265.71" cy="383.56" r="2.95" fill="blue" />
-<circle cx="265.71" cy="373.35" r="2.95" fill="red" />
+<circle cx="265.71" cy="373.35" r="2.95" fill="blue" />
 <circle cx="268.66" cy="378.45" r="2.95" fill="red" />
 <circle cx="271.61" cy="383.56" r="2.95" fill="red" />
 <circle cx="185.92" cy="23.16" r="2.95" fill="blue" />
@@ -1599,7 +1609,7 @@ xmlns="http://www.w3.org/2000/svg">
 <circle cx="191.82" cy="23.16" r="2.95" fill="blue" />
 <circle cx="194.76" cy="28.26" r="2.95" fill="blue" />
 <circle cx="194.76" cy="18.05" r="2.95" fill="blue" />
-<circle cx="197.71" cy="23.16" r="2.95" fill="red" />
+<circle cx="197.71" cy="23.16" r="2.95" fill="blue" />
 <circle cx="197.71" cy="12.95" r="2.95" fill="red" />
 <circle cx="200.66" cy="18.05" r="2.95" fill="red" />
 <circle cx="203.61" cy="23.16" r="2.95" fill="red" />
@@ -1607,7 +1617,7 @@ xmlns="http://www.w3.org/2000/svg">
 <circle cx="97.85" cy="51.03" r="2.95" fill="blue" />
 <circle cx="97.85" cy="40.82" r="2.95" fill="blue" />
 <circle cx="100.80" cy="45.92" r="2.95" fill="blue" />
-<circle cx="103.74" cy="51.03" r="2.95" fill="red" />
+<circle cx="103.74" cy="51.03" r="2.95" fill="blue" />
 <circle cx="103.74" cy="40.82" r="2.95" fill="red" />
 <circle cx="106.69" cy="45.92" r="2.95" fill="red" />
 <circle cx="106.69" cy="35.71" r="2.95" fill="red" />
@@ -1623,9 +1633,29 @@ xmlns="http://www.w3.org/2000/svg">
 <circle cx="35.14" cy="280.31" r="2.95" fill="red" />
 <circle cx="38.09" cy="285.42" r="2.95" fill="red" />
 <circle cx="41.03" cy="290.52" r="2.95" fill="red" />
-<rect x="412.34999999999997" y="10" width="173.08" height="60" style="fill:white;stroke:black;stroke-width:2" />
-<text x="432.34999999999997" y="35" font-family="Arial" font-size="20">cell from 123085</text>
-<circle cx="422.34999999999997" cy="30" r="4" fill="red" />
-<text x="432.34999999999997" y="60" font-family="Arial" font-size="20">cell from 123089</text>
-<circle cx="422.34999999999997" cy="55" r="4" fill="blue" />
+<circle cx="374.56" cy="234.18" r="2.95" fill="blue" />
+<circle cx="377.51" cy="239.29" r="2.95" fill="blue" />
+<circle cx="377.51" cy="229.08" r="2.95" fill="blue" />
+<circle cx="380.46" cy="234.18" r="2.95" fill="blue" />
+<circle cx="383.40" cy="239.29" r="2.95" fill="blue" />
+<circle cx="383.40" cy="229.08" r="2.95" fill="blue" />
+<circle cx="386.35" cy="234.18" r="2.95" fill="red" />
+<circle cx="386.35" cy="223.97" r="2.95" fill="red" />
+<circle cx="389.30" cy="229.08" r="2.95" fill="red" />
+<circle cx="392.25" cy="234.18" r="2.95" fill="red" />
+<circle cx="42.44" cy="91.65" r="2.95" fill="blue" />
+<circle cx="45.39" cy="96.76" r="2.95" fill="blue" />
+<circle cx="45.39" cy="86.55" r="2.95" fill="blue" />
+<circle cx="48.34" cy="91.65" r="2.95" fill="blue" />
+<circle cx="51.29" cy="96.76" r="2.95" fill="red" />
+<circle cx="51.29" cy="86.55" r="2.95" fill="red" />
+<circle cx="54.23" cy="91.65" r="2.95" fill="red" />
+<circle cx="54.23" cy="81.44" r="2.95" fill="red" />
+<circle cx="57.18" cy="86.55" r="2.95" fill="red" />
+<circle cx="60.13" cy="91.65" r="2.95" fill="red" />
+<rect x="415.2" y="10" width="173.08" height="60" style="fill:white;stroke:black;stroke-width:2" />
+<text x="435.2" y="35" font-family="Arial" font-size="20">cell from 123085</text>
+<circle cx="425.2" cy="30" r="4" fill="red" />
+<text x="435.2" y="60" font-family="Arial" font-size="20">cell from 123089</text>
+<circle cx="425.2" cy="55" r="4" fill="blue" />
 </svg>

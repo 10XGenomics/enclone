@@ -256,6 +256,25 @@ nucleotide identity on heavy chain CDR1+CDR2 (combined), then the join is reject
 </td>
 </tr>
 
+<tr>
+<td> Mar. 11, 2022 </td>
+<td> <code>******</code> </td>
+<td> TBD </td>
+<td>
+Two more changes to the join algorithm.
+<br>
+1. A major change to the clonotype joining algorithm, which allows certain joins having
+high heavy chain CDR3 sharing.  Please see
+<a href="../../pages/auto/help.how.html"><code>enclone help how</code></a>.
+<br>
+2. Delete the following genes from the human VDJ reference: IGHV4-30-2, IGKV1D-33, IGKV1D-37, 
+IGKV1D-39, IGKV2D-28.  These are identical to other genes in the reference, except that the 
+reference provides a longer 5'-UTR in one case.  We observe that clonotypes having one of these 
+genes often have heterogeneous assignments between the gene and its duplicate, and that's bad, 
+as it implies that assignment of genes to clonotypes in these cases is effectively random.
+</td>
+</tr>
+
 </tbody>
 </table>
 </p>

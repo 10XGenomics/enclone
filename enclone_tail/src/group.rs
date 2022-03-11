@@ -909,6 +909,7 @@ pub fn group_and_print_clonotypes(
         &mut three_chain,
         &mut four_chain,
         opt_d_val,
+        &refdata,
     );
     *summary = stringme(&slog);
     logx.append(&mut slog);

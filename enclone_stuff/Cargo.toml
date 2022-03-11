@@ -24,6 +24,7 @@ amino = "0.1"
 debruijn = "0.3"
 enclone_core = { path = "../enclone_core" }
 enclone_print = { path = "../enclone_print" }
+enclone_proto = { path = "../enclone_proto" }
 enclone = { path = "../enclone" }
 enclone_args = { path = "../enclone_args" }
 equiv = "0.1"
@@ -38,5 +39,5 @@ regex = { version = "1", default-features = false, features = ["std", "perf"] }
 stats_utils = "0.1"
 string_utils = "0.1"
 tables = "0.1"
-vdj_ann = "0.4"
+vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 vector_utils = "0.1"

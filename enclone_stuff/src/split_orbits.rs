@@ -2,6 +2,7 @@
 
 use enclone_core::defs::{CloneInfo, EncloneControl, ExactClonotype};
 use enclone_print::define_mat::define_mat;
+use enclone_proto::types::DonorReferenceItem;
 use equiv::EquivRel;
 use qd::Double;
 use std::collections::HashMap;
@@ -20,6 +21,7 @@ pub fn split_orbits(
     info: &Vec<CloneInfo>,
     raw_joins: &Vec<Vec<usize>>,
     refdata: &RefData,
+    dref: &Vec<DonorReferenceItem>,
 ) {
     let mut orbits2 = Vec::<Vec<i32>>::new();
     for i in 0..orbits.len() {
@@ -48,6 +50,7 @@ pub fn split_orbits(
             info,
             raw_joins,
             &refdata,
+            dref,
         );
         let cols = mat.len();
 

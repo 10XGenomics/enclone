@@ -17,7 +17,7 @@ use crate::print_utils4::{build_show_aa, compute_bu, compute_some_stats};
 use crate::print_utils5::{delete_weaks, vars_and_shares};
 use enclone_args::proc_args_check::involves_gex_fb;
 use enclone_core::allowed_vars::{CVARS_ALLOWED, CVARS_ALLOWED_PCELL, LVARS_ALLOWED};
-use enclone_core::defs::{CloneInfo, ColInfo, EncloneControl, ExactClonotype, GexInfo};
+use enclone_core::defs::{AlleleData, CloneInfo, ColInfo, EncloneControl, ExactClonotype, GexInfo};
 use enclone_core::mammalian_fixed_len::mammalian_fixed_len_peer_groups;
 use enclone_core::set_speakers::set_speakers;
 use enclone_proto::types::{Clonotype, DonorReferenceItem};
@@ -67,6 +67,7 @@ pub fn print_clonotypes(
     tests: &mut Vec<usize>,
     controls: &mut Vec<usize>,
     fate: &mut Vec<HashMap<String, String>>,
+    allele_data: &AlleleData,
 ) -> Result<(), String> {
     let lvars = &ctl.clono_print_opt.lvars;
 
@@ -276,6 +277,7 @@ pub fn print_clonotypes(
                 info,
                 raw_joins,
                 &refdata,
+                dref,
             );
             let mut priority = Vec::<(Vec<bool>, usize, usize)>::new();
             for u in 0..exacts.len() {
@@ -321,6 +323,7 @@ pub fn print_clonotypes(
                 info,
                 raw_joins,
                 &refdata,
+                dref,
             );
             let cols = mat.len();
             let mut rsi = define_column_info(ctl, &exacts, exact_clonotypes, &mat, refdata);
@@ -674,6 +677,7 @@ pub fn print_clonotypes(
                         need_gex,
                         fate,
                         &cdr3_con,
+                        allele_data,
                     );
                     stats.append(&mut these_stats.clone());
                     if pass == 1 {

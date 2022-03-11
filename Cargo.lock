@@ -4,9 +4,9 @@ version = 3
 
 [[package]]
 name = "ab_glyph"
-version = "0.2.13"
+version = "0.2.15"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "61caed9aec6daeee1ea38ccf5fb225e4f96c1eeead1b4a5c267324a63cf02326"
+checksum = "24606928a235e73cdef55a0c909719cadd72fce573e5713d58cb2952d8f5794c"
 dependencies = [
  "ab_glyph_rasterizer",
  "owned_ttf_parser",
@@ -65,11 +65,23 @@ version = "0.1.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ff21503efd43332c9ef1a6d04ac55b7f8c8878655d6c28c7f749823ac0186406"
 dependencies = [
- "bio_edit",
+ "bio_edit 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "debruijn",
  "itertools",
- "string_utils",
- "vector_utils",
+ "string_utils 0.1.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "vector_utils 0.1.5 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "align_tools"
+version = "0.1.11"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#45fe922a9bd6aca0f29e24faa15d39d30a968047"
+dependencies = [
+ "bio_edit 0.1.1 (git+https://github.com/10XGenomics/rust-toolbox.git?branch=master)",
+ "debruijn",
+ "itertools",
+ "string_utils 0.1.4 (git+https://github.com/10XGenomics/rust-toolbox.git?branch=master)",
+ "vector_utils 0.1.5 (git+https://github.com/10XGenomics/rust-toolbox.git?branch=master)",
 ]
 
 [[package]]
@@ -79,7 +91,16 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5fd6d116795099c91389d0d065b0a8ca053f15b38df74f31f6c935cbc4629e6c"
 dependencies = [
  "debruijn",
- "string_utils",
+ "string_utils 0.1.4 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "amino"
+version = "0.1.7"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#45fe922a9bd6aca0f29e24faa15d39d30a968047"
+dependencies = [
+ "debruijn",
+ "string_utils 0.1.4 (git+https://github.com/10XGenomics/rust-toolbox.git?branch=master)",
 ]
 
 [[package]]
@@ -88,15 +109,15 @@ version = "0.1.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8e704dda4f6ccbc1e07c55dca526160989a84973723996a0ff473a3b23094557"
 dependencies = [
- "string_utils",
- "vector_utils",
+ "string_utils 0.1.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "vector_utils 0.1.5 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
 name = "anyhow"
-version = "1.0.54"
+version = "1.0.56"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7a99269dff3bc004caa411f38845c20303f1e393ca2bd6581576fa3a7f59577d"
+checksum = "4361135be9122e0870de935d7c439aef945b9f9ddd4199a553b5270b49c82a27"
 
 [[package]]
 name = "approx"
@@ -202,9 +223,9 @@ dependencies = [
 
 [[package]]
 name = "async-global-executor"
-version = "2.0.2"
+version = "2.0.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9586ec52317f36de58453159d48351bc244bc24ced3effc1fce22f3d48664af6"
+checksum = "c026b7e44f1316b567ee750fea85103f87fcb80792b860e979f221259796ca0a"
 dependencies = [
  "async-channel",
  "async-executor",
@@ -321,9 +342,9 @@ dependencies = [
 
 [[package]]
 name = "async-task"
-version = "4.1.0"
+version = "4.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "677d306121baf53310a3fd342d88dc0824f6bbeace68347593658525565abee8"
+checksum = "30696a84d817107fc028e049980e09d5e140e8da8f1caeb17e8e950658a3cea9"
 
 [[package]]
 name = "async-trait"
@@ -466,6 +487,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "bio_edit"
+version = "0.1.1"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#45fe922a9bd6aca0f29e24faa15d39d30a968047"
+dependencies = [
+ "bio-types",
+ "bit-set",
+]
+
+[[package]]
 name = "bit-set"
 version = "0.5.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -564,9 +594,9 @@ checksum = "72feb31ffc86498dacdbd0fcebb56138e7177a8cc5cea4516031d15ae85a742e"
 
 [[package]]
 name = "bytemuck"
-version = "1.7.3"
+version = "1.8.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "439989e6b8c38d1b6570a384ef1e49c8848128f5a97f3914baef02920842712f"
+checksum = "0e851ca7c24871e7336801608a4797d7376545b6928a10d32d75685687141ead"
 dependencies = [
  "bytemuck_derive",
 ]
@@ -1261,34 +1291,34 @@ checksum = "e78d4f1cc4ae33bbfc157ed5d5a5ef3bc29227303d595861deb238fcec4e9457"
 name = "enclone"
 version = "0.5.155"
 dependencies = [
- "amino",
+ "amino 0.1.7 (registry+https://github.com/rust-lang/crates.io-index)",
  "ansi_escape",
  "assert_cmd",
  "debruijn",
  "enclone_core",
  "enclone_proto",
- "equiv",
+ "equiv 0.1.3 (registry+https://github.com/rust-lang/crates.io-index)",
  "evalexpr",
- "graph_simple",
+ "graph_simple 0.1.5 (registry+https://github.com/rust-lang/crates.io-index)",
  "hdf5",
- "io_utils",
+ "io_utils 0.3.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "itertools",
  "mirror_sparse_matrix",
  "pager",
- "perf_stats",
+ "perf_stats 0.1.8 (registry+https://github.com/rust-lang/crates.io-index)",
  "petgraph",
  "pprof",
- "pretty_trace",
+ "pretty_trace 0.5.23 (registry+https://github.com/rust-lang/crates.io-index)",
  "qd",
  "rayon",
  "regex",
  "serde",
  "serde_derive",
  "serde_json",
- "stats_utils",
- "string_utils",
+ "stats_utils 0.1.3 (registry+https://github.com/rust-lang/crates.io-index)",
+ "string_utils 0.1.4 (registry+https://github.com/rust-lang/crates.io-index)",
  "vdj_ann",
- "vector_utils",
+ "vector_utils 0.1.5 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -1302,49 +1332,49 @@ dependencies = [
  "evalexpr",
  "expr_tools",
  "hdf5",
- "io_utils",
+ "io_utils 0.3.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "itertools",
  "mirror_sparse_matrix",
  "rand",
  "rayon",
  "regex",
  "serde_json",
- "string_utils",
+ "string_utils 0.1.4 (registry+https://github.com/rust-lang/crates.io-index)",
  "tilde-expand",
  "vdj_ann",
- "vector_utils",
+ "vector_utils 0.1.5 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
 name = "enclone_core"
 version = "0.5.155"
 dependencies = [
- "align_tools",
- "amino",
+ "align_tools 0.1.11 (registry+https://github.com/rust-lang/crates.io-index)",
+ "amino 0.1.7 (registry+https://github.com/rust-lang/crates.io-index)",
  "ansi_escape",
  "attohttpc",
- "bio_edit",
+ "bio_edit 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "chrono",
  "debruijn",
  "enclone_proto",
  "evalexpr",
  "hdf5",
- "io_utils",
+ "io_utils 0.3.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "itertools",
  "lazy_static",
  "mirror_sparse_matrix",
- "perf_stats",
- "pretty_trace",
+ "perf_stats 0.1.8 (registry+https://github.com/rust-lang/crates.io-index)",
+ "pretty_trace 0.5.23 (registry+https://github.com/rust-lang/crates.io-index)",
  "qd",
  "rayon",
  "regex",
- "stats_utils",
+ "stats_utils 0.1.3 (registry+https://github.com/rust-lang/crates.io-index)",
  "stirling_numbers",
- "string_utils",
+ "string_utils 0.1.4 (registry+https://github.com/rust-lang/crates.io-index)",
  "superslice",
- "tables",
+ "tables 0.1.5 (registry+https://github.com/rust-lang/crates.io-index)",
  "vdj_ann",
- "vector_utils",
+ "vector_utils 0.1.5 (registry+https://github.com/rust-lang/crates.io-index)",
  "zstd",
 ]
 
@@ -1352,31 +1382,31 @@ dependencies = [
 name = "enclone_denovo"
 version = "0.5.155"
 dependencies = [
- "amino",
+ "amino 0.1.7 (registry+https://github.com/rust-lang/crates.io-index)",
  "binary_vec_io",
  "bio",
  "debruijn",
- "equiv",
- "fasta_tools",
- "graph_simple",
- "hyperbase",
- "io_utils",
+ "equiv 0.1.3 (registry+https://github.com/rust-lang/crates.io-index)",
+ "fasta_tools 0.1.8 (registry+https://github.com/rust-lang/crates.io-index)",
+ "graph_simple 0.1.5 (registry+https://github.com/rust-lang/crates.io-index)",
+ "hyperbase 0.1.8 (registry+https://github.com/rust-lang/crates.io-index)",
+ "io_utils 0.3.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "itertools",
- "kmer_lookup",
- "perf_stats",
+ "kmer_lookup 0.1.5 (registry+https://github.com/rust-lang/crates.io-index)",
+ "perf_stats 0.1.8 (registry+https://github.com/rust-lang/crates.io-index)",
  "permutation 0.4.0",
  "petgraph",
- "pretty_trace",
+ "pretty_trace 0.5.23 (registry+https://github.com/rust-lang/crates.io-index)",
  "rayon",
  "regex",
  "serde_json",
- "stats_utils",
- "string_utils",
+ "stats_utils 0.1.3 (registry+https://github.com/rust-lang/crates.io-index)",
+ "string_utils 0.1.4 (registry+https://github.com/rust-lang/crates.io-index)",
  "superslice",
- "tables",
+ "tables 0.1.5 (registry+https://github.com/rust-lang/crates.io-index)",
  "vdj_ann",
  "vdj_ann_ref",
- "vector_utils",
+ "vector_utils 0.1.5 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -1395,18 +1425,18 @@ dependencies = [
  "enclone_visual",
  "flate2",
  "fs_extra",
- "io_utils",
+ "io_utils 0.3.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "itertools",
  "nix 0.23.1",
- "perf_stats",
- "pretty_trace",
+ "perf_stats 0.1.8 (registry+https://github.com/rust-lang/crates.io-index)",
+ "pretty_trace 0.5.23 (registry+https://github.com/rust-lang/crates.io-index)",
  "rayon",
  "serde_json",
  "sha2",
- "stats_utils",
- "string_utils",
+ "stats_utils 0.1.3 (registry+https://github.com/rust-lang/crates.io-index)",
+ "string_utils 0.1.4 (registry+https://github.com/rust-lang/crates.io-index)",
  "tokio",
- "vector_utils",
+ "vector_utils 0.1.5 (registry+https://github.com/rust-lang/crates.io-index)",
  "yaml-rust",
 ]
 
@@ -1416,10 +1446,10 @@ version = "0.5.155"
 dependencies = [
  "ansi_escape",
  "enclone_core",
- "io_utils",
+ "io_utils 0.3.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "itertools",
- "string_utils",
- "tables",
+ "string_utils 0.1.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tables 0.1.5 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -1438,19 +1468,19 @@ dependencies = [
  "enclone_vars",
  "expr_tools",
  "hdf5",
- "io_utils",
+ "io_utils 0.3.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "itertools",
- "perf_stats",
- "pretty_trace",
+ "perf_stats 0.1.8 (registry+https://github.com/rust-lang/crates.io-index)",
+ "pretty_trace 0.5.23 (registry+https://github.com/rust-lang/crates.io-index)",
  "rayon",
  "serde_json",
- "stats_utils",
- "string_utils",
- "tables",
+ "stats_utils 0.1.3 (registry+https://github.com/rust-lang/crates.io-index)",
+ "string_utils 0.1.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tables 0.1.5 (registry+https://github.com/rust-lang/crates.io-index)",
  "tilde-expand",
  "vdj_ann",
  "vdj_ann_ref",
- "vector_utils",
+ "vector_utils 0.1.5 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -1465,44 +1495,44 @@ dependencies = [
 name = "enclone_print"
 version = "0.5.155"
 dependencies = [
- "amino",
+ "amino 0.1.7 (registry+https://github.com/rust-lang/crates.io-index)",
  "ansi_escape",
- "bio_edit",
+ "bio_edit 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "bytes",
  "debruijn",
  "enclone_args",
  "enclone_core",
  "enclone_proto",
  "enclone_vars",
- "equiv",
+ "equiv 0.1.3 (registry+https://github.com/rust-lang/crates.io-index)",
  "evalexpr",
  "expr_tools",
  "hdf5",
- "io_utils",
+ "io_utils 0.3.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "itertools",
  "mirror_sparse_matrix",
  "ndarray",
  "permutation 0.4.0",
- "pretty_trace",
+ "pretty_trace 0.5.23 (registry+https://github.com/rust-lang/crates.io-index)",
  "qd",
  "rayon",
  "regex",
  "serde",
  "serde_derive",
  "serde_json",
- "stats_utils",
- "string_utils",
- "tables",
+ "stats_utils 0.1.3 (registry+https://github.com/rust-lang/crates.io-index)",
+ "string_utils 0.1.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tables 0.1.5 (registry+https://github.com/rust-lang/crates.io-index)",
  "triple_accel",
  "vdj_ann",
- "vector_utils",
+ "vector_utils 0.1.5 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
 name = "enclone_proto"
 version = "0.5.155"
 dependencies = [
- "bio_edit",
+ "bio_edit 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "byteorder",
  "bytes",
  "prost",
@@ -1524,80 +1554,81 @@ dependencies = [
  "enclone_proto",
  "enclone_stuff",
  "hdf5",
- "io_utils",
+ "io_utils 0.3.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "itertools",
  "rayon",
- "string_utils",
+ "string_utils 0.1.4 (registry+https://github.com/rust-lang/crates.io-index)",
  "vdj_ann",
- "vector_utils",
+ "vector_utils 0.1.5 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
 name = "enclone_stuff"
 version = "0.5.155"
 dependencies = [
- "amino",
+ "amino 0.1.7 (registry+https://github.com/rust-lang/crates.io-index)",
  "debruijn",
  "enclone",
  "enclone_args",
  "enclone_core",
  "enclone_print",
- "equiv",
+ "enclone_proto",
+ "equiv 0.1.3 (registry+https://github.com/rust-lang/crates.io-index)",
  "evalexpr",
  "hdf5",
- "io_utils",
+ "io_utils 0.3.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "itertools",
  "ndarray",
  "qd",
  "rayon",
  "regex",
- "stats_utils",
- "string_utils",
- "tables",
+ "stats_utils 0.1.3 (registry+https://github.com/rust-lang/crates.io-index)",
+ "string_utils 0.1.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tables 0.1.5 (registry+https://github.com/rust-lang/crates.io-index)",
  "vdj_ann",
- "vector_utils",
+ "vector_utils 0.1.5 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
 name = "enclone_tail"
 version = "0.5.155"
 dependencies = [
- "align_tools",
- "amino",
+ "align_tools 0.1.11 (registry+https://github.com/rust-lang/crates.io-index)",
+ "amino 0.1.7 (registry+https://github.com/rust-lang/crates.io-index)",
  "ansi_escape",
- "bio_edit",
+ "bio_edit 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "crc",
  "debruijn",
  "enclone_core",
  "enclone_proto",
- "equiv",
+ "equiv 0.1.3 (registry+https://github.com/rust-lang/crates.io-index)",
  "float-ord 0.3.2",
  "fontdb",
  "hdf5",
- "io_utils",
+ "io_utils 0.3.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "itertools",
  "lazy_static",
  "mirror_sparse_matrix",
  "ndarray",
  "palette",
- "perf_stats",
+ "perf_stats 0.1.8 (registry+https://github.com/rust-lang/crates.io-index)",
  "plotters",
- "pretty_trace",
+ "pretty_trace 0.5.23 (registry+https://github.com/rust-lang/crates.io-index)",
  "rayon",
  "resvg",
  "serde",
  "serde_derive",
  "serde_json",
- "stats_utils",
- "string_utils",
+ "stats_utils 0.1.3 (registry+https://github.com/rust-lang/crates.io-index)",
+ "string_utils 0.1.4 (registry+https://github.com/rust-lang/crates.io-index)",
  "superslice",
- "tables",
+ "tables 0.1.5 (registry+https://github.com/rust-lang/crates.io-index)",
  "tar",
  "tiny-skia",
  "triple_accel",
  "usvg",
  "vdj_ann",
- "vector_utils",
+ "vector_utils 0.1.5 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -1607,47 +1638,47 @@ dependencies = [
  "ansi_escape",
  "attohttpc",
  "binary_vec_io",
- "bio_edit",
+ "bio_edit 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "chrono",
  "debruijn",
  "dna",
  "enclone",
  "enclone_core",
  "enclone_denovo",
- "equiv",
+ "equiv 0.1.3 (registry+https://github.com/rust-lang/crates.io-index)",
  "evalexpr",
  "expr_tools",
- "fasta_tools",
+ "fasta_tools 0.1.8 (registry+https://github.com/rust-lang/crates.io-index)",
  "flate2",
  "fs_extra",
  "hdf5",
- "io_utils",
+ "io_utils 0.3.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "itertools",
  "lz4",
  "mirror_sparse_matrix",
  "pager",
- "perf_stats",
- "pretty_trace",
+ "perf_stats 0.1.8 (registry+https://github.com/rust-lang/crates.io-index)",
+ "pretty_trace 0.5.23 (registry+https://github.com/rust-lang/crates.io-index)",
  "rayon",
  "regex",
  "serde_json",
- "stats_utils",
- "string_utils",
- "tables",
+ "stats_utils 0.1.3 (registry+https://github.com/rust-lang/crates.io-index)",
+ "string_utils 0.1.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tables 0.1.5 (registry+https://github.com/rust-lang/crates.io-index)",
  "vdj_ann",
  "vdj_ann_ref",
- "vector_utils",
+ "vector_utils 0.1.5 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
 name = "enclone_vars"
 version = "0.5.155"
 dependencies = [
- "io_utils",
+ "io_utils 0.3.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "itertools",
- "pretty_trace",
- "string_utils",
- "vector_utils",
+ "pretty_trace 0.5.23 (registry+https://github.com/rust-lang/crates.io-index)",
+ "string_utils 0.1.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "vector_utils 0.1.5 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -1655,7 +1686,7 @@ name = "enclone_version"
 version = "0.5.155"
 dependencies = [
  "chrono",
- "string_utils",
+ "string_utils 0.1.4 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -1683,7 +1714,7 @@ dependencies = [
  "iced_native",
  "image",
  "include_dir",
- "io_utils",
+ "io_utils 0.3.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "itertools",
  "jpeg-decoder 0.2.2",
  "lazy_static",
@@ -1692,22 +1723,22 @@ dependencies = [
  "mach",
  "nix 0.23.1",
  "objc",
- "perf_stats",
+ "perf_stats 0.1.8 (registry+https://github.com/rust-lang/crates.io-index)",
  "png-decoder",
- "pretty_trace",
+ "pretty_trace 0.5.23 (registry+https://github.com/rust-lang/crates.io-index)",
  "procfs",
  "prost",
  "rayon",
  "serde_json",
- "string_utils",
- "tables",
+ "string_utils 0.1.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tables 0.1.5 (registry+https://github.com/rust-lang/crates.io-index)",
  "tilde-expand",
  "tokio",
  "tokio-stream",
  "tonic",
  "tonic-build",
  "users",
- "vector_utils",
+ "vector_utils 0.1.5 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -1735,6 +1766,11 @@ name = "equiv"
 version = "0.1.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ad251ad0f0bd07cfe4ff98ed118a6fa615fe89be43236e123228dc55f4b15f0c"
+
+[[package]]
+name = "equiv"
+version = "0.1.3"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#45fe922a9bd6aca0f29e24faa15d39d30a968047"
 
 [[package]]
 name = "errno"
@@ -1778,9 +1814,9 @@ dependencies = [
 
 [[package]]
 name = "evalexpr"
-version = "7.0.0"
+version = "7.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0eb8c3fede1e2612da9d84fc2a20769b269c8a3d6d29e0854c22f336db343701"
+checksum = "90c8b61e4acbb2e4fbcf9d4c7af4d431f38c2a60b975b1d03d0276fbb032ec5d"
 
 [[package]]
 name = "event-listener"
@@ -1791,12 +1827,11 @@ checksum = "77f3309417938f28bf8228fcff79a4a37103981e3e186d2ccd19c74b38f4eb71"
 [[package]]
 name = "exons"
 version = "0.1.5"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "98ade6e4dae7e83c43060ed785ae734608cda540c055acc59f80efa582e30068"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#45fe922a9bd6aca0f29e24faa15d39d30a968047"
 dependencies = [
- "io_utils",
- "string_utils",
- "vector_utils",
+ "io_utils 0.3.2 (git+https://github.com/10XGenomics/rust-toolbox.git?branch=master)",
+ "string_utils 0.1.4 (git+https://github.com/10XGenomics/rust-toolbox.git?branch=master)",
+ "vector_utils 0.1.5 (git+https://github.com/10XGenomics/rust-toolbox.git?branch=master)",
 ]
 
 [[package]]
@@ -1817,8 +1852,8 @@ checksum = "26a638c6089b7dd864372f077ee0b6e7c327d00aa5f28db77f292cb6eae442bd"
 dependencies = [
  "evalexpr",
  "statrs",
- "string_utils",
- "vector_utils",
+ "string_utils 0.1.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "vector_utils 0.1.5 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -1829,8 +1864,19 @@ checksum = "68adfb3db3241435957c3a0066c7b65beec225023961c5848264c66272cedea7"
 dependencies = [
  "debruijn",
  "flate2",
- "io_utils",
- "string_utils",
+ "io_utils 0.3.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "string_utils 0.1.4 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "fasta_tools"
+version = "0.1.8"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#45fe922a9bd6aca0f29e24faa15d39d30a968047"
+dependencies = [
+ "debruijn",
+ "flate2",
+ "io_utils 0.3.2 (git+https://github.com/10XGenomics/rust-toolbox.git?branch=master)",
+ "string_utils 0.1.4 (git+https://github.com/10XGenomics/rust-toolbox.git?branch=master)",
 ]
 
 [[package]]
@@ -2156,9 +2202,9 @@ dependencies = [
 
 [[package]]
 name = "getrandom"
-version = "0.2.4"
+version = "0.2.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "418d37c8b1d42553c93648be529cb70f920d3baf8ef469b74b9638df426e0b4c"
+checksum = "d39cd93900197114fa1fcb7ae84ca742095eed9442088988ae74fa744e930e77"
 dependencies = [
  "cfg-if 1.0.0",
  "libc",
@@ -2317,7 +2363,16 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "41db170d943bdc507695fc6c5ba41e12ce2c074e0310aad5bb64edb2c70308e6"
 dependencies = [
  "petgraph",
- "vector_utils",
+ "vector_utils 0.1.5 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "graph_simple"
+version = "0.1.5"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#45fe922a9bd6aca0f29e24faa15d39d30a968047"
+dependencies = [
+ "petgraph",
+ "vector_utils 0.1.5 (git+https://github.com/10XGenomics/rust-toolbox.git?branch=master)",
 ]
 
 [[package]]
@@ -2332,9 +2387,9 @@ dependencies = [
 
 [[package]]
 name = "h2"
-version = "0.3.11"
+version = "0.3.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d9f1f717ddc7b2ba36df7e871fd88db79326551d3d6f1fc406fbfd28b582ff8e"
+checksum = "62eeb471aa3e3c9197aa4bfeabfe02982f6dc96f750486c0bb0009ac58b26d2b"
 dependencies = [
  "bytes",
  "fnv",
@@ -2521,11 +2576,24 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2e4149ebb430498aa1c8fcc2bfa348df892a34a66218abbe3474fe241f503d3d"
 dependencies = [
  "debruijn",
- "equiv",
- "graph_simple",
- "kmer_lookup",
+ "equiv 0.1.3 (registry+https://github.com/rust-lang/crates.io-index)",
+ "graph_simple 0.1.5 (registry+https://github.com/rust-lang/crates.io-index)",
+ "kmer_lookup 0.1.5 (registry+https://github.com/rust-lang/crates.io-index)",
  "petgraph",
- "vector_utils",
+ "vector_utils 0.1.5 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "hyperbase"
+version = "0.1.8"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#45fe922a9bd6aca0f29e24faa15d39d30a968047"
+dependencies = [
+ "debruijn",
+ "equiv 0.1.3 (git+https://github.com/10XGenomics/rust-toolbox.git?branch=master)",
+ "graph_simple 0.1.5 (git+https://github.com/10XGenomics/rust-toolbox.git?branch=master)",
+ "kmer_lookup 0.1.5 (git+https://github.com/10XGenomics/rust-toolbox.git?branch=master)",
+ "petgraph",
+ "vector_utils 0.1.5 (git+https://github.com/10XGenomics/rust-toolbox.git?branch=master)",
 ]
 
 [[package]]
@@ -2730,7 +2798,19 @@ dependencies = [
  "flate2",
  "lz4",
  "serde",
- "string_utils",
+ "string_utils 0.1.4 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "io_utils"
+version = "0.3.2"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#45fe922a9bd6aca0f29e24faa15d39d30a968047"
+dependencies = [
+ "bincode",
+ "flate2",
+ "lz4",
+ "serde",
+ "string_utils 0.1.4 (git+https://github.com/10XGenomics/rust-toolbox.git?branch=master)",
 ]
 
 [[package]]
@@ -2832,7 +2912,17 @@ checksum = "f8b99223e43a9eb74be262b78b33727e1a70a224f96db44063632de610938dfd"
 dependencies = [
  "debruijn",
  "rayon",
- "vector_utils",
+ "vector_utils 0.1.5 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "kmer_lookup"
+version = "0.1.5"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#45fe922a9bd6aca0f29e24faa15d39d30a968047"
+dependencies = [
+ "debruijn",
+ "rayon",
+ "vector_utils 0.1.5 (git+https://github.com/10XGenomics/rust-toolbox.git?branch=master)",
 ]
 
 [[package]]
@@ -2958,9 +3048,9 @@ dependencies = [
 
 [[package]]
 name = "lz4"
-version = "1.23.2"
+version = "1.23.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "aac20ed6991e01bf6a2e68cc73df2b389707403662a8ba89f68511fb340f724c"
+checksum = "4edcb94251b1c375c459e5abe9fb0168c1c826c3370172684844f8f3f8d1a885"
 dependencies = [
  "libc",
  "lz4-sys",
@@ -2968,9 +3058,9 @@ dependencies = [
 
 [[package]]
 name = "lz4-sys"
-version = "1.9.2"
+version = "1.9.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "dca79aa95d8b3226213ad454d328369853be3a1382d89532a854f4d69640acae"
+checksum = "d7be8908e2ed6f31c02db8a9fa962f03e36c53fbfde437363eae3306b85d7e17"
 dependencies = [
  "cc",
  "libc",
@@ -3390,18 +3480,18 @@ dependencies = [
 
 [[package]]
 name = "num_enum"
-version = "0.5.6"
+version = "0.5.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "720d3ea1055e4e4574c0c0b0f8c3fd4f24c4cdaf465948206dea090b57b526ad"
+checksum = "cf5395665662ef45796a4ff5486c5d41d29e0c09640af4c5f17fd94ee2c119c9"
 dependencies = [
  "num_enum_derive",
 ]
 
 [[package]]
 name = "num_enum_derive"
-version = "0.5.6"
+version = "0.5.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0d992b768490d7fe0d8586d9b5745f6c49f557da6d81dc982b1d167ad4edbb21"
+checksum = "3b0498641e53dd6ac1a4f22547548caa6864cc4933784319cd1775271c5a46ce"
 dependencies = [
  "proc-macro-crate",
  "proc-macro2",
@@ -3459,9 +3549,9 @@ dependencies = [
 
 [[package]]
 name = "once_cell"
-version = "1.9.0"
+version = "1.10.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "da32515d9f6e6e489d7bc9d84c71b060db7247dc035bbe44eac88cf87486d8d5"
+checksum = "87f3e037eac156d1775da914196f0f37741a274155e34a0b7e427c35d2a2ecb9"
 
 [[package]]
 name = "ordered-float"
@@ -3483,11 +3573,11 @@ dependencies = [
 
 [[package]]
 name = "owned_ttf_parser"
-version = "0.14.0"
+version = "0.15.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4ef05f2882a8b3e7acc10c153ade2631f7bfc8ce00d2bf3fb8f4e9d2ae6ea5c3"
+checksum = "4fb1e509cfe7a12db2a90bfa057dfcdbc55a347f5da677c506b53dd099cfec9d"
 dependencies = [
- "ttf-parser 0.14.0",
+ "ttf-parser 0.15.0",
 ]
 
 [[package]]
@@ -3592,9 +3682,19 @@ version = "0.1.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b0177fac70981a979322d624a0c4820d0c698b975267c92f34a5f15ccf3f9a8d"
 dependencies = [
- "io_utils",
+ "io_utils 0.3.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "libc",
- "string_utils",
+ "string_utils 0.1.4 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "perf_stats"
+version = "0.1.8"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#45fe922a9bd6aca0f29e24faa15d39d30a968047"
+dependencies = [
+ "io_utils 0.3.2 (git+https://github.com/10XGenomics/rust-toolbox.git?branch=master)",
+ "libc",
+ "string_utils 0.1.4 (git+https://github.com/10XGenomics/rust-toolbox.git?branch=master)",
 ]
 
 [[package]]
@@ -3758,9 +3858,9 @@ dependencies = [
 
 [[package]]
 name = "png"
-version = "0.17.3"
+version = "0.17.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8e8f1882177b17c98ec33a51f5910ecbf4db92ca0def706781a1f8d0c661f393"
+checksum = "dc38c0ad57efb786dd57b9864e5b18bae478c00c824dc55a38bbc9da95dde3ba"
 dependencies = [
  "bitflags",
  "crc32fast",
@@ -3855,22 +3955,39 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ffb7fee4fba2b897a4dabb1d95c746960aea01dbd2de45080cfb2bb32f4b7d2a"
 dependencies = [
  "backtrace",
- "io_utils",
+ "io_utils 0.3.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "lazy_static",
  "libc",
  "nix 0.23.1",
  "pprof",
- "stats_utils",
- "string_utils",
- "tables",
- "vector_utils",
+ "stats_utils 0.1.3 (registry+https://github.com/rust-lang/crates.io-index)",
+ "string_utils 0.1.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tables 0.1.5 (registry+https://github.com/rust-lang/crates.io-index)",
+ "vector_utils 0.1.5 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "pretty_trace"
+version = "0.5.23"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#45fe922a9bd6aca0f29e24faa15d39d30a968047"
+dependencies = [
+ "backtrace",
+ "io_utils 0.3.2 (git+https://github.com/10XGenomics/rust-toolbox.git?branch=master)",
+ "lazy_static",
+ "libc",
+ "nix 0.23.1",
+ "pprof",
+ "stats_utils 0.1.3 (git+https://github.com/10XGenomics/rust-toolbox.git?branch=master)",
+ "string_utils 0.1.4 (git+https://github.com/10XGenomics/rust-toolbox.git?branch=master)",
+ "tables 0.1.5 (git+https://github.com/10XGenomics/rust-toolbox.git?branch=master)",
+ "vector_utils 0.1.5 (git+https://github.com/10XGenomics/rust-toolbox.git?branch=master)",
 ]
 
 [[package]]
 name = "proc-macro-crate"
-version = "1.1.2"
+version = "1.1.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9dada8c9981fcf32929c3c0f0cd796a9284aca335565227ed88c83babb1d43dc"
+checksum = "e17d47ce914bf4de440332250b0edd23ce48c005f59fab39d3335866b114f11a"
 dependencies = [
  "thiserror",
  "toml",
@@ -4105,9 +4222,9 @@ checksum = "9ae028b272a6e99d9f8260ceefa3caa09300a8d6c8d2b2001316474bc52122e9"
 
 [[package]]
 name = "redox_syscall"
-version = "0.2.10"
+version = "0.2.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8383f39639269cde97d255a32bdb68c047337295414940c68bdd30c2e13203ff"
+checksum = "8380fe0152551244f0747b1bf41737e0f8a74f97a14ccefd1148187271634f3c"
 dependencies = [
  "bitflags",
 ]
@@ -4124,9 +4241,9 @@ dependencies = [
 
 [[package]]
 name = "regex"
-version = "1.5.4"
+version = "1.5.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d07a8629359eb56f1e2fb1652bb04212c072a87ba68546a04065d525673ac461"
+checksum = "1a11647b6b25ff05a515cb92c365cec08801e83423a235b51e231e1808747286"
 dependencies = [
  "aho-corasick",
  "memchr",
@@ -4169,7 +4286,7 @@ dependencies = [
  "jpeg-decoder 0.1.22",
  "log",
  "pico-args",
- "png 0.17.3",
+ "png 0.17.5",
  "rgb",
  "tiny-skia",
  "usvg",
@@ -4177,9 +4294,9 @@ dependencies = [
 
 [[package]]
 name = "rgb"
-version = "0.8.31"
+version = "0.8.32"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9a374af9a0e5fdcdd98c1c7b64f05004f9ea2555b6c75f211daa81268a3c50f1"
+checksum = "e74fdc210d8f24a7dbfedc13b04ba5764f5232754ccebfdf5fff1bad791ccbc6"
 dependencies = [
  "bytemuck",
 ]
@@ -4456,9 +4573,9 @@ dependencies = [
 
 [[package]]
 name = "siphasher"
-version = "0.3.9"
+version = "0.3.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a86232ab60fa71287d7f2ddae4a7073f6b7aac33631c3015abb556f08c6d0a3e"
+checksum = "7bd3e3206899af3f8b12af284fafc038cc1dc2b41d1b89dd17297221c5d225de"
 
 [[package]]
 name = "slab"
@@ -4568,6 +4685,11 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b2d615734a36694d0a5803b1fe69b185611864224f5b2d4425ad0b69e39fb877"
 
 [[package]]
+name = "stats_utils"
+version = "0.1.3"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#45fe922a9bd6aca0f29e24faa15d39d30a968047"
+
+[[package]]
 name = "stirling_numbers"
 version = "0.1.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4588,7 +4710,15 @@ version = "0.1.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0247f2b34eb8810f2bab2b5d2fb1abc5f7d446ce23712efc463aa1c51e5021d0"
 dependencies = [
- "vector_utils",
+ "vector_utils 0.1.5 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "string_utils"
+version = "0.1.4"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#45fe922a9bd6aca0f29e24faa15d39d30a968047"
+dependencies = [
+ "vector_utils 0.1.5 (git+https://github.com/10XGenomics/rust-toolbox.git?branch=master)",
 ]
 
 [[package]]
@@ -4639,9 +4769,9 @@ dependencies = [
 
 [[package]]
 name = "symbolic-common"
-version = "8.6.0"
+version = "8.6.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e92a52f07eed9afba3d6f883652cde7cd75fcf327dd44e84f210958379158737"
+checksum = "52ca6f4079d985e79702d1cce708bdd03ac570e220bcf87105d86f5a8ebb26be"
 dependencies = [
  "debugid",
  "memmap2 0.5.3",
@@ -4651,9 +4781,9 @@ dependencies = [
 
 [[package]]
 name = "symbolic-demangle"
-version = "8.6.0"
+version = "8.6.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c9abc81544d9964975269165bfe5ad198d8b9e2e809c46527323f95588a57693"
+checksum = "7bd7f5075d8bbe9b00eaa9cb47e788fe9405f3306f7497b617b62e5f65ec619a"
 dependencies = [
  "cpp_demangle",
  "rustc-demangle",
@@ -4677,9 +4807,19 @@ version = "0.1.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8ee0c732e620e592ba3ad7cafceef32028e185c7bf6c8e34b367565bf3b43ece"
 dependencies = [
- "io_utils",
+ "io_utils 0.3.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "itertools",
- "string_utils",
+ "string_utils 0.1.4 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "tables"
+version = "0.1.5"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#45fe922a9bd6aca0f29e24faa15d39d30a968047"
+dependencies = [
+ "io_utils 0.3.2 (git+https://github.com/10XGenomics/rust-toolbox.git?branch=master)",
+ "itertools",
+ "string_utils 0.1.4 (git+https://github.com/10XGenomics/rust-toolbox.git?branch=master)",
 ]
 
 [[package]]
@@ -4709,9 +4849,9 @@ dependencies = [
 
 [[package]]
 name = "termcolor"
-version = "1.1.2"
+version = "1.1.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2dfed899f0eb03f32ee8c6a0aabdb8a7949659e3466561fc0adf54e26d88c5f4"
+checksum = "bab24d30b911b2376f3a13cc2cd443142f0c81dda04c118693e35b3835757755"
 dependencies = [
  "winapi-util",
 ]
@@ -4772,7 +4912,7 @@ dependencies = [
  "arrayvec 0.5.2",
  "bytemuck",
  "cfg-if 1.0.0",
- "png 0.17.3",
+ "png 0.17.5",
  "safe_arch",
 ]
 
@@ -4954,9 +5094,9 @@ checksum = "360dfd1d6d30e05fda32ace2c8c70e9c0a9da713275777f5a4dbb8a1893930c6"
 
 [[package]]
 name = "tracing"
-version = "0.1.31"
+version = "0.1.32"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f6c650a8ef0cd2dd93736f033d21cbd1224c5a967aa0c258d00fcf7dafef9b9f"
+checksum = "4a1bdf54a7c28a2bbf701e1d2233f6c77f473486b94bee4f9678da5a148dca7f"
 dependencies = [
  "cfg-if 1.0.0",
  "log",
@@ -4967,9 +5107,9 @@ dependencies = [
 
 [[package]]
 name = "tracing-attributes"
-version = "0.1.19"
+version = "0.1.20"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8276d9a4a3a558d7b7ad5303ad50b53d58264641b82914b7ada36bd762e7a716"
+checksum = "2e65ce065b4b5c53e73bb28912318cb8c9e9ad3921f1d669eb0e68b4c8143a2b"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -4978,9 +5118,9 @@ dependencies = [
 
 [[package]]
 name = "tracing-core"
-version = "0.1.22"
+version = "0.1.23"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "03cfcb51380632a72d3111cb8d3447a8d908e577d31beeac006f836383d29a23"
+checksum = "aa31669fa42c09c34d94d8165dd2012e8ff3c66aca50f3bb226b68f216f2706c"
 dependencies = [
  "lazy_static",
 ]
@@ -5015,9 +5155,9 @@ checksum = "7ae2f58a822f08abdaf668897e96a5656fe72f5a9ce66422423e8849384872e6"
 
 [[package]]
 name = "ttf-parser"
-version = "0.14.0"
+version = "0.15.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4ccbe8381883510b6a2d8f1e32905bddd178c11caef8083086d0c0c9ab0ac281"
+checksum = "c74c96594835e10fa545e2a51e8709f30b173a092bfd6036ef2cec53376244f3"
 
 [[package]]
 name = "twox-hash"
@@ -5179,50 +5319,48 @@ dependencies = [
 [[package]]
 name = "vdj_ann"
 version = "0.4.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6a4e14053875cab478c4639293977b3149304f4033fa28038510f70aca733408"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#45fe922a9bd6aca0f29e24faa15d39d30a968047"
 dependencies = [
- "align_tools",
- "amino",
- "bio_edit",
+ "align_tools 0.1.11 (git+https://github.com/10XGenomics/rust-toolbox.git?branch=master)",
+ "amino 0.1.7 (git+https://github.com/10XGenomics/rust-toolbox.git?branch=master)",
+ "bio_edit 0.1.1 (git+https://github.com/10XGenomics/rust-toolbox.git?branch=master)",
  "debruijn",
- "fasta_tools",
- "hyperbase",
- "io_utils",
+ "fasta_tools 0.1.8 (git+https://github.com/10XGenomics/rust-toolbox.git?branch=master)",
+ "hyperbase 0.1.8 (git+https://github.com/10XGenomics/rust-toolbox.git?branch=master)",
+ "io_utils 0.3.2 (git+https://github.com/10XGenomics/rust-toolbox.git?branch=master)",
  "itertools",
- "kmer_lookup",
+ "kmer_lookup 0.1.5 (git+https://github.com/10XGenomics/rust-toolbox.git?branch=master)",
  "serde",
  "serde_json",
- "stats_utils",
- "string_utils",
+ "stats_utils 0.1.3 (git+https://github.com/10XGenomics/rust-toolbox.git?branch=master)",
+ "string_utils 0.1.4 (git+https://github.com/10XGenomics/rust-toolbox.git?branch=master)",
  "vdj_types",
- "vector_utils",
+ "vector_utils 0.1.5 (git+https://github.com/10XGenomics/rust-toolbox.git?branch=master)",
 ]
 
 [[package]]
 name = "vdj_ann_ref"
 version = "0.2.1"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#7acaa74a1e03d670352ab70a2f9d3464a4219ae8"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#45fe922a9bd6aca0f29e24faa15d39d30a968047"
 dependencies = [
  "debruijn",
  "exons",
- "fasta_tools",
+ "fasta_tools 0.1.8 (git+https://github.com/10XGenomics/rust-toolbox.git?branch=master)",
  "flate2",
- "io_utils",
- "kmer_lookup",
- "perf_stats",
- "pretty_trace",
+ "io_utils 0.3.2 (git+https://github.com/10XGenomics/rust-toolbox.git?branch=master)",
+ "kmer_lookup 0.1.5 (git+https://github.com/10XGenomics/rust-toolbox.git?branch=master)",
+ "perf_stats 0.1.8 (git+https://github.com/10XGenomics/rust-toolbox.git?branch=master)",
+ "pretty_trace 0.5.23 (git+https://github.com/10XGenomics/rust-toolbox.git?branch=master)",
  "sha2",
- "string_utils",
+ "string_utils 0.1.4 (git+https://github.com/10XGenomics/rust-toolbox.git?branch=master)",
  "vdj_ann",
- "vector_utils",
+ "vector_utils 0.1.5 (git+https://github.com/10XGenomics/rust-toolbox.git?branch=master)",
 ]
 
 [[package]]
 name = "vdj_types"
 version = "0.2.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "029dbe2aecc529693aecdf5f8f7cab1a647ed7df5c8e3bf13ab1f2907745be91"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#45fe922a9bd6aca0f29e24faa15d39d30a968047"
 dependencies = [
  "serde",
 ]
@@ -5241,6 +5379,15 @@ name = "vector_utils"
 version = "0.1.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2d3ecf8ee11bfddd2cb41fe07abbb063610a90d22515b47718d1a7ba200d3059"
+dependencies = [
+ "permutation 0.2.5",
+ "superslice",
+]
+
+[[package]]
+name = "vector_utils"
+version = "0.1.5"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#45fe922a9bd6aca0f29e24faa15d39d30a968047"
 dependencies = [
  "permutation 0.2.5",
  "superslice",

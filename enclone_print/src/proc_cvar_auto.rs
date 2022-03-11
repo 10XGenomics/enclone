@@ -37,6 +37,7 @@ pub fn proc_cvar_auto(
     varmat: &Vec<Vec<Vec<u8>>>,
     out_data: &mut Vec<HashMap<String, String>>,
     stats: &mut Vec<(String, Vec<String>)>,
+    allele_data: &AlleleData,
 ) -> Result<bool, String> {
     let mut vname = var.clone();
     if var.contains(':') {
@@ -87,6 +88,65 @@ pub fn proc_cvar_auto(
             Vec::new(),
             "exact".to_string(),
         )
+    } else if vname == "allele" {
+        let mut allele = 0;
+        if ex.share[mid].v_ref_id_donor_alt_id.is_some() {
+            allele = ex.share[mid].v_ref_id_donor_alt_id.unwrap() + 1;
+        }
+
+        (format!("{}", allele), Vec::new(), "clono".to_string())
+    } else if vname == "allele_d" {
+        let mut refs = Vec::<Vec<u8>>::new();
+        let alt_refs = &allele_data.alt_refs;
+        refs.push(refdata.refs[ex.share[mid].v_ref_id].to_ascii_vec());
+        for i in 0..alt_refs.len() {
+            // The following does not work correctly if an exact subclonotype contains cells
+            // from more than one donor.  But that is extremely rare.
+            if ex.clones[0][0].donor_index.is_some() {
+                if alt_refs[i].0 == ex.clones[0][0].donor_index.unwrap()
+                    && alt_refs[i].1 == ex.share[mid].v_ref_id
+                {
+                    refs.push(alt_refs[i].2.to_ascii_vec());
+                }
+            }
+        }
+        let mut m = refs[0].len();
+        for i in 1..refs.len() {
+            m = min(m, refs[i].len());
+        }
+        let mut ps = Vec::<usize>::new();
+        let mut variant = Vec::<Vec<u8>>::new();
+        for p in 0..m {
+            let mut bases = Vec::<u8>::new();
+            for i in 0..refs.len() {
+                bases.push(refs[i][p]);
+            }
+            let mut bases_sorted = bases.clone();
+            unique_sort(&mut bases_sorted);
+            if bases_sorted.len() > 1 {
+                ps.push(p);
+                variant.push(bases);
+            }
+        }
+        let mut xs = Vec::<String>::new();
+        for i in 0..refs.len() {
+            let mut x = String::new();
+            for j in 0..ps.len() {
+                x.push(variant[j][i] as char);
+            }
+            xs.push(x);
+        }
+        let mut me = String::new();
+        for j in 0..ps.len() {
+            let base = ex.share[mid].seq_del_amino[ps[j]];
+            me.push(base as char);
+        }
+        let mut details = String::new();
+        if ps.len() > 0 {
+            details = format!("{me} : {}", xs.iter().format(","));
+        }
+
+        (details, Vec::new(), "clono".to_string())
     } else if vname == "cdiff" {
         let cstart = ex.share[mid].j_stop;
         let clen = ex.share[mid].full_seq.len() - cstart;

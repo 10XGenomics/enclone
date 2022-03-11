@@ -19,7 +19,7 @@ use enclone::misc1::{cross_filter, lookup_heavy_chain_reuse};
 use enclone::misc2::{check_for_barcode_reuse, find_exact_subclonotypes, search_for_shm_indels};
 use enclone::misc3::sort_tig_bc;
 use enclone_args::read_json::parse_json_annotations_files;
-use enclone_core::defs::{CloneInfo, TigData};
+use enclone_core::defs::{AlleleData, CloneInfo, TigData};
 use enclone_core::enclone_structs::*;
 use enclone_core::hcomp::heavy_complexity;
 use enclone_print::loupe::make_donor_refs;
@@ -377,15 +377,19 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
 
     // Compute complexity.
 
+    let tcomp = Instant::now();
     if ctl.join_alg_opt.comp_filt < 1_000_000 {
-        let hcomp = heavy_complexity(&refdata, &exact_clonotypes, &ctl, &drefs);
+        let jun = heavy_complexity(&refdata, &exact_clonotypes, &ctl, &drefs);
         for u in 0..exact_clonotypes.len() {
             let ex = &mut exact_clonotypes[u];
             for m in 0..ex.share.len() {
-                ex.share[m].hcomp = hcomp[u];
+                if ex.share.len() == 2 && ex.share[m].left {
+                    ex.share[m].jun = jun[u].clone();
+                }
             }
         }
     }
+    ctl.perf_stats(&tcomp, "computing complexity");
 
     // Form equivalence relation on exact subclonotypes.  We also keep the raw joins, consisting
     // of pairs of info indices, that were originally joined.
@@ -402,6 +406,7 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
         &mut join_info,
         &mut raw_joins,
         &sr,
+        &drefs,
     );
 
     // If NWEAK_ONESIES is not specified, disintegrate certain onesie clonotypes into single cell
@@ -560,6 +565,7 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
         &disintegrated,
         &mut fate,
         refdata,
+        &drefs,
     );
 
     // Pre evaluate (PRE_EVAL).
@@ -844,6 +850,11 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
             sr,
             fate,
             is_bcr,
+            allele_data: AlleleData {
+                alt_refs: alt_refs,
+                var_pos: Vec::new(),
+                var_bases: Vec::new(),
+            },
         },
     })
 }
