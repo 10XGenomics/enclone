@@ -42,7 +42,7 @@ reference provides a longer 5'-UTR in one case.  We observe that clonotypes havi
 genes often have heterogeneous assignments between the gene and its duplicate, and that's bad, 
 as it implies that assignment of genes to clonotypes in these cases is effectively random.</li>
 <li>Add lvars <code>allele</code> and <code>allele_d</code>.  Please see
-<a href="../../pages/auto/help.how.lvars"><code>enclone help lvars</code></a>.</li>
+<a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a>.</li>
 </ul>
 </p>
 
