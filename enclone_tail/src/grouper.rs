@@ -7,6 +7,7 @@
 // group object: a vector of pairs (i, msg) where i is an index into exacts and msg is a message
 //               to be printed
 
+use crate::keeper_group::keeper_group;
 use amino::aa_seq;
 use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype};
 use enclone_proto::types::DonorReferenceItem;
@@ -17,7 +18,7 @@ use std::time::Instant;
 use string_utils::TextUtils;
 use triple_accel::{levenshtein, levenshtein::levenshtein_simd_k};
 use vdj_ann::refx::RefData;
-use vector_utils::{next_diff1_2, sort_sync2, unique_sort, VecUtils};
+use vector_utils::{next_diff1_2, sort_sync2, unique_sort};
 
 pub fn grouper(
     refdata: &RefData,
@@ -723,137 +724,12 @@ pub fn grouper(
 
         let mut groups = Vec::<Vec<(i32, String)>>::new();
         let mut grepsn = Vec::<usize>::new();
-        'group: for i in 0..greps.len() {
+        for i in 0..greps.len() {
             let mut o = Vec::<i32>::new();
             e.orbit(greps[i], &mut o);
-            if o.len() < ctl.clono_group_opt.min_group {
+            if !keeper_group(&o, &refdata, &exacts, &exact_clonotypes, &ctl, &rsi, &dref) {
                 continue;
             }
-            if ctl.clono_group_opt.min_group_donors > 1 {
-                let mut donors = Vec::<usize>::new();
-                for j in 0..o.len() {
-                    let x = o[j] as usize;
-                    let s = &exacts[x];
-                    for k in 0..s.len() {
-                        let ex = &exact_clonotypes[s[k]];
-                        for l in 0..ex.clones.len() {
-                            let d = ex.clones[l][0].donor_index;
-                            if d.is_some() {
-                                donors.push(d.unwrap());
-                            }
-                        }
-                    }
-                }
-                unique_sort(&mut donors);
-                if donors.len() < ctl.clono_group_opt.min_group_donors {
-                    continue;
-                }
-            }
-            if ctl.clono_group_opt.cdr3h_len_var {
-                let mut lens = Vec::<usize>::new();
-                for j in 0..o.len() {
-                    let x = o[j] as usize;
-                    let s = &exacts[x];
-                    for k in 0..s.len() {
-                        let ex = &exact_clonotypes[s[k]];
-                        for l in 0..ex.share.len() {
-                            if ex.share[l].left {
-                                lens.push(ex.share[l].cdr3_aa.len());
-                            }
-                        }
-                    }
-                }
-                unique_sort(&mut lens);
-                if lens.solo() {
-                    continue;
-                }
-            }
-            if ctl.clono_group_opt.cdr3.len() > 0 {
-                let mut found = false;
-                for j in 0..o.len() {
-                    let x = o[j] as usize;
-                    let s = &exacts[x];
-                    for k in 0..s.len() {
-                        let ex = &exact_clonotypes[s[k]];
-                        for l in 0..ex.share.len() {
-                            if ex.share[l].cdr3_aa == ctl.clono_group_opt.cdr3 {
-                                found = true;
-                            }
-                        }
-                    }
-                }
-                if !found {
-                    continue;
-                }
-            }
-            if ctl.clono_group_opt.naive || ctl.clono_group_opt.no_naive {
-                let mut found = false;
-                // for each clonotype
-                for j in 0..o.len() {
-                    let x = o[j] as usize;
-                    let rsi = &rsi[x];
-                    let s = &exacts[x];
-                    // for each exact subclonotype
-                    for u in 0..s.len() {
-                        let mut diffs = 0;
-                        let ex = &exact_clonotypes[s[u]];
-                        for m in 0..rsi.mat.len() {
-                            if rsi.mat[m][u].is_some() {
-                                let r = rsi.mat[m][u].unwrap();
-                                let seq = &ex.share[r].seq_del_amino;
-                                let mut vref = refdata.refs[rsi.vids[m]].to_ascii_vec();
-                                if rsi.vpids[m].is_some() {
-                                    vref = dref[rsi.vpids[m].unwrap()].nt_sequence.clone();
-                                }
-                                let jref = refdata.refs[rsi.jids[m]].to_ascii_vec();
-                                let z = seq.len();
-                                for p in 0..z {
-                                    let b = seq[p];
-                                    if p < vref.len() - ctl.heur.ref_v_trim && b != vref[p] {
-                                        diffs += 1;
-                                    }
-                                    if p >= z - (jref.len() - ctl.heur.ref_j_trim)
-                                        && b != jref[jref.len() - (z - p)]
-                                    {
-                                        diffs += 1;
-                                    }
-                                }
-                            }
-                        }
-                        if diffs == 0 {
-                            found = true;
-                        }
-                    }
-                }
-                if !found && ctl.clono_group_opt.naive {
-                    continue;
-                }
-                if found && ctl.clono_group_opt.no_naive {
-                    continue;
-                }
-            }
-            if ctl.clono_group_opt.donor.len() > 0 {
-                for d in ctl.clono_group_opt.donor.iter() {
-                    let mut found = false;
-                    for j in 0..o.len() {
-                        let x = o[j] as usize;
-                        let s = &exacts[x];
-                        for k in 0..s.len() {
-                            let ex = &exact_clonotypes[s[k]];
-                            for l in 0..ex.clones.len() {
-                                let dx = &ctl.origin_info.donor_id[ex.clones[l][0].dataset_index];
-                                if dx == d {
-                                    found = true;
-                                }
-                            }
-                        }
-                    }
-                    if !found {
-                        continue 'group;
-                    }
-                }
-            }
-
             let mut z = Vec::<(i32, String)>::new();
             for j in 0..o.len() {
                 z.push((o[j], String::new()));

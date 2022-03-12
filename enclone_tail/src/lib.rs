@@ -15,6 +15,7 @@ pub mod group;
 pub mod group_colors;
 pub mod grouper;
 pub mod hex;
+pub mod keeper_group;
 pub mod legend;
 pub mod neighbor;
 pub mod newick;
