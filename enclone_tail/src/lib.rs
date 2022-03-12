@@ -25,6 +25,7 @@ pub mod plot;
 pub mod plot_points;
 pub mod plot_utils;
 pub mod polygon;
+pub mod print_dataset_vars;
 pub mod print_stats;
 pub mod requirements;
 pub mod sens_spec;
