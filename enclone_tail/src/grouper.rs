@@ -9,13 +9,13 @@
 
 use amino::aa_seq;
 use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype};
+use enclone_proto::types::DonorReferenceItem;
 use equiv::EquivRel;
 use rayon::prelude::*;
 use std::cmp::min;
 use std::time::Instant;
 use string_utils::TextUtils;
-use triple_accel::levenshtein;
-use triple_accel::levenshtein::levenshtein_simd_k;
+use triple_accel::{levenshtein, levenshtein::levenshtein_simd_k};
 use vdj_ann::refx::RefData;
 use vector_utils::{next_diff1_2, sort_sync2, unique_sort, VecUtils};
 
@@ -27,6 +27,7 @@ pub fn grouper(
     ctl: &EncloneControl,
     rsi: &Vec<ColInfo>,
     opt_d_val: &Vec<(usize, Vec<Vec<Vec<usize>>>)>,
+    dref: &Vec<DonorReferenceItem>,
 ) -> Vec<Vec<(i32, String)>> {
     let t = Instant::now();
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -785,7 +786,49 @@ pub fn grouper(
                     continue;
                 }
             }
-
+            if ctl.clono_group_opt.naive || ctl.clono_group_opt.no_naive {
+                let mut found = false;
+                // for each clonotype
+                for j in 0..o.len() {
+                    let x = o[j] as usize;
+                    let rsi = &rsi[x];
+                    let s = &exacts[x];
+                    // for each exact subclonotype
+                    for u in 0..s.len() {
+                        let mut diffs = 0;
+                        let ex = &exact_clonotypes[s[u]];
+                        for m in 0..rsi.mat.len() {
+                            if rsi.mat[m][u].is_some() {
+                                let r = rsi.mat[m][u].unwrap();
+                                let seq = &ex.share[r].seq_del_amino;
+                                let mut vref = refdata.refs[rsi.vids[m]].to_ascii_vec();
+                                if rsi.vpids[m].is_some() {
+                                    vref = dref[rsi.vpids[m].unwrap()].nt_sequence.clone();
+                                }
+                                let jref = refdata.refs[rsi.jids[m]].to_ascii_vec();
+                                let z = seq.len();
+                                for p in 0..z {
+                                    let b = seq[p];
+                                    if p < vref.len() - ctl.heur.ref_v_trim && b != vref[p] {
+                                        diffs += 1;
+                                    }
+                                    if p >= z - (jref.len() - ctl.heur.ref_j_trim)
+                                        && b != jref[jref.len() - (z - p)]
+                                    {
+                                        diffs += 1;
+                                    }
+                                }
+                            }
+                        }
+                        if diffs > 0 {
+                            found = true;
+                        }
+                    }
+                }
+                if found != ctl.clono_group_opt.naive || found == ctl.clono_group_opt.no_naive {
+                    continue;
+                }
+            }
             if ctl.clono_group_opt.donor.len() > 0 {
                 for d in ctl.clono_group_opt.donor.iter() {
                     let mut found = false;

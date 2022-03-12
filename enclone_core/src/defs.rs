@@ -446,6 +446,8 @@ pub struct ClonoGroupOpt {
     pub style: String,           // symmetric or unsymmetric or unspecified
     pub cdr3: String,            // only print groups having this CDR3
     pub donor: Vec<String>,      // only print groups having all these donors
+    pub naive: bool,             // only print groups having an exact subclonotype with dref = 0
+    pub no_naive: bool,          // only print groups lacking an exact subclonotype with dref = 0
     // SYMMETRIC GROUPING CONTROLS
     pub vj_refname: bool,        // group by having the same VJ reference names
     pub v_heavy_refname: bool,   // group by having the same heavy V reference name

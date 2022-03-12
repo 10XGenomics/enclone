@@ -323,6 +323,7 @@ pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<EncloneState
         ctl,
         &rsi,
         &opt_d_val,
+        drefs,
     );
 
     // Remove clonotypes that are not in groups.

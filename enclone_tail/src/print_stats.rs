@@ -955,8 +955,9 @@ pub fn print_stats(
                                 if !ex1.share[k1].left && !ex2.share[k2].left {
                                     if ex1.share[k1].v_ref_id == ex2.share[k2].v_ref_id {
                                         lights_same += 1;
-                                        if ex1.clones[0][0].donor_index 
-                                            != ex2.clones[0][0].donor_index {
+                                        if ex1.clones[0][0].donor_index
+                                            != ex2.clones[0][0].donor_index
+                                        {
                                             lights_same_dd += 1;
                                         }
                                         break 'check;
