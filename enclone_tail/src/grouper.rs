@@ -825,7 +825,7 @@ pub fn grouper(
                         }
                     }
                 }
-                if found != ctl.clono_group_opt.naive || found == ctl.clono_group_opt.no_naive {
+                if found == ctl.clono_group_opt.naive || found != ctl.clono_group_opt.no_naive {
                     continue;
                 }
             }
