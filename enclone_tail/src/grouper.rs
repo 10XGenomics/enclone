@@ -820,12 +820,15 @@ pub fn grouper(
                                 }
                             }
                         }
-                        if diffs > 0 {
+                        if diffs == 0 {
                             found = true;
                         }
                     }
                 }
-                if found == ctl.clono_group_opt.naive || found != ctl.clono_group_opt.no_naive {
+                if !found && ctl.clono_group_opt.naive {
+                    continue;
+                }
+                if found && ctl.clono_group_opt.no_naive {
                     continue;
                 }
             }
