@@ -973,7 +973,7 @@ pub fn print_stats(
                 "light chain V gene concordance within groups = {:.1}%",
                 100.0 * lights_same as f64 / lights as f64
             );
-            if ctl.origin_info.donor_list.len() > 0 {
+            if ctl.origin_info.donor_list.len() > 1 {
                 fwriteln!(
                     logx,
                     "interdonor light chain V gene concordance within groups = {:.1}%",
