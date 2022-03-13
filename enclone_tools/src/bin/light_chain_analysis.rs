@@ -137,13 +137,13 @@ fn main() {
         same1,
         all1
     );
-    println!("for these cells, mean hcomp = {:.1}", total_hcomp1 as f64 / all1 as f64);
+    println!("for these cells, mean hcomp = {:.1}", total_hcomp1 as f64 / (all1 as f64 * 2.0));
     println!("interdonor light chain concordance for neither naive = {:.1}% = {} of {}",
         100.0 * same2 as f64 / all2 as f64,
         same2,
         all2
     );
-    println!("for these cells, mean hcomp = {:.1}", total_hcomp2 as f64 / all2 as f64);
+    println!("for these cells, mean hcomp = {:.1}", total_hcomp2 as f64 / (all2 as f64 * 2.0));
 
     // The following doesn't make sense for the BIB=@training.
 
