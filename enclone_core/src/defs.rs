@@ -179,6 +179,7 @@ pub struct GeneralOpt {
     pub ncell: bool,
     pub baseline: bool,
     pub echo: bool,
+    pub echoc: bool,
     pub mark_stats: bool,
     pub mark_stats2: bool,
     pub print_cpu: bool,

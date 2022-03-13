@@ -198,6 +198,13 @@ pub fn group_and_print_clonotypes(
             fwriteln!(logx, "");
         }
     }
+    if ctl.gen_opt.echoc {
+        let args: Vec<String> = env::args().collect();
+        fwriteln!(logx, "# {}", args.iter().format(" "));
+        if ctl.gen_opt.html {
+            fwriteln!(logx, "");
+        }
+    }
 
     // Parallized precompute for ALIGN<n>.
 

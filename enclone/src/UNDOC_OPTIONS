@@ -137,6 +137,7 @@ UMI_RATIO_FILT_MARK
 NON_CELL_MARK (only makes sense if you run NCELL)
 
 ECHO: echo command
+ECHOC: echo command, preceeded by "# ", and don't emit blank line
 
 ---------------------------------------------------------------------------------------------------
 
