@@ -16,7 +16,7 @@ fn main() {
     let f = open_for_read![&args[1]];
     let mut first = true;
     let mut tof = HashMap::<String, usize>::new();
-    // data = {(v_name1, cdr3_aa1, donor, v_name2, dref, ncells)}
+    // data = {(v_name1, cdr3_aa1, donor, v_name2, dref, clonotype_ncells)}
     let mut data = Vec::<(String, String, String, String, usize, usize)>::new();
     for line in f.lines() {
         let s = line.unwrap();
