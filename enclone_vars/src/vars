@@ -2391,6 +2391,27 @@ code:     let d = arg1 as usize;
           };
           exact: answer
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     hcomp
+inputs:   lvar_vdj
+limits:
+class:    lvar
+level:    exact
+val:      nonnegative_integer
+doc:      TBD
+brief:    CDR3 complexity number, heavy chain only, canonical only, computed better
+page:     enclone help lvars
+avail:    public
+notes:
+code:     let mut hcomp = String::new();
+          if ex.share.len() == 2 {
+              for j in 0..ex.share.len() {
+                  if ex.share[j].left {
+                      hcomp = format!("{}", ex.share[j].jun.hcomp);
+                  }
+              }
+          }
+          exact: hcomp
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     inkt
 inputs:   lvar_vdj
 limits:
