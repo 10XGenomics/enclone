@@ -131,6 +131,9 @@ fn main() {
         same2,
         all2
     );
+
+    // The following doesn't make sense for the training data.
+
     for z1 in 0..4 {
         for z2 in z1 + 1..4 {
             println!("\nd{} versus d{}", z1 + 1, z2 + 1);
