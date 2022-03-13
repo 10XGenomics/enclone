@@ -63,6 +63,10 @@ fn main() {
     let mut same1 = 0;
     let mut all2 = 0;
     let mut same2 = 0;
+    let mut mall1 = vec![vec![0; 4]; 4];
+    let mut mall2 = vec![vec![0; 4]; 4];
+    let mut msame1 = vec![vec![0; 4]; 4];
+    let mut msame2 = vec![vec![0; 4]; 4];
     let mut i = 0;
     while i < data.len() {
         // let j = next_diff12_7(&data, i as i32) as usize;
@@ -91,6 +95,27 @@ fn main() {
                             same2 += 1;
                         }
                     }
+                    for z1 in 0..4 {
+                        for z2 in z1 + 1..4 {
+                            if data[k1].2 == format!("d{}", z1 + 1)
+                                || data[k2].2 == format!("d{}", z1 + 1) {
+                                if data[k1].2 == format!("d{}", z2 + 1)
+                                    || data[k2].2 == format!("d{}", z2 + 1) {
+                                    if dref1 == 0 || dref2 == 0 {
+                                        mall1[z1][z2] += 1;
+                                        if lmatch {
+                                            msame1[z1][z2] += 1;
+                                        }
+                                    } else {
+                                        mall2[z1][z2] += 1;
+                                        if lmatch {
+                                            msame2[z1][z2] += 1;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -106,4 +131,19 @@ fn main() {
         same2,
         all2
     );
+    for z1 in 0..4 {
+        for z2 in z1 + 1..4 {
+            println!("\nd{} versus d{}", z1 + 1, z2 + 1);
+            println!("interdonor light chain concordance for either naive = {:.1}% = {} of {}",
+                100.0 * msame1[z1][z2] as f64 / mall1[z1][z2] as f64,
+                msame1[z1][z2],
+                mall1[z1][z2],
+            );
+            println!("interdonor light chain concordance for neither naive = {:.1}% = {} of {}",
+                100.0 * msame2[z1][z2] as f64 / mall2[z1][z2] as f64,
+                msame2[z1][z2],
+                mall2[z1][z2],
+            );
+        }
+    }
 }
