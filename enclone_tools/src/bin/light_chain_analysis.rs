@@ -20,7 +20,7 @@ fn main() {
     let mut data = Vec::<(String, String, String, String, usize, usize)>::new();
     for line in f.lines() {
         let s = line.unwrap();
-        if s.len() == 0 || s.starts_with("enclone") {
+        if s.starts_with("#") {
             continue;
         }
         let fields = s.split(',').collect::<Vec<&str>>();
