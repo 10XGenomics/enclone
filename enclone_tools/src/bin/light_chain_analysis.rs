@@ -12,6 +12,10 @@
 // enclone BIB=@training BUILT_IN CHAINS_EXACT=2 CHAINS=2 NOPRINT POUT=stdout PCELL ECHOC
 //         PCOLS=donors_cell,v_name1,v_name2,dref,cdr3_aa1,clonotype_ncells,const1 
 //         > training_per_cell_stuff
+//
+// enclone BIB=1,2,3,29 BUILT_IN CHAINS_EXACT=2 CHAINS=2 NOPRINT POUT=stdout PCELL ECHOC
+//         PCOLS=donors_cell,v_name1,v_name2,dref,cdr3_aa1,clonotype_ncells,const1 
+//         > training1_per_cell_stuff
 
 use pretty_trace::PrettyTrace;
 use io_utils::*;
@@ -132,7 +136,7 @@ fn main() {
         all2
     );
 
-    // The following doesn't make sense for the training data.
+    // The following doesn't make sense for the BIB=@training.
 
     for z1 in 0..4 {
         for z2 in z1 + 1..4 {
