@@ -2,6 +2,8 @@
 
 // Analyze light chains.  Supply a single file of data, with one line per cell, and fields
 // including donors_cell,v_name1,v_name2,dref,cdr3_aa1,clonotype_ncells.
+//
+// Should write down command.
 
 use pretty_trace::PrettyTrace;
 use io_utils::*;
@@ -36,6 +38,9 @@ fn main() {
             assert!(tof.contains_key("clonotype_ncells"));
             first = false;
         } else {
+            if fields[tof["v_name1"]].len() == 0 { // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+                continue; // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+            } // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
             data.push((
                 fields[tof["v_name1"]].to_string(),
                 fields[tof["cdr3_aa1"]].to_string(),
@@ -44,18 +49,6 @@ fn main() {
                 fields[tof["dref"]].force_usize(),
                 fields[tof["clonotype_ncells"]].force_usize(),
             ));
-        }
-    }
-    for i in 0..data.len() {
-        if data[i].3.contains("H") {
-            println!("{}, {}, {}, {}, {}, {}",
-                data[i].0,
-                data[i].1,
-                data[i].2,
-                data[i].3,
-                data[i].4,
-                data[i].5,
-            );
         }
     }
     data.sort();
@@ -83,12 +76,37 @@ fn main() {
                     // if cncells1 == 1 && cncells2 == 1 && dref1 >= 20 && dref2 >= 20 { // 68.1%
                     // if cncells1 == 1 && cncells2 == 1 && dref1 >= 10 && dref2 >= 10 { // 71.6%
                     // if cncells1 == 1 && cncells2 == 1 && dref1 == 0 && dref2 == 0 { // 8.7%
+                    /*
                     println!("L = {}/{}, csize = {}/{}, dref = {}/{}",
                         data[k1].3, data[k2].3,
                         data[k1].5, data[k2].5,
                         data[k1].4, data[k2].4,
                     );
-                    if true {
+                    */
+                    // if cncells1 == 1 && cncells2 == 1 && dref1 == 0 && dref2 == 0 { // 8.7%
+                    // if cncells1 == 1 && cncells2 == 1 && dref1 >= 10 && dref2 >= 10 { // 71.6%
+
+                    // if dref1 == 0 && dref2 == 0 { //  9.2% (477)
+                    // if dref1 >= 30 && dref2 >= 30 {  // 58.4% (3135)
+                    // if dref1 >= 40 && dref2 >= 40 {  // 76.6% (918)
+                    // if dref1 >= 50 && dref2 >= 50 {  // 61.6% (112)
+                    // if dref1 <= 10 && dref2 <= 10 {  // 15.9% (784)
+                    // if dref1 >= 40 && dref1 < 50 && dref2 >= 40 && dref2 < 50 {  // 87.4% (388)
+                    // if dref1 >= 30 && dref1 < 40 && dref2 >= 30 && dref2 < 40 {  // 46.7% (388)
+                    // if dref1 >= 20 && dref1 < 30 && dref2 >= 20 && dref2 < 30 {  // 61.7% (767)
+                    // if dref1 >= 10 && dref1 < 20 && dref2 >= 10 && dref2 < 20 {  // 80.4% (659)
+                    // if dref1 >= 0 && dref1 < 10 && dref2 >= 0 && dref2 < 10 {  // 14.3% (726)
+                    // if dref1 >= 10 && dref2 >= 10 { // 61.5% (8712)
+                    // if true { // 58.1% (10234)
+                    // if dref1 >= 1 && dref1 <= 5 && dref2 >= 1 && dref2 <= 5 { // 28.6% (21)
+
+                    // if dref1 == 0 || dref2 == 0 { // 7.3% (876)
+                    // if dref1 >= 5 && dref2 >= 5 { // 62.8% (9196)
+                    // if dref1 >= 3 && dref2 >= 3 { // 63.1% (9307)
+                    if dref1 > 0 && dref2 > 0 { // 62.9% (9358)
+
+                    // if cncells1 >= 10 && cncells2 >= 10 { // 50.9% (395)
+
                         all += 1;
                         if lmatch {
                             same += 1;
