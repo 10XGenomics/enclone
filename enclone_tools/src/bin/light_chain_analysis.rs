@@ -6,15 +6,15 @@
 // Data from:
 //
 // enclone BCR=@test BUILT_IN CHAINS_EXACT=2 CHAINS=2 NOPRINT POUT=stdout PCELL ECHOC
-//         PCOLS=donors_cell,v_name1,v_name2,dref,cdr3_aa1,clonotype_ncells,const1 
+//         PCOLS=donors_cell,v_name1,v_name2,dref,cdr3_aa1,clonotype_ncells,const1,hcomp
 //         > per_cell_stuff
 //
 // enclone BIB=@training BUILT_IN CHAINS_EXACT=2 CHAINS=2 NOPRINT POUT=stdout PCELL ECHOC
-//         PCOLS=donors_cell,v_name1,v_name2,dref,cdr3_aa1,clonotype_ncells,const1 
+//         PCOLS=donors_cell,v_name1,v_name2,dref,cdr3_aa1,clonotype_ncells,const1,hcomp
 //         > training_per_cell_stuff
 //
 // enclone BIB=1,2,3,29 BUILT_IN CHAINS_EXACT=2 CHAINS=2 NOPRINT POUT=stdout PCELL ECHOC
-//         PCOLS=donors_cell,v_name1,v_name2,dref,cdr3_aa1,clonotype_ncells,const1 
+//         PCOLS=donors_cell,v_name1,v_name2,dref,cdr3_aa1,clonotype_ncells,const1,hcomp
 //         > training1_per_cell_stuff
 
 use pretty_trace::PrettyTrace;
@@ -30,8 +30,8 @@ fn main() {
     let f = open_for_read![&args[1]];
     let mut first = true;
     let mut tof = HashMap::<String, usize>::new();
-    // data = {(v_name1, cdr3_aa1, donor, v_name2, dref, clonotype_ncells, const1)}
-    let mut data = Vec::<(String, String, String, String, usize, usize, String)>::new();
+    // data = {(v_name1, cdr3_aa1, donor, v_name2, dref, clonotype_ncells, const1, hcomp)}
+    let mut data = Vec::<(String, String, String, String, usize, usize, String, usize)>::new();
     for line in f.lines() {
         let s = line.unwrap();
         if s.starts_with("#") {
@@ -49,6 +49,7 @@ fn main() {
             assert!(tof.contains_key("cdr3_aa1"));
             assert!(tof.contains_key("clonotype_ncells"));
             assert!(tof.contains_key("const1"));
+            assert!(tof.contains_key("hcomp"));
             first = false;
         } else {
             data.push((
@@ -59,6 +60,7 @@ fn main() {
                 fields[tof["dref"]].force_usize(),
                 fields[tof["clonotype_ncells"]].force_usize(),
                 fields[tof["const1"]].to_string(),
+                fields[tof["hcomp"]].force_usize(),
             ));
         }
     }
@@ -71,9 +73,11 @@ fn main() {
     let mut mall2 = vec![vec![0; 4]; 4];
     let mut msame1 = vec![vec![0; 4]; 4];
     let mut msame2 = vec![vec![0; 4]; 4];
+    let mut total_hcomp1 = 0;
+    let mut total_hcomp2 = 0;
     let mut i = 0;
     while i < data.len() {
-        // let j = next_diff12_7(&data, i as i32) as usize;
+        // let j = next_diff12_8(&data, i as i32) as usize;
         let mut j = i + 1;
         while j < data.len() {
             if data[j].0 != data[i].0 || data[j].1 != data[i].1 {
@@ -88,13 +92,16 @@ fn main() {
                     let (dref1, dref2) = (data[k1].4, data[k2].4);
                     // let (cncells1, cncells2) = (data[k1].5, data[k2].5);
                     // let (isotype1, isotype2) = (&data[k1].6, &data[k2].6);
+                    let (hcomp1, hcomp2) = (data[k1].7, data[k2].7);
                     if dref1 == 0 || dref2 == 0 {
                         all1 += 1;
+                        total_hcomp1 += hcomp1 + hcomp2;
                         if lmatch {
                             same1 += 1;
                         }
                     } else {
                         all2 += 1;
+                        total_hcomp2 += hcomp1 + hcomp2;
                         if lmatch {
                             same2 += 1;
                         }
@@ -130,11 +137,13 @@ fn main() {
         same1,
         all1
     );
+    println!("for these cells, mean hcomp = {:.1}", total_hcomp1 as f64 / all1 as f64);
     println!("interdonor light chain concordance for neither naive = {:.1}% = {} of {}",
         100.0 * same2 as f64 / all2 as f64,
         same2,
         all2
     );
+    println!("for these cells, mean hcomp = {:.1}", total_hcomp2 as f64 / all2 as f64);
 
     // The following doesn't make sense for the BIB=@training.
 
