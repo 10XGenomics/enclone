@@ -952,7 +952,6 @@ pub fn parse_json_annotations_files(
         gex_cells.push(results[i].6.clone());
         gex_cells_specified.push(results[i].7);
 
-        
         let cells = &results[i].5;
         let mut found = vec![false; cells.len()];
         let tigs = &results[i].2;
@@ -964,12 +963,12 @@ pub fn parse_json_annotations_files(
         }
         for j in 0..found.len() {
             if !found[j] {
-                fate[i].insert(cells[j].clone(), "failed to find productive contig".to_string());
+                fate[i].insert(
+                    cells[j].clone(),
+                    "failed to find productive contig".to_string(),
+                );
             }
         }
-        
-
-
     }
     /*
     if !ctl.gen_opt.internal_run {

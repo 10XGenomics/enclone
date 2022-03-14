@@ -17,8 +17,8 @@
 //         PCOLS=donors_cell,v_name1,v_name2,dref,cdr3_aa1,clonotype_ncells,const1,hcomp
 //         > training1_per_cell_stuff
 
-use pretty_trace::PrettyTrace;
 use io_utils::*;
+use pretty_trace::PrettyTrace;
 use std::collections::HashMap;
 use std::env;
 use std::io::BufRead;
@@ -86,7 +86,7 @@ fn main() {
             j += 1;
         }
         for k1 in i..j {
-            for k2 in i+1..j {
+            for k2 in i + 1..j {
                 if data[k1].2 != data[k2].2 {
                     let lmatch = data[k1].3 == data[k2].3;
                     let (dref1, dref2) = (data[k1].4, data[k2].4);
@@ -109,9 +109,11 @@ fn main() {
                     for z1 in 0..4 {
                         for z2 in z1 + 1..4 {
                             if data[k1].2 == format!("d{}", z1 + 1)
-                                || data[k2].2 == format!("d{}", z1 + 1) {
+                                || data[k2].2 == format!("d{}", z1 + 1)
+                            {
                                 if data[k1].2 == format!("d{}", z2 + 1)
-                                    || data[k2].2 == format!("d{}", z2 + 1) {
+                                    || data[k2].2 == format!("d{}", z2 + 1)
+                                {
                                     if dref1 == 0 || dref2 == 0 {
                                         mall1[z1][z2] += 1;
                                         if lmatch {
@@ -132,30 +134,40 @@ fn main() {
         }
         i = j;
     }
-    println!("interdonor light chain concordance for either naive = {:.1}% = {} of {}",
+    println!(
+        "interdonor light chain concordance for either naive = {:.1}% = {} of {}",
         100.0 * same1 as f64 / all1 as f64,
         same1,
         all1
     );
-    println!("for these cells, mean hcomp = {:.1}", total_hcomp1 as f64 / (all1 as f64 * 2.0));
-    println!("interdonor light chain concordance for neither naive = {:.1}% = {} of {}",
+    println!(
+        "for these cells, mean hcomp = {:.1}",
+        total_hcomp1 as f64 / (all1 as f64 * 2.0)
+    );
+    println!(
+        "interdonor light chain concordance for neither naive = {:.1}% = {} of {}",
         100.0 * same2 as f64 / all2 as f64,
         same2,
         all2
     );
-    println!("for these cells, mean hcomp = {:.1}", total_hcomp2 as f64 / (all2 as f64 * 2.0));
+    println!(
+        "for these cells, mean hcomp = {:.1}",
+        total_hcomp2 as f64 / (all2 as f64 * 2.0)
+    );
 
     // The following doesn't make sense for the BIB=@training.
 
     for z1 in 0..4 {
         for z2 in z1 + 1..4 {
             println!("\nd{} versus d{}", z1 + 1, z2 + 1);
-            println!("interdonor light chain concordance for either naive = {:.1}% = {} of {}",
+            println!(
+                "interdonor light chain concordance for either naive = {:.1}% = {} of {}",
                 100.0 * msame1[z1][z2] as f64 / mall1[z1][z2] as f64,
                 msame1[z1][z2],
                 mall1[z1][z2],
             );
-            println!("interdonor light chain concordance for neither naive = {:.1}% = {} of {}",
+            println!(
+                "interdonor light chain concordance for neither naive = {:.1}% = {} of {}",
                 100.0 * msame2[z1][z2] as f64 / mall2[z1][z2] as f64,
                 msame2[z1][z2],
                 mall2[z1][z2],
