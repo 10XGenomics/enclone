@@ -26,6 +26,7 @@ pub fn delete_doublets(
     raw_joins: &Vec<Vec<usize>>,
     refdata: &RefData,
     dref: &Vec<DonorReferenceItem>,
+    fate: &mut Vec<HashMap<String, String>>,
 ) {
     if ctl.clono_filt_opt_def.doublet {
         let t = Instant::now();
@@ -241,12 +242,18 @@ pub fn delete_doublets(
         let mut orbits2 = Vec::<Vec<i32>>::new();
         for i in 0..orbits.len() {
             let mut o = orbits[i].clone();
-
             let mut del2 = vec![false; o.len()];
             for j in 0..o.len() {
                 let id = info[o[j] as usize].clonotype_index;
                 if to_delete[id] {
                     del2[j] = true;
+                    let x: &CloneInfo = &info[o[j] as usize];
+                    let ex = &exact_clonotypes[x.clonotype_index];
+                    for k in 0..ex.ncells() {
+                        let li = ex.clones[k][0].dataset_index;
+                        let bc = &ex.clones[k][0].barcode;
+                        fate[li].insert(bc.clone(), "failed DOUBLET filter".to_string());
+                    }
                 }
             }
             erase_if(&mut o, &del2);
