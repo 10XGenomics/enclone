@@ -121,6 +121,7 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
     let mut vdj_cells = Vec::<Vec<String>>::new();
     let mut gex_cells = Vec::<Vec<String>>::new();
     let mut gex_cells_specified = Vec::<bool>::new();
+    let mut fate = vec![HashMap::<String, String>::new(); ctl.origin_info.n()];
     parse_json_annotations_files(
         ctl,
         &mut tig_bc,
@@ -129,6 +130,7 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
         &mut vdj_cells,
         &mut gex_cells,
         &mut gex_cells_specified,
+        &mut fate,
     )?;
     ctl.perf_stats(&tparse, "loading from json");
 
@@ -182,7 +184,6 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
 
     // Record fate of non-cells.
 
-    let mut fate = vec![HashMap::<String, String>::new(); vdj_cells.len()];
     if ctl.gen_opt.ncell {
         for i in 0..tig_bc.len() {
             let bc = &tig_bc[i][0].barcode;
