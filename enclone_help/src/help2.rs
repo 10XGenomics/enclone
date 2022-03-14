@@ -2,7 +2,7 @@
 
 // Test for help request.
 
-use crate::help_utils::HelpDesk;
+use crate::help_utils::{explain_alt_versions, HelpDesk};
 use enclone_core::defs::EncloneControl;
 use enclone_core::testlist::EXAMPLES;
 use itertools::Itertools;
@@ -315,6 +315,309 @@ pub fn help2(args: &Vec<String>, _ctl: &EncloneControl, h: &mut HelpDesk) -> Res
             be used to \"pick the first one\".",
         )?;
 
+        h.end_doc();
+    }
+
+    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+    // Provide cvars help.
+
+    if (args.len() == 3 && args[1] == "help" && args[2] == "cvars") || h.help_all {
+        h.begin_doc("cvars")?;
+
+        // Header.
+
+        h.print(
+            "\n\\bold{per-chain column options}: These options define per-chain variables, \
+             which correspond to columns that appear once for each chain in each clonotype, and \
+             have one entry for each exact subclonotype.  Please note that for medians of \
+             integers, we actually report the \"rounded median\", the result of rounding the \
+             true median up to the nearest integer, so that e.g. 6.5 is rounded up to 7.\n\n",
+        )?;
+        h.print(
+            "See also \"enclone help lvars\" and the inventory of all variables at
+            https://10xgenomics.github.io/enclone/pages/auto/inventory.html.\n\n",
+        )?;
+        h.print(
+            "Per-column variables are specified using\n\
+             \\bold{CVARS=x1,...,xn}\n\
+             where each xi is one of:\n\n",
+        )?;
+
+        // Main table entries.
+
+        h.doc(
+            "var",
+            "bases at positions in chain that vary across the clonotype",
+        );
+        h.ldocpr(
+            "u",
+            "\\red{●} VDJ UMI count for each exact subclonotype, median across cells",
+        );
+        h.docpr(
+            "r",
+            "\\red{●} VDJ read count for each exact subclonotype, median across cells",
+        );
+        h.ldoc(
+            "edit",
+            "a string that defines the edit of the reference V(D)J concatenation versus",
+        );
+        h.doc2("the contig, from the beginning of the CDR3 to the end of the J segment;");
+        h.doc2("this uses a coordinate system in which 0 is the first base of the J ref");
+        h.doc2("segment (or the first base of the D ref segment for IGH and TRB); for");
+        h.doc2("example D-4:4 denotes the deletion of the last 4 bases of the V segment, ");
+        h.doc2("I0:2 denotes an insertion of 2 bases after the V");
+        h.doc2("and I0:2•S5 denotes that plus a substitution at position 5; in computing");
+        h.doc2("\"edit\", for IGH and TRB, we always test every possible D segment,");
+        h.doc2("regardless of whether one is annotated, and pick the best one; for this");
+        h.doc2("reason, \"edit\" may be slow");
+        h.doc(
+            "comp",
+            "a measure of CDR3 complexity, which is the total number of S, D and I",
+        );
+        h.doc2("symbols in \"edit\" as defined above");
+        h.doc(
+            "cigar",
+            "the CIGAR string that defines the edit of the V..J contig sequence versus",
+        );
+        h.doc2("the universal reference V(D)J concatenation");
+
+        h.ldoc(
+            "cdr*_aa",
+            "the CDR*_AA sequence, or \"unknown\" if not computed",
+        );
+        h.doc(
+            "cdr*_aa_L_R_ext",
+            "the CDR*_AA sequence, with L amino acids added on the left and R amino acids",
+        );
+        h.doc2("added on the right; either may be negative, denoting trimming instead");
+        h.doc2("of extension");
+        h.doc(
+            "cdr*_aa_north",
+            "the CDR*_AA sequence for BCR defined by North B et al. (2011), A new",
+        );
+        h.doc(
+            "",
+            "clustering of antibody CDR loop conformations, J Mol Biol 406, 228-256.",
+        );
+        h.doc("", "cdr1_aa_north = cdr1_aa_3_3_ext for heavy chains");
+        h.doc("", "cdr1_aa_north = cdr1_aa for light chains");
+        h.doc("", "cdr2_aa_north = cdr2_aa_2_3_ext for heavy chains");
+        h.doc("", "cdr2_aa_north = cdr2_aa_1_0_ext for light chains");
+        h.doc("", "cdr3_aa_north = cdr3_aa_-1_-1_ext");
+        h.doc(
+            "cdr*_aa_ref",
+            "cdr*_aa, for the universal reference sequence (but not for cdr3)",
+        );
+        h.doc(
+            "cdr*_len",
+            "number of amino acids in the CDR* sequence, or \"unknown\" if not computed",
+        );
+        h.doc(
+            "cdr*_dna",
+            "the CDR*_DNA sequence, or \"unknown\" if not computed",
+        );
+        h.doc(
+            "cdr*_dna_ref",
+            "same, for the universal reference sequence (but not for cdr3)",
+        );
+        h.ldoc(
+            "cdr3_aa_conx",
+            "consensus for CDR3 across the clonotype, showing X for each variant residue",
+        );
+        h.doc(
+            "cdr3_aa_conp",
+            "consensus for CDR3 across the clonotype, showing a property symbol whenever",
+        );
+        h.doc2("two different amino acids are observed, per the following table:");
+        h.doc2("--------------------------------------------------------------------");
+        h.doc2("asparagine or aspartic acid   B   DN");
+        h.doc2("glutamine or glutamic acid    Z   EQ");
+        h.doc2("leucine or isoleucine         J   IL");
+        h.doc2("negatively charged            -   DE");
+        h.doc2("positively charged            +   KRH");
+        h.doc2("aliphatic (non-aromatic)      Ψ   VILM");
+        h.doc2("small                         π   PGAS");
+        h.doc2("aromatic                      Ω   FWYH");
+        h.doc2("hydrophobic                   Φ   VILFWYM");
+        h.doc2("hydrophilic                   ζ   STHNQEDKR");
+        h.doc2("any                           X   ADEFGHIKLMNPQRSTVWY");
+        h.doc2("--------------------------------------------------------------------");
+        h.doc2("The table is searched top to bottom until a matching class is found.");
+        h.doc2("In the special case where every amino acid is shown as a gap (-),");
+        h.doc2("a \"g\" is printed.");
+        h.ldoc(
+            "fwr*_aa",
+            "the FWR*_AA sequence, or \"unknown\" if not computed",
+        );
+        h.doc("fwr*_aa_ref", "same, for the universal reference sequence");
+        h.doc(
+            "fwr*_len",
+            "number of amino acids in the FWR* sequence, or \"unknown\" if not computed",
+        );
+        h.doc(
+            "fwr*_dna",
+            "the FWR*_DNA sequence, or \"unknown\" if not computed",
+        );
+        h.doc(
+            "fwr*_dna_ref",
+            "same, for the universal reference sequences",
+        );
+        h.doc(
+            "",
+            "For all of these, * is 1 or 2 or 3 (or 4, for the fwr variables).",
+        );
+        h.doc(
+            "",
+            "For CDR1 and CDR2, please see \"enclone help amino\" and the page on",
+        );
+        h.docpr("", "\\green{bit.ly/enclone} on V(D)J features.");
+        h.ldoc("v_start", "start of V segment on full DNA sequence");
+        h.doc(
+            "d_start",
+            "start of D segment on full DNA sequence (or null)",
+        );
+        h.doc(
+            "cdr3_start",
+            "base position start of CDR3 sequence on full contig",
+        );
+        h.doc(
+            "d_frame",
+            "reading frame of D segment, either 0 or 1 or 2 (or null)",
+        );
+        h.ldoc(
+            "aa%",
+            "amino acid percent identity with donor reference, outside junction region",
+        );
+        h.doc(
+            "dna%",
+            "nucleotide percent identity with donor reference, outside junction region",
+        );
+
+        h.ldoc(
+            "v_name_orig",
+            "name of V region originally assigned (per cell);",
+        );
+        h.doc2("values below are clonotype consensuses");
+        h.doc("utr_name", "name of 5'-UTR region");
+        h.doc("v_name", "name of V region");
+        h.doc("d_name", "name of D region (or null)");
+        h.doc("j_name", "name of J region");
+        h.doc("const", "name of constant region");
+        h.ldoc("utr_id", "id of 5'-UTR region");
+        h.doc("v_id", "id of V region");
+        h.doc("d_id", "id of D region (or null)");
+        h.doc("j_id", "id of J region");
+        h.doc("const_id", "id of constant region (or null, if not known)");
+        h.doc2("(these are the numbers after \">\" in the VDJ reference file)");
+        h.ldoc(
+            "allele",
+            "numerical identifier of the computed donor reference allele",
+        );
+        h.doc2("for this exact subclonotype");
+        h.doc(
+            "allele_d",
+            "variant bases in the allele for this exact subclonotype,",
+        );
+        h.doc2("and a list of all the possibilities for this");
+        h.ldoc("d1_name", "name of optimal D gene, or none");
+        h.doc("d2_name", "name of second best D gene, or none");
+        h.doc("d1_score", "score for optimal D gene");
+        h.doc("d2_score", "score for second best D gene");
+        h.doc(
+            "d_delta",
+            "score difference between first and second best D gene",
+        );
+        h.doc("d_Δ", "same");
+        h.doc2("These are recomputed from scratch and ignore the given assignment.");
+        h.doc2("Note that in many cases D gene assignments are essentially random, as");
+        h.doc2("it is often not possible to know the true D gene assignment.");
+        h.doc2("If the value is \"null\" it means that having no D gene at all scores better");
+        h.ldoc(
+            "vjlen",
+            "number of bases from the start of the V region to the end of the J region",
+        );
+        h.doc2("Please note that D gene assignments are frequently \"random\" -- it is not");
+        h.doc2("possible to know the actual D gene that was assigned.");
+        h.doc(
+            "clen",
+            "length of observed constant region (usually truncated at primer start)",
+        );
+        h.doc("ulen", "length of observed 5'-UTR sequence;");
+        h.doc(
+            "",
+            "note however that what report is just the start of the V segment",
+        );
+        h.doc(
+            "",
+            "on the contig, and thus the length may include junk before the UTR",
+        );
+        h.doc(
+            "cdiff",
+            "differences with universal reference constant region, shown in the",
+        );
+        h.doc(
+            "",
+            "abbreviated form e.g. 22T (ref changed to T at base 22) or 22T+10",
+        );
+        h.doc(
+            "",
+            "(same but contig has 10 additional bases beyond end of ref C region",
+        );
+        h.doc(
+            "",
+            "At most five differences are shown, and if there are more, ... is appended.",
+        );
+        h.doc("udiff", "like cdiff, but for the 5'-UTR");
+        h.ldoc("q<n>_", "comma-separated list of the quality");
+        h.doc2("scores at zero-based position n, numbered starting at the");
+        h.doc2("beginning of the V segment, for each cell in the exact subclonotype");
+        h.ldoc(
+            "notes",
+            "optional note if there is an insertion or the end of J does not exactly abut",
+        );
+        h.doc(
+            "",
+            "the beginning of C; elided if empty; also single base overlaps between",
+        );
+        h.docpr(
+            "",
+            "J and C are not shown unless you use the special option \\bold{JC1}; we do this",
+        );
+        h.doc(
+            "",
+            "because with some VDJ references, one nearly always has such an overlap",
+        );
+        h.ldoc(
+            "ndiff<n>vj",
+            "number of base differences within V..J between this exact subclonotype and",
+        );
+        h.doc("", "exact subclonotype n");
+        h.doc(
+            "d_univ",
+            "distance from universal reference, more specifically,",
+        );
+        h.doc(
+            "",
+            "number of base differences within V..J between this exact",
+        );
+        h.doc(
+            "",
+            "clonotype and universal reference, exclusive of indels, the last 15",
+        );
+        h.doc("", "bases of the V and the first 15 bases of the J");
+        h.doc("d_donor", "distance from donor reference,");
+        h.doc("", "as above but computed using donor reference");
+
+        // The rest.
+
+        h.print_tab2()?;
+        h.print("\n")?;
+        explain_alt_versions(h)?;
+        h.print(
+            "\nAt least one variable must be listed.  The default is \\bold{u,const,notes}.  \
+             \\bold{CVARSP}: same as \\bold{CVARS} but appends.\n\n",
+        )?;
         h.end_doc();
     }
     Ok(())

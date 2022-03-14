@@ -15,7 +15,8 @@ SUMMARY STATISTICS
    │       8  │  failed GRAPH_FILTER filter│
    │       5  │  failed WHITEF filter      │
    │       4  │  failed WEAK_CHAINS filter │
-   │     280  │  total                     │
+   │       1  │  failed DOUBLET filter     │
+   │     281  │  total                     │
    └──────────┴────────────────────────────┘
 3. for the selected clonotypes
    ┌────────┬────────────────────────┬──────────────────┬───────┐
