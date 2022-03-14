@@ -510,7 +510,7 @@ fn main() {
             maxrss_children = rusage.ru_maxrss;
         }
         let peak_mem_mb = maxrss_children as f64 / ((1024 * 1024) as f64);
-        const MAX_PEAK_MEM: f64 = 156.8; // this is supposed to be the lowest observed value
+        const MAX_PEAK_MEM: f64 = 168.2; // this is supposed to be the lowest observed value
         const MAX_PERCENT_OVER_MEM: f64 = 17.6;
         let percent_over = 100.0 * (peak_mem_mb - MAX_PEAK_MEM) / MAX_PEAK_MEM;
 
