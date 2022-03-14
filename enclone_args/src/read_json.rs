@@ -957,8 +957,10 @@ pub fn parse_json_annotations_files(
         let mut found = vec![false; cells.len()];
         let tigs = &results[i].2;
         for j in 0..tigs.len() {
-            let p = bin_position(&cells, &tigs[j][0].barcode) as usize;
-            found[p] = true;
+            let p = bin_position(&cells, &tigs[j][0].barcode);
+            if p >= 0 {
+                found[p as usize] = true;
+            }
         }
         for j in 0..found.len() {
             if !found[j] {
