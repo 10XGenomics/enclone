@@ -1,6 +1,6 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-pub const TESTS: [&str; 298] = [
+pub const TESTS: [&str; 300] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -745,4 +745,8 @@ pub const TESTS: [&str; 298] = [
          SEG=IGHV4-39"###,
     // 298. test iReceptor and PREPOST
     r###"PREPOST=iReceptor BUILT_IN BCR=CIS/1_1 CDR3=CARIPYGDYWLGPKHWYFDLW"###,
+    // 299. test PNOHEADER
+    r###"BCR=85333 CDR3=CARDGMTTVTTTAYYGMDVW POUT=stdout PCOLS=dref PNO_HEADER NOPRINT"###,
+    // 300. test PNOHEADER
+    r###"BCR=85333 CDR3=CARDGMTTVTTTAYYGMDVW POUT=stdouth PCOLS=dref PNO_HEADER NOPRINT"###,
 ];

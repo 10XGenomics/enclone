@@ -45,6 +45,7 @@ pub fn some_filters(
         raw_joins,
         &refdata,
         dref,
+        fate,
     );
 
     // Given a signature s having at least two chains, if the total cells in the two-chain

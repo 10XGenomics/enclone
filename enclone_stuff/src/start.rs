@@ -25,9 +25,11 @@ use enclone_core::hcomp::heavy_complexity;
 use enclone_print::loupe::make_donor_refs;
 use equiv::EquivRel;
 use io_utils::{fwriteln, open_for_read};
+use itertools::Itertools;
 use qd::dd;
 use std::{
     collections::HashMap,
+    env,
     fs::File,
     io::{BufRead, BufWriter, Write},
     time::Instant,
@@ -121,6 +123,7 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
     let mut vdj_cells = Vec::<Vec<String>>::new();
     let mut gex_cells = Vec::<Vec<String>>::new();
     let mut gex_cells_specified = Vec::<bool>::new();
+    let mut fate = vec![HashMap::<String, String>::new(); ctl.origin_info.n()];
     parse_json_annotations_files(
         ctl,
         &mut tig_bc,
@@ -129,6 +132,7 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
         &mut vdj_cells,
         &mut gex_cells,
         &mut gex_cells_specified,
+        &mut fate,
     )?;
     ctl.perf_stats(&tparse, "loading from json");
 
@@ -182,7 +186,6 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
 
     // Record fate of non-cells.
 
-    let mut fate = vec![HashMap::<String, String>::new(); vdj_cells.len()];
     if ctl.gen_opt.ncell {
         for i in 0..tig_bc.len() {
             let bc = &tig_bc[i][0].barcode;
@@ -572,6 +575,17 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
 
     if ctl.gen_opt.pre_eval || ctl.join_alg_opt.basic_h.is_some() {
         //
+        // Echo command.
+
+        if ctl.gen_opt.echo {
+            let args: Vec<String> = env::args().collect();
+            println!("\n{}", args.iter().format(" "));
+        }
+        if ctl.gen_opt.echoc {
+            let args: Vec<String> = env::args().collect();
+            println!("\n# {}", args.iter().format(" "));
+        }
+
         // Gather exact subclonotypes.
 
         let mut exacts = Vec::<Vec<usize>>::new();

@@ -313,6 +313,14 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) -> Resu
             "only print groups containing a cell from the given donor;",
         );
         h.doc2("multiple instances may be used to jointly restrict");
+        h.doc(
+            "GROUP_NAIVE",
+            "only show groups having an exact subclonotype with dref = 0",
+        );
+        h.doc(
+            "GROUP_NO_NAIVE",
+            "only show groups lacking an exact subclonotype with dref = 0",
+        );
         h.ldoc("NGROUP", "don't display grouping messages");
         h.print_tab2()?;
         h.print("\n")?;

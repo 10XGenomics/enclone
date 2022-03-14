@@ -8,6 +8,7 @@ use crate::process_special_arg1::process_special_arg1;
 use crate::process_special_arg2::process_special_arg2;
 use enclone_core::defs::{ClonotypeHeuristics, EncloneControl};
 use enclone_core::require_readable_file;
+use enclone_core::test_def::replace_at_test;
 use itertools::Itertools;
 use std::{process::Command, time::Instant};
 use string_utils::{stringme, strme, TextUtils};
@@ -29,36 +30,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
 
     let mut args = args.clone();
     for i in 0..args.len() {
-        let test1plus = "1279053,1279061,1287192-1287195,1287200-1287203:\
-            1279050,1279058,1287196-1287197,1287204-1287205:\
-            1279051,1279059,1287198-1287199,1287206-1287207:1279052,1279060";
-        let test2plus = "1279049,1279057,1287176-1287179,1287184-1287187:\
-            1279054,1279062,1287180-1287181,1287188-1287189:\
-            1279055,1279063,1287182-1287183,1287190-1287191";
-        let test3plus = "1279065,1279073,1287144-1287147,1287152-1287155:\
-            1279066,1279074,1287156-1287157,1287148-1287149:\
-            1279067,1279075,1287150-1287151,1287158-1287159:1279068,1279076";
-        let test4plus = "1279069,1279077,1287160-1287163,1287168-1287171:\
-            1279070,1279078,1287164-1287165,1287172-1287173:\
-            1279071,1279079,1287166-1287167,1287174-1287175:1279072,1279080";
-        args[i] = args[i].replace("@test1plus", test1plus);
-        args[i] = args[i].replace("@test2plus", test2plus);
-        args[i] = args[i].replace("@test3plus", test3plus);
-        args[i] = args[i].replace("@test4plus", test4plus);
-        args[i] = args[i].replace(
-            "@testplus",
-            &format!("{};{};{};{}", test1plus, test2plus, test3plus, test4plus),
-        );
-
-        let test1 = "1279053,1279061:1279050,1279058:1279051,1279059:1279052,1279060";
-        let test2 = "1279049,1279057:1279054,1279062:1279055,1279063";
-        let test3 = "1279065,1279073:1279066,1279074:1279067,1279075:1279068,1279076";
-        let test4 = "1279069,1279077:1279070,1279078:1279071,1279079:1279072,1279080";
-        args[i] = args[i].replace("@test1", test1);
-        args[i] = args[i].replace("@test2", test2);
-        args[i] = args[i].replace("@test3", test3);
-        args[i] = args[i].replace("@test4", test4);
-        args[i] = args[i].replace("@test", &format!("{};{};{};{}", test1, test2, test3, test4));
+        replace_at_test(&mut args[i]);
     }
 
     // Knobs.
@@ -437,6 +409,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
         ("D_SECOND", &mut ctl.clono_filt_opt.d_second),
         ("EASY", &mut ctl.join_alg_opt.easy),
         ("ECHO", &mut ctl.gen_opt.echo),
+        ("ECHOC", &mut ctl.gen_opt.echoc),
         ("FAILS_ONLY", &mut ctl.gen_opt.fails_only),
         ("FOLD_HEADERS", &mut ctl.gen_opt.fold_headers),
         ("FORCE", &mut ctl.force),
@@ -447,6 +420,8 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
             "GROUP_CDR3H_LEN_VAR",
             &mut ctl.clono_group_opt.cdr3h_len_var,
         ),
+        ("GROUP_NAIVE", &mut ctl.clono_group_opt.naive),
+        ("GROUP_NO_NAIVE", &mut ctl.clono_group_opt.no_naive),
         ("HAVE_ONESIE", &mut ctl.clono_filt_opt.have_onesie),
         ("HEAVY_CHAIN_REUSE", &mut ctl.gen_opt.heavy_chain_reuse),
         ("IMGT", &mut ctl.gen_opt.imgt),
@@ -486,6 +461,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
         ("PCELL", &mut ctl.parseable_opt.pbarcode),
         ("PG_READABLE", &mut ctl.gen_opt.peer_group_readable),
         ("PER_CELL", &mut ctl.clono_print_opt.bu),
+        ("PNO_HEADER", &mut ctl.parseable_opt.pno_header),
         ("PRE_EVAL", &mut ctl.gen_opt.pre_eval),
         ("PRE_EVAL_SHOW", &mut ctl.gen_opt.pre_eval_show),
         ("PROTECT_BADS", &mut ctl.clono_filt_opt.protect_bads),

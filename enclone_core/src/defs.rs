@@ -179,6 +179,7 @@ pub struct GeneralOpt {
     pub ncell: bool,
     pub baseline: bool,
     pub echo: bool,
+    pub echoc: bool,
     pub mark_stats: bool,
     pub mark_stats2: bool,
     pub print_cpu: bool,
@@ -446,6 +447,8 @@ pub struct ClonoGroupOpt {
     pub style: String,           // symmetric or unsymmetric or unspecified
     pub cdr3: String,            // only print groups having this CDR3
     pub donor: Vec<String>,      // only print groups having all these donors
+    pub naive: bool,             // only print groups having an exact subclonotype with dref = 0
+    pub no_naive: bool,          // only print groups lacking an exact subclonotype with dref = 0
     // SYMMETRIC GROUPING CONTROLS
     pub vj_refname: bool,        // group by having the same VJ reference names
     pub v_heavy_refname: bool,   // group by having the same heavy V reference name
@@ -483,6 +486,7 @@ pub struct ParseableOpt {
     pub pcols_sort: Vec<String>,  // sorted column names to show in parseable output
     pub pcols_sortx: Vec<String>, // same but before colon if present
     pub pbarcode: bool,           // generate output per barcode rather than per exact subclonotype
+    pub pno_header: bool,         // suppress header line
 }
 
 // Computational performance options.

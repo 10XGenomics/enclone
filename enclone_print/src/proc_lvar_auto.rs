@@ -1211,6 +1211,17 @@ pub fn proc_lvar_auto(
         };
 
         (answer, Vec::new(), "exact".to_string())
+    } else if vname == "hcomp" {
+        let mut hcomp = String::new();
+        if ex.share.len() == 2 {
+            for j in 0..ex.share.len() {
+                if ex.share[j].left {
+                    hcomp = format!("{}", ex.share[j].jun.hcomp);
+                }
+            }
+        }
+
+        (hcomp, Vec::new(), "exact".to_string())
     } else if vname == "inkt" {
         let mut s = String::new();
         let alpha_g = ex.share[0].inkt_alpha_chain_gene_match;

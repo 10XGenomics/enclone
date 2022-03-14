@@ -870,6 +870,7 @@ pub fn parse_json_annotations_files(
     vdj_cells: &mut Vec<Vec<String>>,
     gex_cells: &mut Vec<Vec<String>>,
     gex_cells_specified: &mut Vec<bool>,
+    fate: &mut Vec<HashMap<String, String>>,
 ) -> Result<(), String> {
     // (origin index, contig name, V..J length): (?)
     let mut results = Vec::<(
@@ -950,6 +951,24 @@ pub fn parse_json_annotations_files(
         vdj_cells.push(results[i].5.clone());
         gex_cells.push(results[i].6.clone());
         gex_cells_specified.push(results[i].7);
+
+        let cells = &results[i].5;
+        let mut found = vec![false; cells.len()];
+        let tigs = &results[i].2;
+        for j in 0..tigs.len() {
+            let p = bin_position(&cells, &tigs[j][0].barcode);
+            if p >= 0 {
+                found[p as usize] = true;
+            }
+        }
+        for j in 0..found.len() {
+            if !found[j] {
+                fate[i].insert(
+                    cells[j].clone(),
+                    "failed to find productive contig".to_string(),
+                );
+            }
+        }
     }
     /*
     if !ctl.gen_opt.internal_run {

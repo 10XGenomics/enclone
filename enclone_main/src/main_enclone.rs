@@ -370,7 +370,9 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
                 }
             }
             if let Some(_) = con.iter_function_identifiers().next() {
-                return Err("\nSomething is wrong with your FCELL value.\n".to_string());
+                return Err(
+                    "\nSomething is wrong with your KEEP_CELL_IF or FCELL value.\n".to_string(),
+                );
             }
         }
         if !test2.is_empty() {
@@ -378,7 +380,7 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
             for var in test2.iter() {
                 if !bin_member(&known_features, var) {
                     return Err(format!(
-                        "\nYou've used an illegal variable {} as part of an FCELL constraint.\n",
+                        "\nYou've used an illegal variable {} as part of an KEEP_CELL_IF or FCELL constraint.\n",
                         var
                     ));
                 }

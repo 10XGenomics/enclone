@@ -672,6 +672,189 @@ are then made accessible as lvars (see <a href="../../pages/auto/help.lvars.html
 subclonotype having exactly two chains (heavy/light or TRB/TRA) that match the data in the CSV
 file.  By default, one cannot have two lines for the same antibody, however a separate argument
 <span style="font-weight:bold;">INFO_RESOLVE</span> may be used to "pick the first one".<span style="color:#5833ff;">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+enclone help cvars
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span>
+
+<span style="font-weight:bold;">per-chain column options</span>: These options define per-chain variables, which correspond to columns
+that appear once for each chain in each clonotype, and have one entry for each exact subclonotype.
+ Please note that for medians of integers, we actually report the "rounded median", the result of
+rounding the true median up to the nearest integer, so that e.g. 6.5 is rounded up to 7.
+
+See also <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> and the inventory of all variables at
+            https://10xgenomics.github.io/enclone/pages/auto/inventory.html.
+
+Per-column variables are specified using
+<span style="font-weight:bold;">CVARS=x1,...,xn</span>
+where each xi is one of:
+
+┌─────────────────┬──────────────────────────────────────────────────────────────────────────────┐
+│var              │  bases at positions in chain that vary across the clonotype                  │
+├─────────────────┼──────────────────────────────────────────────────────────────────────────────┤
+│u                │  <span style="color:#c23621;">●</span> VDJ UMI count for each exact subclonotype, median across cells            │
+│r                │  <span style="color:#c23621;">●</span> VDJ read count for each exact subclonotype, median across cells           │
+├─────────────────┼──────────────────────────────────────────────────────────────────────────────┤
+│edit             │  a string that defines the edit of the reference V(D)J concatenation versus  │
+│                 │  the contig, from the beginning of the CDR3 to the end of the J segment;     │
+│                 │  this uses a coordinate system in which 0 is the first base of the J ref     │
+│                 │  segment (or the first base of the D ref segment for IGH and TRB); for       │
+│                 │  example D-4:4 denotes the deletion of the last 4 bases of the V segment,    │
+│                 │  I0:2 denotes an insertion of 2 bases after the V                            │
+│                 │  and I0:2•S5 denotes that plus a substitution at position 5; in computing    │
+│                 │  "edit", for IGH and TRB, we always test every possible D segment,           │
+│                 │  regardless of whether one is annotated, and pick the best one; for this     │
+│                 │  reason, "edit" may be slow                                                  │
+│comp             │  a measure of CDR3 complexity, which is the total number of S, D and I       │
+│                 │  symbols in "edit" as defined above                                          │
+│cigar            │  the CIGAR string that defines the edit of the V..J contig sequence versus   │
+│                 │  the universal reference V(D)J concatenation                                 │
+├─────────────────┼──────────────────────────────────────────────────────────────────────────────┤
+│cdr*_aa          │  the CDR*_AA sequence, or "unknown" if not computed                          │
+│cdr*_aa_L_R_ext  │  the CDR*_AA sequence, with L amino acids added on the left and R amino acids│
+│                 │  added on the right; either may be negative, denoting trimming instead       │
+│                 │  of extension                                                                │
+│cdr*_aa_north    │  the CDR*_AA sequence for BCR defined by North B et al. (2011), A new        │
+│                 │  clustering of antibody CDR loop conformations, J Mol Biol 406, 228-256.     │
+│                 │  cdr1_aa_north = cdr1_aa_3_3_ext for heavy chains                            │
+│                 │  cdr1_aa_north = cdr1_aa for light chains                                    │
+│                 │  cdr2_aa_north = cdr2_aa_2_3_ext for heavy chains                            │
+│                 │  cdr2_aa_north = cdr2_aa_1_0_ext for light chains                            │
+│                 │  cdr3_aa_north = cdr3_aa_-1_-1_ext                                           │
+│cdr*_aa_ref      │  cdr*_aa, for the universal reference sequence (but not for cdr3)            │
+│cdr*_len         │  number of amino acids in the CDR* sequence, or "unknown" if not computed    │
+│cdr*_dna         │  the CDR*_DNA sequence, or "unknown" if not computed                         │
+│cdr*_dna_ref     │  same, for the universal reference sequence (but not for cdr3)               │
+├─────────────────┼──────────────────────────────────────────────────────────────────────────────┤
+│cdr3_aa_conx     │  consensus for CDR3 across the clonotype, showing X for each variant residue │
+│cdr3_aa_conp     │  consensus for CDR3 across the clonotype, showing a property symbol whenever │
+│                 │  two different amino acids are observed, per the following table:            │
+│                 │  --------------------------------------------------------------------        │
+│                 │  asparagine or aspartic acid   B   DN                                        │
+│                 │  glutamine or glutamic acid    Z   EQ                                        │
+│                 │  leucine or isoleucine         J   IL                                        │
+│                 │  negatively charged            -   DE                                        │
+│                 │  positively charged            +   KRH                                       │
+│                 │  aliphatic (non-aromatic)      Ψ   VILM                                      │
+│                 │  small                         π   PGAS                                      │
+│                 │  aromatic                      Ω   FWYH                                      │
+│                 │  hydrophobic                   Φ   VILFWYM                                   │
+│                 │  hydrophilic                   ζ   STHNQEDKR                                 │
+│                 │  any                           X   ADEFGHIKLMNPQRSTVWY                       │
+│                 │  --------------------------------------------------------------------        │
+│                 │  The table is searched top to bottom until a matching class is found.        │
+│                 │  In the special case where every amino acid is shown as a gap (-),           │
+│                 │  a "g" is printed.                                                           │
+├─────────────────┼──────────────────────────────────────────────────────────────────────────────┤
+│fwr*_aa          │  the FWR*_AA sequence, or "unknown" if not computed                          │
+│fwr*_aa_ref      │  same, for the universal reference sequence                                  │
+│fwr*_len         │  number of amino acids in the FWR* sequence, or "unknown" if not computed    │
+│fwr*_dna         │  the FWR*_DNA sequence, or "unknown" if not computed                         │
+│fwr*_dna_ref     │  same, for the universal reference sequences                                 │
+│                 │  For all of these, * is 1 or 2 or 3 (or 4, for the fwr variables).           │
+│                 │  For CDR1 and CDR2, please see <a href="../../pages/auto/help.amino.html"><code>enclone help amino</code></a> and the page on            │
+│                 │  <span style="color:#25bc24;">bit.ly/enclone</span> on V(D)J features.                                           │
+├─────────────────┼──────────────────────────────────────────────────────────────────────────────┤
+│v_start          │  start of V segment on full DNA sequence                                     │
+│d_start          │  start of D segment on full DNA sequence (or null)                           │
+│cdr3_start       │  base position start of CDR3 sequence on full contig                         │
+│d_frame          │  reading frame of D segment, either 0 or 1 or 2 (or null)                    │
+├─────────────────┼──────────────────────────────────────────────────────────────────────────────┤
+│aa%              │  amino acid percent identity with donor reference, outside junction region   │
+│dna%             │  nucleotide percent identity with donor reference, outside junction region   │
+├─────────────────┼──────────────────────────────────────────────────────────────────────────────┤
+│v_name_orig      │  name of V region originally assigned (per cell);                            │
+│                 │  values below are clonotype consensuses                                      │
+│utr_name         │  name of 5'-UTR region                                                       │
+│v_name           │  name of V region                                                            │
+│d_name           │  name of D region (or null)                                                  │
+│j_name           │  name of J region                                                            │
+│const            │  name of constant region                                                     │
+├─────────────────┼──────────────────────────────────────────────────────────────────────────────┤
+│utr_id           │  id of 5'-UTR region                                                         │
+│v_id             │  id of V region                                                              │
+│d_id             │  id of D region (or null)                                                    │
+│j_id             │  id of J region                                                              │
+│const_id         │  id of constant region (or null, if not known)                               │
+│                 │  (these are the numbers after ">" in the VDJ reference file)                 │
+├─────────────────┼──────────────────────────────────────────────────────────────────────────────┤
+│allele           │  numerical identifier of the computed donor reference allele                 │
+│                 │  for this exact subclonotype                                                 │
+│allele_d         │  variant bases in the allele for this exact subclonotype,                    │
+│                 │  and a list of all the possibilities for this                                │
+├─────────────────┼──────────────────────────────────────────────────────────────────────────────┤
+│d1_name          │  name of optimal D gene, or none                                             │
+│d2_name          │  name of second best D gene, or none                                         │
+│d1_score         │  score for optimal D gene                                                    │
+│d2_score         │  score for second best D gene                                                │
+│d_delta          │  score difference between first and second best D gene                       │
+│d_Δ              │  same                                                                        │
+│                 │  These are recomputed from scratch and ignore the given assignment.          │
+│                 │  Note that in many cases D gene assignments are essentially random, as       │
+│                 │  it is often not possible to know the true D gene assignment.                │
+│                 │  If the value is "null" it means that having no D gene at all scores better  │
+├─────────────────┼──────────────────────────────────────────────────────────────────────────────┤
+│vjlen            │  number of bases from the start of the V region to the end of the J region   │
+│                 │  Please note that D gene assignments are frequently "random" -- it is not    │
+│                 │  possible to know the actual D gene that was assigned.                       │
+│clen             │  length of observed constant region (usually truncated at primer start)      │
+│ulen             │  length of observed 5'-UTR sequence;                                         │
+│                 │  note however that what report is just the start of the V segment            │
+│                 │  on the contig, and thus the length may include junk before the UTR          │
+│cdiff            │  differences with universal reference constant region, shown in the          │
+│                 │  abbreviated form e.g. 22T (ref changed to T at base 22) or 22T+10           │
+│                 │  (same but contig has 10 additional bases beyond end of ref C region         │
+│                 │  At most five differences are shown, and if there are more, ... is appended. │
+│udiff            │  like cdiff, but for the 5'-UTR                                              │
+├─────────────────┼──────────────────────────────────────────────────────────────────────────────┤
+│q&lt;n>_            │  comma-separated list of the quality                                         │
+│                 │  scores at zero-based position n, numbered starting at the                   │
+│                 │  beginning of the V segment, for each cell in the exact subclonotype         │
+├─────────────────┼──────────────────────────────────────────────────────────────────────────────┤
+│notes            │  optional note if there is an insertion or the end of J does not exactly abut│
+│                 │  the beginning of C; elided if empty; also single base overlaps between      │
+│                 │  J and C are not shown unless you use the special option <span style="font-weight:bold;">JC1</span>; we do this     │
+│                 │  because with some VDJ references, one nearly always has such an overlap     │
+├─────────────────┼──────────────────────────────────────────────────────────────────────────────┤
+│ndiff&lt;n>vj       │  number of base differences within V..J between this exact subclonotype and  │
+│                 │  exact subclonotype n                                                        │
+│d_univ           │  distance from universal reference, more specifically,                       │
+│                 │  number of base differences within V..J between this exact                   │
+│                 │  clonotype and universal reference, exclusive of indels, the last 15         │
+│                 │  bases of the V and the first 15 bases of the J                              │
+│d_donor          │  distance from donor reference,                                              │
+│                 │  as above but computed using donor reference                                 │
+└─────────────────┴──────────────────────────────────────────────────────────────────────────────┘
+
+<span style="background-color:#cbcccd;"> </span> <span style="color:#c23621;">●</span> These variables have some alternate versions, as shown in the table below.
+<span style="background-color:#cbcccd;"> </span> 
+<span style="background-color:#cbcccd;"> </span> ┌──────────┬───────────────────────────────┬──────────┬──────────────┬─────────────┬────────────┐
+<span style="background-color:#cbcccd;"> </span> │variable  │  semantics                    │  visual  │  visual      │  parseable  │  parseable │
+<span style="background-color:#cbcccd;"> </span> │          │                               │          │  (one cell)  │             │  (one cell)│
+<span style="background-color:#cbcccd;"> </span> ├──────────┼───────────────────────────────┼──────────┼──────────────┼─────────────┼────────────┤
+<span style="background-color:#cbcccd;"> </span> │x         │  median over cells            │  yes     │  this cell   │  yes        │  yes       │
+<span style="background-color:#cbcccd;"> </span> │x_mean    │  mean over cells              │  yes     │  null        │  yes        │  yes       │
+<span style="background-color:#cbcccd;"> </span> │x_μ       │  (same as above)              │  yes     │  null        │  yes        │  yes       │
+<span style="background-color:#cbcccd;"> </span> │x_sum     │  sum over cells               │  yes     │  null        │  yes        │  yes       │
+<span style="background-color:#cbcccd;"> </span> │x_Σ       │  (same as above)              │  yes     │  null        │  yes        │  yes       │
+<span style="background-color:#cbcccd;"> </span> │x_min     │  min over cells               │  yes     │  null        │  yes        │  yes       │
+<span style="background-color:#cbcccd;"> </span> │x_max     │  max over cells               │  yes     │  null        │  yes        │  yes       │
+<span style="background-color:#cbcccd;"> </span> │x_%       │  % of total GEX (genes only)  │  yes     │  this cell   │  yes        │  yes       │
+<span style="background-color:#cbcccd;"> </span> │x_cell    │  this cell                    │  no      │  no          │  no         │  this cell │
+<span style="background-color:#cbcccd;"> </span> └──────────┴───────────────────────────────┴──────────┴──────────────┴─────────────┴────────────┘
+<span style="background-color:#cbcccd;"> </span> Some explanation is required.  If you use enclone without certain options, you get the "visual"
+<span style="background-color:#cbcccd;"> </span> column.
+<span style="background-color:#cbcccd;"> </span> • Add the option <span style="font-weight:bold;">PER_CELL</span> (see <a href="../../pages/auto/help.display.html"><code>enclone help display</code></a>) and then you get visual output with extra
+<span style="background-color:#cbcccd;"> </span> lines for each cell within an exact subclonotype, and each of those extra lines is described by
+<span style="background-color:#cbcccd;"> </span> the "visual (one cell)" column.
+<span style="background-color:#cbcccd;"> </span> • If you generate parseable output (see <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a>), then you get the "parseable"
+<span style="background-color:#cbcccd;"> </span> column for that output, unless you specify <span style="font-weight:bold;">PCELL</span>, and then you get the last column.
+<span style="background-color:#cbcccd;"> </span> • For the forms with μ and Σ, the Greek letters are only used in column headings for visual output
+<span style="background-color:#cbcccd;"> </span> (to save space), and optionally, in names of fields on the command line.
+<span style="background-color:#cbcccd;"> </span> <span style="color:#25bc24;">▶</span> If you try out these features, you'll see exactly what happens! <span style="color:#25bc24;">◀</span>
+
+At least one variable must be listed.  The default is <span style="font-weight:bold;">u,const,notes</span>.  <span style="font-weight:bold;">CVARSP</span>: same as <span style="font-weight:bold;">CVARS</span> but
+appends.
+
+<span style="color:#5833ff;">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 enclone help input_tech
 ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span>
 
@@ -741,6 +924,7 @@ files with these languages.
 ┃The parseable output fields may be specified using                                               ┃
 ┃<span style="font-weight:bold;">PCOLS=x1,...,xn</span>                                                                                  ┃
 ┃where each xi is one of the field names shown below.                                             ┃
+┃The argument <span style="font-weight:bold;">PNO_HEADER</span> may be used to suppress the CSV header line.                             ┃
 ┃<span style="color:#c23621;font-weight:bold;">If you use POUT, the PCOLS option reduces run time and memory usage, and prevents voluminous</span>     ┃
 ┃<span style="color:#c23621;font-weight:bold;">output.  Please use it!</span>                                                                          ┃
 ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
@@ -1361,6 +1545,11 @@ Lead variables are specified using <span style="font-weight:bold;">LVARS=x1,...,
 │nbc               │  numerically encoded barcode: a ten-digit number, padded with zeros           │
 │                  │  on the left, which represents the base four encoding of the barcode DNA      │
 │                  │  sequence, with A ==> 0, C => 1, G ==> 2 and T ==> 3; only defined for cells  │
+├──────────────────┼───────────────────────────────────────────────────────────────────────────────┤
+│hcomp             │  complexity of heavy chain, only computed if two chains, one heavy, one light │
+│                  │  and computed by finding optimal D, aligning to concatenated VDJ,             │
+│                  │  and then scoring +1 of each inserted base, +1 for each deletion,             │
+│                  │  regardless of size, and +1 for each substitution                             │
 └──────────────────┴───────────────────────────────────────────────────────────────────────────────┘
 For gene expression and feature barcode stats, such data must be provided as input to enclone.
 
@@ -1403,189 +1592,6 @@ expressions.
 The default is <span style="font-weight:bold;">datasets,n</span>, except that datasets is suppressed if there is only one dataset.
 
 <span style="font-weight:bold;">LVARSP=x1,...,xn</span> is like <span style="font-weight:bold;">LVARS</span> but appends to the list.
-
-<span style="color:#5833ff;">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-enclone help cvars
-▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span>
-
-<span style="font-weight:bold;">per-chain column options</span>: These options define per-chain variables, which correspond to columns
-that appear once for each chain in each clonotype, and have one entry for each exact subclonotype.
- Please note that for medians of integers, we actually report the "rounded median", the result of
-rounding the true median up to the nearest integer, so that e.g. 6.5 is rounded up to 7.
-
-See also <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> and the inventory of all variables at
-            https://10xgenomics.github.io/enclone/pages/auto/inventory.html.
-
-Per-column variables are specified using
-<span style="font-weight:bold;">CVARS=x1,...,xn</span>
-where each xi is one of:
-
-┌─────────────────┬──────────────────────────────────────────────────────────────────────────────┐
-│var              │  bases at positions in chain that vary across the clonotype                  │
-├─────────────────┼──────────────────────────────────────────────────────────────────────────────┤
-│u                │  <span style="color:#c23621;">●</span> VDJ UMI count for each exact subclonotype, median across cells            │
-│r                │  <span style="color:#c23621;">●</span> VDJ read count for each exact subclonotype, median across cells           │
-├─────────────────┼──────────────────────────────────────────────────────────────────────────────┤
-│edit             │  a string that defines the edit of the reference V(D)J concatenation versus  │
-│                 │  the contig, from the beginning of the CDR3 to the end of the J segment;     │
-│                 │  this uses a coordinate system in which 0 is the first base of the J ref     │
-│                 │  segment (or the first base of the D ref segment for IGH and TRB); for       │
-│                 │  example D-4:4 denotes the deletion of the last 4 bases of the V segment,    │
-│                 │  I0:2 denotes an insertion of 2 bases after the V                            │
-│                 │  and I0:2•S5 denotes that plus a substitution at position 5; in computing    │
-│                 │  "edit", for IGH and TRB, we always test every possible D segment,           │
-│                 │  regardless of whether one is annotated, and pick the best one; for this     │
-│                 │  reason, "edit" may be slow                                                  │
-│comp             │  a measure of CDR3 complexity, which is the total number of S, D and I       │
-│                 │  symbols in "edit" as defined above                                          │
-│cigar            │  the CIGAR string that defines the edit of the V..J contig sequence versus   │
-│                 │  the universal reference V(D)J concatenation                                 │
-├─────────────────┼──────────────────────────────────────────────────────────────────────────────┤
-│cdr*_aa          │  the CDR*_AA sequence, or "unknown" if not computed                          │
-│cdr*_aa_L_R_ext  │  the CDR*_AA sequence, with L amino acids added on the left and R amino acids│
-│                 │  added on the right; either may be negative, denoting trimming instead       │
-│                 │  of extension                                                                │
-│cdr*_aa_north    │  the CDR*_AA sequence for BCR defined by North B et al. (2011), A new        │
-│                 │  clustering of antibody CDR loop conformations, J Mol Biol 406, 228-256.     │
-│                 │  cdr1_aa_north = cdr1_aa_3_3_ext for heavy chains                            │
-│                 │  cdr1_aa_north = cdr1_aa for light chains                                    │
-│                 │  cdr2_aa_north = cdr2_aa_2_3_ext for heavy chains                            │
-│                 │  cdr2_aa_north = cdr2_aa_1_0_ext for light chains                            │
-│                 │  cdr3_aa_north = cdr3_aa_-1_-1_ext                                           │
-│cdr*_aa_ref      │  cdr*_aa, for the universal reference sequence (but not for cdr3)            │
-│cdr*_len         │  number of amino acids in the CDR* sequence, or "unknown" if not computed    │
-│cdr*_dna         │  the CDR*_DNA sequence, or "unknown" if not computed                         │
-│cdr*_dna_ref     │  same, for the universal reference sequence (but not for cdr3)               │
-├─────────────────┼──────────────────────────────────────────────────────────────────────────────┤
-│cdr3_aa_conx     │  consensus for CDR3 across the clonotype, showing X for each variant residue │
-│cdr3_aa_conp     │  consensus for CDR3 across the clonotype, showing a property symbol whenever │
-│                 │  two different amino acids are observed, per the following table:            │
-│                 │  --------------------------------------------------------------------        │
-│                 │  asparagine or aspartic acid   B   DN                                        │
-│                 │  glutamine or glutamic acid    Z   EQ                                        │
-│                 │  leucine or isoleucine         J   IL                                        │
-│                 │  negatively charged            -   DE                                        │
-│                 │  positively charged            +   KRH                                       │
-│                 │  aliphatic (non-aromatic)      Ψ   VILM                                      │
-│                 │  small                         π   PGAS                                      │
-│                 │  aromatic                      Ω   FWYH                                      │
-│                 │  hydrophobic                   Φ   VILFWYM                                   │
-│                 │  hydrophilic                   ζ   STHNQEDKR                                 │
-│                 │  any                           X   ADEFGHIKLMNPQRSTVWY                       │
-│                 │  --------------------------------------------------------------------        │
-│                 │  The table is searched top to bottom until a matching class is found.        │
-│                 │  In the special case where every amino acid is shown as a gap (-),           │
-│                 │  a "g" is printed.                                                           │
-├─────────────────┼──────────────────────────────────────────────────────────────────────────────┤
-│fwr*_aa          │  the FWR*_AA sequence, or "unknown" if not computed                          │
-│fwr*_aa_ref      │  same, for the universal reference sequence                                  │
-│fwr*_len         │  number of amino acids in the FWR* sequence, or "unknown" if not computed    │
-│fwr*_dna         │  the FWR*_DNA sequence, or "unknown" if not computed                         │
-│fwr*_dna_ref     │  same, for the universal reference sequences                                 │
-│                 │  For all of these, * is 1 or 2 or 3 (or 4, for the fwr variables).           │
-│                 │  For CDR1 and CDR2, please see <a href="../../pages/auto/help.amino.html"><code>enclone help amino</code></a> and the page on            │
-│                 │  <span style="color:#25bc24;">bit.ly/enclone</span> on V(D)J features.                                           │
-├─────────────────┼──────────────────────────────────────────────────────────────────────────────┤
-│v_start          │  start of V segment on full DNA sequence                                     │
-│d_start          │  start of D segment on full DNA sequence (or null)                           │
-│cdr3_start       │  base position start of CDR3 sequence on full contig                         │
-│d_frame          │  reading frame of D segment, either 0 or 1 or 2 (or null)                    │
-├─────────────────┼──────────────────────────────────────────────────────────────────────────────┤
-│aa%              │  amino acid percent identity with donor reference, outside junction region   │
-│dna%             │  nucleotide percent identity with donor reference, outside junction region   │
-├─────────────────┼──────────────────────────────────────────────────────────────────────────────┤
-│v_name_orig      │  name of V region originally assigned (per cell);                            │
-│                 │  values below are clonotype consensuses                                      │
-│utr_name         │  name of 5'-UTR region                                                       │
-│v_name           │  name of V region                                                            │
-│d_name           │  name of D region (or null)                                                  │
-│j_name           │  name of J region                                                            │
-│const            │  name of constant region                                                     │
-├─────────────────┼──────────────────────────────────────────────────────────────────────────────┤
-│utr_id           │  id of 5'-UTR region                                                         │
-│v_id             │  id of V region                                                              │
-│d_id             │  id of D region (or null)                                                    │
-│j_id             │  id of J region                                                              │
-│const_id         │  id of constant region (or null, if not known)                               │
-│                 │  (these are the numbers after ">" in the VDJ reference file)                 │
-├─────────────────┼──────────────────────────────────────────────────────────────────────────────┤
-│allele           │  numerical identifier of the computed donor reference allele                 │
-│                 │  for this exact subclonotype                                                 │
-│allele_d         │  variant bases in the allele for this exact subclonotype,                    │
-│                 │  and a list of all the possibilities for this                                │
-├─────────────────┼──────────────────────────────────────────────────────────────────────────────┤
-│d1_name          │  name of optimal D gene, or none                                             │
-│d2_name          │  name of second best D gene, or none                                         │
-│d1_score         │  score for optimal D gene                                                    │
-│d2_score         │  score for second best D gene                                                │
-│d_delta          │  score difference between first and second best D gene                       │
-│d_Δ              │  same                                                                        │
-│                 │  These are recomputed from scratch and ignore the given assignment.          │
-│                 │  Note that in many cases D gene assignments are essentially random, as       │
-│                 │  it is often not possible to know the true D gene assignment.                │
-│                 │  If the value is "null" it means that having no D gene at all scores better  │
-├─────────────────┼──────────────────────────────────────────────────────────────────────────────┤
-│vjlen            │  number of bases from the start of the V region to the end of the J region   │
-│                 │  Please note that D gene assignments are frequently "random" -- it is not    │
-│                 │  possible to know the actual D gene that was assigned.                       │
-│clen             │  length of observed constant region (usually truncated at primer start)      │
-│ulen             │  length of observed 5'-UTR sequence;                                         │
-│                 │  note however that what report is just the start of the V segment            │
-│                 │  on the contig, and thus the length may include junk before the UTR          │
-│cdiff            │  differences with universal reference constant region, shown in the          │
-│                 │  abbreviated form e.g. 22T (ref changed to T at base 22) or 22T+10           │
-│                 │  (same but contig has 10 additional bases beyond end of ref C region         │
-│                 │  At most five differences are shown, and if there are more, ... is appended. │
-│udiff            │  like cdiff, but for the 5'-UTR                                              │
-├─────────────────┼──────────────────────────────────────────────────────────────────────────────┤
-│q&lt;n>_            │  comma-separated list of the quality                                         │
-│                 │  scores at zero-based position n, numbered starting at the                   │
-│                 │  beginning of the V segment, for each cell in the exact subclonotype         │
-├─────────────────┼──────────────────────────────────────────────────────────────────────────────┤
-│notes            │  optional note if there is an insertion or the end of J does not exactly abut│
-│                 │  the beginning of C; elided if empty; also single base overlaps between      │
-│                 │  J and C are not shown unless you use the special option <span style="font-weight:bold;">JC1</span>; we do this     │
-│                 │  because with some VDJ references, one nearly always has such an overlap     │
-├─────────────────┼──────────────────────────────────────────────────────────────────────────────┤
-│ndiff&lt;n>vj       │  number of base differences within V..J between this exact subclonotype and  │
-│                 │  exact subclonotype n                                                        │
-│d_univ           │  distance from universal reference, more specifically,                       │
-│                 │  number of base differences within V..J between this exact                   │
-│                 │  clonotype and universal reference, exclusive of indels, the last 15         │
-│                 │  bases of the V and the first 15 bases of the J                              │
-│d_donor          │  distance from donor reference,                                              │
-│                 │  as above but computed using donor reference                                 │
-└─────────────────┴──────────────────────────────────────────────────────────────────────────────┘
-
-<span style="background-color:#cbcccd;"> </span> <span style="color:#c23621;">●</span> These variables have some alternate versions, as shown in the table below.
-<span style="background-color:#cbcccd;"> </span> 
-<span style="background-color:#cbcccd;"> </span> ┌──────────┬───────────────────────────────┬──────────┬──────────────┬─────────────┬────────────┐
-<span style="background-color:#cbcccd;"> </span> │variable  │  semantics                    │  visual  │  visual      │  parseable  │  parseable │
-<span style="background-color:#cbcccd;"> </span> │          │                               │          │  (one cell)  │             │  (one cell)│
-<span style="background-color:#cbcccd;"> </span> ├──────────┼───────────────────────────────┼──────────┼──────────────┼─────────────┼────────────┤
-<span style="background-color:#cbcccd;"> </span> │x         │  median over cells            │  yes     │  this cell   │  yes        │  yes       │
-<span style="background-color:#cbcccd;"> </span> │x_mean    │  mean over cells              │  yes     │  null        │  yes        │  yes       │
-<span style="background-color:#cbcccd;"> </span> │x_μ       │  (same as above)              │  yes     │  null        │  yes        │  yes       │
-<span style="background-color:#cbcccd;"> </span> │x_sum     │  sum over cells               │  yes     │  null        │  yes        │  yes       │
-<span style="background-color:#cbcccd;"> </span> │x_Σ       │  (same as above)              │  yes     │  null        │  yes        │  yes       │
-<span style="background-color:#cbcccd;"> </span> │x_min     │  min over cells               │  yes     │  null        │  yes        │  yes       │
-<span style="background-color:#cbcccd;"> </span> │x_max     │  max over cells               │  yes     │  null        │  yes        │  yes       │
-<span style="background-color:#cbcccd;"> </span> │x_%       │  % of total GEX (genes only)  │  yes     │  this cell   │  yes        │  yes       │
-<span style="background-color:#cbcccd;"> </span> │x_cell    │  this cell                    │  no      │  no          │  no         │  this cell │
-<span style="background-color:#cbcccd;"> </span> └──────────┴───────────────────────────────┴──────────┴──────────────┴─────────────┴────────────┘
-<span style="background-color:#cbcccd;"> </span> Some explanation is required.  If you use enclone without certain options, you get the "visual"
-<span style="background-color:#cbcccd;"> </span> column.
-<span style="background-color:#cbcccd;"> </span> • Add the option <span style="font-weight:bold;">PER_CELL</span> (see <a href="../../pages/auto/help.display.html"><code>enclone help display</code></a>) and then you get visual output with extra
-<span style="background-color:#cbcccd;"> </span> lines for each cell within an exact subclonotype, and each of those extra lines is described by
-<span style="background-color:#cbcccd;"> </span> the "visual (one cell)" column.
-<span style="background-color:#cbcccd;"> </span> • If you generate parseable output (see <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a>), then you get the "parseable"
-<span style="background-color:#cbcccd;"> </span> column for that output, unless you specify <span style="font-weight:bold;">PCELL</span>, and then you get the last column.
-<span style="background-color:#cbcccd;"> </span> • For the forms with μ and Σ, the Greek letters are only used in column headings for visual output
-<span style="background-color:#cbcccd;"> </span> (to save space), and optionally, in names of fields on the command line.
-<span style="background-color:#cbcccd;"> </span> <span style="color:#25bc24;">▶</span> If you try out these features, you'll see exactly what happens! <span style="color:#25bc24;">◀</span>
-
-At least one variable must be listed.  The default is <span style="font-weight:bold;">u,const,notes</span>.  <span style="font-weight:bold;">CVARSP</span>: same as <span style="font-weight:bold;">CVARS</span> but
-appends.
 
 <span style="color:#5833ff;">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 enclone help display
@@ -1741,6 +1747,8 @@ cases:
 │GROUP_CDR3=x         │  only print groups containing the CDR3 amino acid sequence x     │
 │GROUP_DONOR=d        │  only print groups containing a cell from the given donor;       │
 │                     │  multiple instances may be used to jointly restrict              │
+│GROUP_NAIVE          │  only show groups having an exact subclonotype with dref = 0     │
+│GROUP_NO_NAIVE       │  only show groups lacking an exact subclonotype with dref = 0    │
 ├─────────────────────┼──────────────────────────────────────────────────────────────────┤
 │NGROUP               │  don't display grouping messages                                 │
 └─────────────────────┴──────────────────────────────────────────────────────────────────┘

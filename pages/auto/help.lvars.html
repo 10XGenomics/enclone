@@ -149,6 +149,11 @@ Lead variables are specified using <span style="font-weight:bold;">LVARS=x1,...,
 │nbc               │  numerically encoded barcode: a ten-digit number, padded with zeros           │
 │                  │  on the left, which represents the base four encoding of the barcode DNA      │
 │                  │  sequence, with A ==> 0, C => 1, G ==> 2 and T ==> 3; only defined for cells  │
+├──────────────────┼───────────────────────────────────────────────────────────────────────────────┤
+│hcomp             │  complexity of heavy chain, only computed if two chains, one heavy, one light │
+│                  │  and computed by finding optimal D, aligning to concatenated VDJ,             │
+│                  │  and then scoring +1 of each inserted base, +1 for each deletion,             │
+│                  │  regardless of size, and +1 for each substitution                             │
 └──────────────────┴───────────────────────────────────────────────────────────────────────────────┘
 For gene expression and feature barcode stats, such data must be provided as input to enclone.
 

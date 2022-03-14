@@ -31,7 +31,7 @@ if ( $elapsed_linktest > 86400 ) then
     foreach link (`cat pages/unreliable_links`)
         if ( $link !~ *"." ) then
             set response = `curl -Is  --max-time $timeout $link | head -1`
-            if ( "$response" !~ *" 200 "* && "$response" !~ *" 301 "* )then
+            if ( "$response" !~ *" 200 "* && "$response" !~ *" 301 "* ) then
                 echo "$link may be broken, response was $response"
                 echo "If you see this fail repeatedly, link may be permanently broken."
                 echo "Note that timeout is $timeout seconds, so this could be a false alarm."
@@ -132,7 +132,7 @@ set elapsed = `expr $end - $start`
 ##### FAIL IF TOO MUCH TIME USED #####
 
 echo "\ntest compile time = $compile_elapsed seconds"
-set expected = 151
+set expected = 166
 set fudge_num = 11
 set fudge_den = 10
 set expected_plus_times = `expr $expected \* $fudge_num`
