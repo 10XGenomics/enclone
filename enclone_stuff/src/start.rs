@@ -25,9 +25,11 @@ use enclone_core::hcomp::heavy_complexity;
 use enclone_print::loupe::make_donor_refs;
 use equiv::EquivRel;
 use io_utils::{fwriteln, open_for_read};
+use itertools::Itertools;
 use qd::dd;
 use std::{
     collections::HashMap,
+    env,
     fs::File,
     io::{BufRead, BufWriter, Write},
     time::Instant,
@@ -573,6 +575,17 @@ pub fn main_enclone_start(setup: EncloneSetup) -> Result<EncloneIntermediates, S
 
     if ctl.gen_opt.pre_eval || ctl.join_alg_opt.basic_h.is_some() {
         //
+        // Echo command.
+
+        if ctl.gen_opt.echo {
+            let args: Vec<String> = env::args().collect();
+            println!("\n{}", args.iter().format(" "));
+        }
+        if ctl.gen_opt.echoc {
+            let args: Vec<String> = env::args().collect();
+            println!("\n# {}", args.iter().format(" "));
+        }
+
         // Gather exact subclonotypes.
 
         let mut exacts = Vec::<Vec<usize>>::new();
