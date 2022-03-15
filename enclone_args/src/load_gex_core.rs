@@ -2,8 +2,8 @@
 //
 // Load gene expression and feature barcoding (antibody, antigen) data from Cell Ranger outputs.
 
-use crate::*;
 use crate::load_gex_util::*;
+use crate::*;
 use enclone_core::defs::EncloneControl;
 use enclone_core::slurp::slurp_h5;
 use io_utils::{dir_list, open_for_read, open_userfile_for_read, path_exists};

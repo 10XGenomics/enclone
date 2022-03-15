@@ -5,11 +5,11 @@ use io_utils::{dir_list, path_exists};
 use vector_utils::VecUtils;
 
 pub fn find_pca_file(
-    _ctl: &EncloneControl, 
+    _ctl: &EncloneControl,
     _outs: &str,
-    analysis: &Vec<String>, 
-    pathlist: &mut Vec<String>) 
--> String {
+    analysis: &Vec<String>,
+    pathlist: &mut Vec<String>,
+) -> String {
     let mut pca_file = String::new();
     for x in analysis.iter() {
         pca_file = format!("{}/pca/10_components/projection.csv", x);
@@ -27,11 +27,11 @@ pub fn find_pca_file(
 }
 
 pub fn find_json_metrics_file(
-    ctl: &EncloneControl, 
+    ctl: &EncloneControl,
     _outs: &str,
-    analysis: &Vec<String>, 
-    pathlist: &mut Vec<String>) 
--> String {
+    analysis: &Vec<String>,
+    pathlist: &mut Vec<String>,
+) -> String {
     let mut json_metrics_file = String::new();
     if !ctl.gen_opt.cellranger {
         for x in analysis.iter() {
@@ -47,11 +47,11 @@ pub fn find_json_metrics_file(
 }
 
 pub fn find_feature_metrics_file(
-    ctl: &EncloneControl, 
+    ctl: &EncloneControl,
     _outs: &str,
-    analysis: &Vec<String>, 
-    pathlist: &mut Vec<String>) 
--> String {
+    analysis: &Vec<String>,
+    pathlist: &mut Vec<String>,
+) -> String {
     let mut feature_metrics_file = String::new();
     if !ctl.gen_opt.cellranger {
         for x in analysis.iter() {
@@ -67,11 +67,11 @@ pub fn find_feature_metrics_file(
 }
 
 pub fn find_metrics_file(
-    ctl: &EncloneControl, 
+    ctl: &EncloneControl,
     outs: &str,
-    _analysis: &Vec<String>, 
-    pathlist: &mut Vec<String>) 
--> String {
+    _analysis: &Vec<String>,
+    pathlist: &mut Vec<String>,
+) -> String {
     let mut metrics_file = String::new();
     if !ctl.gen_opt.cellranger {
         let summary_dir = format!("{}/../multi_web_summary_json/metrics_summary_csv", outs);
@@ -88,11 +88,11 @@ pub fn find_metrics_file(
 }
 
 pub fn find_cluster_file(
-    _ctl: &EncloneControl, 
+    _ctl: &EncloneControl,
     _outs: &str,
-    analysis: &Vec<String>, 
-    pathlist: &mut Vec<String>) 
--> String {
+    analysis: &Vec<String>,
+    pathlist: &mut Vec<String>,
+) -> String {
     let mut cluster_file = String::new();
     for x in analysis.iter() {
         cluster_file = format!("{}/clustering/graphclust/clusters.csv", x);
