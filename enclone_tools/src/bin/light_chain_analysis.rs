@@ -20,12 +20,37 @@
 use io_utils::*;
 use pretty_trace::PrettyTrace;
 use rayon::prelude::*;
+use std::cmp::max;
 use std::collections::HashMap;
 use std::env;
 use std::io::BufRead;
 use std::mem::swap;
 use string_utils::TextUtils;
 use tables::*;
+
+pub fn hcat(col1: &[String], col2: &[String], sep: usize) -> Vec<String> {
+    let mut cat = Vec::<String>::new();
+    let height = max(col1.len(), col2.len());
+    let mut width1 = 0;
+    for x in col1 {
+        width1 = max(width1, x.chars().count() + sep);
+    }
+    for i in 0..height {
+        let mut s = if i < col1.len() {
+            col1[i].clone()
+        } else {
+            String::new()
+        };
+        while s.chars().count() < width1 {
+            s += " ";
+        }
+        if i < col2.len() {
+            s += &col2[i];
+        }
+        cat.push(s);
+    }
+    cat
+}
 
 fn main() {
     PrettyTrace::new().on();
@@ -210,14 +235,10 @@ fn main() {
         and CDR3H length."
     );
     println!("\nColumn 1: percent identity rounded down to nearest ten percent");
-    println!("Column > 1: probability that light chain genes are the same");
+    println!("Column > 1: probability that light chain gene names are the same");
+    let mut logs = Vec::<String>::new();
     for xpass in 1..=2 {
         let mut log = String::new();
-        if xpass == 1 {
-            println!("\nboth cells have dref > 0:\n");
-        } else {
-            println!("both cells have dref = 0:\n");
-        }
         let mut rows = Vec::<Vec<String>>::new();
         let row = vec![
                     "CDR3H-AA".to_string(),
@@ -248,6 +269,18 @@ fn main() {
             rows.push(row);
         }
         print_tabular_vbox(&mut log, &rows, 0, &b"l|r|r|r|r|r|r|r".to_vec(), false, false);
-        println!("{}", log);
+        logs.push(log);
+    }
+    let mut logr = vec![Vec::<String>::new(); 2];
+    for xpass in 0..2 {
+        let r = logs[xpass].split('\n').map(str::to_owned).collect();
+        logr[xpass] = r;
+    }
+    print!("\n both cells have dref > 0");
+    print!("                               ");
+    println!("both cells have dref = 0");
+    let r = hcat(&logr[0], &logr[1], 3);
+    for i in 0..r.len() {
+        println!("{}", r[i]);
     }
 }
