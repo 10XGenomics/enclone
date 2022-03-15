@@ -136,7 +136,6 @@ fn main() {
         let j = res.1;
         for k1 in i..j {
             for k2 in k1 + 1..j {
-
                 // Require different donors.
 
                 if data[k1].3 == data[k2].3 {
@@ -164,7 +163,6 @@ fn main() {
                 // Go through passes.
 
                 for pass in 0..7 {
-
                     // Require specific donors.
 
                     if pass == 0 {
@@ -241,15 +239,15 @@ fn main() {
         let mut log = String::new();
         let mut rows = Vec::<Vec<String>>::new();
         let row = vec![
-                    "CDR3H-AA".to_string(),
-                    "any".to_string(), 
-                    "d1,d2".to_string(),
-                    "d1,d3".to_string(),
-                    "d1,d4".to_string(),
-                    "d2,d3".to_string(),
-                    "d2,d4".to_string(),
-                    "d3,d4".to_string(),
-              ];
+            "CDR3H-AA".to_string(),
+            "any".to_string(),
+            "d1,d2".to_string(),
+            "d1,d3".to_string(),
+            "d1,d4".to_string(),
+            "d2,d3".to_string(),
+            "d2,d4".to_string(),
+            "d3,d4".to_string(),
+        ];
         rows.push(row);
         for j in 0..=10 {
             let row = vec!["\\hline".to_string(); 8];
@@ -268,7 +266,14 @@ fn main() {
             }
             rows.push(row);
         }
-        print_tabular_vbox(&mut log, &rows, 0, &b"l|r|r|r|r|r|r|r".to_vec(), false, false);
+        print_tabular_vbox(
+            &mut log,
+            &rows,
+            0,
+            &b"l|r|r|r|r|r|r|r".to_vec(),
+            false,
+            false,
+        );
         logs.push(log);
     }
     let mut logr = vec![Vec::<String>::new(); 2];
