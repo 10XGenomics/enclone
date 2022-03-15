@@ -64,9 +64,7 @@ fn main() {
         let mut github_version = None;
         let o = Command::new("curl")
             .arg("-sI")
-            .arg(
-                "https://github.com/10XGenomics/enclone/releases/latest/download/enclone_linux",
-            )
+            .arg("https://github.com/10XGenomics/enclone/releases/latest/download/enclone_linux")
             .output()
             .expect("failed to execute curl");
         let out = strme(&o.stdout);
