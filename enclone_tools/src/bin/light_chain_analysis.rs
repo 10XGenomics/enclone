@@ -25,6 +25,7 @@ use std::env;
 use std::io::BufRead;
 use std::mem::swap;
 use string_utils::TextUtils;
+use tables::*;
 
 fn main() {
     PrettyTrace::new().on();
@@ -102,9 +103,9 @@ fn main() {
     // 2. count for unequal light chain gene names and dref1 = 0 and dref2 = 0
     // 3. count for equal light chain gene names and dref1 > 0 and dref2 > 0
     // 4. count for unequal light chain gene names and dref1 > 0 and dref2 > 0.
-
+    //
     // Make one pass for all donors, and one pass each for each pair of donors.
-    // This is seven times slower than it should be.
+
     bounds.par_iter_mut().for_each(|res| {
         let i = res.0;
         let j = res.1;
@@ -204,45 +205,49 @@ fn main() {
 
     // Print results.
 
-    for pass in 0..7 {
-        if pass == 0 {
-            println!("\nany two donors");
-        } else if pass == 1 {
-            println!("donors 1 and 2");
-        } else if pass == 2 {
-            println!("donors 1 and 3");
-        } else if pass == 3 {
-            println!("donors 1 and 4");
-        } else if pass == 4 {
-            println!("donors 2 and 3");
-        } else if pass == 5 {
-            println!("donors 2 and 4");
+    println!(
+        "\nConsider two cells from different donors that have the same heavy chain gene name \
+        and CDR3H length."
+    );
+    println!("\nColumn 1: percent identity rounded down to nearest ten percent");
+    println!("Column > 1: probability that light chain genes are the same");
+    for xpass in 1..=2 {
+        let mut log = String::new();
+        if xpass == 1 {
+            println!("\nboth cells have dref > 0:\n");
         } else {
-            println!("donors 3 and 4");
+            println!("both cells have dref = 0:\n");
         }
-        println!(
-            "\nConsider two cells from different donors that have the same heavy chain gene name\n\
-            and CDR3H length."
-        );
-        println!(
-            "\npercent identity on CDR3H-AA ==> \
-            probability that light chain genes are the same"
-        );
-        println!("\npercent identity rounded down to nearest ten percent");
-        println!("\nboth cells have dref > 0:\n");
+        let mut rows = Vec::<Vec<String>>::new();
+        let row = vec![
+                    "CDR3H-AA".to_string(),
+                    "any".to_string(), 
+                    "d1,d2".to_string(),
+                    "d1,d3".to_string(),
+                    "d1,d4".to_string(),
+                    "d2,d3".to_string(),
+                    "d2,d4".to_string(),
+                    "d3,d4".to_string(),
+              ];
+        rows.push(row);
         for j in 0..=10 {
-            let n = res[pass][j].2 + res[pass][j].3;
-            let nznz = 100.0 * res[pass][j].2 as f64 / n as f64;
-            let m = 10 * j;
-            println!("{m}% ==> {nznz:.1}% (n = {n})");
+            let row = vec!["\\hline".to_string(); 8];
+            rows.push(row);
+            let mut row = vec![format!("{}%", 10 * j)];
+            for pass in 0..7 {
+                if xpass == 1 {
+                    let n = res[pass][j].2 + res[pass][j].3;
+                    let nznz = 100.0 * res[pass][j].2 as f64 / n as f64;
+                    row.push(format!("{nznz:.1}%"));
+                } else {
+                    let n = res[pass][j].0 + res[pass][j].1;
+                    let nznz = 100.0 * res[pass][j].0 as f64 / n as f64;
+                    row.push(format!("{nznz:.1}%"));
+                }
+            }
+            rows.push(row);
         }
-        println!("\nboth cells have dref == 0:\n");
-        for j in 0..=10 {
-            let n = res[pass][j].0 + res[pass][j].1;
-            let nznz = 100.0 * res[pass][j].0 as f64 / n as f64;
-            let m = 10 * j;
-            println!("{m}% ==> {nznz:.1}% (n = {n})");
-        }
-        println!("");
+        print_tabular_vbox(&mut log, &rows, 0, &b"l|r|r|r|r|r|r|r".to_vec(), false, false);
+        println!("{}", log);
     }
 }
