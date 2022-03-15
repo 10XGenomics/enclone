@@ -82,7 +82,7 @@ fn main() {
     // Define groups based on equal heavy chain gene names and CDR3H length.
     // Plus placeholder for results, see next.
 
-    let mut bounds = Vec::<(usize, usize, Vec<(usize, usize, usize, usize)>)>::new();
+    let mut bounds = Vec::<(usize, usize, Vec<Vec<(usize, usize, usize, usize)>>)>::new();
     let mut i = 0;
     while i < data.len() {
         // let j = next_diff12_9(&data, i as i32) as usize;
@@ -93,7 +93,7 @@ fn main() {
             }
             j += 1;
         }
-        bounds.push((i, j, vec![(0, 0, 0, 0); 11]));
+        bounds.push((i, j, vec![vec![(0, 0, 0, 0); 11]; 7]));
         i = j;
     }
 
@@ -105,43 +105,43 @@ fn main() {
 
     // Make one pass for all donors, and one pass each for each pair of donors.
     // This is seven times slower than it should be.
+    bounds.par_iter_mut().for_each(|res| {
+        let i = res.0;
+        let j = res.1;
+        for k1 in i..j {
+            for k2 in k1 + 1..j {
 
-    for pass in 0..7 {
-        for i in 0..bounds.len() {
-            bounds[i].2 = vec![(0, 0, 0, 0); 11];
-        }
-        if pass == 0 {
-            println!("\nany two donors");
-        } else if pass == 1 {
-            println!("donors 1 and 2");
-        } else if pass == 2 {
-            println!("donors 1 and 3");
-        } else if pass == 3 {
-            println!("donors 1 and 4");
-        } else if pass == 4 {
-            println!("donors 2 and 3");
-        } else if pass == 5 {
-            println!("donors 2 and 4");
-        } else {
-            println!("donors 3 and 4");
-        }
-        let mut res = vec![(0, 0, 0, 0); 11];
-        bounds.par_iter_mut().for_each(|res| {
-            let i = res.0;
-            let j = res.1;
-            for k1 in i..j {
-                for k2 in k1 + 1..j {
+                // Require different donors.
 
-                    // Require different donors.
+                if data[k1].3 == data[k2].3 {
+                    continue;
+                }
+                let (mut d1, mut d2) = (data[k1].3.clone(), data[k2].3.clone());
+                if d1 > d2 {
+                    swap(&mut d1, &mut d2);
+                }
 
-                    let (mut d1, mut d2) = (data[k1].3.clone(), data[k2].3.clone());
-                    if d1 > d2 {
-                        swap(&mut d1, &mut d2);
+                // Compute stuff.
+
+                let mut same = 0;
+                for m in 0..data[k1].2.len() {
+                    if data[k1].2[m] == data[k2].2[m] {
+                        same += 1;
                     }
+                }
+                let ident = 100.0 * same as f64 / data[k1].2.len() as f64;
+                let ident = ident.floor() as usize;
+                let ident = ident / 10;
+                let (dref1, dref2) = (data[k1].5, data[k2].5);
+                let eq_light = data[k1].4 == data[k2].4;
+
+                // Go through passes.
+
+                for pass in 0..7 {
+
+                    // Require specific donors.
+
                     if pass == 0 {
-                        if d1 == d2 {
-                            continue;
-                        }
                     } else if pass == 1 {
                         if d1 != "d1" || d2 != "d2" {
                             continue;
@@ -170,44 +170,56 @@ fn main() {
 
                     // Add to results.
 
-                    let mut same = 0;
-                    for m in 0..data[k1].2.len() {
-                        if data[k1].2[m] == data[k2].2[m] {
-                            same += 1;
-                        }
-                    }
-                    let ident = 100.0 * same as f64 / data[k1].2.len() as f64;
-                    let ident = ident.floor() as usize;
-                    let ident = ident / 10;
-                    let (dref1, dref2) = (data[k1].5, data[k2].5);
-                    let eq_light = data[k1].4 == data[k2].4;
                     if dref1 == 0 && dref2 == 0 {
                         if eq_light {
-                            res.2[ident].0 += 1;
+                            res.2[pass][ident].0 += 1;
                         } else {
-                            res.2[ident].1 += 1;
+                            res.2[pass][ident].1 += 1;
                         }
                     } else if dref1 > 0 && dref2 > 0 {
                         if eq_light {
-                            res.2[ident].2 += 1;
+                            res.2[pass][ident].2 += 1;
                         } else {
-                            res.2[ident].3 += 1;
+                            res.2[pass][ident].3 += 1;
                         }
                     }
                 }
             }
-        });
+        }
+    });
+
+    // Sum.
+
+    let mut res = vec![vec![(0, 0, 0, 0); 11]; 7];
+    for pass in 0..7 {
         for i in 0..bounds.len() {
             for j in 0..=10 {
-                res[j].0 += bounds[i].2[j].0;
-                res[j].1 += bounds[i].2[j].1;
-                res[j].2 += bounds[i].2[j].2;
-                res[j].3 += bounds[i].2[j].3;
+                res[pass][j].0 += bounds[i].2[pass][j].0;
+                res[pass][j].1 += bounds[i].2[pass][j].1;
+                res[pass][j].2 += bounds[i].2[pass][j].2;
+                res[pass][j].3 += bounds[i].2[pass][j].3;
             }
         }
+    }
 
-        // Print results.
+    // Print results.
 
+    for pass in 0..7 {
+        if pass == 0 {
+            println!("\nany two donors");
+        } else if pass == 1 {
+            println!("donors 1 and 2");
+        } else if pass == 2 {
+            println!("donors 1 and 3");
+        } else if pass == 3 {
+            println!("donors 1 and 4");
+        } else if pass == 4 {
+            println!("donors 2 and 3");
+        } else if pass == 5 {
+            println!("donors 2 and 4");
+        } else {
+            println!("donors 3 and 4");
+        }
         println!(
             "\nConsider two cells from different donors that have the same heavy chain gene name\n\
             and CDR3H length."
@@ -219,15 +231,15 @@ fn main() {
         println!("\npercent identity rounded down to nearest ten percent");
         println!("\nboth cells have dref > 0:\n");
         for j in 0..=10 {
-            let n = res[j].2 + res[j].3;
-            let nznz = 100.0 * res[j].2 as f64 / n as f64;
+            let n = res[pass][j].2 + res[pass][j].3;
+            let nznz = 100.0 * res[pass][j].2 as f64 / n as f64;
             let m = 10 * j;
             println!("{m}% ==> {nznz:.1}% (n = {n})");
         }
         println!("\nboth cells have dref == 0:\n");
         for j in 0..=10 {
-            let n = res[j].0 + res[j].1;
-            let nznz = 100.0 * res[j].0 as f64 / n as f64;
+            let n = res[pass][j].0 + res[pass][j].1;
+            let nznz = 100.0 * res[pass][j].0 as f64 / n as f64;
             let m = 10 * j;
             println!("{m}% ==> {nznz:.1}% (n = {n})");
         }
