@@ -204,6 +204,11 @@ pub fn load_gex(
                     pathlist.push(pca_file.clone());
                     break;
                 }
+                pca_file = format!("{}/pca/gene_expression_10_components/projection.csv", x);
+                if path_exists(&pca_file) {
+                    pathlist.push(pca_file.clone());
+                    break;
+                }
             }
 
             // Find the json metrics file.
@@ -254,6 +259,11 @@ pub fn load_gex(
             let mut cluster_file = String::new();
             for x in analysis.iter() {
                 cluster_file = format!("{}/clustering/graphclust/clusters.csv", x);
+                if path_exists(&cluster_file) {
+                    pathlist.push(cluster_file.clone());
+                    break;
+                }
+                cluster_file = format!("{}/clustering/gene_expression_graphclust/clusters.csv", x);
                 if path_exists(&cluster_file) {
                     pathlist.push(cluster_file.clone());
                     break;
