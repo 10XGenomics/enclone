@@ -30,6 +30,10 @@ command-line help that comes with your copy of #enclone will always match its be
 
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
+<p><b>3/15/22</b>: Add <code>DATASET</code> filter, please see
+<a href="../../pages/auto/help.filter.html"><code>enclone help filter</code></a>.
+</p>
+
 <p><b>3/14/22</b>:
 <ul>
 <li>Add <code>PNO_HEADER</code> option to suppress CSV header line in parseable output, please see

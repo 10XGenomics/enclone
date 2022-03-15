@@ -122,6 +122,13 @@ pub fn process_special_arg1(
             );
         }
         ctl.join_alg_opt.fwr1_cdr12_delta = val.force_f64();
+    } else if arg.starts_with("DATASET=") {
+        let d = arg
+            .after("DATASET=")
+            .split('|')
+            .map(str::to_owned)
+            .collect();
+        ctl.clono_filt_opt.dataset = Some(d);
     } else if arg.starts_with("HONEY=") {
         let mut parts = Vec::<Vec<String>>::new();
         {

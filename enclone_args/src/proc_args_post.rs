@@ -561,6 +561,18 @@ pub fn proc_args_post(
     // More argument sanity checking.
 
     let t = Instant::now();
+    if ctl.clono_filt_opt.dataset.is_some() {
+        let d = &ctl.clono_filt_opt.dataset.as_ref().unwrap();
+        for x in d.iter() {
+            if !ctl.origin_info.dataset_id.contains(&*x) {
+                return Err(format!(
+                    "\nDATASET argument has {} in it, which is not a known \
+                    dataset name.\n",
+                    *x
+                ));
+            }
+        }
+    }
     let bcr_only = [
         "PEER_GROUP",
         "PG_READABLE",
