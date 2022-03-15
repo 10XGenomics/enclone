@@ -105,6 +105,23 @@ fn main() {
     }
     data.sort();
 
+    for i in 0..data.len() {
+        data[i].4 = data[i].4.replace("D", "");
+    }
+
+    /*
+        if data[i].4 == "IGKV1D-15" {
+            data[i].4 = "IGKV1-15".to_string();
+        }
+        if data[i].4 == "IGKV1D-17" {
+            data[i].4 = "IGKV1-17".to_string();
+        }
+        if data[i].4 == "IGKV2D-30" {
+            data[i].4 = "IGKV2-30".to_string();
+        }
+    }
+    */
+
     // Define groups based on equal heavy chain gene names and CDR3H length.
     // Plus placeholder for results, see next.
 
