@@ -425,6 +425,16 @@ pub fn proc_args_post(
 
     // Sanity check other arguments (and more below).
 
+    if ctl.clono_filt_opt.dataset.is_some() {
+        let d = &ctl.clono_filt_opt.dataset.as_ref().unwrap();
+        for x in d.iter() {
+            if !ctl.origin_info.dataset_id.contains(&*x) {
+                return Err(format!("\nDATASET argument has {} in it, which is not a known \
+                    dataset name.\n", *x
+                ));
+            }
+        }
+    }
     if ctl.parseable_opt.pcols_show.len() > 0 {
         if ctl.parseable_opt.pcols_show.len() != ctl.parseable_opt.pcols.len() {
             return Err(

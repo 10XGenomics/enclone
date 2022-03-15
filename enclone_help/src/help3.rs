@@ -355,7 +355,7 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) -> Result<(), String> {
         );
         h.doc2("(string in alphabet ACGT)");
 
-        // doc MIN_DATASETS and MAX_DATASETS and MIN_DATASET_RATIO
+        // doc MIN_DATASETS and MAX_DATASETS and MIN_DATASET_RATIO and DATASET
 
         h.ldoc(
             "MIN_DATASETS=n",
@@ -368,6 +368,10 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) -> Result<(), String> {
         h.doc(
             "MIN_DATASET_RATIO=n",
             "only show clonotypes having at least n cells and for which the ratio",
+        );
+        h.doc(
+            "DATASET=\"d1|...|dn\"",
+            "only show clonotypes having at least one of the listed datasets",
         );
         h.doc2("of the number of cells in the must abundant dataset to the next most");
         h.doc2("abundant one is at least n");

@@ -115,6 +115,25 @@ pub fn survives_filter(
     }
     let cols = rsi.vids.len();
 
+    // DATASET=...
+
+    if ctl.clono_filt_opt.dataset.is_some() {
+        let mut ok = false;
+        for d in ctl.clono_filt_opt.dataset.as_ref().unwrap().iter() {
+            for s in exacts.iter() {
+                let ex = &exact_clonotypes[*s];
+                for i in 0..ex.clones.len() {
+                    if ctl.origin_info.dataset_id[ex.clones[i][0].dataset_index] == *d {
+                        ok = true;
+                    }
+                }
+            }
+        }
+        if !ok {
+            return false;
+        }
+    }
+
     // Barcode required
 
     if !ctl.clono_filt_opt.barcode.is_empty() {

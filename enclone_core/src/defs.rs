@@ -413,6 +413,7 @@ pub struct ClonoFiltOpt {
     pub d_second: bool,
     pub const_igh: Option<Regex>,
     pub const_igkl: Option<Regex>,
+    pub dataset: Option<Vec<String>>, // only show clonotypes having one of the listed dataset names
 }
 
 // Clonotype printing options.
