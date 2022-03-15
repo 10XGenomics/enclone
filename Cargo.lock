@@ -1289,7 +1289,7 @@ checksum = "e78d4f1cc4ae33bbfc157ed5d5a5ef3bc29227303d595861deb238fcec4e9457"
 
 [[package]]
 name = "enclone"
-version = "0.5.157"
+version = "0.5.158"
 dependencies = [
  "amino 0.1.7 (registry+https://github.com/rust-lang/crates.io-index)",
  "ansi_escape",
@@ -1323,7 +1323,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_args"
-version = "0.5.157"
+version = "0.5.158"
 dependencies = [
  "attohttpc",
  "debruijn",
@@ -1347,7 +1347,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_core"
-version = "0.5.157"
+version = "0.5.158"
 dependencies = [
  "align_tools 0.1.11 (registry+https://github.com/rust-lang/crates.io-index)",
  "amino 0.1.7 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -1380,7 +1380,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_denovo"
-version = "0.5.157"
+version = "0.5.158"
 dependencies = [
  "amino 0.1.7 (registry+https://github.com/rust-lang/crates.io-index)",
  "binary_vec_io",
@@ -1411,7 +1411,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_exec"
-version = "0.5.157"
+version = "0.5.158"
 dependencies = [
  "ansi_escape",
  "anyhow",
@@ -1442,7 +1442,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_help"
-version = "0.5.157"
+version = "0.5.158"
 dependencies = [
  "ansi_escape",
  "enclone_core",
@@ -1454,7 +1454,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_main"
-version = "0.5.157"
+version = "0.5.158"
 dependencies = [
  "dirs",
  "enclone",
@@ -1485,7 +1485,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_paper"
-version = "0.5.157"
+version = "0.5.158"
 dependencies = [
  "enclone_tail",
  "plotters",
@@ -1493,7 +1493,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_print"
-version = "0.5.157"
+version = "0.5.158"
 dependencies = [
  "amino 0.1.7 (registry+https://github.com/rust-lang/crates.io-index)",
  "ansi_escape",
@@ -1530,7 +1530,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_proto"
-version = "0.5.157"
+version = "0.5.158"
 dependencies = [
  "bio_edit 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "byteorder",
@@ -1545,7 +1545,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_ranger"
-version = "0.5.157"
+version = "0.5.158"
 dependencies = [
  "enclone",
  "enclone_args",
@@ -1564,7 +1564,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_stuff"
-version = "0.5.157"
+version = "0.5.158"
 dependencies = [
  "amino 0.1.7 (registry+https://github.com/rust-lang/crates.io-index)",
  "debruijn",
@@ -1591,7 +1591,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_tail"
-version = "0.5.157"
+version = "0.5.158"
 dependencies = [
  "align_tools 0.1.11 (registry+https://github.com/rust-lang/crates.io-index)",
  "amino 0.1.7 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -1633,7 +1633,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_tools"
-version = "0.5.157"
+version = "0.5.158"
 dependencies = [
  "ansi_escape",
  "attohttpc",
@@ -1672,7 +1672,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_vars"
-version = "0.5.157"
+version = "0.5.158"
 dependencies = [
  "io_utils 0.3.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "itertools",
@@ -1683,7 +1683,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_version"
-version = "0.5.157"
+version = "0.5.158"
 dependencies = [
  "chrono",
  "string_utils 0.1.4 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -1691,7 +1691,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_visual"
-version = "0.5.157"
+version = "0.5.158"
 dependencies = [
  "anyhow",
  "arboard",
