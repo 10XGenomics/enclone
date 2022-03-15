@@ -4,6 +4,7 @@ use io_utils::*;
 
 pub mod load_gex;
 pub mod load_gex_core;
+pub mod load_gex_util;
 pub mod proc_args;
 pub mod proc_args2;
 pub mod proc_args3;

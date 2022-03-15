@@ -3,6 +3,7 @@
 // Load gene expression and feature barcoding (antibody, antigen) data from Cell Ranger outputs.
 
 use crate::*;
+use crate::load_gex_util::*;
 use enclone_core::defs::EncloneControl;
 use enclone_core::slurp::slurp_h5;
 use io_utils::{dir_list, open_for_read, open_userfile_for_read, path_exists};
@@ -195,80 +196,13 @@ pub fn load_gex(
                 }
             }
 
-            // Find the pca file.
+            // Find files.
 
-            let mut pca_file = String::new();
-            for x in analysis.iter() {
-                pca_file = format!("{}/pca/10_components/projection.csv", x);
-                if path_exists(&pca_file) {
-                    pathlist.push(pca_file.clone());
-                    break;
-                }
-                pca_file = format!("{}/pca/gene_expression_10_components/projection.csv", x);
-                if path_exists(&pca_file) {
-                    pathlist.push(pca_file.clone());
-                    break;
-                }
-            }
-
-            // Find the json metrics file.
-
-            let mut json_metrics_file = String::new();
-            if !ctl.gen_opt.cellranger {
-                for x in analysis.iter() {
-                    let f = format!("{}/metrics_summary_json.json", x);
-                    if path_exists(&f) {
-                        json_metrics_file = f.clone();
-                        pathlist.push(f);
-                        break;
-                    }
-                }
-            }
-
-            // Find the feature metrics file.
-
-            let mut feature_metrics_file = String::new();
-            if !ctl.gen_opt.cellranger {
-                for x in analysis.iter() {
-                    let f = format!("{}/per_feature_metrics.csv", x);
-                    if path_exists(&f) {
-                        feature_metrics_file = f.clone();
-                        pathlist.push(f);
-                        break;
-                    }
-                }
-            }
-
-            // Find the metrics file.
-
-            let mut metrics_file = String::new();
-            if !ctl.gen_opt.cellranger {
-                let summary_dir = format!("{}/../multi_web_summary_json/metrics_summary_csv", outs);
-                if path_exists(&summary_dir) {
-                    let list = dir_list(&summary_dir);
-                    if list.solo() {
-                        let path = format!("{}/{}", summary_dir, list[0]);
-                        pathlist.push(path.clone());
-                        metrics_file = path;
-                    }
-                }
-            }
-
-            // Find the cluster file.
-
-            let mut cluster_file = String::new();
-            for x in analysis.iter() {
-                cluster_file = format!("{}/clustering/graphclust/clusters.csv", x);
-                if path_exists(&cluster_file) {
-                    pathlist.push(cluster_file.clone());
-                    break;
-                }
-                cluster_file = format!("{}/clustering/gene_expression_graphclust/clusters.csv", x);
-                if path_exists(&cluster_file) {
-                    pathlist.push(cluster_file.clone());
-                    break;
-                }
-            }
+            let pca_file = find_pca_file(&ctl, &outs, &analysis, pathlist);
+            let json_metrics_file = find_json_metrics_file(&ctl, &outs, &analysis, pathlist);
+            let feature_metrics_file = find_feature_metrics_file(&ctl, &outs, &analysis, pathlist);
+            let metrics_file = find_metrics_file(&ctl, &outs, &analysis, pathlist);
+            let cluster_file = find_cluster_file(&ctl, &outs, &analysis, pathlist);
 
             // Proceed.
 
