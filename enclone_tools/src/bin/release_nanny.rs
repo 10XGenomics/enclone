@@ -65,15 +65,16 @@ fn main() {
         let o = Command::new("curl")
             .arg("-sI")
             .arg(
-                "https://github.com/10XGenomics/enclone/\
-                releases/latest/download/enclone_linux",
+                "https://github.com/10XGenomics/enclone/releases/latest/download/enclone_linux",
             )
             .output()
             .expect("failed to execute curl");
         let out = strme(&o.stdout);
+        let mut location_line = String::new();
         for line in out.lines() {
             if line.starts_with("Location:") || line.starts_with("location:") {
                 github_version = Some(line.between("/download/", "/enclone_linux").to_string());
+                location_line = line.to_string();
             }
         }
         assert!(github_version.is_some());
@@ -115,10 +116,11 @@ fn main() {
                 rn.push(x.force_usize());
             }
             if gn < rn {
-                let msg = format!(
+                let mut msg = format!(
                     "release nanny sees github at {} BEHIND remote {}, which is wrong, giving up",
                     github_version, remote_version
                 );
+                msg += &mut format!("\nThe github location line is\n{}", location_line);
                 mail(&address, &msg);
                 eprintln!("{}\n", msg);
                 std::process::exit(1);
