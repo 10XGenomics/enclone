@@ -8,6 +8,7 @@ use debruijn::dna_string::DnaString;
 use enclone_core::defs::EncloneControl;
 use itertools::Itertools;
 use std::cmp::min;
+use std::env;
 use string_utils::*;
 use tables::*;
 use vdj_ann::refx::{make_vdj_ref_data_core, RefData};
@@ -21,6 +22,10 @@ pub fn analyze_donor_ref(
     // Analyze donor reference.
 
     if ctl.gen_opt.external_ref.len() > 0 {
+        if ctl.gen_opt.echo {
+            let args: Vec<String> = env::args().collect();
+            println!("\n{}", args.iter().format(" "));
+        }
         let mut erefdata = RefData::new();
         let f = std::fs::read_to_string(&ctl.gen_opt.external_ref).unwrap();
         make_vdj_ref_data_core(&mut erefdata, &f, "", true, true, None);
