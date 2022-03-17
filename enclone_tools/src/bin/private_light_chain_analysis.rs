@@ -10,25 +10,15 @@
 // enclone BCR=@test BUILT_IN CHAINS_EXACT=2 CHAINS=2 NOPRINT POUT=stdout PCELL ECHOC
 //         PCOLS=donors_cell,v_name1,v_name2,dref,cdr3_aa1,clonotype_ncells,const1,hcomp
 //         > per_cell_stuff
-//
-// enclone BIB=@training BUILT_IN CHAINS_EXACT=2 CHAINS=2 NOPRINT POUT=stdout PCELL ECHOC
-//         PCOLS=donors_cell,v_name1,v_name2,dref,cdr3_aa1,clonotype_ncells,const1,hcomp
-//         > training_per_cell_stuff
-//
-// enclone BIB=1,2,3,29 BUILT_IN CHAINS_EXACT=2 CHAINS=2 NOPRINT POUT=stdout PCELL ECHOC
-//         PCOLS=donors_cell,v_name1,v_name2,dref,cdr3_aa1,clonotype_ncells,const1,hcomp
-//         > training1_per_cell_stuff
 
 use io_utils::*;
 use pretty_trace::PrettyTrace;
-use rayon::prelude::*;
 use std::cmp::max;
 use std::collections::HashMap;
 use std::env;
 use std::io::BufRead;
-use std::mem::swap;
 use string_utils::TextUtils;
-use tables::*;
+// use tables::*;
 
 pub fn hcat(col1: &[String], col2: &[String], sep: usize) -> Vec<String> {
     let mut cat = Vec::<String>::new();
@@ -98,38 +88,47 @@ fn main() {
 
     // Analyze the data.
 
-    let mut i = 0;
-    let mut all = 0;
-    let mut same = 0;
-    while i < data.len() {
-        let mut j = i + 1;
-        while j < data.len() {
-            if data[j].0 != data[i].0 || data[j].1 != data[i].1 {
-                break;
+    for pass in 1..=2 {
+        let mut i = 0;
+        let mut all = 0;
+        let mut same = 0;
+        while i < data.len() {
+            let mut j = i + 1;
+            while j < data.len() {
+                if data[j].0 != data[i].0 || data[j].1 != data[i].1 {
+                    break;
+                }
+                j += 1;
             }
-            j += 1;
-        }
-
-        // Now i..j define a group having the same donor and same CDR3H-AA.  Look at pairs of 
-        // cells from this group.
-
-        for k1 in i..j {
-            for k2 in i + 1..j {
-                if data[k1].2 == data[k2].2 { 
-                    continue;
-                }
-                if data[k1].4 == 0 || data[k2].4 == 0 {
-                    continue;
-                }
-                all += 1;
-                if data[k1].3 == data[k2].3 {
-                    println!("{}, {}", data[k1].2, data[k2].2);
-                    same += 1;
+    
+            // Now i..j define a group having the same donor and same CDR3H-AA.  Look at pairs of 
+            // cells from this group.
+    
+            for k1 in i..j {
+                for k2 in i + 1..j {
+                    if data[k1].2 == data[k2].2 { 
+                        continue;
+                    }
+                    if pass == 1 {
+                        if data[k1].4 == 0 || data[k2].4 == 0 {
+                            continue;
+                        }
+                    } else {
+                        if data[k1].4 > 0 || data[k2].4 > 0 {
+                            continue;
+                        }
+                    }
+                    all += 1;
+                    if data[k1].3 == data[k2].3 {
+                        same += 1;
+                    }
                 }
             }
+            i = j;
         }
-        i = j;
+        println!("\n{}", if pass == 1 { "memory" } else { "naive" });
+        println!("{:.1}%", 100.0 * same as f64 / all as f64);
+        println!("{} of {}", same, all);
     }
-    println!("{:.1}%", 100.0 * same as f64 / all as f64);
-    println!("{} of {}", same, all);
+    println!("");
 }
