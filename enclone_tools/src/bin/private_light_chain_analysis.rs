@@ -198,7 +198,7 @@ fn main() {
         ];
         rows.push(row);
         for j in 0..=10 {
-            let row = vec!["\\hline".to_string(); 5];
+            let row = vec!["\\hline".to_string(); 6];
             rows.push(row);
             let mut row = vec![format!("{}%", 10 * j)];
             for pass in 0..5 {
@@ -218,7 +218,7 @@ fn main() {
             &mut log,
             &rows,
             0,
-            &b"l|r|r|r|r".to_vec(),
+            &b"l|r|r|r|r|r".to_vec(),
             false,
             false,
         );
