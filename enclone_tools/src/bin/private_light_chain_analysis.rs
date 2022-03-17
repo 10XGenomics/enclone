@@ -51,14 +51,7 @@ fn main() {
     let f = open_for_read![&args[1]];
     let mut first = true;
     let mut tof = HashMap::<String, usize>::new();
-    let mut data = Vec::<(
-        String,
-        usize,
-        Vec<u8>,
-        String,
-        String,
-        usize,
-    )>::new();
+    let mut data = Vec::<(String, usize, Vec<u8>, String, String, usize)>::new();
     for line in f.lines() {
         let s = line.unwrap();
         if s.starts_with("#") {
@@ -120,7 +113,6 @@ fn main() {
         let d = data[i].0.after("d").force_usize() - 1;
         for k1 in i..j {
             for k2 in k1 + 1..j {
-
                 // Require different heavy chain V genes.
 
                 if data[k1].3 == data[k2].3 {
@@ -214,14 +206,7 @@ fn main() {
             }
             rows.push(row);
         }
-        print_tabular_vbox(
-            &mut log,
-            &rows,
-            0,
-            &b"l|r|r|r|r|r".to_vec(),
-            false,
-            false,
-        );
+        print_tabular_vbox(&mut log, &rows, 0, &b"l|r|r|r|r|r".to_vec(), false, false);
         logs.push(log);
     }
     let mut logr = vec![Vec::<String>::new(); 2];
