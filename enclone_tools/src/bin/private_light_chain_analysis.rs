@@ -143,18 +143,18 @@ fn main() {
 
                 if dref1 == 0 && dref2 == 0 {
                     if eq_light {
-                        res.2[d][ident].0 += 1;
+                        res.2[d + 1][ident].0 += 1;
                         res.2[0][ident].0 += 1;
                     } else {
-                        res.2[d][ident].1 += 1;
+                        res.2[d + 1][ident].1 += 1;
                         res.2[0][ident].1 += 1;
                     }
                 } else if dref1 > 0 && dref2 > 0 {
                     if eq_light {
-                        res.2[d][ident].2 += 1;
+                        res.2[d + 1][ident].2 += 1;
                         res.2[0][ident].2 += 1;
                     } else {
-                        res.2[d][ident].3 += 1;
+                        res.2[d + 1][ident].3 += 1;
                         res.2[0][ident].3 += 1;
                     }
                 }
