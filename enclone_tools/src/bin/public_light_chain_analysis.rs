@@ -27,7 +27,7 @@ use std::collections::HashMap;
 use std::env;
 use std::io::BufRead;
 use std::mem::swap;
-use string_utils::TextUtils;
+use string_utils::{stringme, TextUtils};
 use tables::*;
 use vector_utils::unique_sort;
 
@@ -144,8 +144,10 @@ fn main() {
     let mut ins_memory = 0;
     let mut ins_naive = 0;
     let mut max_ins_memory = 0;
+    let mut max_ins_memory_cdr3 = String::new();
     let mut max_ins_naive = 0;
     let mut i = 0;
+    println!("");
     while i < data.len() {
         let mut j = i + 1;
         while j < data.len() {
@@ -170,6 +172,14 @@ fn main() {
                 } else {
                     n_memory += 1;
                     ins_memory += jun_ins;
+                    if jun_ins >= 4 {
+                        println!("public memory with CDR3H = {} has jun_ins = {}",
+                            stringme(&data[k].2), jun_ins
+                        );
+                    }
+                    if jun_ins > max_ins_memory {
+                        max_ins_memory_cdr3 = stringme(&data[k].2);
+                    }
                     max_ins_memory = max(max_ins_memory, jun_ins);
                 }
             }
@@ -179,7 +189,7 @@ fn main() {
     println!("mean junction insertion bases for public memory = {:.1}",
         ins_memory as f64 / n_memory as f64
     );
-    println!("max = {}", max_ins_memory);
+    println!("max = {} at CDR3H = {}", max_ins_memory, max_ins_memory_cdr3);
     println!("mean junction insertion bases for public naive = {:.1}",
         ins_naive as f64 / n_naive as f64
     );
