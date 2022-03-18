@@ -29,6 +29,7 @@ use std::io::BufRead;
 use std::mem::swap;
 use string_utils::TextUtils;
 use tables::*;
+use vector_utils::unique_sort;
 
 pub fn hcat(col1: &[String], col2: &[String], sep: usize) -> Vec<String> {
     let mut cat = Vec::<String>::new();
@@ -60,7 +61,6 @@ fn main() {
     let f = open_for_read![&args[1]];
     let mut first = true;
     let mut tof = HashMap::<String, usize>::new();
-    // data = {(v_name1, cdr3_len, cdr3_aa1, donor, v_name2, dref, clonotype_ncells, const1, hcomp)}
     let mut data = Vec::<(
         String,
         usize,
@@ -70,6 +70,7 @@ fn main() {
         usize,
         usize,
         String,
+        usize,
         usize,
     )>::new();
     for line in f.lines() {
@@ -90,6 +91,7 @@ fn main() {
             assert!(tof.contains_key("clonotype_ncells"));
             assert!(tof.contains_key("const1"));
             assert!(tof.contains_key("hcomp"));
+            assert!(tof.contains_key("jun_ins"));
             first = false;
         } else {
             data.push((
@@ -102,14 +104,80 @@ fn main() {
                 fields[tof["clonotype_ncells"]].force_usize(),
                 fields[tof["const1"]].to_string(),
                 fields[tof["hcomp"]].force_usize(),
+                fields[tof["jun_ins"]].force_usize(),
             ));
         }
     }
     data.sort();
 
+    // Replace paralogs.
+
     for i in 0..data.len() {
         data[i].4 = data[i].4.replace("D", "");
     }
+
+    // Compute mean jun_ins for various classes of cells.
+
+    let mut n_memory = 0;
+    let mut n_naive = 0;
+    let mut ins_memory = 0;
+    let mut ins_naive = 0;
+    for i in 0..data.len() {
+        let dref = data[i].5;
+        let jun_ins = data[i].9;
+        if dref == 0 {
+            n_naive += 1;
+            ins_naive += jun_ins
+        } else {
+            n_memory += 1;
+            ins_memory += jun_ins
+        }
+    }
+    println!("\nmean junction insertion bases for memory = {:.1}",
+        ins_memory as f64 / n_memory as f64
+    );
+    println!("mean junction insertion bases for naive = {:.1}",
+        ins_naive as f64 / n_naive as f64
+    );
+    let mut n_memory = 0;
+    let mut n_naive = 0;
+    let mut ins_memory = 0;
+    let mut ins_naive = 0;
+    let mut i = 0;
+    while i < data.len() {
+        let mut j = i + 1;
+        while j < data.len() {
+            if data[j].0 != data[i].0 || data[j].2 != data[i].2 {
+                break;
+            }
+            j += 1;
+        }
+        let mut donors = Vec::<String>::new();
+        for k in i..j {
+            donors.push(data[k].3.clone());
+        }
+        unique_sort(&mut donors);
+        if donors.len() > 1 {
+            for k in i..j {
+                let dref = data[k].5;
+                let jun_ins = data[k].9;
+                if dref == 0 {
+                    n_naive += 1;
+                    ins_naive += jun_ins
+                } else {
+                    n_memory += 1;
+                    ins_memory += jun_ins
+                }
+            }
+        }
+        i = j;
+    }
+    println!("mean junction insertion bases for public memory = {:.1}",
+        ins_memory as f64 / n_memory as f64
+    );
+    println!("mean junction insertion bases for public naive = {:.1}\n",
+        ins_naive as f64 / n_naive as f64
+    );
 
     // Define groups based on equal heavy chain gene names and CDR3H length.
     // Plus placeholder for results, see next.
