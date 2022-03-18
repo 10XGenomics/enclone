@@ -143,6 +143,8 @@ fn main() {
     let mut n_naive = 0;
     let mut ins_memory = 0;
     let mut ins_naive = 0;
+    let mut max_ins_memory = 0;
+    let mut max_ins_naive = 0;
     let mut i = 0;
     while i < data.len() {
         let mut j = i + 1;
@@ -163,10 +165,12 @@ fn main() {
                 let jun_ins = data[k].9;
                 if dref == 0 {
                     n_naive += 1;
-                    ins_naive += jun_ins
+                    ins_naive += jun_ins;
+                    max_ins_naive = max(max_ins_naive, jun_ins);
                 } else {
                     n_memory += 1;
-                    ins_memory += jun_ins
+                    ins_memory += jun_ins;
+                    max_ins_memory = max(max_ins_memory, jun_ins);
                 }
             }
         }
@@ -175,9 +179,11 @@ fn main() {
     println!("mean junction insertion bases for public memory = {:.1}",
         ins_memory as f64 / n_memory as f64
     );
-    println!("mean junction insertion bases for public naive = {:.1}\n",
+    println!("max = {}", max_ins_memory);
+    println!("mean junction insertion bases for public naive = {:.1}",
         ins_naive as f64 / n_naive as f64
     );
+    println!("max = {}", max_ins_naive);
 
     // Define groups based on equal heavy chain gene names and CDR3H length.
     // Plus placeholder for results, see next.
