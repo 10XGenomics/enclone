@@ -27,7 +27,7 @@ use std::collections::HashMap;
 use std::env;
 use std::io::BufRead;
 use std::mem::swap;
-use string_utils::{stringme, TextUtils};
+use string_utils::{stringme, strme, TextUtils};
 use tables::*;
 use vector_utils::unique_sort;
 
@@ -147,6 +147,8 @@ fn main() {
     let mut max_ins_memory_cdr3 = String::new();
     let mut max_ins_naive = 0;
     let mut i = 0;
+    let mut last = String::new();
+    let mut ins_mem = vec![0; 100];
     println!("");
     while i < data.len() {
         let mut j = i + 1;
@@ -172,10 +174,14 @@ fn main() {
                 } else {
                     n_memory += 1;
                     ins_memory += jun_ins;
-                    if jun_ins >= 4 {
+                    if k == i {
+                        ins_mem[jun_ins] += 1;
+                    }
+                    if jun_ins >= 6 && last != strme(&data[k].2) {
                         println!("public memory with CDR3H = {} has jun_ins = {}",
                             stringme(&data[k].2), jun_ins
                         );
+                        last = stringme(&data[k].2);
                     }
                     if jun_ins > max_ins_memory {
                         max_ins_memory_cdr3 = stringme(&data[k].2);
@@ -194,6 +200,12 @@ fn main() {
         ins_naive as f64 / n_naive as f64
     );
     println!("max = {}", max_ins_naive);
+    println!("\npublic memory junction insertion length distribution, by cell group");
+    for i in 0..ins_mem.len() {
+        if ins_mem[i] > 0 {
+            println!("{} ==> {}", i, ins_mem[i]);
+        }
+    }
 
     // Define groups based on equal heavy chain gene names and CDR3H length.
     // Plus placeholder for results, see next.
