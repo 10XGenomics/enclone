@@ -50,14 +50,17 @@ fn main() {
             assert!(tof.contains_key("cdr3_aa1"));
             first = false;
         } else {
-            data.push((
-                fields[tof["v_name1"]].to_string(),
-                fields[tof["cdr3_aa1"]].len(),
-                fields[tof["cdr3_aa1"]].to_string().as_bytes().to_vec(),
-                fields[tof["donors_cell"]].to_string(),
-                fields[tof["v_name2"]].to_string(),
-                fields[tof["dref"]].force_usize(),
-            ));
+            let dref = fields[tof["dref"]].force_usize();
+            if dref > 0 {
+                data.push((
+                    fields[tof["v_name1"]].to_string(),
+                    fields[tof["cdr3_aa1"]].len(),
+                    fields[tof["cdr3_aa1"]].to_string().as_bytes().to_vec(),
+                    fields[tof["donors_cell"]].to_string(),
+                    fields[tof["v_name2"]].to_string(),
+                    fields[tof["dref"]].force_usize(),
+                ));
+            }
         }
     }
     data.sort();
@@ -98,15 +101,7 @@ fn main() {
         let i = res.0;
         let j = res.1;
         for k1 in i..j {
-            let dref1 = data[k1].5;
-            if dref1 == 0 {
-                continue;
-            }
             for k2 in k1 + 1..j {
-                let dref2 = data[k2].5;
-                if dref2 == 0 {
-                    continue;
-                }
 
                 // Require different donors.
 
@@ -141,15 +136,11 @@ fn main() {
     // Sum.
 
     let mut res = vec![vec![(0, 0, 0, 0); 11]; 7];
-    for pass in 0..7 {
-        for i in 0..bounds.len() {
-            for j in 0..=10 {
-                res[pass][j].0 += bounds[i].2[pass][j].0;
-                res[pass][j].1 += bounds[i].2[pass][j].1;
-                res[pass][j].2 += bounds[i].2[pass][j].2;
-                res[pass][j].3 += bounds[i].2[pass][j].3;
-            }
-        }
+    for i in 0..bounds.len() {
+        res[0][10].0 += bounds[i].2[0][10].0;
+        res[0][10].1 += bounds[i].2[0][10].1;
+        res[0][10].2 += bounds[i].2[0][10].2;
+        res[0][10].3 += bounds[i].2[0][10].3;
     }
 
     // Print.
