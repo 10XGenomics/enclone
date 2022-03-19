@@ -75,7 +75,7 @@ fn main() {
 
     let mut penalty = vec![vec![1.0; 27]; 27];
     for i in 0..27 {
-        penalty[i][0] = 0.0;
+        penalty[i][i] = 0.0;
     }
 
     // Define groups based on equal heavy chain gene names and CDR3H length.
@@ -98,8 +98,6 @@ fn main() {
     // Results = for each percent identity, rounded down:
     // 1. count for equal light chain gene names and dref1 > 0 and dref2 > 0
     // 2. count for unequal light chain gene names and dref1 > 0 and dref2 > 0.
-    //
-    // Make one pass for all donors, and one pass each for each pair of donors.
 
     let t = Instant::now();
     bounds.par_iter_mut().for_each(|res| {
@@ -117,11 +115,9 @@ fn main() {
 
                 let mut err = 0.0;
                 for m in 0..data[k1].2.len() {
-                    if data[k1].2[m] != data[k2].2[m] {
-                        let c1 = (data[k1].2[m] - b'A') as usize;
-                        let c2 = (data[k2].2[m] - b'A') as usize;
-                        err += penalty[c1][c2];
-                    }
+                    let c1 = (data[k1].2[m] - b'A') as usize;
+                    let c2 = (data[k2].2[m] - b'A') as usize;
+                    err += penalty[c1][c2];
                 }
                 err /= data[k1].2.len() as f64;
                 err *= 100.0;
