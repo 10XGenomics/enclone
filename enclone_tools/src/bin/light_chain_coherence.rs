@@ -18,6 +18,7 @@ use std::env;
 use std::io::BufRead;
 use std::time::Instant;
 use string_utils::TextUtils;
+use vector_utils::*;
 
 fn main() {
     PrettyTrace::new().on();
@@ -71,10 +72,23 @@ fn main() {
         data[i].4 = data[i].4.replace("D", "");
     }
 
+    // Convert CDRH3 to [0,20).
+
+    let aa = b"ACDEFGHIKLMNPQRSTVWY".to_vec();
+    for i in 0..data.len() {
+        let mut x = Vec::<u8>::new();
+        for j in 0..data[i].2.len() {
+            let c = data[i].2[j];
+            let p = bin_position(&aa, &c) as u8;
+            x.push(p);
+        }
+        data[i].2 = x;
+    }
+    
     // Define penalty matrix.
 
-    let mut penalty = vec![vec![1.0; 27]; 27];
-    for i in 0..27 {
+    let mut penalty = vec![vec![1.0; 20]; 20];
+    for i in 0..20 {
         penalty[i][i] = 0.0;
     }
 
@@ -115,8 +129,8 @@ fn main() {
 
                 let mut err = 0.0;
                 for m in 0..data[k1].2.len() {
-                    let c1 = (data[k1].2[m] - b'A') as usize;
-                    let c2 = (data[k2].2[m] - b'A') as usize;
+                    let c1 = data[k1].2[m] as usize;
+                    let c2 = data[k2].2[m] as usize;
                     err += penalty[c1][c2];
                 }
                 err /= data[k1].2.len() as f64;
