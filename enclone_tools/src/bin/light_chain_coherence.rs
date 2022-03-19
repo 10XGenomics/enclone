@@ -22,6 +22,7 @@ use vector_utils::*;
 
 fn main() {
     PrettyTrace::new().on();
+    let t = Instant::now();
     let args: Vec<String> = env::args().collect();
     let f = open_for_read![&args[1]];
     let mut first = true;
@@ -114,41 +115,43 @@ fn main() {
     println!("");
     let mut rand = 0i64;
     let mut best_n = 0;
-    loop {
-        let t = Instant::now();
+    let mut canonical_n = 0;
+    for count in 1.. {
 
         // Mutate penalty matrix.
 
         let penalty_save = penalty.clone();
-        let rand1 = 6_364_136_223_846_793_005i64
-            .wrapping_mul(rand)
-            .wrapping_add(1_442_695_040_888_963_407);
-        let rand2 = 6_364_136_223_846_793_005i64
-            .wrapping_mul(rand1)
-            .wrapping_add(1_442_695_040_888_963_407);
-        let rand3 = 6_364_136_223_846_793_005i64
-            .wrapping_mul(rand2)
-            .wrapping_add(1_442_695_040_888_963_407);
-        let rand4 = 6_364_136_223_846_793_005i64
-            .wrapping_mul(rand3)
-            .wrapping_add(1_442_695_040_888_963_407);
-        let rand5 = 6_364_136_223_846_793_005i64
-            .wrapping_mul(rand4)
-            .wrapping_add(1_442_695_040_888_963_407);
-        rand = rand5;
-        let pert = (rand1 % 1_000_000i64) as f64 / 1_000_000.0; // in [0,1)
-        let mul = 1.0 + pert;
-        let a1 = (rand2 as usize) % 20;
-        let a2 = (rand3 as usize) % 20;
-        let b1 = (rand4 as usize) % 20;
-        let b2 = (rand5 as usize) % 20;
-        if a1 == a2 || b1 == b2 {
-            continue;
+        if count > 0 {
+            let rand1 = 6_364_136_223_846_793_005i64
+                .wrapping_mul(rand)
+                .wrapping_add(1_442_695_040_888_963_407);
+            let rand2 = 6_364_136_223_846_793_005i64
+                .wrapping_mul(rand1)
+                .wrapping_add(1_442_695_040_888_963_407);
+            let rand3 = 6_364_136_223_846_793_005i64
+                .wrapping_mul(rand2)
+                .wrapping_add(1_442_695_040_888_963_407);
+            let rand4 = 6_364_136_223_846_793_005i64
+                .wrapping_mul(rand3)
+                .wrapping_add(1_442_695_040_888_963_407);
+            let rand5 = 6_364_136_223_846_793_005i64
+                .wrapping_mul(rand4)
+                .wrapping_add(1_442_695_040_888_963_407);
+            rand = rand5;
+            let pert = (rand1 % 1_000_000i64) as f64 / 1_000_000.0; // in [0,1)
+            let mul = 1.0 + pert;
+            let a1 = (rand2 as usize) % 20;
+            let a2 = (rand3 as usize) % 20;
+            let b1 = (rand4 as usize) % 20;
+            let b2 = (rand5 as usize) % 20;
+            if a1 == a2 || b1 == b2 {
+                continue;
+            }
+            penalty[a1][a2] *= mul;
+            penalty[a2][a1] *= mul;
+            penalty[b1][b2] /= mul;
+            penalty[b2][b1] /= mul;
         }
-        penalty[a1][a2] *= mul;
-        penalty[a2][a1] *= mul;
-        penalty[b1][b2] /= mul;
-        penalty[b2][b1] /= mul;
     
         // Results = for each percent identity, rounded down:
         // 1. count for equal light chain gene names and dref1 > 0 and dref2 > 0
@@ -201,9 +204,15 @@ fn main() {
         // Print.
     
         let n = res.0 + res.1;
+        if count == 1 {
+            canonical_n = n;
+        }
         let nznz = 100.0 * res.0 as f64 / n as f64;
-        print!("n = {n}, light chain coherence = {nznz:.1}%");
-        println!(", used {:.1} seconds", elapsed(&t));
+        if count > 1 {
+            let nrel = n as f64 / canonical_n as f64;
+            print!("count = {count}, nrel = {nrel:.4}, light chain coherence = {nznz:.1}%");
+            println!(", used {:.1} seconds", elapsed(&t));
+        }
         if n > best_n && nznz >= 70.0 {
             println!("ACCEPT!");
             best_n = n;
