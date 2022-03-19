@@ -71,6 +71,10 @@ fn main() {
         data[i].4 = data[i].4.replace("D", "");
     }
 
+    // Define penalty matrix.
+
+    let penalty = vec![vec![1.0; 27]; 27];
+
     // Define groups based on equal heavy chain gene names and CDR3H length.
     // Plus placeholder for results, see next.
 
@@ -108,13 +112,15 @@ fn main() {
 
                 // Compute stuff.
 
-                let mut same = 0;
+                let mut same = 0.0;
                 for m in 0..data[k1].2.len() {
                     if data[k1].2[m] == data[k2].2[m] {
-                        same += 1;
+                        let c1 = (data[k1].2[m] - b'A') as usize;
+                        let c2 = (data[k1].2[m] - b'A') as usize;
+                        same += penalty[c1][c2];
                     }
                 }
-                let ident = 100.0 * same as f64 / data[k1].2.len() as f64;
+                let ident = 100.0 * same / data[k1].2.len() as f64;
                 let ident = ident.floor() as usize;
                 let ident = ident / 10;
                 let eq_light = data[k1].4 == data[k2].4;
