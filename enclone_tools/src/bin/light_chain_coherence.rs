@@ -208,13 +208,12 @@ fn main() {
             canonical_n = n;
         }
         let nznz = 100.0 * res.0 as f64 / n as f64;
-        if count > 1 {
-            let nrel = n as f64 / canonical_n as f64;
-            print!("count = {count}, nrel = {nrel:.4}, light chain coherence = {nznz:.1}%");
-            println!(", used {:.1} seconds", elapsed(&t));
-        }
         if n > best_n && nznz >= 70.0 {
-            println!("ACCEPT!");
+            if count > 1 {
+                let nrel = n as f64 / canonical_n as f64;
+                print!("count = {count}, nrel = {nrel:.4}, light chain coherence = {nznz:.1}%");
+                println!(", used {:.1} minutes", elapsed(&t) / 60.0);
+            }
             best_n = n;
         } else {
             penalty = penalty_save;
