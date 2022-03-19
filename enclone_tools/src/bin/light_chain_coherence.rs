@@ -1,7 +1,7 @@
 // Copyright (c) 2022 10X Genomics, Inc. All rights reserved.
 //
 // Optimize amino acid penalty matrix to increase joining given light chain coherence of at
-// least 70%.
+// least 75%.
 
 // Data from:
 //
@@ -208,7 +208,7 @@ fn main() {
             canonical_n = n;
         }
         let nznz = 100.0 * res.0 as f64 / n as f64;
-        if n > best_n && nznz >= 70.0 {
+        if n > best_n && nznz >= 75.0 {
             if count > 1 {
                 let nrel = n as f64 / canonical_n as f64;
                 print!("count = {count}, nrel = {nrel:.4}, light chain coherence = {nznz:.1}%");
