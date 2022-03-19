@@ -32,10 +32,6 @@ fn main() {
         String,
         String,
         usize,
-        usize,
-        String,
-        usize,
-        usize,
     )>::new();
     for line in f.lines() {
         let s = line.unwrap();
@@ -52,10 +48,6 @@ fn main() {
             assert!(tof.contains_key("v_name2"));
             assert!(tof.contains_key("dref"));
             assert!(tof.contains_key("cdr3_aa1"));
-            assert!(tof.contains_key("clonotype_ncells"));
-            assert!(tof.contains_key("const1"));
-            assert!(tof.contains_key("hcomp"));
-            assert!(tof.contains_key("jun_ins"));
             first = false;
         } else {
             data.push((
@@ -65,10 +57,6 @@ fn main() {
                 fields[tof["donors_cell"]].to_string(),
                 fields[tof["v_name2"]].to_string(),
                 fields[tof["dref"]].force_usize(),
-                fields[tof["clonotype_ncells"]].force_usize(),
-                fields[tof["const1"]].to_string(),
-                fields[tof["hcomp"]].force_usize(),
-                fields[tof["jun_ins"]].force_usize(),
             ));
         }
     }
@@ -86,7 +74,6 @@ fn main() {
     let mut bounds = Vec::<(usize, usize, Vec<Vec<(usize, usize, usize, usize)>>)>::new();
     let mut i = 0;
     while i < data.len() {
-        // let j = next_diff12_9(&data, i as i32) as usize;
         let mut j = i + 1;
         while j < data.len() {
             if data[j].0 != data[i].0 || data[j].1 != data[i].1 {
@@ -140,19 +127,12 @@ fn main() {
                 let ident = ident / 10;
                 let eq_light = data[k1].4 == data[k2].4;
 
-                // Go through passes.
+                // Add to results.
 
-                for pass in 0..1 {
-
-                    // Add to results.
-
-                    if dref1 > 0 && dref2 > 0 {
-                        if eq_light {
-                            res.2[pass][ident].2 += 1;
-                        } else {
-                            res.2[pass][ident].3 += 1;
-                        }
-                    }
+                if eq_light {
+                    res.2[0][ident].2 += 1;
+                } else {
+                    res.2[0][ident].3 += 1;
                 }
             }
         }
