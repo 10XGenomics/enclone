@@ -78,7 +78,7 @@ fn main() {
     // Define groups based on equal heavy chain gene names and CDR3H length.
     // Plus placeholder for results, see next.
 
-    let mut bounds = Vec::<(usize, usize, Vec<(usize, usize)>)>::new();
+    let mut bounds = Vec::<(usize, usize, (usize, usize))>::new();
     let mut i = 0;
     while i < data.len() {
         let mut j = i + 1;
@@ -88,7 +88,7 @@ fn main() {
             }
             j += 1;
         }
-        bounds.push((i, j, vec![(0, 0); 11]));
+        bounds.push((i, j, (0, 0)));
         i = j;
     }
 
@@ -127,10 +127,12 @@ fn main() {
 
                 // Add to results.
 
-                if eq_light {
-                    res.2[ident].0 += 1;
-                } else {
-                    res.2[ident].1 += 1;
+                if ident == 10 {
+                    if eq_light {
+                        res.2.0 += 1;
+                    } else {
+                        res.2.1 += 1;
+                    }
                 }
             }
         }
@@ -138,16 +140,16 @@ fn main() {
 
     // Sum.
 
-    let mut res = vec![(0, 0); 11];
+    let mut res = (0, 0);
     for i in 0..bounds.len() {
-        res[10].0 += bounds[i].2[10].0;
-        res[10].1 += bounds[i].2[10].1;
+        res.0 += bounds[i].2.0;
+        res.1 += bounds[i].2.1;
     }
 
     // Print.
 
-    let n = res[10].0 + res[10].1;
-    let nznz = 100.0 * res[10].0 as f64 / n as f64;
+    let n = res.0 + res.1;
+    let nznz = 100.0 * res.0 as f64 / n as f64;
     println!("\n{nznz:.1}%");
-    println!("used {:.1} seconds", elapsed(&t));
+    println!("used {:.1} seconds\n", elapsed(&t));
 }
