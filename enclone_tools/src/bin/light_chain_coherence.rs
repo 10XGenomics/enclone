@@ -84,22 +84,19 @@ fn main() {
             }
             j += 1;
         }
-        bounds.push((i, j, vec![vec![(0, 0); 11]; 7]));
+        bounds.push((i, j, vec![vec![(0, 0); 11]; 1]));
         i = j;
     }
 
     // Results = for each percent identity, rounded down:
-    // 1. count for equal light chain gene names and dref1 = 0 and dref2 = 0
-    // 2. count for unequal light chain gene names and dref1 = 0 and dref2 = 0
-    // 3. count for equal light chain gene names and dref1 > 0 and dref2 > 0
-    // 4. count for unequal light chain gene names and dref1 > 0 and dref2 > 0.
+    // 1. count for equal light chain gene names and dref1 > 0 and dref2 > 0
+    // 2. count for unequal light chain gene names and dref1 > 0 and dref2 > 0.
     //
     // Make one pass for all donors, and one pass each for each pair of donors.
 
     let t = Instant::now();
     bounds.par_iter_mut().for_each(|res| {
-        let i = res.0;
-        let j = res.1;
+        let (i, j) = (res.0, res.1);
         for k1 in i..j {
             for k2 in k1 + 1..j {
 
@@ -135,7 +132,7 @@ fn main() {
 
     // Sum.
 
-    let mut res = vec![vec![(0, 0); 11]; 7];
+    let mut res = vec![vec![(0, 0); 11]; 1];
     for i in 0..bounds.len() {
         res[0][10].0 += bounds[i].2[0][10].0;
         res[0][10].1 += bounds[i].2[0][10].1;
