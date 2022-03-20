@@ -140,6 +140,36 @@ fn main() {
         i = j;
     }
 
+    // Form buckets.
+
+    let bucket_size = 1_000_000;
+    let mut buckets = Vec::<(Vec<(usize, usize)>, (usize, usize))>::new();
+    {
+        let mut bucket = Vec::<(usize, usize)>::new();
+        for m in 0..bounds.len() {
+            let i = bounds[m].0;
+            let j = bounds[m].1;
+            for k1 in i..j {
+                for k2 in k1 + 1..j {
+        
+                    // Require different donors.
+        
+                    if data[k1].3 == data[k2].3 {
+                        continue;
+                    }
+                    bucket.push((k1, k2));
+                    if bucket.len() == bucket_size {
+                        buckets.push((bucket.clone(), (0, 0)));
+                        bucket.clear();
+                    }
+                }
+            }
+        }
+        if bucket.len() > 0 {
+            buckets.push((bucket, (0, 0)));
+        }
+    }
+            
     // Loop.
 
     println!("");
@@ -194,36 +224,29 @@ fn main() {
         // 2. count for unequal light chain gene names and dref1 > 0 and dref2 > 0.
     
         let ttt = Instant::now(); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-        bounds.par_iter_mut().for_each(|res| {
-            let (i, j) = (res.0, res.1);
-            for k1 in i..j {
-                for k2 in k1 + 1..j {
+        buckets.par_iter_mut().for_each(|res| {
+            for m in 0..res.0.len() {
+                let k1 = res.0[m].0;
+                let k2 = res.0[m].1;
     
-                    // Require different donors.
-    
-                    if data[k1].3 == data[k2].3 {
-                        continue;
-                    }
-    
-                    // Compute stuff.
-    
-                    let mut err = 0.0;
-                    for m in 0..data[k1].2.len() {
-                        let c1 = data[k1].2[m] as usize;
-                        let c2 = data[k2].2[m] as usize;
-                        err += penaltyx[20 * c1 + c2];
-                    }
-                    err /= data[k1].2.len() as f32;
-    
-                    // Add to results.
-    
-                    if err <= 0.1 {
-                        let eq_light = data[k1].4 == data[k2].4;
-                        if eq_light {
-                            res.2.0 += 1;
-                        } else {
-                            res.2.1 += 1;
-                        }
+                // Compute stuff.
+
+                let mut err = 0.0;
+                for m in 0..data[k1].2.len() {
+                    let c1 = data[k1].2[m] as usize;
+                    let c2 = data[k2].2[m] as usize;
+                    err += penaltyx[20 * c1 + c2];
+                }
+                err /= data[k1].2.len() as f32;
+
+                // Add to results.
+
+                if err <= 0.1 {
+                    let eq_light = data[k1].4 == data[k2].4;
+                    if eq_light {
+                        res.1.0 += 1;
+                    } else {
+                        res.1.1 += 1;
                     }
                 }
             }
@@ -232,9 +255,9 @@ fn main() {
         // Sum.
     
         let mut res = (0, 0);
-        for i in 0..bounds.len() {
-            res.0 += bounds[i].2.0;
-            res.1 += bounds[i].2.1;
+        for i in 0..buckets.len() {
+            res.0 += buckets[i].1.0;
+            res.1 += buckets[i].1.1;
         }
         println!("{:.2} seconds", elapsed(&ttt)); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     
@@ -258,8 +281,8 @@ fn main() {
 
         // Reset.
 
-        for i in 0..bounds.len() {
-            bounds[i].2 = (0, 0);
+        for i in 0..buckets.len() {
+            buckets[i].1 = (0, 0);
         }
 
     }
