@@ -73,27 +73,30 @@ fn main() {
         data[i].4 = data[i].4.replace("D", "");
     }
 
-    // Replace light chain genes by numbers.
+    // Replace light chain genes and donors by numbers.
 
     let mut datax = Vec::<(
         String,
         usize,
         Vec<u8>,
-        String,
+        usize,
         usize,
         usize,
     )>::new();
     let mut lights = Vec::<String>::new();
+    let mut donors = Vec::<String>::new();
     for i in 0..data.len() {
         lights.push(data[i].4.clone());
+        donors.push(data[i].3.clone());
     }
     unique_sort(&mut lights);
+    unique_sort(&mut donors);
     for i in 0..data.len() {
         datax.push((
             data[i].0.clone(),
             data[i].1,
             data[i].2.clone(),
-            data[i].3.clone(),
+            bin_position(&donors, &data[i].3) as usize,
             bin_position(&lights, &data[i].4) as usize,
             data[i].5,
         ));
