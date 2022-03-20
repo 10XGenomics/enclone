@@ -182,6 +182,12 @@ fn main() {
             penalty[b1][b2] /= mul;
             penalty[b2][b1] /= mul;
         }
+        let mut penaltyx = Vec::<f32>::new();
+        for i in 0..20 {
+            for j in 0..20 {
+                penaltyx.push(penalty[i][j]);
+            }
+        }
     
         // Results = for each percent identity, rounded down:
         // 1. count for equal light chain gene names and dref1 > 0 and dref2 > 0
@@ -205,7 +211,7 @@ fn main() {
                     for m in 0..data[k1].2.len() {
                         let c1 = data[k1].2[m] as usize;
                         let c2 = data[k2].2[m] as usize;
-                        err += penalty[c1][c2];
+                        err += penaltyx[20 * c1 + c2];
                     }
                     err /= data[k1].2.len() as f32;
     
