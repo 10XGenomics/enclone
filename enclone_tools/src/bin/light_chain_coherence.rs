@@ -165,6 +165,7 @@ fn main() {
     println!("");
     let mut best_n = 0;
     let mut canonical_n = 0;
+    let mut changed = false;
     for count in 1.. {
         // Mutate penalty matrix.
 
@@ -252,6 +253,7 @@ fn main() {
         }
         let nznz = 100.0 * res.0 as f32 / n as f32;
         if n > best_n && nznz >= 75.0 {
+            changed = true;
             if count > 1 {
                 let nrel = n as f32 / canonical_n as f32;
                 print!("count = {count}, nrel = {nrel:.4}, light chain coherence = {nznz:.1}%");
@@ -261,7 +263,7 @@ fn main() {
         } else {
             penalty = penalty_save;
         }
-        if count % 200 == 0 {
+        if count % 200 == 0 && changed {
             let mut rows = Vec::<Vec<String>>::new();
             let mut row = Vec::<String>::new();
             row.push(String::new());
