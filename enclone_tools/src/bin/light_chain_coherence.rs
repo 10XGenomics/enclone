@@ -1,13 +1,13 @@
 // Copyright (c) 2022 10X Genomics, Inc. All rights reserved.
 //
-// Optimize amino acid penalty matrix to increase joining given light chain coherence of at
-// least 75%.
-
+// Optimize amino acid penalty matrix to increase joining given light chain coherence ≥ 75%.
+//
+// Usage: light_chain_coherence per_cell_stuff
+//
 // Data from:
 //
 // enclone BCR=@test BUILT_IN CHAINS_EXACT=2 CHAINS=2 NOPRINT POUT=stdout PCELL ECHOC
-//         PCOLS=donors_cell,v_name1,v_name2,dref,cdr3_aa1,clonotype_ncells,const1,hcomp
-//         > per_cell_stuff
+//         PCOLS=donors_cell,v_name1,v_name2,dref,cdr3_aa1 > per_cell_stuff
 
 use io_utils::*;
 use perf_stats::elapsed;
