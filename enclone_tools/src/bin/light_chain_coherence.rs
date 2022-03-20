@@ -192,10 +192,10 @@ fn main() {
             penalty[a2][a1] = penalty[a2][a1].min(8.0);
             penalty[b1][b2] = penalty[b1][b2].min(8.0);
             penalty[b2][b1] = penalty[b2][b1].min(8.0);
-            penalty[a1][a2] = format!("{:.3}", penalty[a1][a2]).parse::<f32>().unwrap();
-            penalty[a2][a1] = format!("{:.3}", penalty[a2][a1]).parse::<f32>().unwrap();
-            penalty[b1][b2] = format!("{:.3}", penalty[b1][b2]).parse::<f32>().unwrap();
-            penalty[b2][b1] = format!("{:.3}", penalty[b2][b1]).parse::<f32>().unwrap();
+            penalty[a1][a2] = format!("{:.1}", penalty[a1][a2]).parse::<f32>().unwrap();
+            penalty[a2][a1] = format!("{:.1}", penalty[a2][a1]).parse::<f32>().unwrap();
+            penalty[b1][b2] = format!("{:.1}", penalty[b1][b2]).parse::<f32>().unwrap();
+            penalty[b2][b1] = format!("{:.1}", penalty[b2][b1]).parse::<f32>().unwrap();
         }
         let mut penaltyx = Vec::<f32>::new();
         for i in 0..20 {
@@ -273,7 +273,7 @@ fn main() {
                 let mut row = Vec::<String>::new();
                 row.push((aa[i] as char).to_string());
                 for j in 0..20 {
-                    row.push(format!("{:.3}", penalty[i][j]));
+                    row.push(format!("{:.1}", penalty[i][j]));
                 }
                 rows.push(row);
             }
