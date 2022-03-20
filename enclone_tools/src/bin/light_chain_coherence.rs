@@ -73,6 +73,33 @@ fn main() {
         data[i].4 = data[i].4.replace("D", "");
     }
 
+    // Replace light chain genes by numbers.
+
+    let mut datax = Vec::<(
+        String,
+        usize,
+        Vec<u8>,
+        String,
+        usize,
+        usize,
+    )>::new();
+    let mut lights = Vec::<String>::new();
+    for i in 0..data.len() {
+        lights.push(data[i].4.clone());
+    }
+    unique_sort(&mut lights);
+    for i in 0..data.len() {
+        datax.push((
+            data[i].0.clone(),
+            data[i].1,
+            data[i].2.clone(),
+            data[i].3.clone(),
+            bin_position(&lights, &data[i].4) as usize,
+            data[i].5,
+        ));
+    }
+    let mut data = datax;
+
     // Convert CDRH3 to [0,20).
 
     let aa = b"ACDEFGHIKLMNPQRSTVWY".to_vec();
@@ -157,6 +184,7 @@ fn main() {
         // 1. count for equal light chain gene names and dref1 > 0 and dref2 > 0
         // 2. count for unequal light chain gene names and dref1 > 0 and dref2 > 0.
     
+        let ttt = Instant::now(); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
         bounds.par_iter_mut().for_each(|res| {
             let (i, j) = (res.0, res.1);
             for k1 in i..j {
@@ -200,6 +228,7 @@ fn main() {
             res.0 += bounds[i].2.0;
             res.1 += bounds[i].2.1;
         }
+        println!("{:.2} seconds", elapsed(&ttt)); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     
         // Print.
     
