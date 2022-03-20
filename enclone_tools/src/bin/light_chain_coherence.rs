@@ -278,6 +278,19 @@ fn main() {
         } else {
             penalty = penalty_save;
         }
+        if count % 10 == 0 {
+            println!("");
+            for i in 0..20 {
+                for j in 0..20 {
+                    if j > 0 {
+                        print!(" ");
+                    }
+                    print!("{}", penalty[i][j]);
+                }
+                println!("");
+            }
+            println!("");
+        }
 
         // Reset.
 
