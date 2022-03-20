@@ -228,7 +228,6 @@ fn main() {
         // 1. count for equal light chain gene names and dref1 > 0 and dref2 > 0
         // 2. count for unequal light chain gene names and dref1 > 0 and dref2 > 0.
     
-        let ttt = Instant::now(); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
         buckets.par_iter_mut().for_each(|res| {
             for m in 0..res.0.len() {
                 let k1 = res.0[m].0;
@@ -264,7 +263,6 @@ fn main() {
             res.0 += buckets[i].1.0;
             res.1 += buckets[i].1.1;
         }
-        println!("{:.2} seconds", elapsed(&ttt)); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     
         // Print.
     
@@ -283,17 +281,24 @@ fn main() {
         } else {
             penalty = penalty_save;
         }
-        if count % 100 == 0 {
+        if count % 200 == 0 {
             let mut rows = Vec::<Vec<String>>::new();
+            let mut row = Vec::<String>::new();
+            row.push(String::new());
+            for i in 0..20 {
+                row.push((aa[i] as char).to_string());
+            }
+            rows.push(row);
             for i in 0..20 {
                 let mut row = Vec::<String>::new();
+                row.push((aa[i] as char).to_string());
                 for j in 0..20 {
                     row.push(format!("{:.3}", penalty[i][j]));
                 }
                 rows.push(row);
             }
             let mut log = Vec::<u8>::new();
-            print_tabular(&mut log, &rows, 1, Some(vec![b'r'; 20]));
+            print_tabular(&mut log, &rows, 1, Some(vec![b'r'; 21]));
             println!("\n{}", strme(&log));
         }
 
