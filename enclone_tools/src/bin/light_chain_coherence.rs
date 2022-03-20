@@ -168,7 +168,7 @@ fn main() {
                 .wrapping_mul(rand4)
                 .wrapping_add(1_442_695_040_888_963_407);
             rand = rand5;
-            let pert = (rand1 % 1_000_000i64) as f64 / 1_000_000.0; // in [0,1)
+            let pert = (rand1 % 1_000_000i64) as f32 / 1_000_000.0; // in [0,1)
             let mul = 1.0 + pert;
             let a1 = (rand2 as usize) % 20;
             let a2 = (rand3 as usize) % 20;
@@ -207,7 +207,7 @@ fn main() {
                         let c2 = data[k2].2[m] as usize;
                         err += penalty[c1][c2];
                     }
-                    err /= data[k1].2.len() as f64;
+                    err /= data[k1].2.len() as f32;
                     err *= 100.0;
                     let eq_light = data[k1].4 == data[k2].4;
     
@@ -239,10 +239,10 @@ fn main() {
         if count == 1 {
             canonical_n = n;
         }
-        let nznz = 100.0 * res.0 as f64 / n as f64;
+        let nznz = 100.0 * res.0 as f32 / n as f32;
         if n > best_n && nznz >= 75.0 {
             if count > 1 {
-                let nrel = n as f64 / canonical_n as f64;
+                let nrel = n as f32 / canonical_n as f32;
                 print!("count = {count}, nrel = {nrel:.4}, light chain coherence = {nznz:.1}%");
                 println!(", used {:.1} minutes", elapsed(&t) / 60.0);
             }
