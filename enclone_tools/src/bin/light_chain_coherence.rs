@@ -28,14 +28,7 @@ fn main() {
     let f = open_for_read![&args[1]];
     let mut first = true;
     let mut tof = HashMap::<String, usize>::new();
-    let mut data = Vec::<(
-        String,
-        usize,
-        Vec<u8>,
-        String,
-        String,
-        usize,
-    )>::new();
+    let mut data = Vec::<(String, usize, Vec<u8>, String, String, usize)>::new();
     for line in f.lines() {
         let s = line.unwrap();
         if s.starts_with("#") {
@@ -76,14 +69,7 @@ fn main() {
 
     // Replace light chain genes and donors by numbers.
 
-    let mut datax = Vec::<(
-        String,
-        usize,
-        Vec<u8>,
-        usize,
-        usize,
-        usize,
-    )>::new();
+    let mut datax = Vec::<(String, usize, Vec<u8>, usize, usize, usize)>::new();
     let mut lights = Vec::<String>::new();
     let mut donors = Vec::<String>::new();
     for i in 0..data.len() {
@@ -116,7 +102,7 @@ fn main() {
         }
         data[i].2 = x;
     }
-    
+
     // Define penalty matrix.
 
     let mut penalty = vec![vec![1.0; 20]; 20];
@@ -152,9 +138,8 @@ fn main() {
             let j = bounds[m].1;
             for k1 in i..j {
                 for k2 in k1 + 1..j {
-        
                     // Require different donors.
-        
+
                     if data[k1].3 == data[k2].3 {
                         continue;
                     }
@@ -170,7 +155,7 @@ fn main() {
             buckets.push((bucket, (0, 0)));
         }
     }
-            
+
     // Loop.
 
     println!("");
@@ -178,7 +163,6 @@ fn main() {
     let mut best_n = 0;
     let mut canonical_n = 0;
     for count in 1.. {
-
         // Mutate penalty matrix.
 
         let penalty_save = penalty.clone();
@@ -223,16 +207,16 @@ fn main() {
                 penaltyx.push(penalty[i][j]);
             }
         }
-    
+
         // Results = for each percent identity, rounded down:
         // 1. count for equal light chain gene names and dref1 > 0 and dref2 > 0
         // 2. count for unequal light chain gene names and dref1 > 0 and dref2 > 0.
-    
+
         buckets.par_iter_mut().for_each(|res| {
             for m in 0..res.0.len() {
                 let k1 = res.0[m].0;
                 let k2 = res.0[m].1;
-    
+
                 // Compute stuff.
 
                 let mut err = 0.0;
@@ -248,24 +232,24 @@ fn main() {
                 if err <= 0.1 {
                     let eq_light = data[k1].4 == data[k2].4;
                     if eq_light {
-                        res.1.0 += 1;
+                        res.1 .0 += 1;
                     } else {
-                        res.1.1 += 1;
+                        res.1 .1 += 1;
                     }
                 }
             }
         });
-    
+
         // Sum.
-    
+
         let mut res = (0, 0);
         for i in 0..buckets.len() {
-            res.0 += buckets[i].1.0;
-            res.1 += buckets[i].1.1;
+            res.0 += buckets[i].1 .0;
+            res.1 += buckets[i].1 .1;
         }
-    
+
         // Print.
-    
+
         let n = res.0 + res.1;
         if count == 1 {
             canonical_n = n;
@@ -307,6 +291,5 @@ fn main() {
         for i in 0..buckets.len() {
             buckets[i].1 = (0, 0);
         }
-
     }
 }
