@@ -168,7 +168,7 @@ fn main() {
     let mut changed = false;
     for count in 1.. {
         if count % 10000 == 0 {
-            println!("\n(count = {})", add_commas(count));
+            println!("\n(count = {}, time = {:.1} minutes)", add_commas(count), elapsed(&t) / 60.0);
         }
 
         // Mutate penalty matrix.
