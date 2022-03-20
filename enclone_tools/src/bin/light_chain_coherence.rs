@@ -17,7 +17,8 @@ use std::collections::HashMap;
 use std::env;
 use std::io::BufRead;
 use std::time::Instant;
-use string_utils::TextUtils;
+use string_utils::*;
+use tables::*;
 use vector_utils::*;
 
 fn main() {
@@ -282,18 +283,18 @@ fn main() {
         } else {
             penalty = penalty_save;
         }
-        if count % 10 == 0 {
-            println!("");
+        if count % 100 == 0 {
+            let mut rows = Vec::<Vec<String>>::new();
             for i in 0..20 {
+                let mut row = Vec::<String>::new();
                 for j in 0..20 {
-                    if j > 0 {
-                        print!(" ");
-                    }
-                    print!("{:.3}", penalty[i][j]);
+                    row.push(format!("{:.3}", penalty[i][j]));
                 }
-                println!("");
+                rows.push(row);
             }
-            println!("");
+            let mut log = Vec::<u8>::new();
+            print_tabular(&mut log, &rows, 1, Some(vec![b'r'; 20]));
+            println!("\n{}", strme(&log));
         }
 
         // Reset.
