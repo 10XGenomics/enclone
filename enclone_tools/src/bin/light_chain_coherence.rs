@@ -208,12 +208,11 @@ fn main() {
                         err += penalty[c1][c2];
                     }
                     err /= data[k1].2.len() as f32;
-                    err *= 100.0;
-                    let eq_light = data[k1].4 == data[k2].4;
     
                     // Add to results.
     
-                    if err <= 10.0 {
+                    if err <= 0.1 {
+                        let eq_light = data[k1].4 == data[k2].4;
                         if eq_light {
                             res.2.0 += 1;
                         } else {
