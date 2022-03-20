@@ -196,6 +196,10 @@ fn main() {
             penalty[a2][a1] *= mul;
             penalty[b1][b2] /= mul;
             penalty[b2][b1] /= mul;
+            penalty[a1][a2] = penalty[a1][a2].min(8.0);
+            penalty[a2][a1] = penalty[a2][a1].min(8.0);
+            penalty[b1][b2] = penalty[b1][b2].min(8.0);
+            penalty[b2][b1] = penalty[b2][b1].min(8.0);
             penalty[a1][a2] = format!("{:.3}", penalty[a1][a2]).parse::<f32>().unwrap();
             penalty[a2][a1] = format!("{:.3}", penalty[a2][a1]).parse::<f32>().unwrap();
             penalty[b1][b2] = format!("{:.3}", penalty[b1][b2]).parse::<f32>().unwrap();
