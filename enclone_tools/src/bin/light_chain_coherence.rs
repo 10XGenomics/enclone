@@ -12,6 +12,9 @@
 use io_utils::*;
 use perf_stats::elapsed;
 use pretty_trace::PrettyTrace;
+use rand_chacha::rand_core::SeedableRng;
+use rand_chacha::rand_core::RngCore;
+use rand_chacha;
 use rayon::prelude::*;
 use std::collections::HashMap;
 use std::env;
@@ -24,6 +27,7 @@ use vector_utils::*;
 fn main() {
     PrettyTrace::new().on();
     let t = Instant::now();
+    let mut randme = rand_chacha::ChaCha8Rng::seed_from_u64(123456789);
     let args: Vec<String> = env::args().collect();
     let f = open_for_read![&args[1]];
     let mut first = true;
@@ -159,7 +163,6 @@ fn main() {
     // Loop.
 
     println!("");
-    let mut rand = 0i64;
     let mut best_n = 0;
     let mut canonical_n = 0;
     for count in 1.. {
@@ -167,23 +170,12 @@ fn main() {
 
         let penalty_save = penalty.clone();
         if count > 0 {
-            let rand1 = 6_364_136_223_846_793_005i64
-                .wrapping_mul(rand)
-                .wrapping_add(1_442_695_040_888_963_407);
-            let rand2 = 6_364_136_223_846_793_005i64
-                .wrapping_mul(rand1)
-                .wrapping_add(1_442_695_040_888_963_407);
-            let rand3 = 6_364_136_223_846_793_005i64
-                .wrapping_mul(rand2)
-                .wrapping_add(1_442_695_040_888_963_407);
-            let rand4 = 6_364_136_223_846_793_005i64
-                .wrapping_mul(rand3)
-                .wrapping_add(1_442_695_040_888_963_407);
-            let rand5 = 6_364_136_223_846_793_005i64
-                .wrapping_mul(rand4)
-                .wrapping_add(1_442_695_040_888_963_407);
-            rand = rand5;
-            let pert = (rand1 % 1_000_000i64) as f32 / 1_000_000.0; // in [0,1)
+            let rand1 = randme.next_u64();
+            let rand2 = randme.next_u64();
+            let rand3 = randme.next_u64();
+            let rand4 = randme.next_u64();
+            let rand5 = randme.next_u64();
+            let pert = (rand1 % 1_000_000u64) as f32 / 1_000_000.0; // in [0,1)
             let mul = 1.0 + pert;
             let a1 = (rand2 as usize) % 20;
             let a2 = (rand3 as usize) % 20;

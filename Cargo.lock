@@ -1659,6 +1659,7 @@ dependencies = [
  "pager",
  "perf_stats 0.1.8 (registry+https://github.com/rust-lang/crates.io-index)",
  "pretty_trace 0.5.23 (registry+https://github.com/rust-lang/crates.io-index)",
+ "rand_chacha",
  "rayon",
  "regex",
  "serde_json",
