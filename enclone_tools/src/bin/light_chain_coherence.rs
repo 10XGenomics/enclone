@@ -211,6 +211,10 @@ fn main() {
             penalty[a2][a1] *= mul;
             penalty[b1][b2] /= mul;
             penalty[b2][b1] /= mul;
+            penalty[a1][a2] = format!("{:.3}", penalty[a1][a2]).parse::<f32>().unwrap();
+            penalty[a2][a1] = format!("{:.3}", penalty[a2][a1]).parse::<f32>().unwrap();
+            penalty[b1][b2] = format!("{:.3}", penalty[b1][b2]).parse::<f32>().unwrap();
+            penalty[b2][b1] = format!("{:.3}", penalty[b2][b1]).parse::<f32>().unwrap();
         }
         let mut penaltyx = Vec::<f32>::new();
         for i in 0..20 {
