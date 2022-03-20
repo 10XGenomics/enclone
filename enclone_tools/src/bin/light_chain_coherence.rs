@@ -142,7 +142,7 @@ fn main() {
 
     // Form buckets.
 
-    let bucket_size = 1_000_000;
+    let bucket_size = 100_000;
     let mut buckets = Vec::<(Vec<(usize, usize)>, (usize, usize))>::new();
     {
         let mut bucket = Vec::<(usize, usize)>::new();
