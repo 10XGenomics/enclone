@@ -167,6 +167,10 @@ fn main() {
     let mut canonical_n = 0;
     let mut changed = false;
     for count in 1.. {
+        if count % 10000 == 0 {
+            println!("\n(count = {})", add_commas(count));
+        }
+
         // Mutate penalty matrix.
 
         let penalty_save = penalty.clone();
