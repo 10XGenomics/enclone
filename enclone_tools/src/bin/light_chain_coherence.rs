@@ -289,7 +289,7 @@ fn main() {
                     if j > 0 {
                         print!(" ");
                     }
-                    print!("{}", penalty[i][j]);
+                    print!("{:.3}", penalty[i][j]);
                 }
                 println!("");
             }
