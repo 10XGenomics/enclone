@@ -64,7 +64,13 @@ pub fn process_special_arg2(
                 let mut m = Vec::<Vec<f64>>::new();
                 let ff = open_for_read![&f];
                 for line in ff.lines() {
-                    let s = line.unwrap();
+                    let mut s = line.unwrap();
+                    if s.starts_with("    A") {
+                        continue;
+                    }
+                    if s.len() > 2 && s.as_bytes()[0] >= b'A' {
+                        s = s[2..].to_string();
+                    }
                     let fields = s.split(' ').collect::<Vec<&str>>();
                     if fields.len() != 20 {
                         return Err("\nIllegal cdr3_aa_heavy≥n%:h:@f argument in GROUP: \
