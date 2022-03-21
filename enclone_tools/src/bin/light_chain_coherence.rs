@@ -12,9 +12,9 @@
 use io_utils::*;
 use perf_stats::elapsed;
 use pretty_trace::PrettyTrace;
-use rand_chacha::rand_core::SeedableRng;
-use rand_chacha::rand_core::RngCore;
 use rand_chacha;
+use rand_chacha::rand_core::RngCore;
+use rand_chacha::rand_core::SeedableRng;
 use rayon::prelude::*;
 use std::collections::HashMap;
 use std::env;
@@ -168,7 +168,11 @@ fn main() {
     let mut changed = false;
     for count in 1.. {
         if count % 10000 == 0 {
-            println!("\n(count = {}, time = {:.1} minutes)", add_commas(count), elapsed(&t) / 60.0);
+            println!(
+                "\n(count = {}, time = {:.1} minutes)",
+                add_commas(count),
+                elapsed(&t) / 60.0
+            );
         }
 
         // Mutate penalty matrix.

@@ -133,10 +133,12 @@ fn main() {
             ins_memory += jun_ins
         }
     }
-    println!("\nmean junction insertion bases for memory = {:.1}",
+    println!(
+        "\nmean junction insertion bases for memory = {:.1}",
         ins_memory as f64 / n_memory as f64
     );
-    println!("mean junction insertion bases for naive = {:.1}",
+    println!(
+        "mean junction insertion bases for naive = {:.1}",
         ins_naive as f64 / n_naive as f64
     );
     let mut n_memory = 0;
@@ -178,8 +180,10 @@ fn main() {
                         ins_mem[jun_ins] += 1;
                     }
                     if jun_ins >= 6 && last != strme(&data[k].2) {
-                        println!("public memory with CDR3H = {} has jun_ins = {}",
-                            stringme(&data[k].2), jun_ins
+                        println!(
+                            "public memory with CDR3H = {} has jun_ins = {}",
+                            stringme(&data[k].2),
+                            jun_ins
                         );
                         last = stringme(&data[k].2);
                     }
@@ -192,11 +196,16 @@ fn main() {
         }
         i = j;
     }
-    println!("mean junction insertion bases for public memory = {:.1}",
+    println!(
+        "mean junction insertion bases for public memory = {:.1}",
         ins_memory as f64 / n_memory as f64
     );
-    println!("max = {} at CDR3H = {}", max_ins_memory, max_ins_memory_cdr3);
-    println!("mean junction insertion bases for public naive = {:.1}",
+    println!(
+        "max = {} at CDR3H = {}",
+        max_ins_memory, max_ins_memory_cdr3
+    );
+    println!(
+        "mean junction insertion bases for public naive = {:.1}",
         ins_naive as f64 / n_naive as f64
     );
     println!("max = {}", max_ins_naive);
@@ -238,11 +247,14 @@ fn main() {
         i = j;
     }
     println!(
-        "\nlight chain coherence for public memory cells as function of junction insertion length");
+        "\nlight chain coherence for public memory cells as function of junction insertion length"
+    );
     for i in 0..=4 {
         if n[i] > 0 {
-            println!("ins = {}  ==> coherence = {:.1}%",
-                i, 100.0 * same[i] as f64 / n[i] as f64
+            println!(
+                "ins = {}  ==> coherence = {:.1}%",
+                i,
+                100.0 * same[i] as f64 / n[i] as f64
             );
         }
     }
@@ -252,7 +264,8 @@ fn main() {
         n_big += n[i];
         same_big += same[i];
     }
-    println!("ins >= 5 ==> coherence = {:.1}%",
+    println!(
+        "ins >= 5 ==> coherence = {:.1}%",
         100.0 * same_big as f64 / n_big as f64
     );
 

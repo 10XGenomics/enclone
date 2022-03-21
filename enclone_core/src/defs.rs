@@ -468,6 +468,8 @@ pub struct ClonoGroupOpt {
     pub light_pc: Option<f64>,   // group if nucleotide identity >= given percent on light chain
     pub aa_heavy_pc: Option<f64>, // group if amino acid identity >= given percent on heavy chain
     pub aa_light_pc: Option<f64>, // group if amino acid identity >= given percent on light chain
+    pub cdr3_heavy_pc_hf: Option<(f64, Vec<Vec<f64>>)>, // implement cdr3_aa_heavy≥n%:h:@f
+
     // ASYMMETRIC GROUPING CONTROLS
     pub asymmetric_center: String, // definition of center for asymmetric grouping
     pub asymmetric_dist_formula: String, // definition of distance formula for asymmetric grouping
