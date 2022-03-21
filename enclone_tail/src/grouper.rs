@@ -484,8 +484,8 @@ pub fn grouper(
 
         if ctl.clono_group_opt.cdr3_heavy_pc_hf.is_some() {
             let t = Instant::now();
-            let min_r = ctl.clono_group_opt.cdr3_heavy_pc_hf.unwrap().0 / 100.0;
-            let m = &ctl.clono_group_opt.cdr3_heavy_pc_hf.unwrap().1;
+            let min_r = ctl.clono_group_opt.cdr3_heavy_pc_hf.as_ref().unwrap().0 / 100.0;
+            let m = &ctl.clono_group_opt.cdr3_heavy_pc_hf.as_ref().unwrap().1;
             let mut penalty = vec![vec![0.0; 27]; 27];
             let aa = b"ACDEFGHIKLMNPQRSTVWY".to_vec();
             for i1 in 0..aa.len() {

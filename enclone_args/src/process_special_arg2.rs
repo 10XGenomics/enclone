@@ -5,8 +5,11 @@
 use crate::proc_args2::{is_f64_arg, is_usize_arg};
 use enclone_core::defs::EncloneControl;
 use enclone_core::linear_condition::LinearCondition;
+use enclone_core::require_readable_file;
 use evalexpr::build_operator_tree;
+use io_utils::open_for_read;
 use regex::Regex;
+use std::io::BufRead;
 use string_utils::{parse_csv, stringme, TextUtils};
 use tilde_expand::tilde_expand;
 use vector_utils::unique_sort;
@@ -57,8 +60,7 @@ pub fn process_special_arg2(
                 }
                 let val = x.before("%:h:@").force_f64();
                 let f = x.after("%:h:@");
-                require_readable_file(&f, "GROUP");
-                let mut lines = Vec::<String>::new();
+                require_readable_file(&f, "GROUP")?;
                 let mut m = Vec::<Vec<f64>>::new();
                 let ff = open_for_read![&f];
                 for line in ff.lines() {
