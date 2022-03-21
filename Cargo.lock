@@ -1488,7 +1488,11 @@ name = "enclone_paper"
 version = "0.5.159"
 dependencies = [
  "enclone_tail",
+ "flate2",
  "plotters",
+ "pretty_trace 0.5.23 (registry+https://github.com/rust-lang/crates.io-index)",
+ "string_utils 0.1.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "vector_utils 0.1.5 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]

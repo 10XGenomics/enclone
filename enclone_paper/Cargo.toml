@@ -23,4 +23,8 @@ publish = false
 
 [dependencies]
 enclone_tail = { path = "../enclone_tail" }
+flate2 = "1"
 plotters = { version = "0.3", default_features = false, features = ["svg_backend", "point_series"] }
+pretty_trace = "0.5"
+string_utils = "0.1"
+vector_utils = "0.1"
