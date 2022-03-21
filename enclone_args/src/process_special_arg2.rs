@@ -68,13 +68,15 @@ pub fn process_special_arg2(
                     let fields = s.split(' ').collect::<Vec<&str>>();
                     if fields.len() != 20 {
                         return Err("\nIllegal cdr3_aa_heavy≥n%:h:@f argument in GROUP: \
-                            file does not meet requirements.\n".to_string());
+                            file does not meet requirements.\n"
+                            .to_string());
                     }
                     let mut row = Vec::<f64>::new();
                     for i in 0..fields.len() {
                         if fields[i].parse::<f64>().is_err() {
                             return Err("\nIllegal cdr3_aa_heavy≥n%:h:@f argument in GROUP: \
-                                file does not meet requirements.\n".to_string());
+                                file does not meet requirements.\n"
+                                .to_string());
                         }
                         row.push(fields[i].force_f64());
                     }
@@ -82,7 +84,8 @@ pub fn process_special_arg2(
                 }
                 if m.len() != 20 {
                     return Err("\nIllegal cdr3_aa_heavy≥n%:h:@f argument in GROUP: \
-                        file does not meet requirements.\n".to_string());
+                        file does not meet requirements.\n"
+                        .to_string());
                 }
                 ctl.clono_group_opt.cdr3_heavy_pc_hf = Some((val, m));
             } else if x.starts_with("≥light") && x.ends_with('%') {

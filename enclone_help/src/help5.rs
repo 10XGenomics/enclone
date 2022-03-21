@@ -213,8 +213,8 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) -> Resu
         );
         h.doc2("each having 20 numbers, separated by single spaces,");
         h.doc2("compute the Hamming distance between heavy chain amino acid");
-        h.doc2("sequences, weighted by the matrix defined by f, and require");
-        h.doc2("that percent identity is bounded accordingly");
+        h.doc2("sequences of the same length, weighted by the matrix defined by f,");
+        h.doc2("and require that percent identity is bounded accordingly");
         h.ldoc(
             "heavy≥n%",
             "nucleotide identity on heavy chain V..J sequences is at least n%",

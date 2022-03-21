@@ -477,9 +477,6 @@ pub fn grouper(
             ctl.perf_stats(&t, &format!("grouping by {} percent", chain));
         }
 
-
-
-
         // Group by cdr3_aa_heavy≥n%:h:@f.
 
         if ctl.clono_group_opt.cdr3_heavy_pc_hf.is_some() {
@@ -559,12 +556,6 @@ pub fn grouper(
             }
             ctl.perf_stats(&t, &format!("grouping by cdr3_aa_heavy≥n%:h:@f"));
         }
-                                        
-
-
-
-
-
 
         // Group by aa_heavy_pc and then aa_light_pc.
 
