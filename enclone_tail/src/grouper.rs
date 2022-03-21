@@ -528,7 +528,7 @@ pub fn grouper(
                                             err += penalty[c1][c2];
                                         }
                                         err /= aa1.len() as f64;
-                                        if err <= min_r {
+                                        if err <= 1.0 - min_r {
                                             ee.join(i1 as i32, i2 as i32);
                                             continue 'next_at;
                                         }
