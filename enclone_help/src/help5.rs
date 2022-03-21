@@ -206,6 +206,7 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) -> Resu
         h.doc2("(note that use of either of these options without at least one of the");
         h.doc2("earlier options may be slow)");
         h.doc2("(in both cases, we also recognize >= (with quoting) and ⩾)");
+        h.doc2("(all of the above options use Levenshtein distance)");
         h.ldoc(
             "heavy≥n%",
             "nucleotide identity on heavy chain V..J sequences is at least n%",
@@ -226,6 +227,7 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) -> Resu
         h.doc2("(note that use of either of these options without at least one of the");
         h.doc2("earlier options may be very slow)");
         h.doc2("(in both cases, we also recognize >= (with quoting) and ⩾)");
+        h.doc2("(all of the above options use Levenshtein distance)");
         h.print_tab2()?;
         h.print("\n")?;
 
