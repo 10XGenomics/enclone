@@ -14,38 +14,10 @@
 use io_utils::*;
 use pretty_trace::PrettyTrace;
 use rayon::prelude::*;
-use std::cmp::max;
 use std::collections::HashMap;
 use std::env;
 use std::io::BufRead;
-use std::mem::swap;
-use string_utils::{stringme, strme, TextUtils};
-use tables::*;
-use vector_utils::unique_sort;
-
-pub fn hcat(col1: &[String], col2: &[String], sep: usize) -> Vec<String> {
-    let mut cat = Vec::<String>::new();
-    let height = max(col1.len(), col2.len());
-    let mut width1 = 0;
-    for x in col1 {
-        width1 = max(width1, x.chars().count() + sep);
-    }
-    for i in 0..height {
-        let mut s = if i < col1.len() {
-            col1[i].clone()
-        } else {
-            String::new()
-        };
-        while s.chars().count() < width1 {
-            s += " ";
-        }
-        if i < col2.len() {
-            s += &col2[i];
-        }
-        cat.push(s);
-    }
-    cat
-}
+use string_utils::TextUtils;
 
 fn main() {
     PrettyTrace::new().on();
@@ -59,10 +31,6 @@ fn main() {
         Vec<u8>,
         String,
         String,
-        usize,
-        usize,
-        String,
-        usize,
         usize,
     )>::new();
     for line in f.lines() {
@@ -84,10 +52,6 @@ fn main() {
                 fields[tof["donors_cell"]].to_string(),
                 fields[tof["v_name2"]].to_string(),
                 fields[tof["dref"]].force_usize(),
-                fields[tof["clonotype_ncells"]].force_usize(),
-                fields[tof["const1"]].to_string(),
-                fields[tof["hcomp"]].force_usize(),
-                fields[tof["jun_ins"]].force_usize(),
             ));
         }
     }
@@ -120,39 +84,33 @@ fn main() {
     // Results = for each percent identity, rounded down:
     // 3. count for equal light chain gene names and dref1 > 0 and dref2 > 0
     // 4. count for unequal light chain gene names and dref1 > 0 and dref2 > 0.
-    //
-    // Make one pass for all donors, and one pass each for each pair of donors.
 
     bounds.par_iter_mut().for_each(|res| {
         let i = res.0;
         let j = res.1;
         for k1 in i..j {
             for k2 in k1 + 1..j {
-                // Require different donors.
-
                 if data[k1].3 == data[k2].3 {
                     continue;
                 }
-
-                // Compute stuff.
-
-                let mut same = 0;
-                for m in 0..data[k1].2.len() {
-                    if data[k1].2[m] == data[k2].2[m] {
-                        same += 1;
+                for pass in 0..2 {
+                    let mut same = 0;
+                    for m in 0..data[k1].2.len() {
+                        if data[k1].2[m] == data[k2].2[m] {
+                            same += 1;
+                        }
                     }
-                }
-                let ident = 100.0 * same as f64 / data[k1].2.len() as f64;
-                let ident = ident.floor() as usize;
-                let ident = ident / 10;
-                let (dref1, dref2) = (data[k1].5, data[k2].5);
-                let eq_light = data[k1].4 == data[k2].4;
-
-                if dref1 > 0 && dref2 > 0 {
-                    if eq_light {
-                        res.2[0][ident].2 += 1;
-                    } else {
-                        res.2[0][ident].3 += 1;
+                    let ident = 100.0 * same as f64 / data[k1].2.len() as f64;
+                    let ident = ident.floor() as usize;
+                    let ident = ident / 10;
+                    let (dref1, dref2) = (data[k1].5, data[k2].5);
+                    let eq_light = data[k1].4 == data[k2].4;
+                    if dref1 > 0 && dref2 > 0 {
+                        if eq_light {
+                            res.2[pass][ident].2 += 1;
+                        } else {
+                            res.2[pass][ident].3 += 1;
+                        }
                     }
                 }
             }
@@ -162,21 +120,27 @@ fn main() {
     // Sum.
 
     let mut res = vec![vec![(0, 0, 0, 0); 11]; 7];
-    for i in 0..bounds.len() {
-        for j in 0..=10 {
-            res[0][j].0 += bounds[i].2[0][j].0;
-            res[0][j].1 += bounds[i].2[0][j].1;
-            res[0][j].2 += bounds[i].2[0][j].2;
-            res[0][j].3 += bounds[i].2[0][j].3;
+    for pass in 0..2 {
+        for i in 0..bounds.len() {
+            for j in 0..=10 {
+                res[pass][j].0 += bounds[i].2[pass][j].0;
+                res[pass][j].1 += bounds[i].2[pass][j].1;
+                res[pass][j].2 += bounds[i].2[pass][j].2;
+                res[pass][j].3 += bounds[i].2[pass][j].3;
+            }
         }
     }
 
     // Print results.
 
-    for j in 0..=10 {
-        let n = res[0][j].2 + res[0][j].3;
-        let nznz = 100.0 * res[0][j].2 as f64 / n as f64;
-        println!("{}% ==> {nznz:.1}% of {n}", 10 * j);
+    for pass in 0..2 {
+        println!("");
+        for j in 0..=10 {
+            let n = res[pass][j].2 + res[pass][j].3;
+            let nznz = 100.0 * res[pass][j].2 as f64 / n as f64;
+            println!("{}% ==> {nznz:.1}% of {n}", 10 * j);
+        }
     }
+    println!("");
 }
         
