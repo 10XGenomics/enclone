@@ -211,7 +211,7 @@ fn main() {
             let rand3 = randme.next_u64();
             let rand4 = randme.next_u64();
             let rand5 = randme.next_u64();
-            let pert = (rand1 % 1_000_000u64) as f32 / 1_000_000.0; // in [0,1)
+            let pert = (rand1 % 1_000_000u64) as f64 / 1_000_000.0; // in [0,1)
             let mul = 1.0 + pert;
             let a1 = (rand2 as usize) % 20;
             let a2 = (rand3 as usize) % 20;
@@ -228,12 +228,12 @@ fn main() {
             penalty[a2][a1] = penalty[a2][a1].min(8.0);
             penalty[b1][b2] = penalty[b1][b2].min(8.0);
             penalty[b2][b1] = penalty[b2][b1].min(8.0);
-            penalty[a1][a2] = format!("{:.1}", penalty[a1][a2]).parse::<f32>().unwrap();
-            penalty[a2][a1] = format!("{:.1}", penalty[a2][a1]).parse::<f32>().unwrap();
-            penalty[b1][b2] = format!("{:.1}", penalty[b1][b2]).parse::<f32>().unwrap();
-            penalty[b2][b1] = format!("{:.1}", penalty[b2][b1]).parse::<f32>().unwrap();
+            penalty[a1][a2] = format!("{:.1}", penalty[a1][a2]).parse::<f64>().unwrap();
+            penalty[a2][a1] = format!("{:.1}", penalty[a2][a1]).parse::<f64>().unwrap();
+            penalty[b1][b2] = format!("{:.1}", penalty[b1][b2]).parse::<f64>().unwrap();
+            penalty[b2][b1] = format!("{:.1}", penalty[b2][b1]).parse::<f64>().unwrap();
         }
-        let mut penaltyx = Vec::<f32>::new();
+        let mut penaltyx = Vec::<f64>::new();
         for i in 0..20 {
             for j in 0..20 {
                 penaltyx.push(penalty[i][j]);
@@ -257,7 +257,7 @@ fn main() {
                     let c2 = data[k2].2[m] as usize;
                     err += penaltyx[20 * c1 + c2];
                 }
-                err /= data[k1].2.len() as f32;
+                err /= data[k1].2.len() as f64;
 
                 // Add to results.
 
@@ -286,11 +286,11 @@ fn main() {
         if count == 1 {
             canonical_n = n;
         }
-        let nznz = 100.0 * res.0 as f32 / n as f32;
+        let nznz = 100.0 * res.0 as f64 / n as f64;
         if n > best_n && nznz >= 75.0 {
             changed = true;
             if count > 1 {
-                let nrel = n as f32 / canonical_n as f32;
+                let nrel = n as f64 / canonical_n as f64;
                 print!("count = {count}, nrel = {nrel:.4}, light chain coherence = {nznz:.1}%");
                 println!(", used {:.1} minutes", elapsed(&t) / 60.0);
             }
