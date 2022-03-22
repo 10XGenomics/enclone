@@ -141,10 +141,12 @@ fn main() {
                     let (dref1, dref2) = (data[k1].5, data[k2].5);
                     let eq_light = data[k1].4 == data[k2].4;
                     if dref1 > 0 && dref2 > 0 {
-                        if eq_light {
-                            res.2[pass][ident].2 += 1;
-                        } else {
-                            res.2[pass][ident].3 += 1;
+                        for u in 0..=ident {
+                            if eq_light {
+                                res.2[pass][u].2 += 1;
+                            } else {
+                                res.2[pass][u].3 += 1;
+                            }
                         }
                     }
                 }
