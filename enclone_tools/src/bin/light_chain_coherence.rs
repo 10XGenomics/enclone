@@ -205,7 +205,7 @@ fn main() {
         // Mutate penalty matrix.
 
         let penalty_save = penalty.clone();
-        if count > 0 {
+        if count > 1 {
             let rand1 = randme.next_u64();
             let rand2 = randme.next_u64();
             let rand3 = randme.next_u64();
