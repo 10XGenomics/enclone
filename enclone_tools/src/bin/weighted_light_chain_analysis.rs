@@ -110,7 +110,7 @@ fn main() {
             }
             j += 1;
         }
-        bounds.push((i, j, vec![vec![(0, 0, 0, 0); 11]; 7]));
+        bounds.push((i, j, vec![vec![(0, 0, 0, 0); 21]; 7]));
         i = j;
     }
 
@@ -137,7 +137,7 @@ fn main() {
                     let same = data[k1].2.len() as f64 - err;
                     let ident = 100.0 * same / data[k1].2.len() as f64;
                     let ident = ident.floor() as usize;
-                    let ident = ident / 10;
+                    let ident = ident / 5;
                     let (dref1, dref2) = (data[k1].5, data[k2].5);
                     let eq_light = data[k1].4 == data[k2].4;
                     if dref1 > 0 && dref2 > 0 {
@@ -154,10 +154,10 @@ fn main() {
 
     // Sum.
 
-    let mut res = vec![vec![(0, 0, 0, 0); 11]; 7];
+    let mut res = vec![vec![(0, 0, 0, 0); 21]; 7];
     for pass in 0..2 {
         for i in 0..bounds.len() {
-            for j in 0..=10 {
+            for j in 0..=20 {
                 res[pass][j].0 += bounds[i].2[pass][j].0;
                 res[pass][j].1 += bounds[i].2[pass][j].1;
                 res[pass][j].2 += bounds[i].2[pass][j].2;
@@ -174,10 +174,10 @@ fn main() {
         } else {
             println!("\nevolved transition matrix\n");
         }
-        for j in 0..=10 {
+        for j in 10..=20 {
             let n = res[pass][j].2 + res[pass][j].3;
             let nznz = 100.0 * res[pass][j].2 as f64 / n as f64;
-            println!("{}% ==> {nznz:.1}% of {n}", 10 * j);
+            println!("{}% ==> {nznz:.1}% of {n}", 5 * j);
         }
     }
     println!("");
