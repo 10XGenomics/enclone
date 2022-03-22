@@ -261,7 +261,7 @@ fn main() {
 
                 // Add to results.
 
-                if err <= 0.1 {
+                if 1.0 - err >= 0.9 {
                     let eq_light = data[k1].4 == data[k2].4;
                     if eq_light {
                         res.1 .0 += 1;
