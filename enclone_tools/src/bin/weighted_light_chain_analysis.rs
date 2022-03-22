@@ -3,13 +3,12 @@
 // See also private_light_chain_analysis.rs.
 //
 // Analyze light chains.  Supply a single file of data, with one line per cell, and fields
-// including donors_cell,v_name1,v_name2,dref,cdr3_aa1,clonotype_ncells,const1.
+// including donors_cell,v_name1,v_name2,dref,cdr3_aa1.
 //
 // Data from:
 //
 // enclone BCR=@test BUILT_IN CHAINS_EXACT=2 CHAINS=2 NOPRINT POUT=stdout PCELL ECHOC
-//         PCOLS=donors_cell,v_name1,v_name2,dref,cdr3_aa1,clonotype_ncells,const1,hcomp
-//         > per_cell_stuff
+//         PCOLS=donors_cell,v_name1,v_name2,dref,cdr3_aa1 > per_cell_stuff
 
 use io_utils::*;
 use pretty_trace::PrettyTrace;
@@ -17,7 +16,7 @@ use rayon::prelude::*;
 use std::collections::HashMap;
 use std::env;
 use std::io::BufRead;
-use string_utils::TextUtils;
+use string_utils::{stringme, TextUtils};
 
 fn main() {
     PrettyTrace::new().on();
@@ -63,6 +62,40 @@ fn main() {
         data[i].4 = data[i].4.replace("D", "");
     }
 
+    // Define penalty matrix.
+
+    let f = include_bytes!["../../../enclone_paper/data/mat.194001"].to_vec();
+    let f = stringme(&f);
+    let mut m = Vec::<Vec<f64>>::new();
+    for line in f.lines() {
+        let mut s = line.to_string();
+        if s.starts_with("    A") {
+            continue;
+        }
+        if s.len() > 2 && s.as_bytes()[0] >= b'A' {
+            s = s[2..].to_string();
+        }
+        let fields = s.split(' ').collect::<Vec<&str>>();
+        let mut row = Vec::<f64>::new();
+        for i in 0..fields.len() {
+            row.push(fields[i].force_f64());
+        }
+        m.push(row);
+    }
+    let mut penalty = vec![vec![0.0; 27]; 27];
+    let aa = b"ACDEFGHIKLMNPQRSTVWY".to_vec();
+    for i1 in 0..aa.len() {
+        let c1 = (aa[i1] - b'A') as usize;
+        for i2 in 0..aa.len() {
+            let c2 = (aa[i2] - b'A') as usize;
+            penalty[c1][c2] = m[i1][i2];
+        }
+    }
+    let mut penalty_simple = vec![vec![1.0; 27]; 27];
+    for i in 0..27 {
+        penalty_simple[i][i] = 0.0;
+    }
+
     // Define groups based on equal heavy chain gene names and CDR3H length.
     // Plus placeholder for results, see next.
 
@@ -94,13 +127,15 @@ fn main() {
                     continue;
                 }
                 for pass in 0..2 {
-                    let mut same = 0;
+                    let penalty = if pass == 0 { &penalty_simple } else { &penalty };
+                    let mut err = 0.0;
                     for m in 0..data[k1].2.len() {
-                        if data[k1].2[m] == data[k2].2[m] {
-                            same += 1;
-                        }
+                        let c1 = (data[k1].2[m] - b'A') as usize;
+                        let c2 = (data[k2].2[m] - b'A') as usize;
+                        err += penalty[c1][c2];
                     }
-                    let ident = 100.0 * same as f64 / data[k1].2.len() as f64;
+                    let same = data[k1].2.len() as f64 - err;
+                    let ident = 100.0 * same / data[k1].2.len() as f64;
                     let ident = ident.floor() as usize;
                     let ident = ident / 10;
                     let (dref1, dref2) = (data[k1].5, data[k2].5);
@@ -134,7 +169,11 @@ fn main() {
     // Print results.
 
     for pass in 0..2 {
-        println!("");
+        if pass == 0 {
+            println!("\nsimple transition matrix\n");
+        } else {
+            println!("\nevolved transition matrix\n");
+        }
         for j in 0..=10 {
             let n = res[pass][j].2 + res[pass][j].3;
             let nznz = 100.0 * res[pass][j].2 as f64 / n as f64;
