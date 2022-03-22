@@ -8,7 +8,7 @@
 // Data from:
 //
 // enclone BCR=@test BUILT_IN CHAINS_EXACT=2 CHAINS=2 NOPRINT POUT=stdout PCELL ECHOC
-//         PCOLS=donors_cell,v_name1,v_name2,dref,cdr3_aa1,clonotype_ncells,const1,hcomp
+//         PCOLS=donors_cell,v_name1,v_name2,dref,cdr3_aa1,clonotype_ncells,const1,hcomp,jun_ins
 //         > per_cell_stuff
 //
 // enclone BIB=@training BUILT_IN CHAINS_EXACT=2 CHAINS=2 NOPRINT POUT=stdout PCELL ECHOC
@@ -116,6 +116,33 @@ fn main() {
         data[i].4 = data[i].4.replace("D", "");
     }
 
+    // Compute jun_ins frequency for memory and naive cells.
+
+    let mut ins = vec![vec![0; 1000]; 2];
+    let mut total = vec![0; 2];
+    for pass in 0..2 {
+        for i in 0..data.len() {
+            let dref = data[i].5;
+            let jun_ins = data[i].9;
+            if (pass == 0 && dref > 0) || (pass == 1 && dref == 0) {
+                ins[pass][jun_ins] += 1;
+                total[pass] += 1;
+            }
+        }
+    }
+    println!("\njunction insertion length frequency for memory cells");
+    for i in 0..=20 {
+        if ins[0][i] > 0 {
+            println!("{i}: {:.3}%", 100.0 * ins[0][i] as f64 / total[0] as f64);
+        }
+    }
+    println!("\njunction insertion length frequency for naive cells");
+    for i in 0..=20 {
+        if ins[1][i] > 0 {
+            println!("{i}: {:.3}%", 100.0 * ins[1][i] as f64 / total[1] as f64);
+        }
+    }
+
     // Compute mean jun_ins for various classes of cells.
 
     let mut n_memory = 0;
@@ -151,6 +178,8 @@ fn main() {
     let mut i = 0;
     let mut last = String::new();
     let mut ins_mem = vec![0; 100];
+    let mut ins = vec![vec![0; 1000]; 2];
+    let mut total = vec![0; 2];
     println!("");
     while i < data.len() {
         let mut j = i + 1;
@@ -173,6 +202,8 @@ fn main() {
                     n_naive += 1;
                     ins_naive += jun_ins;
                     max_ins_naive = max(max_ins_naive, jun_ins);
+                    ins[1][jun_ins] += 1;
+                    total[1] += 1;
                 } else {
                     n_memory += 1;
                     ins_memory += jun_ins;
@@ -191,11 +222,28 @@ fn main() {
                         max_ins_memory_cdr3 = stringme(&data[k].2);
                     }
                     max_ins_memory = max(max_ins_memory, jun_ins);
+                    ins[0][jun_ins] += 1;
+                    total[0] += 1;
                 }
             }
         }
         i = j;
     }
+    println!("\njunction insertion length frequency for public memory cells");
+    for i in 0..=20 {
+        if ins[0][i] > 0 {
+            println!("{i}: {:.3}%", 100.0 * ins[0][i] as f64 / total[0] as f64);
+        }
+    }
+    println!("\njunction insertion length frequency for public naive cells");
+    for i in 0..=20 {
+        if ins[1][i] > 0 {
+            println!("{i}: {:.3}%", 100.0 * ins[1][i] as f64 / total[1] as f64);
+        }
+    }
+
+
+
     println!(
         "mean junction insertion bases for public memory = {:.1}",
         ins_memory as f64 / n_memory as f64
