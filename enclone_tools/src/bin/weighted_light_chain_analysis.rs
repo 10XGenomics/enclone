@@ -174,7 +174,7 @@ fn main() {
         } else {
             println!("\nevolved transition matrix\n");
         }
-        for j in 10..=20 {
+        for j in 14..=20 {
             let n = res[pass][j].2 + res[pass][j].3;
             let nznz = 100.0 * res[pass][j].2 as f64 / n as f64;
             println!("{}% ==> {nznz:.1}% of {n}", 5 * j);
