@@ -2,6 +2,14 @@
 
 // Generate parseable output.
 
+use enclone_core::defs::{EncloneControl, ExactClonotype, justification, POUT_SEP};
+use io_utils::{fwrite, fwriteln};
+use itertools::Itertools;
+use std::collections::HashMap;
+use std::io::Write;
+use string_utils::strme;
+use tables::print_tabular;
+
 pub fn generate_parseable_output(
     exacts: &Vec<Vec<usize>>,
     exact_clonotypes: &Vec<ExactClonotype>,
@@ -10,10 +18,11 @@ pub fn generate_parseable_output(
     group_ncells: usize,
     i: usize,
     j: usize,
+    oo: usize,
     pcols: &Vec<String>,
     pcols_show: &Vec<String>,
-    pout: &mut String,
-    glog: &mut String,
+    pout: &mut Box<dyn std::io::Write>,
+    glog: &mut Vec<u8>,
 ) {
     if !ctl.parseable_opt.pout.is_empty() {
         let mut rows = Vec::<Vec<String>>::new();

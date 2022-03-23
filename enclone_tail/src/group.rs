@@ -22,9 +22,7 @@ use ansi_escape::ansi_to_html::{
 };
 use ansi_escape::{emit_bold_escape, emit_eight_bit_color_escape, emit_end_escape};
 use enclone_core::combine_group_pics::combine_group_pics;
-use enclone_core::defs::{
-    justification, ColInfo, EncloneControl, ExactClonotype, GexInfo, POUT_SEP,
-};
+use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype, GexInfo};
 use enclone_core::mammalian_fixed_len::mammalian_fixed_len_peer_groups;
 use enclone_core::print_tools::font_face_in_css;
 use enclone_core::set_speakers::set_speakers;
@@ -40,7 +38,6 @@ use std::io::{stdout, Write};
 use std::path::Path;
 use std::time::Instant;
 use string_utils::{stringme, strme, TextUtils};
-use tables::print_tabular;
 use tar::Builder;
 use vdj_ann::refx::RefData;
 use vector_utils::{next_diff1_3, unique_sort};
@@ -635,6 +632,7 @@ pub fn group_and_print_clonotypes(
                 group_ncells,
                 i,
                 j,
+                oo,
                 &pcols,
                 &pcols_show,
                 &mut pout,
