@@ -2,7 +2,7 @@
 
 // Generate parseable output.
 
-use enclone_core::defs::{EncloneControl, ExactClonotype, justification, POUT_SEP};
+use enclone_core::defs::{justification, EncloneControl, ExactClonotype, POUT_SEP};
 use io_utils::{fwrite, fwriteln};
 use itertools::Itertools;
 use std::collections::HashMap;
@@ -28,14 +28,11 @@ pub fn generate_parseable_output(
         let mut rows = Vec::<Vec<String>>::new();
         for m in 0..out_datas[oo].len() {
             out_datas[oo][m].insert("group_id".to_string(), format!("{}", i + 1));
-            out_datas[oo][m]
-                .insert("group_ncells".to_string(), format!("{}", group_ncells));
+            out_datas[oo][m].insert("group_ncells".to_string(), format!("{}", group_ncells));
             out_datas[oo][m].insert("clonotype_id".to_string(), format!("{}", j + 1));
         }
         if !ctl.parseable_opt.pno_header {
-            if ctl.parseable_opt.pout == *"stdout"
-                && (!ctl.gen_opt.noprint || (i == 0 && j == 0))
-            {
+            if ctl.parseable_opt.pout == *"stdout" && (!ctl.gen_opt.noprint || (i == 0 && j == 0)) {
                 fwriteln!(glog, "{}", pcols_show.iter().format(","));
             }
             if ctl.parseable_opt.pout == *"stdouth" {
