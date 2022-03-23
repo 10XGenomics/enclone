@@ -860,7 +860,7 @@ pub fn print_stats(
                             for k2 in 0..ex2.share.len() {
                                 if !ex1.share[k1].left && !ex2.share[k2].left {
                                     let mut light1 = refdata.name[ex1.share[k1].v_ref_id].clone();
-                                    let mut light2 = refdata.name[ex1.share[k2].v_ref_id].clone();
+                                    let mut light2 = refdata.name[ex2.share[k2].v_ref_id].clone();
                                     if light1.contains("*") {
                                         light1 = light1.before("*").to_string();
                                     }
