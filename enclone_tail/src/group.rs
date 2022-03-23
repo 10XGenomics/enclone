@@ -27,6 +27,7 @@ use enclone_core::defs::{
 use enclone_core::mammalian_fixed_len::mammalian_fixed_len_peer_groups;
 use enclone_core::print_tools::font_face_in_css;
 use enclone_core::set_speakers::set_speakers;
+use enclone_core::version_string;
 use enclone_proto::types::DonorReferenceItem;
 use io_utils::{fwrite, fwriteln, open_for_write_new};
 use itertools::Itertools;
@@ -192,13 +193,15 @@ pub fn group_and_print_clonotypes(
     let mut last_width = 0;
     let mut logx = Vec::<u8>::new();
     if ctl.gen_opt.echo {
+        fwriteln!(logx, "\n{} : {}", env!("CARGO_PKG_VERSION"), version_string());
         let args: Vec<String> = env::args().collect();
-        fwriteln!(logx, "\n{}", args.iter().format(" "));
+        fwriteln!(logx, "{}", args.iter().format(" "));
         if ctl.gen_opt.html {
             fwriteln!(logx, "");
         }
     }
     if ctl.gen_opt.echoc {
+        fwriteln!(logx, "# {} : {}", env!("CARGO_PKG_VERSION"), version_string());
         let args: Vec<String> = env::args().collect();
         fwriteln!(logx, "# {}", args.iter().format(" "));
         if ctl.gen_opt.html {
