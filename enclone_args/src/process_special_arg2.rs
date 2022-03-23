@@ -65,7 +65,8 @@ pub fn process_special_arg2(
                 let ff = open_for_read![&f];
                 for line in ff.lines() {
                     let mut s = line.unwrap();
-                    if s.starts_with("    A") {
+                    let sb = s.replace(" ", "");
+                    if sb == "ACDEFGHIKLMNPQRSTVWY" {
                         continue;
                     }
                     if s.len() > 2 && s.as_bytes()[0] >= b'A' {
