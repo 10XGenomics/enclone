@@ -20,6 +20,7 @@ pub mod legend;
 pub mod neighbor;
 pub mod newick;
 pub mod pack_circles;
+pub mod parseable;
 pub mod phylip;
 pub mod plot;
 pub mod plot_points;
