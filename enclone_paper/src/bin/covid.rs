@@ -128,7 +128,7 @@ fn main() {
             let y = &data[i2];
 
             // Require same heavy chain gene and same CDRH3 length.
-            
+
             if x.0 != y.0 || x.3.len() != y.3.len() {
                 continue;
             }
@@ -146,7 +146,7 @@ fn main() {
                     }
                 }
             }
-            
+
             // Don't consider antibodies with identical CDRH3.
 
             if x.3 == y.3 {
@@ -191,7 +191,7 @@ fn main() {
     let mut freq = Vec::<(u32, (String, String))>::new();
     make_freq(&errs, &mut freq);
     for i in 0..freq.len() {
-        println!("[{}] {}, {}", freq[i].0, freq[i].1.0, freq[i].1.1);
+        println!("[{}] {}, {}", freq[i].0, freq[i].1 .0, freq[i].1 .1);
     }
     println!("");
 }

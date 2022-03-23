@@ -242,8 +242,6 @@ fn main() {
         }
     }
 
-
-
     println!(
         "mean junction insertion bases for public memory = {:.1}",
         ins_memory as f64 / n_memory as f64

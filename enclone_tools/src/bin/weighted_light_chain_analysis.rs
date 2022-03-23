@@ -24,14 +24,7 @@ fn main() {
     let f = open_for_read![&args[1]];
     let mut first = true;
     let mut tof = HashMap::<String, usize>::new();
-    let mut data = Vec::<(
-        String,
-        usize,
-        Vec<u8>,
-        String,
-        String,
-        usize,
-    )>::new();
+    let mut data = Vec::<(String, usize, Vec<u8>, String, String, usize)>::new();
     for line in f.lines() {
         let s = line.unwrap();
         if s.starts_with("#") {
@@ -184,4 +177,3 @@ fn main() {
     }
     println!("");
 }
-        

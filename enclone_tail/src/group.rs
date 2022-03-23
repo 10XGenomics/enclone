@@ -35,8 +35,7 @@ use std::cmp::max;
 use std::collections::HashMap;
 use std::env;
 use std::fs::File;
-use std::io::stdout;
-use std::io::Write;
+use std::io::{stdout, Write};
 use std::path::Path;
 use std::time::Instant;
 use string_utils::{stringme, strme, TextUtils};
@@ -193,7 +192,12 @@ pub fn group_and_print_clonotypes(
     let mut last_width = 0;
     let mut logx = Vec::<u8>::new();
     if ctl.gen_opt.echo {
-        fwriteln!(logx, "\n{} : {}", env!("CARGO_PKG_VERSION"), version_string());
+        fwriteln!(
+            logx,
+            "\n{} : {}",
+            env!("CARGO_PKG_VERSION"),
+            version_string()
+        );
         let args: Vec<String> = env::args().collect();
         fwriteln!(logx, "{}", args.iter().format(" "));
         if ctl.gen_opt.html {
@@ -201,7 +205,12 @@ pub fn group_and_print_clonotypes(
         }
     }
     if ctl.gen_opt.echoc {
-        fwriteln!(logx, "# {} : {}", env!("CARGO_PKG_VERSION"), version_string());
+        fwriteln!(
+            logx,
+            "# {} : {}",
+            env!("CARGO_PKG_VERSION"),
+            version_string()
+        );
         let args: Vec<String> = env::args().collect();
         fwriteln!(logx, "# {}", args.iter().format(" "));
         if ctl.gen_opt.html {
@@ -902,9 +911,7 @@ pub fn group_and_print_clonotypes(
     // Print stats.
 
     let mut nclono2 = 0;
-    let mut two_chain = 0;
-    let mut three_chain = 0;
-    let mut four_chain = 0;
+    let (mut two_chain, mut three_chain, mut four_chain) = (0, 0, 0);
     let mut slog = Vec::<u8>::new();
     print_stats(
         tall,
