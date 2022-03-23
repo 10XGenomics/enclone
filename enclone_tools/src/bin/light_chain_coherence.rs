@@ -2,12 +2,18 @@
 //
 // Optimize amino acid penalty matrix to increase joining given light chain coherence ≥ 75%.
 //
+// This is very delicate piece of this that is easy to break.  Namely, do we correctly handle
+// cases such as 1 amino acid different out of 10, which should be 90% identity.  This can be
+// broken because of floating point arithmetic.
+//
 // Usage: light_chain_coherence per_cell_stuff
 //
 // Data from:
 //
 // enclone BCR=@test BUILT_IN CHAINS_EXACT=2 CHAINS=2 NOPRINT POUT=stdout PCELL ECHOC
 //         PCOLS=donors_cell,v_name1,v_name2,dref,cdr3_aa1 > per_cell_stuff
+//
+// or with more fields
 //
 // Output:
 //
