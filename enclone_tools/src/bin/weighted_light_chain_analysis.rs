@@ -57,7 +57,7 @@ fn main() {
 
     // Define penalty matrix.
 
-    let f = include_bytes!["../../../enclone_paper/data/mat.194001"].to_vec();
+    let f = include_bytes!["../../../enclone_paper/data/mat.575142"].to_vec();
     let f = stringme(&f);
     let mut m = Vec::<Vec<f64>>::new();
     for line in f.lines() {
