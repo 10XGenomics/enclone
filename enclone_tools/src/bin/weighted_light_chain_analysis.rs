@@ -62,7 +62,8 @@ fn main() {
     let mut m = Vec::<Vec<f64>>::new();
     for line in f.lines() {
         let mut s = line.to_string();
-        if s.starts_with("    A") {
+        let sb = s.replace(" ", "");
+        if sb == "ACDEFGHIKLMNPQRSTVWY" {
             continue;
         }
         if s.len() > 2 && s.as_bytes()[0] >= b'A' {
