@@ -319,6 +319,81 @@ fn main() {
         n_big,
     );
 
+
+
+    // Same as above, but 90% CDRH3 identity version.  Commented out because very slow
+    // (could be parallelized as in the following code).
+
+    let mut n = vec![0; 100];
+    let mut same = vec![0; 100];
+    let mut i = 0;
+    while i < data.len() {
+        let mut j = i + 1;
+        while j < data.len() {
+            if data[j].0 != data[i].0 || data[j].1 != data[i].1 {
+                break;
+            }
+            j += 1;
+        }
+        for k1 in i..j {
+            for k2 in k1 + 1..j {
+                let mut samex = 0;
+                for m in 0..data[k1].2.len() {
+                    if data[k1].2[m] == data[k2].2[m] {
+                        samex += 1;
+                    }
+                }
+                let ident = 100.0 * samex as f64 / data[k1].2.len() as f64;
+                let ident = ident.floor() as usize;
+                if ident >= 90 {
+                    if data[k1].5 > 0 && data[k2].5 > 0 {
+                        if data[k1].3 != data[k2].3 {
+                            let ins = data[k1].9;
+                            if ins == data[k2].9 {
+                                n[ins] += 1;
+                                if data[k1].4 == data[k2].4 {
+                                    same[ins] += 1;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        i = j;
+    }
+    println!(
+        "\nlight chain coherence for public (90%) memory cells as function of junction \
+        insertion length"
+    );
+    for i in 0..=4 {
+        if n[i] > 0 {
+            println!(
+                "ins = {}  ==> coherence = {:.1}% ({} of {})",
+                i,
+                100.0 * same[i] as f64 / n[i] as f64,
+                same[i],
+                n[i],
+            );
+        }
+    }
+    let mut n_big = 0;
+    let mut same_big = 0;
+    for i in 5..n.len() {
+        n_big += n[i];
+        same_big += same[i];
+    }
+    println!(
+        "ins >= 5 ==> coherence = {:.1}% ({} of {})",
+        100.0 * same_big as f64 / n_big as f64,
+        same_big,
+        n_big,
+    );
+    if true { std::process::exit(0); }
+
+
+
+
     // Define groups based on equal heavy chain gene names and CDR3H length.
     // Plus placeholder for results, see next.
 
