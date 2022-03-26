@@ -339,10 +339,6 @@ fn main() {
         i = j;
     }
 
-
-
-
-
     // Compute light chain coherence for memory cells as a function of insertion length, as
     // earlier but now using 90% CDRH3 identity.
 
@@ -410,11 +406,6 @@ fn main() {
         same_big,
         n_big,
     );
-    if true { std::process::exit(0); }
-
-
-
-
 
     // Results = for each percent identity, rounded down:
     // 1. count for equal light chain gene names and dref1 = 0 and dref2 = 0
