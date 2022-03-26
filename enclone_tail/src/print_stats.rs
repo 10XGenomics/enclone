@@ -17,7 +17,7 @@ use std::cmp::max;
 use std::collections::HashMap;
 use std::io::Write;
 use std::time::Instant;
-use string_utils::add_commas;
+use string_utils::{add_commas, TextUtils};
 use tables::print_tabular_vbox;
 use vdj_ann::refx::RefData;
 use vector_utils::*;
@@ -38,7 +38,7 @@ pub fn print_stats(
     three_chain: &mut usize,
     four_chain: &mut usize,
     opt_d_val: &Vec<(usize, Vec<Vec<Vec<usize>>>)>,
-    _refdata: &RefData,
+    refdata: &RefData,
 ) {
     // Compute some umi stats.
 
@@ -859,7 +859,17 @@ pub fn print_stats(
                         'check: for k1 in 0..ex1.share.len() {
                             for k2 in 0..ex2.share.len() {
                                 if !ex1.share[k1].left && !ex2.share[k2].left {
-                                    if ex1.share[k1].v_ref_id == ex2.share[k2].v_ref_id {
+                                    let mut light1 = refdata.name[ex1.share[k1].v_ref_id].clone();
+                                    let mut light2 = refdata.name[ex2.share[k2].v_ref_id].clone();
+                                    if light1.contains("*") {
+                                        light1 = light1.before("*").to_string();
+                                    }
+                                    if light2.contains("*") {
+                                        light2 = light2.before("*").to_string();
+                                    }
+                                    light1 = light1.replace("D", "");
+                                    light2 = light2.replace("D", "");
+                                    if light1 == light2 {
                                         lights_same += 1;
                                         if ex1.clones[0][0].donor_index
                                             != ex2.clones[0][0].donor_index

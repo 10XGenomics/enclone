@@ -1488,7 +1488,16 @@ name = "enclone_paper"
 version = "0.5.159"
 dependencies = [
  "enclone_tail",
+ "flate2",
+ "io_utils 0.3.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "perf_stats 0.1.8 (registry+https://github.com/rust-lang/crates.io-index)",
  "plotters",
+ "pretty_trace 0.5.23 (registry+https://github.com/rust-lang/crates.io-index)",
+ "rand_chacha",
+ "rayon",
+ "string_utils 0.1.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tables 0.1.5 (registry+https://github.com/rust-lang/crates.io-index)",
+ "vector_utils 0.1.5 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -1659,6 +1668,7 @@ dependencies = [
  "pager",
  "perf_stats 0.1.8 (registry+https://github.com/rust-lang/crates.io-index)",
  "pretty_trace 0.5.23 (registry+https://github.com/rust-lang/crates.io-index)",
+ "rand_chacha",
  "rayon",
  "regex",
  "serde_json",

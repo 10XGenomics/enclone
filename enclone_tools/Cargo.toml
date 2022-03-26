@@ -44,6 +44,7 @@ mirror_sparse_matrix = "0.1"
 pager = "0.16"
 perf_stats = "0.1"
 pretty_trace = "0.5"
+rand_chacha = "0.3"
 rayon = "1"
 regex = { version = "1", default-features = false, features = ["std", "perf"] }
 serde_json = "1"

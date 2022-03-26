@@ -1248,6 +1248,17 @@ pub fn proc_lvar_auto(
         }
 
         (s, Vec::new(), "exact".to_string())
+    } else if vname == "jun_ins" {
+        let mut jun_ins = String::new();
+        if ex.share.len() == 2 {
+            for j in 0..ex.share.len() {
+                if ex.share[j].left {
+                    jun_ins = format!("{}", ex.share[j].jun.jun_ins);
+                }
+            }
+        }
+
+        (jun_ins, Vec::new(), "exact".to_string())
     } else if vname == "mait" {
         let mut s = String::new();
         let alpha_g = ex.share[0].mait_alpha_chain_gene_match;

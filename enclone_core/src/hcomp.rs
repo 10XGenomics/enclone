@@ -112,6 +112,7 @@ pub fn heavy_complexity(
                     align_to_vdj_ref(&seq, &vref, &drefx, &d2ref, &jref, &drefname, true, ctl);
                 let mut tigpos = 0;
                 let mut hcomp = 0;
+                let mut jun_ins = 0;
                 let mut indels = Vec::<(usize, isize)>::new();
                 let mut ins_start = 0;
                 let mut del_len = 0;
@@ -123,6 +124,7 @@ pub fn heavy_complexity(
                         tigpos += 1;
                     } else if ops[i] == Ins {
                         hcomp += 1;
+                        jun_ins += 1;
                         if i == 0 || ops[i - 1] != Ins {
                             ins_start = tigpos;
                         }
@@ -144,6 +146,7 @@ pub fn heavy_complexity(
                 }
                 res.1 = Junction {
                     hcomp: hcomp,
+                    jun_ins: jun_ins,
                     d: ds[0].clone(),
                     vstart: vstart,
                     indels: indels,

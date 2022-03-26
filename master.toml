@@ -83,6 +83,7 @@ prost = { version = "0.9", default_features = false, features = ["std", "prost-d
 prost-build = "0.9"
 qd = { git = "https://github.com/Barandis/qd" }
 rand = "0.8"
+rand_chacha = "0.3"
 rayon = "1"
 resvg = { version = "0.19", default-features = false }
 regex = { version = "1", default-features = false, features = ["std", "perf"] }

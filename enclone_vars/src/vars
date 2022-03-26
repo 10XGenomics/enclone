@@ -2529,6 +2529,27 @@ avail:    public
 notes:
 code:     exact: refdata.name[rsi.jids[col]].clone()
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     jun_ins
+inputs:   lvar_vdj
+limits:
+class:    lvar
+level:    exact
+val:      nonnegative_integer
+doc:      TBD
+brief:    number of inserted bases in heavy chain junction, only computed in two-chain case
+page:     enclone help lvars
+avail:    public
+notes:
+code:     let mut jun_ins = String::new();
+          if ex.share.len() == 2 {
+              for j in 0..ex.share.len() {
+                  if ex.share[j].left {
+                      jun_ins = format!("{}", ex.share[j].jun.jun_ins);
+                  }
+              }
+          }
+          exact: jun_ins
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     mait
 inputs:   lvar_vdj
 limits:

@@ -5,8 +5,11 @@
 use crate::proc_args2::{is_f64_arg, is_usize_arg};
 use enclone_core::defs::EncloneControl;
 use enclone_core::linear_condition::LinearCondition;
+use enclone_core::require_readable_file;
 use evalexpr::build_operator_tree;
+use io_utils::open_for_read;
 use regex::Regex;
+use std::io::BufRead;
 use string_utils::{parse_csv, stringme, TextUtils};
 use tilde_expand::tilde_expand;
 use vector_utils::unique_sort;
@@ -50,6 +53,48 @@ pub fn process_special_arg2(
                 ctl.clono_group_opt.cdr3_heavy_len = true;
             } else if x == "cdr3_light_len" {
                 ctl.clono_group_opt.cdr3_light_len = true;
+            } else if x.starts_with("cdr3_aa_heavy≥") && x.contains("@") {
+                let x = x.after("cdr3_aa_heavy≥");
+                if !x.contains("%:h:@") || x.before("%:h:@").parse::<f64>().is_err() {
+                    return Err("\nIllegal cdr3_aa_heavy≥n%:h:@f argument in GROUP.\n".to_string());
+                }
+                let val = x.before("%:h:@").force_f64();
+                let f = x.after("%:h:@");
+                require_readable_file(&f, "GROUP")?;
+                let mut m = Vec::<Vec<f64>>::new();
+                let ff = open_for_read![&f];
+                for line in ff.lines() {
+                    let mut s = line.unwrap();
+                    let sb = s.replace(" ", "");
+                    if sb == "ACDEFGHIKLMNPQRSTVWY" {
+                        continue;
+                    }
+                    if s.len() > 2 && s.as_bytes()[0] >= b'A' {
+                        s = s[2..].to_string();
+                    }
+                    let fields = s.split(' ').collect::<Vec<&str>>();
+                    if fields.len() != 20 {
+                        return Err("\nIllegal cdr3_aa_heavy≥n%:h:@f argument in GROUP: \
+                            file does not meet requirements.\n"
+                            .to_string());
+                    }
+                    let mut row = Vec::<f64>::new();
+                    for i in 0..fields.len() {
+                        if fields[i].parse::<f64>().is_err() {
+                            return Err("\nIllegal cdr3_aa_heavy≥n%:h:@f argument in GROUP: \
+                                file does not meet requirements.\n"
+                                .to_string());
+                        }
+                        row.push(fields[i].force_f64());
+                    }
+                    m.push(row);
+                }
+                if m.len() != 20 {
+                    return Err("\nIllegal cdr3_aa_heavy≥n%:h:@f argument in GROUP: \
+                        file does not meet requirements.\n"
+                        .to_string());
+                }
+                ctl.clono_group_opt.cdr3_heavy_pc_hf = Some((val, m));
             } else if x.starts_with("≥light") && x.ends_with('%') {
                 let val = x.after("≥").rev_before("%");
                 if val.parse::<f64>().is_err() {

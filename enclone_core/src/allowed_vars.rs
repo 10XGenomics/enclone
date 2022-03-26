@@ -4,7 +4,7 @@
 
 // Lead variables for exact subclonotypes and cells.
 
-pub const LVARS_ALLOWED: [&str; 39] = [
+pub const LVARS_ALLOWED: [&str; 40] = [
     "datasets",
     "origins",
     "donors",
@@ -44,6 +44,7 @@ pub const LVARS_ALLOWED: [&str; 39] = [
     "clonotype_ncells",
     "nbc",
     "hcomp",
+    "jun_ins",
 ];
 
 // Chain variables that can be used for contigs and chains

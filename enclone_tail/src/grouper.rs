@@ -477,6 +477,86 @@ pub fn grouper(
             ctl.perf_stats(&t, &format!("grouping by {} percent", chain));
         }
 
+        // Group by cdr3_aa_heavy≥n%:h:@f.
+
+        if ctl.clono_group_opt.cdr3_heavy_pc_hf.is_some() {
+            let t = Instant::now();
+            let min_r = ctl.clono_group_opt.cdr3_heavy_pc_hf.as_ref().unwrap().0 / 100.0;
+            let m = &ctl.clono_group_opt.cdr3_heavy_pc_hf.as_ref().unwrap().1;
+            let mut penalty = vec![vec![0.0; 27]; 27];
+            let aa = b"ACDEFGHIKLMNPQRSTVWY".to_vec();
+            for i1 in 0..aa.len() {
+                let c1 = (aa[i1] - b'A') as usize;
+                for i2 in 0..aa.len() {
+                    let c2 = (aa[i2] - b'A') as usize;
+                    penalty[c1][c2] = m[i1][i2];
+                }
+            }
+            let mut results = Vec::<(usize, Vec<Vec<usize>>)>::new();
+            for i in 0..groups.len() {
+                results.push((i, Vec::new()));
+            }
+            results.par_iter_mut().for_each(|res| {
+                let g = &groups[res.0];
+                let mut ee: EquivRel = EquivRel::new(g.len() as i32);
+                for i1 in 0..g.len() {
+                    'next_at: for i2 in i1 + 1..g.len() {
+                        if ee.class_id(i1 as i32) == ee.class_id(i2 as i32) {
+                            continue;
+                        }
+                        let (g1, g2) = (g[i1], g[i2]);
+                        for u1 in exacts[g1].iter() {
+                            for u2 in exacts[g2].iter() {
+                                let (ex1, ex2) = (&exact_clonotypes[*u1], &exact_clonotypes[*u2]);
+                                for p1 in 0..ex1.share.len() {
+                                    if !ex1.share[p1].left {
+                                        continue;
+                                    }
+                                    let aa1 = &ex1.share[p1].cdr3_aa.as_bytes();
+                                    for p2 in 0..ex2.share.len() {
+                                        if !ex2.share[p2].left {
+                                            continue;
+                                        }
+                                        let aa2 = &ex2.share[p2].cdr3_aa.as_bytes();
+                                        if aa1.len() != aa2.len() {
+                                            continue;
+                                        }
+                                        let mut err = 0.0;
+                                        for k in 0..aa1.len() {
+                                            let c1 = (aa1[k] - b'A') as usize;
+                                            let c2 = (aa2[k] - b'A') as usize;
+                                            err += penalty[c1][c2];
+                                        }
+                                        err /= aa1.len() as f64;
+                                        if err <= 1.0 - min_r {
+                                            ee.join(i1 as i32, i2 as i32);
+                                            continue 'next_at;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                let mut reps = Vec::<i32>::new();
+                ee.orbit_reps(&mut reps);
+                for i in 0..reps.len() {
+                    let mut o = Vec::<i32>::new();
+                    ee.orbit(i as i32, &mut o);
+                    let mut p = Vec::<usize>::new();
+                    for j in 0..o.len() {
+                        p.push(g[o[j] as usize]);
+                    }
+                    res.1.push(p);
+                }
+            });
+            groups.clear();
+            for i in 0..results.len() {
+                groups.append(&mut results[i].1.clone());
+            }
+            ctl.perf_stats(&t, &format!("grouping by cdr3_aa_heavy≥n%:h:@f"));
+        }
+
         // Group by aa_heavy_pc and then aa_light_pc.
 
         for pass in 1..=2 {
