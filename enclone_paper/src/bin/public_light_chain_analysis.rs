@@ -298,9 +298,11 @@ fn main() {
     for i in 0..=4 {
         if n[i] > 0 {
             println!(
-                "ins = {}  ==> coherence = {:.1}%",
+                "ins = {}  ==> coherence = {:.1}% ({} of {})",
                 i,
-                100.0 * same[i] as f64 / n[i] as f64
+                100.0 * same[i] as f64 / n[i] as f64,
+                same[i],
+                n[i],
             );
         }
     }
@@ -311,8 +313,10 @@ fn main() {
         same_big += same[i];
     }
     println!(
-        "ins >= 5 ==> coherence = {:.1}%",
-        100.0 * same_big as f64 / n_big as f64
+        "ins >= 5 ==> coherence = {:.1}% ({} of {})",
+        100.0 * same_big as f64 / n_big as f64,
+        same_big,
+        n_big,
     );
 
     // Define groups based on equal heavy chain gene names and CDR3H length.
