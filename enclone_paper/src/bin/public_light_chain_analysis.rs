@@ -380,7 +380,7 @@ fn main() {
         }
     }
     println!(
-        "\nlight chain coherence for public (90%) memory cells as function of junction \
+        "\nlight chain coherence for public (>= 90%) memory cells as function of junction \
         insertion length"
     );
     for i in 0..=4 {
