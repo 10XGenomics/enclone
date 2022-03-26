@@ -319,15 +319,14 @@ fn main() {
         n_big,
     );
 
+    // Define groups based on equal heavy chain gene names and CDR3H length.
+    // Plus placeholder for results, see next.
 
-
-    // Same as above, but 90% CDRH3 identity version.  Commented out because very slow
-    // (could be parallelized as in the following code).
-
-    let mut n = vec![0; 100];
-    let mut same = vec![0; 100];
+    let mut bounds = Vec::<(usize, usize, Vec<Vec<(usize, usize, usize, usize)>>)>::new();
+    let mut bounds2 = Vec::<(usize, usize, Vec<usize>, Vec<usize>)>::new();
     let mut i = 0;
     while i < data.len() {
+        // let j = next_diff12_9(&data, i as i32) as usize;
         let mut j = i + 1;
         while j < data.len() {
             if data[j].0 != data[i].0 || data[j].1 != data[i].1 {
@@ -335,6 +334,21 @@ fn main() {
             }
             j += 1;
         }
+        bounds.push((i, j, vec![vec![(0, 0, 0, 0); 11]; 7]));
+        bounds2.push((i, j, vec![0; 100], vec![0; 100]));
+        i = j;
+    }
+
+
+
+
+
+    // Compute light chain coherence for memory cells as a function of insertion length, as
+    // earlier but now using 90% CDRH3 identity.
+
+    bounds2.par_iter_mut().for_each(|res| {
+        let i = res.0;
+        let j = res.1;
         for k1 in i..j {
             for k2 in k1 + 1..j {
                 let mut samex = 0;
@@ -350,9 +364,9 @@ fn main() {
                         if data[k1].3 != data[k2].3 {
                             let ins = data[k1].9;
                             if ins == data[k2].9 {
-                                n[ins] += 1;
+                                res.3[ins] += 1;
                                 if data[k1].4 == data[k2].4 {
-                                    same[ins] += 1;
+                                    res.2[ins] += 1;
                                 }
                             }
                         }
@@ -360,7 +374,14 @@ fn main() {
                 }
             }
         }
-        i = j;
+    });
+    let mut n = vec![0; 100];
+    let mut same = vec![0; 100];
+    for i in 0..bounds2.len() {
+        for j in 0..100 {
+            same[j] += bounds2[i].2[j];
+            n[j] += bounds2[i].3[j];
+        }
     }
     println!(
         "\nlight chain coherence for public (90%) memory cells as function of junction \
@@ -394,23 +415,6 @@ fn main() {
 
 
 
-    // Define groups based on equal heavy chain gene names and CDR3H length.
-    // Plus placeholder for results, see next.
-
-    let mut bounds = Vec::<(usize, usize, Vec<Vec<(usize, usize, usize, usize)>>)>::new();
-    let mut i = 0;
-    while i < data.len() {
-        // let j = next_diff12_9(&data, i as i32) as usize;
-        let mut j = i + 1;
-        while j < data.len() {
-            if data[j].0 != data[i].0 || data[j].1 != data[i].1 {
-                break;
-            }
-            j += 1;
-        }
-        bounds.push((i, j, vec![vec![(0, 0, 0, 0); 11]; 7]));
-        i = j;
-    }
 
     // Results = for each percent identity, rounded down:
     // 1. count for equal light chain gene names and dref1 = 0 and dref2 = 0
