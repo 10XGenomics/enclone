@@ -6,7 +6,7 @@
 //
 // enclone BCR=@test BUILT_IN CHAINS_EXACT=2 CHAINS=2 NOPRINT POUT=stdout PCELL ECHOC
 //         PCOLS=datasets_cell,donors_cell,v_name1,v_name2,dref,cdr3_aa1,clonotype_ncells,
-//         const1,hcomp,jun_ins
+//         const1,hcomp,jun_ins,d1_name1
 //         > per_cell_stuff
 //
 // public_light_chain_analysis per_cell_stuff
@@ -86,6 +86,7 @@ fn main() {
         usize,
         usize,
         usize,
+        String,
     )>::new();
     for line in f.lines() {
         let s = line.unwrap();
@@ -107,6 +108,7 @@ fn main() {
             assert!(tof.contains_key("const1"));
             assert!(tof.contains_key("hcomp"));
             assert!(tof.contains_key("jun_ins"));
+            assert!(tof.contains_key("d1_name1"));
             first = false;
         } else {
             data.push((
@@ -121,6 +123,7 @@ fn main() {
                 /* 8 */ fields[tof["hcomp"]].force_usize(),
                 /* 9 */ fields[tof["jun_ins"]].force_usize(),
                 /* 10 */ fields[tof["datasets_cell"]].force_usize(),
+                /* 11 */ fields[tof["d1_name1"]].to_string(),
             ));
         }
     }
@@ -131,6 +134,32 @@ fn main() {
     for i in 0..data.len() {
         data[i].4 = data[i].4.replace("D", "");
     }
+
+    // Compute DD fraction.
+
+    let mut naive = (0, 0);
+    let mut memory = (0, 0);
+    for i in 0..data.len() {
+        let dref = data[i].5;
+        let d = &data[i].11;
+        if dref == 0 {
+            naive.1 += 1;
+            if d.contains(":") {
+                naive.0 += 1;
+            }
+        } else {
+            memory.1 += 1;
+            if d.contains(":") {
+                memory.0 += 1;
+            }
+        }
+    }
+    println!("\nDD fraction in naive cells = {:.2}%", 
+        100.0 * naive.0 as f64 / naive.1 as f64
+    );
+    println!("DD fraction in memory cells = {:.2}%", 
+        100.0 * memory.0 as f64 / memory.1 as f64
+    );
 
     // Compute naive fraction for each of the four sort classes.
 
@@ -250,6 +279,8 @@ fn main() {
     let mut ins_mem = vec![0; 100];
     let mut ins = vec![vec![0; 1000]; 2];
     let mut total = vec![0; 2];
+    let mut dd_memory = 0;
+    let mut dd_naive = 0;
     println!("");
     while i < data.len() {
         let mut j = i + 1;
@@ -274,6 +305,9 @@ fn main() {
                     max_ins_naive = max(max_ins_naive, jun_ins);
                     ins[1][jun_ins] += 1;
                     total[1] += 1;
+                    if data[k].11.contains(":") {
+                        dd_naive += 1;
+                    }
                 } else {
                     n_memory += 1;
                     ins_memory += jun_ins;
@@ -294,6 +328,9 @@ fn main() {
                     max_ins_memory = max(max_ins_memory, jun_ins);
                     ins[0][jun_ins] += 1;
                     total[0] += 1;
+                    if data[k].11.contains(":") {
+                        dd_memory += 1;
+                    }
                 }
             }
         }
@@ -311,7 +348,12 @@ fn main() {
             println!("{i}: {:.3}%", 100.0 * ins[1][i] as f64 / total[1] as f64);
         }
     }
-
+    println!("DD public memory cells = {} = {:.1}%",
+        dd_memory, 100.0 * dd_memory as f64 / total[0] as f64,
+    );
+    println!("DD public naive cells = {} = {:.1}%",
+        dd_naive, 100.0 * dd_naive as f64 / total[1] as f64,
+    );
     println!(
         "mean junction insertion bases for public memory = {:.1}",
         ins_memory as f64 / n_memory as f64
