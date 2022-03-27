@@ -20,7 +20,7 @@ use std::collections::HashMap;
 use std::env;
 use std::io::BufRead;
 use std::mem::swap;
-use string_utils::{stringme, strme, TextUtils};
+use string_utils::{add_commas, stringme, strme, TextUtils};
 use tables::*;
 use vector_utils::unique_sort;
 
@@ -48,17 +48,23 @@ pub fn hcat(col1: &[String], col2: &[String], sep: usize) -> Vec<String> {
     cat
 }
 
-const NAIVE: [usize; 40] = [1279049,1279053,1279057,1279061,1279065,1279069,1279073,1279077,
-    1287144,1287145,1287146,1287147,1287152,1287153,1287154,1287155,1287160,1287161,1287162,
-    1287163,1287168,1287169,1287170,1287171,1287176,1287177,1287178,1287179,1287184,1287185,
-    1287186,1287187,1287192,1287193,1287194,1287195,1287200,1287201,1287202,1287203];
-const PLASMABLAST: [usize; 6] = [1279052,1279060,1279068,1279072,1279076,1279080];
-const SWITCHED: [usize; 24] = [1279051,1279055,1279059,1279063,1279067,1279071,1279075,1279079,
-    1287150,1287151,1287158,1287159,1287166,1287167,1287174,1287175,1287182,1287183,1287190,
-    1287191,1287198,1287199,1287206,1287207];
-const UNSWITCHED: [usize; 24] = [1279050,1279054,1279058,1279062,1279066,1279070,1279074,1279078,
-    1287148,1287149,1287156,1287157,1287164,1287165,1287172,1287173,1287180,1287181,1287188,
-    1287189,1287196,1287197,1287204,1287205];
+const NAIVE: [usize; 40] = [
+    1279049, 1279053, 1279057, 1279061, 1279065, 1279069, 1279073, 1279077, 1287144, 1287145,
+    1287146, 1287147, 1287152, 1287153, 1287154, 1287155, 1287160, 1287161, 1287162, 1287163,
+    1287168, 1287169, 1287170, 1287171, 1287176, 1287177, 1287178, 1287179, 1287184, 1287185,
+    1287186, 1287187, 1287192, 1287193, 1287194, 1287195, 1287200, 1287201, 1287202, 1287203,
+];
+const PLASMABLAST: [usize; 6] = [1279052, 1279060, 1279068, 1279072, 1279076, 1279080];
+const SWITCHED: [usize; 24] = [
+    1279051, 1279055, 1279059, 1279063, 1279067, 1279071, 1279075, 1279079, 1287150, 1287151,
+    1287158, 1287159, 1287166, 1287167, 1287174, 1287175, 1287182, 1287183, 1287190, 1287191,
+    1287198, 1287199, 1287206, 1287207,
+];
+const UNSWITCHED: [usize; 24] = [
+    1279050, 1279054, 1279058, 1279062, 1279066, 1279070, 1279074, 1279078, 1287148, 1287149,
+    1287156, 1287157, 1287164, 1287165, 1287172, 1287173, 1287180, 1287181, 1287188, 1287189,
+    1287196, 1287197, 1287204, 1287205,
+];
 
 fn main() {
     PrettyTrace::new().on();
@@ -77,6 +83,7 @@ fn main() {
         String,
         usize,
         usize,
+        usize,
     )>::new();
     for line in f.lines() {
         let s = line.unwrap();
@@ -88,6 +95,7 @@ fn main() {
             for i in 0..fields.len() {
                 tof.insert(fields[i].to_string(), i);
             }
+            assert!(tof.contains_key("datasets_cell"));
             assert!(tof.contains_key("donors_cell"));
             assert!(tof.contains_key("v_name1"));
             assert!(tof.contains_key("v_name2"));
@@ -100,16 +108,17 @@ fn main() {
             first = false;
         } else {
             data.push((
-                fields[tof["v_name1"]].to_string(),
-                fields[tof["cdr3_aa1"]].len(),
-                fields[tof["cdr3_aa1"]].to_string().as_bytes().to_vec(),
-                fields[tof["donors_cell"]].to_string(),
-                fields[tof["v_name2"]].to_string(),
-                fields[tof["dref"]].force_usize(),
-                fields[tof["clonotype_ncells"]].force_usize(),
-                fields[tof["const1"]].to_string(),
-                fields[tof["hcomp"]].force_usize(),
-                fields[tof["jun_ins"]].force_usize(),
+                /* 0 */ fields[tof["v_name1"]].to_string(),
+                /* 1 */ fields[tof["cdr3_aa1"]].len(),
+                /* 2 */ fields[tof["cdr3_aa1"]].to_string().as_bytes().to_vec(),
+                /* 3 */ fields[tof["donors_cell"]].to_string(),
+                /* 4 */ fields[tof["v_name2"]].to_string(),
+                /* 5 */ fields[tof["dref"]].force_usize(),
+                /* 6 */ fields[tof["clonotype_ncells"]].force_usize(),
+                /* 7 */ fields[tof["const1"]].to_string(),
+                /* 8 */ fields[tof["hcomp"]].force_usize(),
+                /* 9 */ fields[tof["jun_ins"]].force_usize(),
+                /* 10 */ fields[tof["datasets_cell"]].force_usize(),
             ));
         }
     }
@@ -120,6 +129,55 @@ fn main() {
     for i in 0..data.len() {
         data[i].4 = data[i].4.replace("D", "");
     }
+
+    // Compute naive fraction for each of the four sort classes.
+
+    let mut naive = (0, 0);
+    let mut unswitched = (0, 0);
+    let mut switched = (0, 0);
+    let mut plasmablast = (0, 0);
+    for i in 0..data.len() {
+        let dref = data[i].5;
+        let dataset = data[i].10;
+        if NAIVE.contains(&dataset) {
+            naive.1 += 1;
+            if dref == 0 {
+                naive.0 += 1;
+            }
+        } else if UNSWITCHED.contains(&dataset) {
+            unswitched.1 += 1;
+            if dref == 0 {
+                unswitched.0 += 1;
+            }
+        } else if SWITCHED.contains(&dataset) {
+            switched.1 += 1;
+            if dref == 0 {
+                switched.0 += 1;
+            }
+        } else if PLASMABLAST.contains(&dataset) {
+            plasmablast.1 += 1;
+            if dref == 0 {
+                plasmablast.0 += 1;
+            }
+        }
+    }
+    println!("\nnaive cells = {} = {:.1}% naive", 
+        add_commas(naive.1),
+        100.0 * naive.0 as f64 / naive.1 as f64
+    );
+    println!("unswitched cells = {} = {:.1}% naive", 
+        add_commas(unswitched.1),
+        100.0 * unswitched.0 as f64 / unswitched.1 as f64
+    );
+    println!("switched cells = {} = {:.1}% naive", 
+        add_commas(switched.1),
+        100.0 * switched.0 as f64 / switched.1 as f64
+    );
+    println!("plasmablast cells = {} = {:.1}% naive", 
+        add_commas(plasmablast.1),
+        100.0 * plasmablast.0 as f64 / plasmablast.1 as f64
+    );
+    if true { std::process::exit(0); }
 
     // Compute jun_ins frequency for memory and naive cells.
 
