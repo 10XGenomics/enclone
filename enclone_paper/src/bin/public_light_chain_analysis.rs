@@ -2,15 +2,16 @@
 //
 // See also private_light_chain_analysis.rs.
 //
-// Analyze light chains.  Supply a single file of data, with one line per cell, and fields
-// including donors_cell,v_name1,v_name2,dref,cdr3_aa1,clonotype_ncells,const1.
-//
-// Data from:
+// Analyze light chains.  Supply a single file of data, with one line per cell, and various fields.
 //
 // enclone BCR=@test BUILT_IN CHAINS_EXACT=2 CHAINS=2 NOPRINT POUT=stdout PCELL ECHOC
 //         PCOLS=datasets_cell,donors_cell,v_name1,v_name2,dref,cdr3_aa1,clonotype_ncells,
 //         const1,hcomp,jun_ins
 //         > per_cell_stuff
+//
+// public_light_chain_analysis per_cell_stuff
+//
+// There is an optional second argument FLOW.
 
 use io_utils::*;
 use pretty_trace::PrettyTrace;
@@ -70,6 +71,7 @@ fn main() {
     PrettyTrace::new().on();
     let args: Vec<String> = env::args().collect();
     let f = open_for_read![&args[1]];
+    let flow = if args.len() >= 3 && args[2] == "FLOW" { true } else { false };
     let mut first = true;
     let mut tof = HashMap::<String, usize>::new();
     let mut data = Vec::<(
@@ -132,52 +134,57 @@ fn main() {
 
     // Compute naive fraction for each of the four sort classes.
 
-    let mut naive = (0, 0);
-    let mut unswitched = (0, 0);
-    let mut switched = (0, 0);
-    let mut plasmablast = (0, 0);
-    for i in 0..data.len() {
-        let dref = data[i].5;
-        let dataset = data[i].10;
-        if NAIVE.contains(&dataset) {
-            naive.1 += 1;
-            if dref == 0 {
-                naive.0 += 1;
-            }
-        } else if UNSWITCHED.contains(&dataset) {
-            unswitched.1 += 1;
-            if dref == 0 {
-                unswitched.0 += 1;
-            }
-        } else if SWITCHED.contains(&dataset) {
-            switched.1 += 1;
-            if dref == 0 {
-                switched.0 += 1;
-            }
-        } else if PLASMABLAST.contains(&dataset) {
-            plasmablast.1 += 1;
-            if dref == 0 {
-                plasmablast.0 += 1;
+    let mut is_naive = vec![false; data.len()];
+    if flow {
+        let mut naive = (0, 0);
+        let mut unswitched = (0, 0);
+        let mut switched = (0, 0);
+        let mut plasmablast = (0, 0);
+        for i in 0..data.len() {
+            let dref = data[i].5;
+            let dataset = data[i].10;
+            if NAIVE.contains(&dataset) {
+                naive.1 += 1;
+                if dref == 0 {
+                    naive.0 += 1;
+                }
+                is_naive[i] = true;
+            } else if UNSWITCHED.contains(&dataset) {
+                unswitched.1 += 1;
+                if dref == 0 {
+                    unswitched.0 += 1;
+                }
+            } else if SWITCHED.contains(&dataset) {
+                switched.1 += 1;
+                if dref == 0 {
+                    switched.0 += 1;
+                }
+            } else if PLASMABLAST.contains(&dataset) {
+                plasmablast.1 += 1;
+                if dref == 0 {
+                    plasmablast.0 += 1;
+                }
+            } else {
+                panic!("unclassified dataset");
             }
         }
+        println!("\nnaive cells = {} = {:.1}% naive", 
+            add_commas(naive.1),
+            100.0 * naive.0 as f64 / naive.1 as f64
+        );
+        println!("unswitched cells = {} = {:.1}% naive", 
+            add_commas(unswitched.1),
+            100.0 * unswitched.0 as f64 / unswitched.1 as f64
+        );
+        println!("switched cells = {} = {:.1}% naive", 
+            add_commas(switched.1),
+            100.0 * switched.0 as f64 / switched.1 as f64
+        );
+        println!("plasmablast cells = {} = {:.1}% naive", 
+            add_commas(plasmablast.1),
+            100.0 * plasmablast.0 as f64 / plasmablast.1 as f64
+        );
     }
-    println!("\nnaive cells = {} = {:.1}% naive", 
-        add_commas(naive.1),
-        100.0 * naive.0 as f64 / naive.1 as f64
-    );
-    println!("unswitched cells = {} = {:.1}% naive", 
-        add_commas(unswitched.1),
-        100.0 * unswitched.0 as f64 / unswitched.1 as f64
-    );
-    println!("switched cells = {} = {:.1}% naive", 
-        add_commas(switched.1),
-        100.0 * switched.0 as f64 / switched.1 as f64
-    );
-    println!("plasmablast cells = {} = {:.1}% naive", 
-        add_commas(plasmablast.1),
-        100.0 * plasmablast.0 as f64 / plasmablast.1 as f64
-    );
-    if true { std::process::exit(0); }
 
     // Compute jun_ins frequency for memory and naive cells.
 
@@ -541,13 +548,19 @@ fn main() {
 
                     // Add to results.
 
-                    if dref1 == 0 && dref2 == 0 {
+                    let mut naive = dref1 == 0 && dref2 == 0;
+                    let mut memory = dref1 > 0 && dref2 > 0;
+                    if flow {
+                        naive = is_naive[k1] && is_naive[k2];
+                        memory = !is_naive[k1] && !is_naive[k2];
+                    }
+                    if naive {
                         if eq_light {
                             res.2[pass][ident].0 += 1;
                         } else {
                             res.2[pass][ident].1 += 1;
                         }
-                    } else if dref1 > 0 && dref2 > 0 {
+                    } else if memory {
                         if eq_light {
                             res.2[pass][ident].2 += 1;
                         } else {
