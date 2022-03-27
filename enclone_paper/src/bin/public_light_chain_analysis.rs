@@ -154,11 +154,11 @@ fn main() {
             }
         }
     }
-    println!("\nDD fraction in naive cells = {:.2}%", 
-        100.0 * naive.0 as f64 / naive.1 as f64
+    println!("\nDD in naive cells = {} = {:.2}%", 
+        naive.0, 100.0 * naive.0 as f64 / naive.1 as f64
     );
-    println!("DD fraction in memory cells = {:.2}%", 
-        100.0 * memory.0 as f64 / memory.1 as f64
+    println!("DD in memory cells = {} = {:.2}%", 
+        memory.0, 100.0 * memory.0 as f64 / memory.1 as f64
     );
 
     // Compute naive fraction for each of the four sort classes.
