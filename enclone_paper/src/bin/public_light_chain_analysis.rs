@@ -26,7 +26,7 @@ use std::io::BufRead;
 use std::mem::swap;
 use string_utils::{add_commas, stringme, strme, TextUtils};
 use tables::*;
-use vector_utils::unique_sort;
+use vector_utils::{bin_position, unique_sort};
 
 pub fn hcat(col1: &[String], col2: &[String], sep: usize) -> Vec<String> {
     let mut cat = Vec::<String>::new();
@@ -156,10 +156,22 @@ fn main() {
         let mut unswitched = vec![(0, 0); 5];
         let mut switched = vec![(0, 0); 5];
         let mut plasmablast = vec![(0, 0); 5];
+        let mut all = Vec::<usize>::new();
+        all.append(&mut NAIVE.to_vec());
+        all.append(&mut UNSWITCHED.to_vec());
+        all.append(&mut SWITCHED.to_vec());
+        all.append(&mut PLASMABLAST.to_vec());
+        all.sort();
+        let mut cells = vec![(0, 0); all.len()];
         for i in 0..data.len() {
             let dref = data[i].5;
             let dataset = data[i].10;
             let donor_id = test_donor_id(dataset);
+            let p = bin_position(&all, &dataset) as usize;
+            cells[p].1 += 1;
+            if dref == 0 {
+                cells[p].0 += 1;
+            }
             if NAIVE.contains(&dataset) {
                 naive[0].1 += 1;
                 naive[donor_id].1 += 1;
@@ -194,6 +206,26 @@ fn main() {
             }
         }
         if opt_naive {
+            println!("");
+            for i in 0..all.len() {
+                let id = all[i];
+                let n = cells[i].1;
+                let naivety = 100.0 * cells[i].0 as f64 / n as f64;
+                let class;
+                if NAIVE.contains(&id) {
+                    class = "naive";
+                } else if UNSWITCHED.contains(&id) {
+                    class = "unswitched";
+                } else if SWITCHED.contains(&id) {
+                    class = "switched";
+                } else {
+                    class = "PLASMABLAST";
+                }
+                let donor = test_donor_id(id);
+                println!("id = {id}, donor = {donor}, class = {class}, cells = {n}, \
+                    naivety = {naivety:.1}%"
+                );
+            }
             println!("\nnaive cells");
             let mut rows = Vec::<Vec<String>>::new();
             let row = vec!["class".to_string(), "all".to_string(), "d1".to_string(), 
