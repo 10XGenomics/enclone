@@ -179,7 +179,7 @@ fn main() {
                 add_commas(naive.1),
                 100.0 * naive.0 as f64 / naive.1 as f64
             );
-            println!("unswitched cells = {} = {:.1}% naive", 
+            println!("unswitched cells = {} = {:.1}% naive",
                 add_commas(unswitched.1),
                 100.0 * unswitched.0 as f64 / unswitched.1 as f64
             );

@@ -3,7 +3,7 @@
 // This file contains the two functions proc_xcr and proc_meta.
 
 use enclone_core::defs::{EncloneControl, OriginInfo};
-use enclone_core::fetch_url;
+use enclone_core::{expand_integer_ranges, fetch_url};
 use io_utils::*;
 use itertools::Itertools;
 use rayon::prelude::*;
@@ -20,50 +20,6 @@ use tilde_expand::tilde_expand;
 use vector_utils::unique_sort;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
-fn expand_integer_ranges(x: &str) -> String {
-    let mut tokens = Vec::<String>::new();
-    let mut token = String::new();
-    for c in x.chars() {
-        if c == ',' || c == ':' || c == ';' {
-            if !token.is_empty() {
-                tokens.push(token.clone());
-                token.clear();
-            }
-            tokens.push(c.to_string());
-        } else {
-            token.push(c);
-        }
-    }
-    if !token.is_empty() {
-        tokens.push(token);
-    }
-    let mut tokens2 = Vec::<String>::new();
-    for i in 0..tokens.len() {
-        if tokens[i].contains('-')
-            && tokens[i].before("-").parse::<usize>().is_ok()
-            && tokens[i].after("-").parse::<usize>().is_ok()
-        {
-            let n1 = tokens[i].before("-").force_usize();
-            let n2 = tokens[i].after("-").force_usize();
-            if n1 <= n2 {
-                for n in n1..=n2 {
-                    if n > n1 {
-                        tokens2.push(",".to_string());
-                    }
-                    tokens2.push(format!("{}", n));
-                }
-                continue;
-            }
-        }
-        tokens2.push(tokens[i].clone());
-    }
-    let mut y = String::new();
-    for i in 0..tokens2.len() {
-        y += &tokens2[i];
-    }
-    y
-}
 
 fn expand_analysis_sets(x: &str, ctl: &EncloneControl) -> Result<String, String> {
     let mut tokens = Vec::<String>::new();
