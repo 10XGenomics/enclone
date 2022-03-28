@@ -9,6 +9,16 @@
 //         > per_cell_stuff
 //
 // hl_similarity per_cell_stuff
+//
+// Generate a CSV file as output with fields as follows.
+// class: 1 or 2; 2 has the additional restriction that the heavy chain gene names and
+//        CDRH3 lengths are the same
+// donor1: d1 or d2 or d3 or d4
+// donor2: d1 or d2 or d3 or d4
+// const1: const region name for first cell
+// const2: const region name for first cell
+// hd: heavy chain edit distance, excluding leader
+// ld: light chain edit distance, excluding leader.
 
 use io_utils::*;
 use pretty_trace::PrettyTrace;
