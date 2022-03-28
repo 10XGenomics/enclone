@@ -95,15 +95,18 @@ fn main() {
         data[i].4 = data[i].4.replace("D", "");
     }
 
+    // Print CSV header.
+
+    println!("class,donor1,donor2,const1,const2,hd,ld");
+
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
     // Select pairs of cells having different donors at random.  Compute their heavy and light
     // chain edit distances.
 
-    const SAMPLE: usize = 10;
+    const SAMPLE: usize = 5_000;
     let mut randme = rand_chacha::ChaCha8Rng::seed_from_u64(123456789);
     let mut seen = HashSet::<(usize, usize)>::new();
-    println!("\nall memory cells from different donors\n");
     while seen.len() < SAMPLE {
         let i1 = randme.next_u64() as usize % data.len();
         let i2 = randme.next_u64() as usize % data.len();
@@ -120,7 +123,10 @@ fn main() {
                 let l1 = &data[i1].11.as_bytes();
                 let l2 = &data[i2].11.as_bytes();
                 let ld = levenshtein(&l1, &l2) as usize;
-                printme!(hd, ld);
+                let class = 1;
+                let const1 = &data[i1].7;
+                let const2 = &data[i2].7;
+                println!("{class},{donor1},{donor2},{const1},{const2},{hd},{ld}");
             }
         }
     }
@@ -166,7 +172,6 @@ fn main() {
 
     // The same, but now assume that heavy chain gene names and CDRH3 lengths are the same.
 
-    println!("\nsame plus heavy chain gene names and CDRH3 amino acid sequences are the same\n");
     while seen.len() < 2 * SAMPLE {
         let m = randme.next_u64() as usize % bucket.len();
         let i1 = bucket[m].0;
@@ -179,8 +184,12 @@ fn main() {
             let l1 = &data[i1].11.as_bytes();
             let l2 = &data[i2].11.as_bytes();
             let ld = levenshtein(&l1, &l2) as usize;
-            printme!(hd, ld);
+            let class = 2;
+            let donor1 = &data[i1].3;
+            let donor2 = &data[i2].3;
+            let const1 = &data[i1].7;
+            let const2 = &data[i2].7;
+            println!("{class},{donor1},{donor2},{const1},{const2},{hd},{ld}");
         }
     }
-    println!("");
 }
