@@ -207,6 +207,8 @@ fn main() {
         }
         if opt_naive {
             println!("");
+            // {(class, donor, id, cells, naivety)}
+            let mut x = Vec::<(String, usize, usize, usize, f64)>::new();
             for i in 0..all.len() {
                 let id = all[i];
                 let n = cells[i].1;
@@ -219,11 +221,16 @@ fn main() {
                 } else if SWITCHED.contains(&id) {
                     class = "switched";
                 } else {
-                    class = "PLASMABLAST";
+                    class = "plasmablast";
                 }
                 let donor = test_donor_id(id);
-                println!("id = {id}, donor = {donor}, class = {class}, cells = {n}, \
-                    naivety = {naivety:.1}%"
+        
+                x.push((class.to_string(), donor, id, n, naivety));
+            }
+            x.sort_by(|a, b| a.partial_cmp(b).unwrap());
+            for y in x.iter() {
+                println!("class = {}, donor = {}, id = {}, cells = {}, naivety = {:.1}%",
+                    y.0, y.1, y.2, y.3, y.4
                 );
             }
             println!("\nnaive cells");
