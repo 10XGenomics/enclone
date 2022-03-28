@@ -142,33 +142,33 @@ fn main() {
 
     let mut is_naive = vec![false; data.len()];
     if opt_naive || opt_flow {
-        let mut naive = (0, 0);
-        let mut unswitched = (0, 0);
-        let mut switched = (0, 0);
-        let mut plasmablast = (0, 0);
+        let mut naive = vec![(0, 0); 5];
+        let mut unswitched = vec![(0, 0); 5];
+        let mut switched = vec![(0, 0); 5];
+        let mut plasmablast = vec![(0, 0); 5];
         for i in 0..data.len() {
             let dref = data[i].5;
             let dataset = data[i].10;
             if NAIVE.contains(&dataset) {
-                naive.1 += 1;
+                naive[0].1 += 1;
                 if dref == 0 {
-                    naive.0 += 1;
+                    naive[0].0 += 1;
                 }
                 is_naive[i] = true;
             } else if UNSWITCHED.contains(&dataset) {
-                unswitched.1 += 1;
+                unswitched[0].1 += 1;
                 if dref == 0 {
-                    unswitched.0 += 1;
+                    unswitched[0].0 += 1;
                 }
             } else if SWITCHED.contains(&dataset) {
-                switched.1 += 1;
+                switched[0].1 += 1;
                 if dref == 0 {
-                    switched.0 += 1;
+                    switched[0].0 += 1;
                 }
             } else if PLASMABLAST.contains(&dataset) {
-                plasmablast.1 += 1;
+                plasmablast[0].1 += 1;
                 if dref == 0 {
-                    plasmablast.0 += 1;
+                    plasmablast[0].0 += 1;
                 }
             } else {
                 panic!("unclassified dataset");
@@ -176,20 +176,20 @@ fn main() {
         }
         if opt_naive {
             println!("\nnaive cells = {} = {:.1}% naive", 
-                add_commas(naive.1),
-                100.0 * naive.0 as f64 / naive.1 as f64
+                add_commas(naive[0].1),
+                100.0 * naive[0].0 as f64 / naive[0].1 as f64
             );
             println!("unswitched cells = {} = {:.1}% naive",
-                add_commas(unswitched.1),
-                100.0 * unswitched.0 as f64 / unswitched.1 as f64
+                add_commas(unswitched[0].1),
+                100.0 * unswitched[0].0 as f64 / unswitched[0].1 as f64
             );
             println!("switched cells = {} = {:.1}% naive", 
-                add_commas(switched.1),
-                100.0 * switched.0 as f64 / switched.1 as f64
+                add_commas(switched[0].1),
+                100.0 * switched[0].0 as f64 / switched[0].1 as f64
             );
             println!("plasmablast cells = {} = {:.1}% naive\n", 
-                add_commas(plasmablast.1),
-                100.0 * plasmablast.0 as f64 / plasmablast.1 as f64
+                add_commas(plasmablast[0].1),
+                100.0 * plasmablast[0].0 as f64 / plasmablast[0].1 as f64
             );
             std::process::exit(0);
         }
