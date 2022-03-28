@@ -15,6 +15,7 @@
 // - FLOW: compute using flow classification of naive/memory rather than dref
 // - NAIVE: compute just some stats about naive cells.
 
+use enclone_core::test_def::test_donor_id;
 use io_utils::*;
 use pretty_trace::PrettyTrace;
 use rayon::prelude::*;
@@ -149,48 +150,101 @@ fn main() {
         for i in 0..data.len() {
             let dref = data[i].5;
             let dataset = data[i].10;
+            let donor_id = test_donor_id(dataset);
             if NAIVE.contains(&dataset) {
                 naive[0].1 += 1;
+                naive[donor_id].1 += 1;
                 if dref == 0 {
                     naive[0].0 += 1;
+                    naive[donor_id].0 += 1;
                 }
                 is_naive[i] = true;
             } else if UNSWITCHED.contains(&dataset) {
                 unswitched[0].1 += 1;
+                unswitched[donor_id].1 += 1;
                 if dref == 0 {
                     unswitched[0].0 += 1;
+                    unswitched[donor_id].0 += 1;
                 }
             } else if SWITCHED.contains(&dataset) {
                 switched[0].1 += 1;
+                switched[donor_id].1 += 1;
                 if dref == 0 {
                     switched[0].0 += 1;
+                    switched[donor_id].0 += 1;
                 }
             } else if PLASMABLAST.contains(&dataset) {
                 plasmablast[0].1 += 1;
+                plasmablast[donor_id].1 += 1;
                 if dref == 0 {
                     plasmablast[0].0 += 1;
+                    plasmablast[donor_id].0 += 1;
                 }
             } else {
                 panic!("unclassified dataset");
             }
         }
         if opt_naive {
-            println!("\nnaive cells = {} = {:.1}% naive", 
-                add_commas(naive[0].1),
-                100.0 * naive[0].0 as f64 / naive[0].1 as f64
+            println!("\nnaive fraction");
+            let mut rows = Vec::<Vec<String>>::new();
+            let row = vec!["class".to_string(), "all".to_string(), "d1".to_string(), 
+                "d2".to_string(), "d3".to_string(), "d4".to_string()
+            ];
+            rows.push(row);
+            rows.push(vec!["\\hline".to_string(); 6]);
+            let mut row = vec!["naive".to_string()];
+            for j in 0..5 {
+                row.push(
+                    format!("{} = {:.1}%", 
+                        add_commas(naive[j].1),
+                        100.0 * naive[j].0 as f64 / naive[j].1 as f64
+                    )
+                );
+            }
+            rows.push(row);
+            rows.push(vec!["\\hline".to_string(); 6]);
+            let mut row = vec!["unswitched".to_string()];
+            for j in 0..5 {
+                row.push(
+                    format!("{} = {:.1}%", 
+                        add_commas(unswitched[j].1),
+                        100.0 * unswitched[j].0 as f64 / unswitched[j].1 as f64
+                    )
+                );
+            }
+            rows.push(row);
+            rows.push(vec!["\\hline".to_string(); 6]);
+            let mut row = vec!["switched".to_string()];
+            for j in 0..5 {
+                row.push(
+                    format!("{} = {:.1}%", 
+                        add_commas(switched[j].1),
+                        100.0 * switched[j].0 as f64 / switched[j].1 as f64
+                    )
+                );
+            }
+            rows.push(row);
+            rows.push(vec!["\\hline".to_string(); 6]);
+            let mut row = vec!["plasmablast".to_string()];
+            for j in 0..5 {
+                row.push(
+                    format!("{} = {:.1}%", 
+                        add_commas(plasmablast[j].1),
+                        100.0 * plasmablast[j].0 as f64 / plasmablast[j].1 as f64
+                    )
+                );
+            }
+            rows.push(row);
+            let mut log = String::new();
+            print_tabular_vbox(
+                &mut log,
+                &rows,
+                0,
+                &b"l|r|r|r|r|r".to_vec(),
+                false,
+                false,
             );
-            println!("unswitched cells = {} = {:.1}% naive",
-                add_commas(unswitched[0].1),
-                100.0 * unswitched[0].0 as f64 / unswitched[0].1 as f64
-            );
-            println!("switched cells = {} = {:.1}% naive", 
-                add_commas(switched[0].1),
-                100.0 * switched[0].0 as f64 / switched[0].1 as f64
-            );
-            println!("plasmablast cells = {} = {:.1}% naive\n", 
-                add_commas(plasmablast[0].1),
-                100.0 * plasmablast[0].0 as f64 / plasmablast[0].1 as f64
-            );
+            println!("{}", log);
             std::process::exit(0);
         }
     }

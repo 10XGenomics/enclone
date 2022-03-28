@@ -22,6 +22,7 @@ publish = false
 # To keep compile time down, this file should *not* access the enclone crate.
 
 [dependencies]
+enclone_core = { path = "../enclone_core" }
 enclone_tail = { path = "../enclone_tail" }
 flate2 = "1"
 io_utils = "0.3"

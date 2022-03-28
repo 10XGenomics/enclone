@@ -1487,6 +1487,7 @@ dependencies = [
 name = "enclone_paper"
 version = "0.5.160"
 dependencies = [
+ "enclone_core",
  "enclone_tail",
  "flate2",
  "io_utils 0.3.2 (registry+https://github.com/rust-lang/crates.io-index)",
