@@ -11,7 +11,9 @@
 //
 // public_light_chain_analysis per_cell_stuff
 //
-// There is an optional second argument FLOW.
+// Optional second arguments:
+// - FLOW: compute using flow classification of naive/memory rather than dref
+// - NAIVE: compute just some stats about naive cells.
 
 use io_utils::*;
 use pretty_trace::PrettyTrace;
@@ -71,7 +73,8 @@ fn main() {
     PrettyTrace::new().on();
     let args: Vec<String> = env::args().collect();
     let f = open_for_read![&args[1]];
-    let flow = if args.len() >= 3 && args[2] == "FLOW" { true } else { false };
+    let opt_flow = if args.len() >= 3 && args[2] == "FLOW" { true } else { false };
+    let opt_naive = if args.len() >= 3 && args[2] == "NAIVE" { true } else { false };
     let mut first = true;
     let mut tof = HashMap::<String, usize>::new();
     let mut data = Vec::<(
@@ -135,36 +138,10 @@ fn main() {
         data[i].4 = data[i].4.replace("D", "");
     }
 
-    // Compute DD fraction.
-
-    let mut naive = (0, 0);
-    let mut memory = (0, 0);
-    for i in 0..data.len() {
-        let dref = data[i].5;
-        let d = &data[i].11;
-        if dref == 0 {
-            naive.1 += 1;
-            if d.contains(":") {
-                naive.0 += 1;
-            }
-        } else {
-            memory.1 += 1;
-            if d.contains(":") {
-                memory.0 += 1;
-            }
-        }
-    }
-    println!("\nDD in naive cells = {} = {:.2}%", 
-        naive.0, 100.0 * naive.0 as f64 / naive.1 as f64
-    );
-    println!("DD in memory cells = {} = {:.2}%", 
-        memory.0, 100.0 * memory.0 as f64 / memory.1 as f64
-    );
-
     // Compute naive fraction for each of the four sort classes.
 
     let mut is_naive = vec![false; data.len()];
-    if flow {
+    if opt_naive || opt_flow {
         let mut naive = (0, 0);
         let mut unswitched = (0, 0);
         let mut switched = (0, 0);
@@ -197,23 +174,52 @@ fn main() {
                 panic!("unclassified dataset");
             }
         }
-        println!("\nnaive cells = {} = {:.1}% naive", 
-            add_commas(naive.1),
-            100.0 * naive.0 as f64 / naive.1 as f64
-        );
-        println!("unswitched cells = {} = {:.1}% naive", 
-            add_commas(unswitched.1),
-            100.0 * unswitched.0 as f64 / unswitched.1 as f64
-        );
-        println!("switched cells = {} = {:.1}% naive", 
-            add_commas(switched.1),
-            100.0 * switched.0 as f64 / switched.1 as f64
-        );
-        println!("plasmablast cells = {} = {:.1}% naive", 
-            add_commas(plasmablast.1),
-            100.0 * plasmablast.0 as f64 / plasmablast.1 as f64
-        );
+        if opt_naive {
+            println!("\nnaive cells = {} = {:.1}% naive", 
+                add_commas(naive.1),
+                100.0 * naive.0 as f64 / naive.1 as f64
+            );
+            println!("unswitched cells = {} = {:.1}% naive", 
+                add_commas(unswitched.1),
+                100.0 * unswitched.0 as f64 / unswitched.1 as f64
+            );
+            println!("switched cells = {} = {:.1}% naive", 
+                add_commas(switched.1),
+                100.0 * switched.0 as f64 / switched.1 as f64
+            );
+            println!("plasmablast cells = {} = {:.1}% naive\n", 
+                add_commas(plasmablast.1),
+                100.0 * plasmablast.0 as f64 / plasmablast.1 as f64
+            );
+            std::process::exit(0);
+        }
     }
+
+    // Compute DD fraction.
+
+    let mut naive = (0, 0);
+    let mut memory = (0, 0);
+    for i in 0..data.len() {
+        let dref = data[i].5;
+        let d = &data[i].11;
+        if dref == 0 {
+            naive.1 += 1;
+            if d.contains(":") {
+                naive.0 += 1;
+            }
+        } else {
+            memory.1 += 1;
+            if d.contains(":") {
+                memory.0 += 1;
+            }
+        }
+    }
+    println!("\nDD in naive cells = {} = {:.2}%", 
+        naive.0, 100.0 * naive.0 as f64 / naive.1 as f64
+    );
+    println!("DD in memory cells = {} = {:.2}%", 
+        memory.0, 100.0 * memory.0 as f64 / memory.1 as f64
+    );
 
     // Compute jun_ins frequency for memory and naive cells.
 
@@ -592,7 +598,7 @@ fn main() {
 
                     let mut naive = dref1 == 0 && dref2 == 0;
                     let mut memory = dref1 > 0 && dref2 > 0;
-                    if flow {
+                    if opt_flow {
                         naive = is_naive[k1] && is_naive[k2];
                         memory = !is_naive[k1] && !is_naive[k2];
                     }
