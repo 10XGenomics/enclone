@@ -185,7 +185,7 @@ fn main() {
             }
         }
         if opt_naive {
-            println!("\nnaive fraction");
+            println!("\nnaive cells");
             let mut rows = Vec::<Vec<String>>::new();
             let row = vec!["class".to_string(), "all".to_string(), "d1".to_string(), 
                 "d2".to_string(), "d3".to_string(), "d4".to_string()
@@ -196,7 +196,7 @@ fn main() {
             for j in 0..5 {
                 row.push(
                     format!("{} = {:.1}%", 
-                        add_commas(naive[j].1),
+                        add_commas(naive[j].0),
                         100.0 * naive[j].0 as f64 / naive[j].1 as f64
                     )
                 );
@@ -207,7 +207,7 @@ fn main() {
             for j in 0..5 {
                 row.push(
                     format!("{} = {:.1}%", 
-                        add_commas(unswitched[j].1),
+                        add_commas(unswitched[j].0),
                         100.0 * unswitched[j].0 as f64 / unswitched[j].1 as f64
                     )
                 );
@@ -218,7 +218,7 @@ fn main() {
             for j in 0..5 {
                 row.push(
                     format!("{} = {:.1}%", 
-                        add_commas(switched[j].1),
+                        add_commas(switched[j].0),
                         100.0 * switched[j].0 as f64 / switched[j].1 as f64
                     )
                 );
@@ -229,7 +229,7 @@ fn main() {
             for j in 0..5 {
                 row.push(
                     format!("{} = {:.1}%", 
-                        add_commas(plasmablast[j].1),
+                        add_commas(plasmablast[j].0),
                         100.0 * plasmablast[j].0 as f64 / plasmablast[j].1 as f64
                     )
                 );
