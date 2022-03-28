@@ -1,6 +1,6 @@
 // Copyright (c) 2022 10X Genomics, Inc. All rights reserved.
 //
-// Compute heavy chain similarity to light chain similarity, considering only memory cells from 
+// Compute heavy chain similarity to light chain similarity, considering only memory cells from
 // different donors.
 //
 // enclone BCR=@test BUILT_IN CHAINS_EXACT=2 CHAINS=2 NOPRINT POUT=stdout PCELL ECHOC
@@ -26,8 +26,8 @@ use rand_chacha;
 use rand_chacha::rand_core::RngCore;
 use rand_chacha::rand_core::SeedableRng;
 use std::collections::{HashMap, HashSet};
-use std::io::BufRead;
 use std::env;
+use std::io::BufRead;
 use string_utils::TextUtils;
 use triple_accel::levenshtein;
 
