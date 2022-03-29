@@ -7,17 +7,17 @@
 // where dir is a directory containing a CSV file source, with fields
 // junction_dna,junction_aa,heavy_v_gene,heavy_j_gene
 // but no header line.
-// 
+//
 // This assumes:
 // 1. You have olga-compute_pgen set up in your environment.
 // 2. You have a working qsub.
 
 use io_utils::*;
 use pretty_trace::*;
-use std::process::Command;
 use std::env;
+use std::fs::File;
 use std::io::{BufRead, Write};
-use string_utils::strme;
+use std::process::{Command, Stdio};
 
 fn main() {
     PrettyTrace::new().on();
@@ -50,9 +50,11 @@ fn main() {
             fwriteln!(f, "{}", lines[j]);
         }
         let script = format!("{scripts}/{count}.sh");
-        let mut g = open_for_write_new![&script];
-        fwriteln!(g, 
-            "#!/usr/bin/env bash\n\
+        {
+            let mut g = open_for_write_new![&script];
+            fwriteln!(
+                g,
+                "#!/usr/bin/env bash\n\
             #$ -N \"pgen run{count}\"\n\
             #$ -pe threads 1\n\
             #$ -l mem_free=1G\n\
@@ -64,18 +66,16 @@ fn main() {
             #$ -cwd\n\
             olga-compute_pgen --delimiter ',' --comment_delimiter=# --humanIGH \
                 -i {source} --seq_in 0 -o {results}/pgen.{count}"
-        );
-        let new = Command::new("qsub")
-            .arg(&script)
-            .output()
-            .expect(&format!("failed to execute qsub"));
-        if new.status.code() != Some(0) {
-            eprint!(
-                "\nsomething went wrong running qsub, stderr =\n{}",
-                strme(&new.stderr),
             );
-            std::process::exit(1);
         }
+        let script = File::open(&script).unwrap();
+        let child = Command::new("qsub")
+            .stdin(script)
+            .stdout(Stdio::piped())
+            .spawn()
+            .unwrap();
+        let output = child.wait_with_output().unwrap();
+        assert!(output.status.success());
         count += 1;
     }
 }
