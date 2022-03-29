@@ -3,7 +3,7 @@
 // Analyze pgen data.
 //
 // Usage:
-// pgen_analysis per_cell_stuff per_cell_stuff_pgen
+// pgen_analysis per_cell_stuff per_cell_stuff_pgen per_cell_stuf_pgen_sim
 //
 // enclone BCR=@test BUILT_IN CHAINS_EXACT=2 CHAINS=2 NOPRINT POUT=stdout PCELL ECHOC
 //         PCOLS=datasets_cell,donors_cell,v_name1,v_name2,dref,cdr3_aa1,clonotype_ncells,
@@ -22,6 +22,31 @@ use vector_utils::unique_sort;
 fn main() {
     PrettyTrace::new().on();
     let args: Vec<String> = env::args().collect();
+
+    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+    // Load simulated heavy chain probabilities.
+
+    let f = open_for_read![&args[3]];
+    let mut first = true;
+    let mut hlike_sim = Vec::<f64>::new();
+    let mut tof = HashMap::<String, usize>::new();
+    for line in f.lines() {
+        let s = line.unwrap();
+        if s.starts_with("#") {
+            continue;
+        }
+        let fields = s.split(',').collect::<Vec<&str>>();
+        if first {
+            for i in 0..fields.len() {
+                tof.insert(fields[i].to_string(), i);
+            }
+            assert!(tof.contains_key("haa_pgen"));
+            first = false;
+        } else {
+            hlike_sim.push(-fields[tof["haa_pgen"]].force_f64().log10());
+        }
+    }
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -112,13 +137,16 @@ fn main() {
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-    // Show distribution of hlike for naive cells, and for public naive cells.
+    // Show distribution of hlike for naive cells, and for simulated, and for public naive cells.
 
     let mut rows = Vec::<Vec<String>>::new();
-    let row = vec!["hlike".to_string(), "naive%".to_string(), "public naive%".to_string()];
+    let row = vec!["hlike".to_string(), "naive%".to_string(), "sim%".to_string(),
+        "public naive%".to_string()];
     rows.push(row);
     let mut nhb = vec![0; 100];
     let mut inf = 0;
+    let mut nhb_sim = vec![0; 100];
+    let mut inf_sim = 0;
     let mut total = 0;
     for i in 0..data.len() {
         if data[i].5 == 0 {
@@ -128,6 +156,12 @@ fn main() {
                 nhb[n] += 1;
             } else {
                 inf += 1;
+            }
+            let n = hlike_sim[total].round() as usize;
+            if n < 50 {
+                nhb_sim[n] += 1;
+            } else {
+                inf_sim += 1;
             }
         }
     }
@@ -174,6 +208,7 @@ fn main() {
             let mut row = Vec::<String>::new();
             row.push(format!("{}", i));
             row.push(format!("{:.3}", 100.0 * nhb[i] as f64 / total as f64));
+            row.push(format!("{:.3}", 100.0 * nhb_sim[i] as f64 / total as f64));
             row.push(format!("{:.3}", 100.0 * nhb_pub[i] as f64 / x.len() as f64));
             rows.push(row);
         }
@@ -181,6 +216,7 @@ fn main() {
     let mut row = Vec::<String>::new();
     row.push(">= 50".to_string());
     row.push(format!("{:.3}", 100.0 * inf as f64 / total as f64));
+    row.push(format!("{:.3}", 100.0 * inf_sim as f64 / total as f64));
     row.push(format!("{:.3}", 100.0 * inf_pub as f64 / x.len() as f64));
     rows.push(row);
 
@@ -189,7 +225,7 @@ fn main() {
         &mut log,
         &rows,
         0,
-        &b"r|r|r".to_vec(),
+        &b"r|r|r|r".to_vec(),
         false,
         false,
     );
