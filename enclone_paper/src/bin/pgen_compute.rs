@@ -3,10 +3,13 @@
 // Run pgen in parallel on some sequences.
 //
 // Usage:
-// pgen_compute dir source
+// 1. pgen_compute dir source
 // where dir is a directory containing a CSV file source, with fields
 // junction_dna,junction_aa,heavy_v_gene,heavy_j_gene
 // but no header line.
+// 2. wait until qsubbed jobs finish (otherwise next step will fail gracefully)
+// 3. pgen_compute dir source MERGE
+// 4. output is dir/source.out.
 //
 // This assumes:
 // 1. You have olga-compute_pgen set up in your environment.
@@ -23,6 +26,15 @@ fn main() {
     PrettyTrace::new().on();
     let args: Vec<String> = env::args().collect();
     let (dir, source) = (&args[1], &args[2]);
+    let mut merge = false;
+    if args.len() >= 4 {
+        if args[3] == "MERGE" {
+            merge = true;
+        } else {
+            eprintln!("Illegal argument.");
+            std::process::exit(1);
+        }
+    }
     let scripts = format!("{}/scripts", dir);
     let ins = format!("{}/ins", dir);
     let (outs, errs) = (format!("{}/outs", dir), format!("{}/errs", dir));
@@ -41,6 +53,37 @@ fn main() {
     }
     let n = lines.len();
     const BATCH: usize = 1000;
+    if merge {
+        let mut lines = Vec::<String>::new();
+        let mut count = 1;
+        for start in (0..n).step_by(BATCH) {
+            let stop = std::cmp::min(start + BATCH, n);
+            let len = stop - start;
+            let res = format!("{results}/pgen.{count}");
+            if !path_exists(&res) {
+                println!("{count} not done");
+                std::process::exit(0);
+            }
+            let f = open_for_read![&res];
+            let mut k = 0;
+            for line in f.lines() {
+                let s = line.unwrap();
+                lines.push(s);
+                k += 1;
+            }
+            if k != len {
+                println!("{count} not done, has only {k} lines of {len}");
+                std::process::exit(0);
+            }
+            count += 1;
+        }
+        let outfile = format!("{inputs}.out");
+        let mut f = open_for_write_new![&outfile];
+        for line in lines.iter() {
+            fwriteln!(f, "{}", line);
+        }
+        std::process::exit(0);
+    }
     let mut count = 1;
     for start in (0..n).step_by(BATCH) {
         let stop = std::cmp::min(start + BATCH, n);
@@ -50,6 +93,10 @@ fn main() {
             fwriteln!(f, "{}", lines[j]);
         }
         let script = format!("{scripts}/{count}.sh");
+        let results_file = format!("{results}/pgen.{count}");
+        if path_exists(&results_file) {
+            std::fs::remove_file(&results_file).unwrap();
+        }
         {
             let mut g = open_for_write_new![&script];
             fwriteln!(
@@ -65,7 +112,7 @@ fn main() {
             #$ -V\n\
             #$ -cwd\n\
             olga-compute_pgen --delimiter ',' --comment_delimiter=# --humanIGH \
-                -i {source} --seq_in 0 -o {results}/pgen.{count}"
+                -i {source} --seq_in 0 -o {results_file}"
             );
         }
         let script = File::open(&script).unwrap();
