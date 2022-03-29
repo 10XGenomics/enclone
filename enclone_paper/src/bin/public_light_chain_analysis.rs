@@ -148,7 +148,7 @@ fn main() {
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-    // Compute naive fraction for each of the four sort classes.
+    // Compute naive fraction for each of the sort classes.
 
     let mut is_naive = vec![false; data.len()];
     for i in 0..data.len() {
@@ -164,28 +164,23 @@ fn main() {
         all.append(&mut SWITCHED.to_vec());
         all.append(&mut PLASMABLAST.to_vec());
         all.sort();
+        let mut naive = vec![(0, 0); 5];
+        let mut unswitched = vec![(0, 0); 5];
+        let mut switched = vec![(0, 0); 5];
+        let mut plasmablast = vec![(0, 0); 5];
+        let mut unswitched_naive = vec![(0, 0); 5];
+        let mut switched_naive = vec![(0, 0); 5];
+        let mut cells = vec![(0, 0); all.len()];
         if opt_naive {
             println!("\nnaive cells\n");
-            for pass in 1..=3 {
-                if pass == 1 {
-                    println!("both stages");
-                } else if pass == 2 {
-                    println!("stage one");
-                } else {
-                    println!("stage two");
-                }
-                let mut naive = vec![(0, 0); 5];
-                let mut unswitched = vec![(0, 0); 5];
-                let mut switched = vec![(0, 0); 5];
-                let mut plasmablast = vec![(0, 0); 5];
-                let mut cells = vec![(0, 0); all.len()];
+            for pass in 1..=2 {
                 for i in 0..data.len() {
                     let dref = data[i].5;
                     let dataset = data[i].10;
-                    if pass == 2 && dataset.to_string().starts_with("128") {
+                    if pass == 1 && dataset.to_string().starts_with("128") {
                         continue;
                     }
-                    if pass == 3 && dataset.to_string().starts_with("127") {
+                    if pass == 2 && dataset.to_string().starts_with("127") {
                         continue;
                     }
                     let donor_id = test_donor_id(dataset);
@@ -202,18 +197,38 @@ fn main() {
                             naive[donor_id].0 += 1;
                         }
                     } else if UNSWITCHED.contains(&dataset) {
-                        unswitched[0].1 += 1;
-                        unswitched[donor_id].1 += 1;
+                        if pass == 1 {
+                            unswitched[0].1 += 1;
+                            unswitched[donor_id].1 += 1;
+                        } else {
+                            unswitched_naive[0].1 += 1;
+                            unswitched_naive[donor_id].1 += 1;
+                        }
                         if dref == 0 {
-                            unswitched[0].0 += 1;
-                            unswitched[donor_id].0 += 1;
+                            if pass == 1 {
+                                unswitched[0].0 += 1;
+                                unswitched[donor_id].0 += 1;
+                            } else {
+                                unswitched_naive[0].0 += 1;
+                                unswitched_naive[donor_id].0 += 1;
+                            }
                         }
                     } else if SWITCHED.contains(&dataset) {
-                        switched[0].1 += 1;
-                        switched[donor_id].1 += 1;
+                        if pass == 1 {
+                            switched[0].1 += 1;
+                            switched[donor_id].1 += 1;
+                        } else {
+                            switched_naive[0].1 += 1;
+                            switched_naive[donor_id].1 += 1;
+                        }
                         if dref == 0 {
-                            switched[0].0 += 1;
-                            switched[donor_id].0 += 1;
+                            if pass == 1 {
+                                switched[0].0 += 1;
+                                switched[donor_id].0 += 1;
+                            } else {
+                                switched_naive[0].0 += 1;
+                                switched_naive[donor_id].0 += 1;
+                            }
                         }
                     } else if PLASMABLAST.contains(&dataset) {
                         plasmablast[0].1 += 1;
@@ -226,94 +241,88 @@ fn main() {
                         panic!("unclassified dataset");
                     }
                 }
-                /*
-                // {(class, donor, id, cells, naivety)}
-                let mut x = Vec::<(String, usize, usize, usize, f64)>::new();
-                for i in 0..all.len() {
-                    let id = all[i];
-                    let n = cells[i].1;
-                    let naivety = 100.0 * cells[i].0 as f64 / n as f64;
-                    let class;
-                    if NAIVE.contains(&id) {
-                        class = "naive";
-                    } else if UNSWITCHED.contains(&id) {
-                        class = "unswitched";
-                    } else if SWITCHED.contains(&id) {
-                        class = "switched";
-                    } else {
-                        class = "plasmablast";
-                    }
-                    let donor = test_donor_id(id);
-            
-                    x.push((class.to_string(), donor, id, n, naivety));
-                }
-                x.sort_by(|a, b| a.partial_cmp(b).unwrap());
-                for y in x.iter() {
-                    println!("class = {}, donor = {}, id = {}, cells = {}, naivety = {:.1}%",
-                        y.0, y.1, y.2, y.3, y.4
-                    );
-                }
-                */
-                let mut rows = Vec::<Vec<String>>::new();
-                let row = vec!["class".to_string(), "all".to_string(), "d1".to_string(), 
-                    "d2".to_string(), "d3".to_string(), "d4".to_string()
-                ];
-                rows.push(row);
-                rows.push(vec!["\\hline".to_string(); 6]);
-                let mut row = vec!["naive".to_string()];
-                for j in 0..5 {
-                    row.push(
-                        format!("{} = {:.1}%", 
-                            add_commas(naive[j].0),
-                            100.0 * naive[j].0 as f64 / naive[j].1 as f64
-                        )
-                    );
-                }
-                rows.push(row);
-                rows.push(vec!["\\hline".to_string(); 6]);
-                let mut row = vec!["unswitched".to_string()];
-                for j in 0..5 {
-                    row.push(
-                        format!("{} = {:.1}%", 
-                            add_commas(unswitched[j].0),
-                            100.0 * unswitched[j].0 as f64 / unswitched[j].1 as f64
-                        )
-                    );
-                }
-                rows.push(row);
-                rows.push(vec!["\\hline".to_string(); 6]);
-                let mut row = vec!["switched".to_string()];
-                for j in 0..5 {
-                    row.push(
-                        format!("{} = {:.1}%", 
-                            add_commas(switched[j].0),
-                            100.0 * switched[j].0 as f64 / switched[j].1 as f64
-                        )
-                    );
-                }
-                rows.push(row);
-                rows.push(vec!["\\hline".to_string(); 6]);
-                let mut row = vec!["plasmablast".to_string()];
-                for j in 0..5 {
-                    row.push(
-                        format!("{} = {:.1}%", 
-                            add_commas(plasmablast[j].0),
-                            100.0 * plasmablast[j].0 as f64 / plasmablast[j].1 as f64
-                        )
-                    );
-                }
-                rows.push(row);
-                let mut log = String::new();
-                print_tabular_vbox(
-                    &mut log,
-                    &rows,
-                    0,
-                    &b"l|r|r|r|r|r".to_vec(),
-                    false,
-                    false,
-                );
-                println!("{}", log);
             }
+            let mut rows = Vec::<Vec<String>>::new();
+            let row = vec!["class".to_string(), "all".to_string(), "d1".to_string(), 
+                "d2".to_string(), "d3".to_string(), "d4".to_string()
+            ];
+            rows.push(row);
+            rows.push(vec!["\\hline".to_string(); 6]);
+            let mut row = vec!["naive".to_string()];
+            for j in 0..5 {
+                row.push(
+                    format!("{} = {:.1}%", 
+                        add_commas(naive[j].0),
+                        100.0 * naive[j].0 as f64 / naive[j].1 as f64
+                    )
+                );
+            }
+            rows.push(row);
+            rows.push(vec!["\\hline".to_string(); 6]);
+            let mut row = vec!["unswitched".to_string()];
+            for j in 0..5 {
+                row.push(
+                    format!("{} = {:.1}%", 
+                        add_commas(unswitched[j].0),
+                        100.0 * unswitched[j].0 as f64 / unswitched[j].1 as f64
+                    )
+                );
+            }
+            rows.push(row);
+            rows.push(vec!["\\hline".to_string(); 6]);
+            let mut row = vec!["switched".to_string()];
+            for j in 0..5 {
+                row.push(
+                    format!("{} = {:.1}%", 
+                        add_commas(switched[j].0),
+                        100.0 * switched[j].0 as f64 / switched[j].1 as f64
+                    )
+                );
+            }
+            rows.push(row);
+            rows.push(vec!["\\hline".to_string(); 6]);
+            let mut row = vec!["plasmablast".to_string()];
+            for j in 0..5 {
+                row.push(
+                    format!("{} = {:.1}%", 
+                        add_commas(plasmablast[j].0),
+                        100.0 * plasmablast[j].0 as f64 / plasmablast[j].1 as f64
+                    )
+                );
+            }
+            rows.push(row);
+            rows.push(vec!["\\hline".to_string(); 6]);
+            let mut row = vec!["switched_naive".to_string()];
+            for j in 0..5 {
+                row.push(
+                    format!("{} = {:.1}%", 
+                        add_commas(switched_naive[j].0),
+                        100.0 * switched_naive[j].0 as f64 / switched_naive[j].1 as f64
+                    )
+                );
+            }
+            rows.push(row);
+            rows.push(vec!["\\hline".to_string(); 6]);
+            let mut row = vec!["unswitched_naive".to_string()];
+            for j in 0..5 {
+                row.push(
+                    format!("{} = {:.1}%", 
+                        add_commas(unswitched_naive[j].0),
+                        100.0 * unswitched_naive[j].0 as f64 / unswitched_naive[j].1 as f64
+                    )
+                );
+            }
+            rows.push(row);
+            let mut log = String::new();
+            print_tabular_vbox(
+                &mut log,
+                &rows,
+                0,
+                &b"l|r|r|r|r|r".to_vec(),
+                false,
+                false,
+            );
+            println!("{}", log);
             std::process::exit(0);
         }
     }
