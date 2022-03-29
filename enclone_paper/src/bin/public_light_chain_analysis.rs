@@ -255,12 +255,16 @@ fn main() {
                 rows.push(vec!["\\hline".to_string(); 6]);
                 let mut row = vec![names[i].to_string()];
                 for j in 0..5 {
-                    row.push(
-                        format!("{} = {:.1}%", 
-                            add_commas(counts[i][j].0),
-                            100.0 * counts[i][j].0 as f64 / counts[i][j].1 as f64
-                        )
-                    );
+                    if counts[i][j].1 > 0 {
+                        row.push(
+                            format!("{} = {:.1}%", 
+                                add_commas(counts[i][j].0),
+                                100.0 * counts[i][j].0 as f64 / counts[i][j].1 as f64
+                            )
+                        );
+                    } else {
+                        row.push(String::new());
+                    }
                 }
                 rows.push(row);
             }
