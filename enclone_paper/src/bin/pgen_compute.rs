@@ -1,9 +1,9 @@
 // Copyright (c) 2022 10x Genomics, Inc. All rights reserved.
 //
-// Run pgen in parallel on some simulated sequences.
+// Run pgen in parallel on some sequences.
 //
 // Usage:
-// pgen_sim_compute dir source
+// pgen_compute dir source
 // where dir is a directory containing a CSV file source, with fields
 // junction_dna,junction_aa,heavy_v_gene,heavy_j_gene
 // but no header line.
