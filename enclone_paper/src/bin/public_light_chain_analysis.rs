@@ -197,7 +197,7 @@ fn main() {
                             naive[donor_id].0 += 1;
                         }
                     } else if UNSWITCHED.contains(&dataset) {
-                        if pass == 1 {
+                        if pass == 1 || donor_id == 1 {
                             unswitched[0].1 += 1;
                             unswitched[donor_id].1 += 1;
                         } else {
@@ -205,7 +205,7 @@ fn main() {
                             unswitched_naive[donor_id].1 += 1;
                         }
                         if dref == 0 {
-                            if pass == 1 {
+                            if pass == 1 || donor_id == 1 {
                                 unswitched[0].0 += 1;
                                 unswitched[donor_id].0 += 1;
                             } else {
