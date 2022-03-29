@@ -28,7 +28,9 @@ fn main() {
     let (outs, errs) = (format!("{}/outs", dir), format!("{}/errs", dir));
     let results = format!("{}/results", dir);
     for d in [&scripts, &ins, &outs, &errs, &results].iter() {
-        std::fs::create_dir(&d).unwrap();
+        if !path_exists(&d) {
+            std::fs::create_dir(&d).unwrap();
+        }
     }
     let inputs = format!("{}/{}", dir, source);
     let mut lines = Vec::<String>::new();
