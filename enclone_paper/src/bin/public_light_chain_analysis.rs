@@ -148,6 +148,39 @@ fn main() {
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
+    // Compute number of public naive cells.
+
+    let mut pn = 0;
+    let mut i = 0;
+    while i < data.len() {
+        let mut j = i + 1;
+        while j < data.len() {
+            if data[j].0 != data[i].0 || data[j].2 != data[i].2 {
+                break;
+            }
+            j += 1;
+        }
+        let mut donors = Vec::<String>::new();
+        for k in i..j {
+            if data[k].5 == 0 {
+                donors.push(data[k].3.clone());
+            }
+        }
+        unique_sort(&mut donors);
+        if donors.len() > 1 {
+            for k in i..j {
+                let dref = data[k].5;
+                if dref == 0 {
+                    pn += 1;
+                }
+            }
+        }
+        i = j;
+    }
+    println!("\n{} public naive cells", pn);
+
+    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
     // Compute naive fraction for each of the sort classes.
 
     let mut is_naive = vec![false; data.len()];
