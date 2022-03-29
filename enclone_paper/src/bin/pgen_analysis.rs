@@ -3,7 +3,7 @@
 // Analyze pgen data.
 //
 // Usage:
-// pgen_analysis per_cell_stuff per_cell_stuff_pgen per_cell_stuf_pgen_sim
+// pgen_analysis per_cell_stuff per_cell_stuff_pgen per_cell_stuff_pgen_sim
 //
 // enclone BCR=@test BUILT_IN CHAINS_EXACT=2 CHAINS=2 NOPRINT POUT=stdout PCELL ECHOC
 //         PCOLS=datasets_cell,donors_cell,v_name1,v_name2,dref,cdr3_aa1,clonotype_ncells,

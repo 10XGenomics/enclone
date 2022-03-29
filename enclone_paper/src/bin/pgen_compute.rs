@@ -78,9 +78,11 @@ fn main() {
             count += 1;
         }
         let outfile = format!("{inputs}.out");
-        let mut f = open_for_write_new![&outfile];
-        for line in lines.iter() {
-            fwriteln!(f, "{}", line);
+        {
+            let mut f = open_for_write_new![&outfile];
+            for line in lines.iter() {
+                fwriteln!(f, "{}", line);
+            }
         }
         std::process::exit(0);
     }
