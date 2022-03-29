@@ -251,10 +251,10 @@ fn main() {
 
             // Print tables.
 
-            let counts = [&naive, &unswitched, &switched, &plasmablast, &switched_naive, 
-                &unswitched_naive, &total];
-            let names = ["naive", "unswitched", "switched", "plasmablast", "switched_naive", 
-                "unswitched_naive", "total"];
+            let counts = [&naive, &unswitched, &switched, &plasmablast, &unswitched_naive, 
+                &switched_naive, &total];
+            let names = ["naive", "unswitched", "switched", "plasmablast", "unswitched_naive", 
+                "switched_naive", "total"];
             let row1 = vec!["class".to_string(), "all".to_string(), "d1".to_string(), 
                 "d2".to_string(), "d3".to_string(), "d4".to_string()
             ];
