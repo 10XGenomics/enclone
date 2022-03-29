@@ -89,10 +89,10 @@ fn main() {
             for i in 0..fields.len() {
                 tof.insert(fields[i].to_string(), i);
             }
-            assert!(tof.contains_key("hnt_pgen"));
+            assert!(tof.contains_key("haa_pgen"));
             first = false;
         } else {
-            hlike.push(-fields[tof["hnt_pgen"]].force_f64().log10());
+            hlike.push(-fields[tof["haa_pgen"]].force_f64().log10());
         }
     }
 
