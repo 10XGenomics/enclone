@@ -59,7 +59,7 @@ fn main() {
             #$ -pe threads 1\n\
             #$ -l mem_free=1G\n\
             #$ -o {outs}/{count}.out\n\
-            #$ -o {errs}/{count}.err\n\
+            #$ -e {errs}/{count}.err\n\
             #$ -l h_rt=48:00:00\n\
             #$ -S \"/usr/bin/env bash\"\n\
             #$ -V\n\
