@@ -170,6 +170,7 @@ fn main() {
         let mut plasmablast = vec![(0, 0); 5];
         let mut unswitched_naive = vec![(0, 0); 5];
         let mut switched_naive = vec![(0, 0); 5];
+        let mut total = vec![(0, 0); 5];
         let mut cells = vec![(0, 0); all.len()];
         if opt_naive {
             for pass in 1..=2 {
@@ -187,6 +188,12 @@ fn main() {
                     cells[p].1 += 1;
                     if dref == 0 {
                         cells[p].0 += 1;
+                    }
+                    total[0].1 += 1;
+                    total[donor_id].1 += 1;
+                    if dref == 0 {
+                        total[0].0 += 1;
+                        total[donor_id].0 += 1;
                     }
                     if NAIVE.contains(&dataset) {
                         naive[0].1 += 1;
@@ -244,10 +251,10 @@ fn main() {
 
             // Print tables.
 
-            let counts = 
-                [&naive, &unswitched, &switched, &plasmablast, &switched_naive, &unswitched_naive];
+            let counts = [&naive, &unswitched, &switched, &plasmablast, &switched_naive, 
+                &unswitched_naive, &total];
             let names = ["naive", "unswitched", "switched", "plasmablast", "switched_naive", 
-                "unswitched_naive"];
+                "unswitched_naive", "total"];
             let row1 = vec!["class".to_string(), "all".to_string(), "d1".to_string(), 
                 "d2".to_string(), "d3".to_string(), "d4".to_string()
             ];
