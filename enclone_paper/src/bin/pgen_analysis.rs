@@ -21,7 +21,7 @@ use std::io::BufRead;
 use std::mem::swap;
 use string_utils::{add_commas, stringme, strme, TextUtils};
 use tables::*;
-use vector_utils::{bin_position, unique_sort};
+use vector_utils::{bin_position, sort_sync2, unique_sort};
 
 pub fn hcat(col1: &[String], col2: &[String], sep: usize) -> Vec<String> {
     let mut cat = Vec::<String>::new();
@@ -114,8 +114,8 @@ fn main() {
         String,
         usize,
         usize,
-        usize,
         String,
+        f64,
     )>::new();
     for line in f.lines() {
         let s = line.unwrap();
@@ -150,14 +150,13 @@ fn main() {
                 /* 6 */ fields[tof["clonotype_ncells"]].force_usize(),
                 /* 7 */ fields[tof["const1"]].to_string(),
                 /* 8 */ fields[tof["hcomp"]].force_usize(),
-                /* 9 */ fields[tof["jun_ins"]].force_usize(),
-                /* 10 */ fields[tof["datasets_cell"]].force_usize(),
-                /* 11 */ fields[tof["d1_name1"]].to_string(),
+                /* 9 */ fields[tof["datasets_cell"]].force_usize(),
+                /* 10 */ fields[tof["d1_name1"]].to_string(),
+                /* 11 */ hlike[data.len()],
             ));
         }
     }
-    data.sort();
-    assert_eq!(data.len(), hlike.len());
+    data.sort_by(|a, b| a.partial_cmp(b).unwrap());
 
     // Show distribution of hlike for naive cells, and for public naive cells.
 
@@ -167,11 +166,11 @@ fn main() {
     let mut nhb = vec![0; 100];
     let mut inf = 0;
     let mut total = 0;
-    for i in 0..hlike.len() {
+    for i in 0..data.len() {
         if data[i].5 == 0 {
             total += 1;
-            let n = hlike[i].round() as usize;
-            if n < nhb.len() {
+            let n = data[i].11.round() as usize;
+            if n < 50 {
                 nhb[n] += 1;
             } else {
                 inf += 1;
@@ -198,7 +197,7 @@ fn main() {
             for k in i..j {
                 let dref = data[k].5;
                 if dref == 0 {
-                    x.push(hlike[k]);
+                    x.push(data[k].11);
                 }
             }
         }
@@ -210,7 +209,7 @@ fn main() {
     let mut total_pub = 0;
     for i in 0..x.len() {
         let n = x[i].round() as usize;
-        if n < nhb_pub.len() {
+        if n < 50 {
             nhb_pub[n] += 1;
         } else {
             inf_pub += 1;
@@ -227,7 +226,7 @@ fn main() {
         }
     }
     let mut row = Vec::<String>::new();
-    row.push("inf".to_string());
+    row.push(">= 50".to_string());
     row.push(format!("{:.3}", 100.0 * inf as f64 / total as f64));
     row.push(format!("{:.3}", 100.0 * inf_pub as f64 / x.len() as f64));
     rows.push(row);
@@ -241,7 +240,7 @@ fn main() {
         false,
         false,
     );
-    println!("{}", log);
+    println!("\n{}", log);
 
     if true { std::process::exit(0); }
             
@@ -259,7 +258,7 @@ fn main() {
 
     let mut is_naive = vec![false; data.len()];
     for i in 0..data.len() {
-        let dataset = data[i].10;
+        let dataset = data[i].9;
         if NAIVE.contains(&dataset) {
             is_naive[i] = true;
         }
@@ -273,7 +272,7 @@ fn main() {
     let mut memory = (0, 0);
     for i in 0..data.len() {
         let dref = data[i].5;
-        let d = &data[i].11;
+        let d = &data[i].10;
         if dref == 0 {
             naive.1 += 1;
             if d.contains(":") {
@@ -383,7 +382,7 @@ fn main() {
                     max_ins_naive = max(max_ins_naive, jun_ins);
                     ins[1][jun_ins] += 1;
                     total[1] += 1;
-                    if data[k].11.contains(":") {
+                    if data[k].10.contains(":") {
                         dd_naive += 1;
                     }
                 } else {
@@ -406,7 +405,7 @@ fn main() {
                     max_ins_memory = max(max_ins_memory, jun_ins);
                     ins[0][jun_ins] += 1;
                     total[0] += 1;
-                    if data[k].11.contains(":") {
+                    if data[k].10.contains(":") {
                         dd_memory += 1;
                     }
                 }
