@@ -55,7 +55,11 @@ pub fn evaluate_d(
     ds: &Vec<usize>,
     jref: &[u8],
     refdata: &RefData,
-    ctl: &EncloneControl,
+    jscore_match: i32,
+    jscore_mismatch: i32,
+    jscore_gap_open: i32,
+    jscore_gap_extend: i32,
+    jscore_bits_multiplier: f64,
 ) -> (Vec<bio_edit::alignment::AlignmentOperation>, f64) {
     // Start to build reference concatenation.  First append the V segment.
 
@@ -105,11 +109,11 @@ pub fn evaluate_d(
         &jref,
         &drefname,
         true,
-        ctl.gen_opt.jscore_match,
-        ctl.gen_opt.jscore_mismatch,
-        ctl.gen_opt.jscore_gap_open,
-        ctl.gen_opt.jscore_gap_extend,
-        ctl.gen_opt.jscore_bits_multiplier,
+        jscore_match,
+        jscore_mismatch,
+        jscore_gap_open,
+        jscore_gap_extend,
+        jscore_bits_multiplier,
     );
     (ops, count)
 }
@@ -162,7 +166,11 @@ pub fn opt_d(
             &todo[di],
             &jref,
             refdata,
-            ctl,
+            ctl.gen_opt.jscore_match,
+            ctl.gen_opt.jscore_mismatch,
+            ctl.gen_opt.jscore_gap_open,
+            ctl.gen_opt.jscore_gap_extend,
+            ctl.gen_opt.jscore_bits_multiplier,
         );
         counts.push(count);
         if !todo[di].is_empty() {
@@ -195,7 +203,11 @@ pub fn opt_d(
                 &todo[di],
                 &jref,
                 refdata,
-                ctl,
+                ctl.gen_opt.jscore_match,
+                ctl.gen_opt.jscore_mismatch,
+                ctl.gen_opt.jscore_gap_open,
+                ctl.gen_opt.jscore_gap_extend,
+                ctl.gen_opt.jscore_bits_multiplier,
             );
             counts.push(count);
             ds.push(todo[di].clone());
