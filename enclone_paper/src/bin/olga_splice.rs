@@ -59,6 +59,7 @@ fn main() {
         CAGTTATTTATAGCGGTGGTAGTAGCACATACTATGCAGACTCCGTGAAGGGCCGATTCACCATCTCCAGAGACAATTCCAAGAAC\
         ACGCTGTATCTGCAAATGAACAGCCTGAGAGCTGAGGACACGGCTGTGTATTACTGTGCGAAAGA".to_vec()
     );
+    utr.push(false);
     let nref = refs.len();
 
     // Load the input file.
@@ -140,7 +141,8 @@ fn main() {
             }
         }
         if jstart.is_none() {
-            println!("\nfailed to find jstart for entry {}", i + 1);
+            println!("\nfailed to find jstart for entry {}\n", i + 1);
+            println!("junction = {}\n", strme(&jun[i]));
             std::process::exit(1);
         }
     }
