@@ -30,6 +30,25 @@ fn main() {
             }
         }
     }
+
+    // Add extra genes.
+
+    refnames.push("IGHV3-43D".to_string());
+    utr.push(false);
+    refs.push(b"ATGGAGTTTGGACTGAGCTGGGTTTTCCTTGTTGCTATTTTAAAAGGTGTCCAGTGTGAAGTGCAGCTGGTGGAGTCT\
+        GGGGGAGTCGTGGTACAGCCTGGGGGGTCCCTGAGACTCTCCTGTGCAGCCTCTGGATTCACCTTTGATGATTATGCCATGCACTG\
+        GGTCCGTCAAGCTCCGGGGAAGGGTCTGGAGTGGGTCTCTCTTATTAGTTGGGATGGTGGTAGCACCTACTATGCAGACTCTGTGA\
+        AGGGTCGATTCACCATCTCCAGAGACAACAGCAAAAACTCCCTGTATCTGCAAATGAACAGTCTGAGAGCTGAGGACACCGCCTTG\
+        TATTACTGTGCAAAAGATA".to_vec()
+    );
+    refnames.push("IGHV3-30-3".to_string());
+    utr.push(false);
+    refs.push(b"ATGGAGTTTGGGCTGAGCTGGGTTTTCCTCGTTGCTCTTTTAAGAGGTGTCCAGTGTCAGGTGCAGCTGGTGGAGTCT\
+        GGGGGAGGCGTGGTCCAGCCTGGGAGGTCCCTGAGACTCTCCTGTGCAGCCTCTGGATTCACCTTCAGTAGCTATGCTATGCACTG\
+        GGTCCGCCAGGCTCCAGGCAAGGGGCTGGAGTGGGTGGCAGTTATATCATATGATGGAAGCAATAAATACTACGCAGACTCCGTGA\
+        AGGGCCGATTCACCATCTCCAGAGACAATTCCAAGAACACGCTGTATCTGCAAATGAACAGCCTGAGAGCTGAGGACACGGCTGTG\
+        TATTACTGTGCGAGAGA".to_vec()
+    );
     let nref = refs.len();
 
     // Load the input file.
@@ -50,7 +69,7 @@ fn main() {
     // Process entries.
 
     // for i in 0..n {
-    for i in 0..5 {
+    for i in 0..300 {
         if hv[i] == "IGHV3-NL1" {
             continue;
         }
@@ -76,14 +95,43 @@ fn main() {
             println!("\nEntry {}, unable to find J gene named {}.\n", i + 1, hj[i]);
             std::process::exit(1);
         }
-        let junv = &jun[i][0..6];
+        let junv = &jun[i][0..3];
         use string_utils::strme;
         println!("\nV gene = {}", hv[i]);
         println!("\nlooking for {} in {}", strme(&junv), strme(&vseq));
-        for k in (0..vseq.len() - junv.len()).rev() {
+        let mut vstart = None;
+        for k in (0..=vseq.len() - junv.len()).rev() {
             if vseq[k..].starts_with(&junv) {
+                vstart = Some(k);
                 println!("vstart for {} found at pos -{}", i + 1, vseq.len() - k);
+                if k % 3 != 0 {
+                    println!("\nillegal vstart\n");
+                    std::process::exit(1);
+                }
+                break;
             }
         }
+        if vstart.is_none() {
+            println!("\nfailed to find vstart for entry {}\n", i + 1);
+            std::process::exit(1);
+        }
+        let junj = &jun[i][jun[i].len() - 3..];
+        println!("\nlooking for {} in {}", strme(&junj), strme(&jseq));
+        let mut jstart = None;
+        for k in 0..=jseq.len() - junj.len() {
+            if jseq[k..].starts_with(&junj) {
+                if k % 3 != 1 {
+                    continue;
+                }
+                jstart = Some(k);
+                println!("jstart for {} found at pos {}", i + 1, k);
+                break;
+            }
+        }
+        if jstart.is_none() {
+            println!("\nfailed to find jstart for entry {}", i + 1);
+            std::process::exit(1);
+        }
     }
+    println!("");
 }
