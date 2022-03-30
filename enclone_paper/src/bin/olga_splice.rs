@@ -60,6 +60,14 @@ fn main() {
         ACGCTGTATCTGCAAATGAACAGCCTGAGAGCTGAGGACACGGCTGTGTATTACTGTGCGAAAGA".to_vec()
     );
     utr.push(false);
+    refnames.push("IGHV4-30-2".to_string());
+    refs.push(b"ATGAAACACCTGTGGTTCTTCCTCCTGCTGGTGGCAGCTCCCAGATGGGTCCTGTCCCAGCTGCAGCTGCAGGAGTCC\
+        GGCTCAGGACTGGTGAAGCCTTCACAGACCCTGTCCCTCACCTGCGCTGTCTCTGGTGGCTCCATCAGCAGTGGTGGTTACTCCTG\
+        GAGCTGGATCCGGCAGCCACCAGGGAAGGGCCTGGAGTGGATTGGGAGTATCTATTATAGTGGGAGCACCTACTACAACCCGTCCC\
+        TCAAGAGTCGAGTCACCATATCCGTAGACACGTCCAAGAACCAGTTCTCCCTGAAGCTGAGCTCTGTGACCGCTGCAGACACGGCT\
+        GTGTATTACTGTGCGAGACA".to_vec()
+    );
+    utr.push(false);
     let nref = refs.len();
 
     // Load the input file.
@@ -80,12 +88,7 @@ fn main() {
     // Process entries.
 
     // for i in 0..n {
-    for i in 0..1500 {
-        /*
-        if hv[i] == "IGHV3-NL1" {
-            continue;
-        }
-        */
+    for i in 0..20000 {
         let mut vseq = Vec::<u8>::new();
         let mut jseq = Vec::<u8>::new();
         for j in 0..nref {
@@ -127,24 +130,7 @@ fn main() {
             println!("\nfailed to find vstart for entry {}\n", i + 1);
             std::process::exit(1);
         }
-        let junj = &jun[i][jun[i].len() - 3..];
-        println!("\nlooking for {} in {}", strme(&junj), strme(&jseq));
-        let mut jstart = None;
-        for k in 0..=jseq.len() - junj.len() {
-            if jseq[k..].starts_with(&junj) {
-                if k % 3 != 1 {
-                    continue;
-                }
-                jstart = Some(k);
-                println!("jstart for {} found at pos {}", i + 1, k);
-                break;
-            }
-        }
-        if jstart.is_none() {
-            println!("\nfailed to find jstart for entry {}\n", i + 1);
-            println!("junction = {}\n", strme(&jun[i]));
-            std::process::exit(1);
-        }
+        let _jtail = &jseq[jseq.len() - 31..]; // concatenate to junction
     }
     println!("");
 }
