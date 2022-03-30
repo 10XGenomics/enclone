@@ -26,7 +26,7 @@ use std::io::BufRead;
 use std::mem::swap;
 use string_utils::{add_commas, stringme, strme, TextUtils};
 use tables::*;
-use vector_utils::{bin_position, unique_sort};
+use vector_utils::{bin_position, make_freq, unique_sort};
 
 pub fn hcat(col1: &[String], col2: &[String], sep: usize) -> Vec<String> {
     let mut cat = Vec::<String>::new();
@@ -152,6 +152,29 @@ fn main() {
 
     for i in 0..data.len() {
         data[i].4 = data[i].4.replace("D", "");
+    }
+
+    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+    // For naive cells with junction insertion length zero, show the D gene distribution.
+
+    let mut x = Vec::<String>::new();
+    for k in 0..data.len() {
+        let dref = data[k].5;
+        let jun_ins = data[k].9;
+        if dref == 0 && jun_ins == 0 {
+            let dname = &data[k].11;
+            x.push(dname.clone());
+        }
+    }
+    x.sort();
+    let mut freq = Vec::<(u32, String)>::new();
+    make_freq(&x, &mut freq);
+    println!("\nmost frequent D genes for naive cells with junction insertion length 0 (of {})",
+        x.len()
+    );
+    for i in 0..10 {
+        println!("{} [{:.1}%]", freq[i].1, 100.0 * freq[i].0 as f64 / x.len() as f64);
     }
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
