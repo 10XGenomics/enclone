@@ -488,7 +488,11 @@ pub fn proc_cvar_auto(
             &jref,
             "", // drefname
             ex.share[mid].left,
-            ctl,
+            ctl.gen_opt.jscore_match,
+            ctl.gen_opt.jscore_mismatch,
+            ctl.gen_opt.jscore_gap_open,
+            ctl.gen_opt.jscore_gap_extend,
+            ctl.gen_opt.jscore_bits_multiplier,
         )
         .0;
 

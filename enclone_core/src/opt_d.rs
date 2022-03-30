@@ -97,7 +97,20 @@ pub fn evaluate_d(
     let seq = tig[seq_start as usize..seq_end].to_vec();
     let jref = jref[0..jend].to_vec();
     concat.append(&mut jref.clone());
-    let (ops, count) = align_to_vdj_ref(&seq, &vref, &dref, &d2ref, &jref, &drefname, true, ctl);
+    let (ops, count) = align_to_vdj_ref(
+        &seq,
+        &vref,
+        &dref,
+        &d2ref,
+        &jref,
+        &drefname,
+        true,
+        ctl.gen_opt.jscore_match,
+        ctl.gen_opt.jscore_mismatch,
+        ctl.gen_opt.jscore_gap_open,
+        ctl.gen_opt.jscore_gap_extend,
+        ctl.gen_opt.jscore_bits_multiplier,
+    );
     (ops, count)
 }
 

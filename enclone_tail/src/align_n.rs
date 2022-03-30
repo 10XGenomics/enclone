@@ -46,7 +46,20 @@ fn print_vis_align(
 ) {
     // Make alignment.
 
-    let (ops, _score) = align_to_vdj_ref(seq, vref, dref, d2ref, jref, drefname, left, ctl);
+    let (ops, _score) = align_to_vdj_ref(
+        seq,
+        vref,
+        dref,
+        d2ref,
+        jref,
+        drefname,
+        left,
+        ctl.gen_opt.jscore_match,
+        ctl.gen_opt.jscore_mismatch,
+        ctl.gen_opt.jscore_gap_open,
+        ctl.gen_opt.jscore_gap_extend,
+        ctl.gen_opt.jscore_bits_multiplier,
+    );
 
     // Make visual alignment.
 
