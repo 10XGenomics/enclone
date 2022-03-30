@@ -107,6 +107,7 @@ fn main() {
     // for i in 0..n {
     // for i in 0..20000 {
     let mut ds_all = Vec::<String>::new();
+    let mut hcomps = Vec::<usize>::new();
     for i in 0..1000 {
         println!("\n-------------------------------------------------------------------------\
             --------------------------");
@@ -317,6 +318,7 @@ fn main() {
             d += &mut refdata.name[ds[0][j]].clone();
         }
         ds_all.push(d);
+        hcomps.push(hcomp);
     }
     println!("\nThere were {} fails.\n", fails);
     ds_all.sort();
@@ -328,4 +330,18 @@ fn main() {
     for i in 0..10 {
         println!("{} [{:.1}%]", freq[i].1, 100.0 * freq[i].0 as f64 / ds_all.len() as f64);
     }
+    hcomps.sort();
+    let mut freq = Vec::<(u32, usize)>::new();
+    make_freq(&hcomps, &mut freq);
+    println!("\nmost frequent hcomp values for naive cells with junction insertion length 0 (of {})",
+        hcomps.len()
+    );
+    for i in 0..10 {
+        println!("{} [{:.1}%]", freq[i].1, 100.0 * freq[i].0 as f64 / hcomps.len() as f64);
+    }
+    let mut total = 0;
+    for i in 0..hcomps.len() {
+        total += hcomps[i];
+    }
+    println!("mean = {:.1}", total as f64 / hcomps.len() as f64);
 }

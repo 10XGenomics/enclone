@@ -156,6 +156,35 @@ fn main() {
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
+    // For naive cells with junction insertion length zero, show the hcomp distribution.
+
+    let mut x = Vec::<usize>::new();
+    for k in 0..data.len() {
+        let dref = data[k].5;
+        let jun_ins = data[k].9;
+        if dref == 0 && jun_ins == 0 {
+            let hcomp = data[k].8;
+            x.push(hcomp);
+        }
+    }
+    x.sort();
+    let mut freq = Vec::<(u32, usize)>::new();
+    make_freq(&x, &mut freq);
+    println!("\nmost frequent hcomp values for naive cells with junction insertion length 0 (of {})",
+        x.len()
+    );
+    for i in 0..10 {
+        println!("{} [{:.1}%]", freq[i].1, 100.0 * freq[i].0 as f64 / x.len() as f64);
+    }
+    let mut total = 0;
+    for i in 0..x.len() {
+        total += x[i];
+    }
+    println!("mean = {:.1}", total as f64 / x.len() as f64);
+    if true { std::process::exit(0); }
+
+    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
     // For naive cells with junction insertion length zero, show the D gene distribution.
 
     let mut x = Vec::<String>::new();
