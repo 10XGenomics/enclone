@@ -258,9 +258,13 @@ pub fn align_n(
                             if ex.share[r].left {
                                 let mut scores = Vec::<f64>::new();
                                 let mut ds = Vec::<Vec<usize>>::new();
+                                let mid = rsi[oo].mat[m][k].unwrap();
                                 opt_d(
-                                    ex,
-                                    rsi[oo].mat[m][k].unwrap(),
+                                    ex.share[mid].v_ref_id,
+                                    ex.share[mid].j_ref_id,
+                                    &ex.share[mid].seq_del,
+                                    &ex.share[mid].annv,
+                                    &ex.share[mid].cdr3_aa,
                                     refdata,
                                     dref,
                                     &mut scores,

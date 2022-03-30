@@ -551,9 +551,13 @@ pub fn survives_filter(
                     if ex.share[m].left {
                         let mut scores = Vec::<f64>::new();
                         let mut ds = Vec::<Vec<usize>>::new();
+                        let mid = rsi.mat[col][u].unwrap();
                         opt_d(
-                            ex,
-                            rsi.mat[col][u].unwrap(),
+                            ex.share[mid].v_ref_id,
+                            ex.share[mid].j_ref_id,
+                            &ex.share[mid].seq_del,
+                            &ex.share[mid].annv,
+                            &ex.share[mid].cdr3_aa,
                             refdata,
                             dref,
                             &mut scores,
@@ -592,9 +596,13 @@ pub fn survives_filter(
                     if ex.share[m].left {
                         let mut scores = Vec::<f64>::new();
                         let mut ds = Vec::<Vec<usize>>::new();
+                        let mid = rsi.mat[col][u].unwrap();
                         opt_d(
-                            ex,
-                            rsi.mat[col][u].unwrap(),
+                            ex.share[mid].v_ref_id,
+                            ex.share[mid].j_ref_id,
+                            &ex.share[mid].seq_del,
+                            &ex.share[mid].annv,
+                            &ex.share[mid].cdr3_aa,
                             refdata,
                             dref,
                             &mut scores,
@@ -631,9 +639,13 @@ pub fn survives_filter(
                     if ex.share[m].left {
                         let mut scores = Vec::<f64>::new();
                         let mut ds = Vec::<Vec<usize>>::new();
+                        let mid = rsi.mat[col][u].unwrap();
                         opt_d(
-                            ex,
-                            rsi.mat[col][u].unwrap(),
+                            ex.share[mid].v_ref_id,
+                            ex.share[mid].j_ref_id,
+                            &ex.share[mid].seq_del,
+                            &ex.share[mid].annv,
+                            &ex.share[mid].cdr3_aa,
                             refdata,
                             dref,
                             &mut scores,

@@ -44,34 +44,42 @@ fn main() {
 
     refnames.push("IGHV3-43D".to_string());
     utr.push(false);
-    refs.push(b"ATGGAGTTTGGACTGAGCTGGGTTTTCCTTGTTGCTATTTTAAAAGGTGTCCAGTGTGAAGTGCAGCTGGTGGAGTCT\
+    refs.push(
+        b"ATGGAGTTTGGACTGAGCTGGGTTTTCCTTGTTGCTATTTTAAAAGGTGTCCAGTGTGAAGTGCAGCTGGTGGAGTCT\
         GGGGGAGTCGTGGTACAGCCTGGGGGGTCCCTGAGACTCTCCTGTGCAGCCTCTGGATTCACCTTTGATGATTATGCCATGCACTG\
         GGTCCGTCAAGCTCCGGGGAAGGGTCTGGAGTGGGTCTCTCTTATTAGTTGGGATGGTGGTAGCACCTACTATGCAGACTCTGTGA\
         AGGGTCGATTCACCATCTCCAGAGACAACAGCAAAAACTCCCTGTATCTGCAAATGAACAGTCTGAGAGCTGAGGACACCGCCTTG\
-        TATTACTGTGCAAAAGATA".to_vec()
+        TATTACTGTGCAAAAGATA"
+            .to_vec(),
     );
     refnames.push("IGHV3-30-3".to_string());
     utr.push(false);
-    refs.push(b"ATGGAGTTTGGGCTGAGCTGGGTTTTCCTCGTTGCTCTTTTAAGAGGTGTCCAGTGTCAGGTGCAGCTGGTGGAGTCT\
+    refs.push(
+        b"ATGGAGTTTGGGCTGAGCTGGGTTTTCCTCGTTGCTCTTTTAAGAGGTGTCCAGTGTCAGGTGCAGCTGGTGGAGTCT\
         GGGGGAGGCGTGGTCCAGCCTGGGAGGTCCCTGAGACTCTCCTGTGCAGCCTCTGGATTCACCTTCAGTAGCTATGCTATGCACTG\
         GGTCCGCCAGGCTCCAGGCAAGGGGCTGGAGTGGGTGGCAGTTATATCATATGATGGAAGCAATAAATACTACGCAGACTCCGTGA\
         AGGGCCGATTCACCATCTCCAGAGACAATTCCAAGAACACGCTGTATCTGCAAATGAACAGCCTGAGAGCTGAGGACACGGCTGTG\
-        TATTACTGTGCGAGAGA".to_vec()
+        TATTACTGTGCGAGAGA"
+            .to_vec(),
     );
     refnames.push("IGHV3-NL1".to_string());
-    refs.push(b"ATGGAGTTTGGGCTGAGCTGGGTTTTCCTTGTTGCTATTATAAAAGGTG\
+    refs.push(
+        b"ATGGAGTTTGGGCTGAGCTGGGTTTTCCTTGTTGCTATTATAAAAGGTG\
         TCCAGTGTCAGGTGCAGCTGGTGGAGTCTGGGGGAGGCGTGGTCCAGCCTGGGGGGTCCCTGAGACT\
         CTCCTGTGCAGCGTCTGGATTCACCTTCAGTAGCTATGGCATGCACTGGGTCCGCCAGGCTCCAGGCAAGGGGCTGGAGTGGGTCT\
         CAGTTATTTATAGCGGTGGTAGTAGCACATACTATGCAGACTCCGTGAAGGGCCGATTCACCATCTCCAGAGACAATTCCAAGAAC\
-        ACGCTGTATCTGCAAATGAACAGCCTGAGAGCTGAGGACACGGCTGTGTATTACTGTGCGAAAGA".to_vec()
+        ACGCTGTATCTGCAAATGAACAGCCTGAGAGCTGAGGACACGGCTGTGTATTACTGTGCGAAAGA"
+            .to_vec(),
     );
     utr.push(false);
     refnames.push("IGHV4-30-2".to_string());
-    refs.push(b"ATGAAACACCTGTGGTTCTTCCTCCTGCTGGTGGCAGCTCCCAGATGGGTCCTGTCCCAGCTGCAGCTGCAGGAGTCC\
+    refs.push(
+        b"ATGAAACACCTGTGGTTCTTCCTCCTGCTGGTGGCAGCTCCCAGATGGGTCCTGTCCCAGCTGCAGCTGCAGGAGTCC\
         GGCTCAGGACTGGTGAAGCCTTCACAGACCCTGTCCCTCACCTGCGCTGTCTCTGGTGGCTCCATCAGCAGTGGTGGTTACTCCTG\
         GAGCTGGATCCGGCAGCCACCAGGGAAGGGCCTGGAGTGGATTGGGAGTATCTATTATAGTGGGAGCACCTACTACAACCCGTCCC\
         TCAAGAGTCGAGTCACCATATCCGTAGACACGTCCAAGAACCAGTTCTCCCTGAAGCTGAGCTCTGTGACCGCTGCAGACACGGCT\
-        GTGTATTACTGTGCGAGACA".to_vec()
+        GTGTATTACTGTGCGAGACA"
+            .to_vec(),
     );
     utr.push(false);
     let nref = refs.len();
@@ -102,8 +110,10 @@ fn main() {
     // for i in 0..n {
     // for i in 0..20000 {
     for i in 0..10 {
-        println!("\n-------------------------------------------------------------------------\
-            --------------------------");
+        println!(
+            "\n-------------------------------------------------------------------------\
+            --------------------------"
+        );
         println!("\nsequence {}", i + 1);
         let mut vseq = Vec::<u8>::new();
         let mut jseq = Vec::<u8>::new();
@@ -114,7 +124,11 @@ fn main() {
             }
         }
         if vseq.is_empty() {
-            println!("\nEntry {}, unable to find V gene named {}.\n", i + 1, hv[i]);
+            println!(
+                "\nEntry {}, unable to find V gene named {}.\n",
+                i + 1,
+                hv[i]
+            );
             std::process::exit(1);
         }
         for j in 0..nref {
@@ -124,7 +138,11 @@ fn main() {
             }
         }
         if jseq.is_empty() {
-            println!("\nEntry {}, unable to find J gene named {}.\n", i + 1, hj[i]);
+            println!(
+                "\nEntry {}, unable to find J gene named {}.\n",
+                i + 1,
+                hj[i]
+            );
             std::process::exit(1);
         }
         let junv = &jun[i][0..2];

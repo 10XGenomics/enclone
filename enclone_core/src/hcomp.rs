@@ -59,8 +59,11 @@ pub fn heavy_complexity(
                 let mut scores = Vec::<f64>::new();
                 let mut ds = Vec::<Vec<usize>>::new();
                 opt_d(
-                    ex,
-                    r,
+                    ex.share[r].v_ref_id,
+                    ex.share[r].j_ref_id,
+                    &ex.share[r].seq_del,
+                    &ex.share[r].annv,
+                    &ex.share[r].cdr3_aa,
                     refdata,
                     dref,
                     &mut scores,

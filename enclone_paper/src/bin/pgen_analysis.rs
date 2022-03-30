@@ -140,8 +140,12 @@ fn main() {
     // Show distribution of hlike for naive cells, and for simulated, and for public naive cells.
 
     let mut rows = Vec::<Vec<String>>::new();
-    let row = vec!["hlike".to_string(), "naive%".to_string(), "sim%".to_string(),
-        "public naive%".to_string()];
+    let row = vec![
+        "hlike".to_string(),
+        "naive%".to_string(),
+        "sim%".to_string(),
+        "public naive%".to_string(),
+    ];
     rows.push(row);
     let mut nhb = vec![0; 100];
     let mut inf = 0;
@@ -221,13 +225,6 @@ fn main() {
     rows.push(row);
 
     let mut log = String::new();
-    print_tabular_vbox(
-        &mut log,
-        &rows,
-        0,
-        &b"r|r|r|r".to_vec(),
-        false,
-        false,
-    );
+    print_tabular_vbox(&mut log, &rows, 0, &b"r|r|r|r".to_vec(), false, false);
     println!("\n{}", log);
 }

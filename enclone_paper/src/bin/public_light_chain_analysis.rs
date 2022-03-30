@@ -73,8 +73,16 @@ const UNSWITCHED: [usize; 24] = [
 fn main() {
     PrettyTrace::new().on();
     let args: Vec<String> = env::args().collect();
-    let opt_flow = if args.len() >= 3 && args[2] == "FLOW" { true } else { false };
-    let opt_naive = if args.len() >= 3 && args[2] == "NAIVE" { true } else { false };
+    let opt_flow = if args.len() >= 3 && args[2] == "FLOW" {
+        true
+    } else {
+        false
+    };
+    let opt_naive = if args.len() >= 3 && args[2] == "NAIVE" {
+        true
+    } else {
+        false
+    };
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -284,12 +292,31 @@ fn main() {
 
             // Print tables.
 
-            let counts = [&naive, &unswitched, &switched, &plasmablast, &unswitched_naive, 
-                &switched_naive, &total];
-            let names = ["naive", "unswitched", "switched", "plasmablast", "unswitched_naive", 
-                "switched_naive", "total"];
-            let row1 = vec!["class".to_string(), "all".to_string(), "d1".to_string(), 
-                "d2".to_string(), "d3".to_string(), "d4".to_string()
+            let counts = [
+                &naive,
+                &unswitched,
+                &switched,
+                &plasmablast,
+                &unswitched_naive,
+                &switched_naive,
+                &total,
+            ];
+            let names = [
+                "naive",
+                "unswitched",
+                "switched",
+                "plasmablast",
+                "unswitched_naive",
+                "switched_naive",
+                "total",
+            ];
+            let row1 = vec![
+                "class".to_string(),
+                "all".to_string(),
+                "d1".to_string(),
+                "d2".to_string(),
+                "d3".to_string(),
+                "d4".to_string(),
             ];
             println!("\nall cells");
             let mut rows = vec![row1.clone()];
@@ -298,8 +325,7 @@ fn main() {
                 let mut row = vec![names[i].to_string()];
                 for j in 0..5 {
                     if counts[i][j].1 > 0 {
-                        row.push(
-                            format!("{}", add_commas(counts[i][j].1)));
+                        row.push(format!("{}", add_commas(counts[i][j].1)));
                     } else {
                         row.push(String::new());
                     }
@@ -307,14 +333,7 @@ fn main() {
                 rows.push(row);
             }
             let mut log = String::new();
-            print_tabular_vbox(
-                &mut log,
-                &rows,
-                0,
-                &b"l|r|r|r|r|r".to_vec(),
-                false,
-                false,
-            );
+            print_tabular_vbox(&mut log, &rows, 0, &b"l|r|r|r|r|r".to_vec(), false, false);
             println!("{}", log);
             println!("naive cell fractions");
             let mut rows = vec![row1.clone()];
@@ -323,11 +342,10 @@ fn main() {
                 let mut row = vec![names[i].to_string()];
                 for j in 0..5 {
                     if counts[i][j].1 > 0 {
-                        row.push(
-                            format!("{:.1}%", 
-                                100.0 * counts[i][j].0 as f64 / counts[i][j].1 as f64
-                            )
-                        );
+                        row.push(format!(
+                            "{:.1}%",
+                            100.0 * counts[i][j].0 as f64 / counts[i][j].1 as f64
+                        ));
                     } else {
                         row.push(String::new());
                     }
@@ -335,14 +353,7 @@ fn main() {
                 rows.push(row);
             }
             let mut log = String::new();
-            print_tabular_vbox(
-                &mut log,
-                &rows,
-                0,
-                &b"l|r|r|r|r|r".to_vec(),
-                false,
-                false,
-            );
+            print_tabular_vbox(&mut log, &rows, 0, &b"l|r|r|r|r|r".to_vec(), false, false);
             println!("{}", log);
             std::process::exit(0);
         }
@@ -369,11 +380,15 @@ fn main() {
             }
         }
     }
-    println!("\nDD in naive cells = {} = {:.2}%", 
-        naive.0, 100.0 * naive.0 as f64 / naive.1 as f64
+    println!(
+        "\nDD in naive cells = {} = {:.2}%",
+        naive.0,
+        100.0 * naive.0 as f64 / naive.1 as f64
     );
-    println!("DD in memory cells = {} = {:.2}%", 
-        memory.0, 100.0 * memory.0 as f64 / memory.1 as f64
+    println!(
+        "DD in memory cells = {} = {:.2}%",
+        memory.0,
+        100.0 * memory.0 as f64 / memory.1 as f64
     );
 
     // Compute jun_ins frequency for memory and naive cells.
@@ -509,11 +524,15 @@ fn main() {
             println!("{i}: {:.3}%", 100.0 * ins[1][i] as f64 / total[1] as f64);
         }
     }
-    println!("DD public memory cells = {} = {:.1}%",
-        dd_memory, 100.0 * dd_memory as f64 / total[0] as f64,
+    println!(
+        "DD public memory cells = {} = {:.1}%",
+        dd_memory,
+        100.0 * dd_memory as f64 / total[0] as f64,
     );
-    println!("DD public naive cells = {} = {:.1}%",
-        dd_naive, 100.0 * dd_naive as f64 / total[1] as f64,
+    println!(
+        "DD public naive cells = {} = {:.1}%",
+        dd_naive,
+        100.0 * dd_naive as f64 / total[1] as f64,
     );
     println!(
         "mean junction insertion bases for public memory = {:.1}",

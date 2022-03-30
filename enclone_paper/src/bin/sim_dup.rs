@@ -23,10 +23,10 @@ fn main() {
         data.push((fields[1].to_string(), fields[2].to_string()));
     }
     let mut counts = Vec::new();
-    counts.push( (364703 as f64 * 0.304).round() as usize );
-    counts.push( (293532 as f64 * 0.696).round() as usize );
-    counts.push( (352749 as f64 * 0.671).round() as usize );
-    counts.push( (397955 as f64 * 0.627).round() as usize );
+    counts.push((364703 as f64 * 0.304).round() as usize);
+    counts.push((293532 as f64 * 0.696).round() as usize);
+    counts.push((352749 as f64 * 0.671).round() as usize);
+    counts.push((397955 as f64 * 0.627).round() as usize);
     let mut dup = vec![false; data.len()];
     for m1 in 0..4 {
         let mut start1 = 0;
@@ -69,4 +69,3 @@ fn main() {
     }
     println!("dups = {}", dups);
 }
-    
