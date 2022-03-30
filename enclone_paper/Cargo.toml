@@ -22,6 +22,7 @@ publish = false
 # To keep compile time down, this file should *not* access the enclone crate.
 
 [dependencies]
+bio_edit = "0.1"
 debruijn = "0.3"
 enclone_core = { path = "../enclone_core" }
 enclone_tail = { path = "../enclone_tail" }

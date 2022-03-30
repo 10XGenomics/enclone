@@ -2,7 +2,11 @@
 //
 // Splice junctions from olga.
 
+use bio_edit::alignment::AlignmentOperation::{Del, Ins, Match, Subst};
 use debruijn::dna_string::DnaString;
+use enclone_core::align_to_vdj_ref::align_to_vdj_ref;
+use enclone_core::defs::Junction;
+use enclone_core::opt_d::{jflank, opt_d};
 use io_utils::*;
 use pretty_trace::*;
 use std::env;
@@ -44,42 +48,34 @@ fn main() {
 
     refnames.push("IGHV3-43D".to_string());
     utr.push(false);
-    refs.push(
-        b"ATGGAGTTTGGACTGAGCTGGGTTTTCCTTGTTGCTATTTTAAAAGGTGTCCAGTGTGAAGTGCAGCTGGTGGAGTCT\
+    refs.push(b"ATGGAGTTTGGACTGAGCTGGGTTTTCCTTGTTGCTATTTTAAAAGGTGTCCAGTGTGAAGTGCAGCTGGTGGAGTCT\
         GGGGGAGTCGTGGTACAGCCTGGGGGGTCCCTGAGACTCTCCTGTGCAGCCTCTGGATTCACCTTTGATGATTATGCCATGCACTG\
         GGTCCGTCAAGCTCCGGGGAAGGGTCTGGAGTGGGTCTCTCTTATTAGTTGGGATGGTGGTAGCACCTACTATGCAGACTCTGTGA\
         AGGGTCGATTCACCATCTCCAGAGACAACAGCAAAAACTCCCTGTATCTGCAAATGAACAGTCTGAGAGCTGAGGACACCGCCTTG\
-        TATTACTGTGCAAAAGATA"
-            .to_vec(),
+        TATTACTGTGCAAAAGATA".to_vec()
     );
     refnames.push("IGHV3-30-3".to_string());
     utr.push(false);
-    refs.push(
-        b"ATGGAGTTTGGGCTGAGCTGGGTTTTCCTCGTTGCTCTTTTAAGAGGTGTCCAGTGTCAGGTGCAGCTGGTGGAGTCT\
+    refs.push(b"ATGGAGTTTGGGCTGAGCTGGGTTTTCCTCGTTGCTCTTTTAAGAGGTGTCCAGTGTCAGGTGCAGCTGGTGGAGTCT\
         GGGGGAGGCGTGGTCCAGCCTGGGAGGTCCCTGAGACTCTCCTGTGCAGCCTCTGGATTCACCTTCAGTAGCTATGCTATGCACTG\
         GGTCCGCCAGGCTCCAGGCAAGGGGCTGGAGTGGGTGGCAGTTATATCATATGATGGAAGCAATAAATACTACGCAGACTCCGTGA\
         AGGGCCGATTCACCATCTCCAGAGACAATTCCAAGAACACGCTGTATCTGCAAATGAACAGCCTGAGAGCTGAGGACACGGCTGTG\
-        TATTACTGTGCGAGAGA"
-            .to_vec(),
+        TATTACTGTGCGAGAGA".to_vec()
     );
     refnames.push("IGHV3-NL1".to_string());
-    refs.push(
-        b"ATGGAGTTTGGGCTGAGCTGGGTTTTCCTTGTTGCTATTATAAAAGGTG\
+    refs.push(b"ATGGAGTTTGGGCTGAGCTGGGTTTTCCTTGTTGCTATTATAAAAGGTG\
         TCCAGTGTCAGGTGCAGCTGGTGGAGTCTGGGGGAGGCGTGGTCCAGCCTGGGGGGTCCCTGAGACT\
         CTCCTGTGCAGCGTCTGGATTCACCTTCAGTAGCTATGGCATGCACTGGGTCCGCCAGGCTCCAGGCAAGGGGCTGGAGTGGGTCT\
         CAGTTATTTATAGCGGTGGTAGTAGCACATACTATGCAGACTCCGTGAAGGGCCGATTCACCATCTCCAGAGACAATTCCAAGAAC\
-        ACGCTGTATCTGCAAATGAACAGCCTGAGAGCTGAGGACACGGCTGTGTATTACTGTGCGAAAGA"
-            .to_vec(),
+        ACGCTGTATCTGCAAATGAACAGCCTGAGAGCTGAGGACACGGCTGTGTATTACTGTGCGAAAGA".to_vec()
     );
     utr.push(false);
     refnames.push("IGHV4-30-2".to_string());
-    refs.push(
-        b"ATGAAACACCTGTGGTTCTTCCTCCTGCTGGTGGCAGCTCCCAGATGGGTCCTGTCCCAGCTGCAGCTGCAGGAGTCC\
+    refs.push(b"ATGAAACACCTGTGGTTCTTCCTCCTGCTGGTGGCAGCTCCCAGATGGGTCCTGTCCCAGCTGCAGCTGCAGGAGTCC\
         GGCTCAGGACTGGTGAAGCCTTCACAGACCCTGTCCCTCACCTGCGCTGTCTCTGGTGGCTCCATCAGCAGTGGTGGTTACTCCTG\
         GAGCTGGATCCGGCAGCCACCAGGGAAGGGCCTGGAGTGGATTGGGAGTATCTATTATAGTGGGAGCACCTACTACAACCCGTCCC\
         TCAAGAGTCGAGTCACCATATCCGTAGACACGTCCAAGAACCAGTTCTCCCTGAAGCTGAGCTCTGTGACCGCTGCAGACACGGCT\
-        GTGTATTACTGTGCGAGACA"
-            .to_vec(),
+        GTGTATTACTGTGCGAGACA".to_vec()
     );
     utr.push(false);
     let nref = refs.len();
@@ -110,10 +106,8 @@ fn main() {
     // for i in 0..n {
     // for i in 0..20000 {
     for i in 0..10 {
-        println!(
-            "\n-------------------------------------------------------------------------\
-            --------------------------"
-        );
+        println!("\n-------------------------------------------------------------------------\
+            --------------------------");
         println!("\nsequence {}", i + 1);
         let mut vseq = Vec::<u8>::new();
         let mut jseq = Vec::<u8>::new();
@@ -124,11 +118,7 @@ fn main() {
             }
         }
         if vseq.is_empty() {
-            println!(
-                "\nEntry {}, unable to find V gene named {}.\n",
-                i + 1,
-                hv[i]
-            );
+            println!("\nEntry {}, unable to find V gene named {}.\n", i + 1, hv[i]);
             std::process::exit(1);
         }
         for j in 0..nref {
@@ -138,11 +128,7 @@ fn main() {
             }
         }
         if jseq.is_empty() {
-            println!(
-                "\nEntry {}, unable to find J gene named {}.\n",
-                i + 1,
-                hj[i]
-            );
+            println!("\nEntry {}, unable to find J gene named {}.\n", i + 1, hj[i]);
             std::process::exit(1);
         }
         let junv = &jun[i][0..2];
@@ -166,12 +152,12 @@ fn main() {
             std::process::exit(1);
         }
         let mut jtail = jseq[jseq.len() - 31..].to_vec(); // concatenate to junction
-        let mut full = vseq[0..vstart.unwrap()].to_vec();
-        full.append(&mut jun[i].clone());
-        full.append(&mut jtail);
+        let mut seq = vseq[0..vstart.unwrap()].to_vec();
+        seq.append(&mut jun[i].clone());
+        seq.append(&mut jtail);
         println!("\ncdr3[{}] = {}\n", i + 1, cdr3[i]);
-        println!("full[{}] = {}\n", i + 1, strme(&full));
-        let x = DnaString::from_dna_string(&strme(&full));
+        println!("seq[{}] = {}\n", i + 1, strme(&seq));
+        let x = DnaString::from_dna_string(&strme(&seq));
         let mut ann = Vec::<(i32, i32, i32, i32, i32)>::new();
         annotate_seq(&x, &refdata, &mut ann, true, false, true);
         let mut cdr3x = Vec::<(usize, Vec<u8>, usize, usize)>::new();
@@ -187,6 +173,140 @@ fn main() {
             println!("\nmismatch");
             std::process::exit(1);
         }
+
+        // Analyze the junction, following hcomp.rs.
+
+        let mut vref = vseq.clone();
+        let cdr3_start = cdr3x[0].0;
+        let vstart = cdr3_start - 2;
+        vref = vref[vstart..vref.len()].to_vec();
+        let mut concat = vref.clone();
+        let mut drefx = Vec::<u8>::new();
+        let mut d2ref = Vec::<u8>::new();
+        let mut drefname = String::new();
+        let mut scores = Vec::<f64>::new();
+        let mut ds = Vec::<Vec<usize>>::new();
+        let jscore_match = 20;
+        let jscore_mismatch = -20;
+        let jscore_gap_open = -120;
+        let jscore_gap_extend = -20;
+        let jscore_bits_multiplier = 2.2;
+        let mut v_ref_id = None;
+        let mut j_ref_id = None;
+        for i in 0..ann.len() {
+            let t = ann[i].2 as usize;
+            if refdata.is_v(t) {
+                v_ref_id = Some(t);
+            } else if refdata.is_j(t) {
+                j_ref_id = Some(t);
+            }
+        }
+        let v_ref_id = v_ref_id.unwrap();
+        let j_ref_id = j_ref_id.unwrap();
+        opt_d(
+            v_ref_id,
+            j_ref_id,
+            &seq,
+            &ann,
+            &strme(&cdr3x[0].1),
+            &refdata,
+            &Vec::new(),
+            &mut scores,
+            &mut ds,
+            jscore_match,
+            jscore_mismatch,
+            jscore_gap_open,
+            jscore_gap_extend,
+            jscore_bits_multiplier,
+            None,
+        );
+        let mut opt = Vec::new();
+        if !ds.is_empty() {
+            opt = ds[0].clone();
+        }
+        for j in 0..opt.len() {
+            let d = opt[j];
+            if j == 0 {
+                drefx = refdata.refs[d].to_ascii_vec();
+            } else {
+                d2ref = refdata.refs[d].to_ascii_vec();
+            }
+            if j > 0 {
+                drefname += ":";
+            }
+            drefname += &mut refdata.name[d].clone();
+        }
+        concat.append(&mut drefx.clone());
+        concat.append(&mut d2ref.clone());
+        let mut jref = refdata.refs[j_ref_id].to_ascii_vec();
+        let jend = jflank(&seq, &jref);
+        let mut seq_start = vstart as isize;
+        // probably not exactly right
+        if ann.len() > 1 {
+            let q1 = ann[0].0 + ann[0].1;
+            let q2 = ann[1].0;
+            seq_start += q2 as isize - q1 as isize;
+        }
+        let mut seq_end = seq.len() - (jref.len() - jend);
+        if seq_start as usize > seq_end {
+            seq_start = vstart as isize;
+        }
+        if seq_end <= seq_start as usize {
+            seq_end = seq.len();
+        }
+        seq = seq[seq_start as usize..seq_end].to_vec();
+        jref = jref[0..jend].to_vec();
+        concat.append(&mut jref.clone());
+        let (ops, _score) =
+            align_to_vdj_ref(&seq, &vref, &drefx, &d2ref, &jref, &drefname, true,
+                jscore_match,
+                jscore_mismatch,
+                jscore_gap_open,
+                jscore_gap_extend,
+                jscore_bits_multiplier,
+            );
+        let mut tigpos = 0;
+        let mut hcomp = 0;
+        let mut jun_ins = 0;
+        let mut indels = Vec::<(usize, isize)>::new();
+        let mut ins_start = 0;
+        let mut del_len = 0;
+        for i in 0..ops.len() {
+            if ops[i] == Subst {
+                hcomp += 1;
+                tigpos += 1;
+            } else if ops[i] == Match {
+                tigpos += 1;
+            } else if ops[i] == Ins {
+                hcomp += 1;
+                jun_ins += 1;
+                if i == 0 || ops[i - 1] != Ins {
+                    ins_start = tigpos;
+                }
+                tigpos += 1;
+                if i == ops.len() - 1 || ops[i + 1] != Ins {
+                    let ins_len = tigpos - ins_start;
+                    indels.push((ins_start, ins_len as isize));
+                }
+            } else if ops[i] == Del {
+                if i == 0 || ops[i - 1] != Del {
+                    hcomp += 1;
+                }
+                del_len += 1;
+                if i == ops.len() - 1 || ops[i + 1] != Del {
+                    indels.push((tigpos, -(del_len as isize)));
+                    del_len = 0;
+                }
+            }
+        }
+        let _jun = Junction {
+            hcomp: hcomp,
+            jun_ins: jun_ins,
+            d: ds[0].clone(),
+            vstart: vstart,
+            indels: indels,
+        };
+        println!("junction insertion = {}", jun_ins);
     }
     println!("\nThere were {} fails.\n", fails);
 }
