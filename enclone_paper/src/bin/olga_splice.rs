@@ -16,6 +16,7 @@ use vdj_ann::annotate::{annotate_seq, get_cdr3_using_ann};
 use vdj_ann::refx::make_vdj_ref_data_core;
 use vdj_ann::refx::RefData;
 use vdj_ann_ref::human_ref;
+use vector_utils::make_freq;
 
 fn main() {
     PrettyTrace::new().on();
@@ -105,6 +106,7 @@ fn main() {
     let mut fails = 0;
     // for i in 0..n {
     // for i in 0..20000 {
+    let mut ds_all = Vec::<String>::new();
     for i in 0..1000 {
         println!("\n-------------------------------------------------------------------------\
             --------------------------");
@@ -307,6 +309,23 @@ fn main() {
             indels: indels,
         };
         println!("junction insertion = {}", jun_ins);
+        let mut d = String::new();
+        for j in 0..ds[0].len() {
+            if j > 0 {
+                d += ":";
+            }
+            d += &mut refdata.name[ds[0][j]].clone();
+        }
+        ds_all.push(d);
     }
     println!("\nThere were {} fails.\n", fails);
+    ds_all.sort();
+    let mut freq = Vec::<(u32, String)>::new();
+    make_freq(&ds_all, &mut freq);
+    println!("\nmost frequent D genes for naive cells with junction insertion length 0 (of {})",
+        ds_all.len()
+    );
+    for i in 0..10 {
+        println!("{} [{:.1}%]", freq[i].1, 100.0 * freq[i].0 as f64 / ds_all.len() as f64);
+    }
 }
