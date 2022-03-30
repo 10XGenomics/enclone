@@ -57,7 +57,11 @@ pub fn make_opt_d_val(
                                 drefs,
                                 &mut scores,
                                 &mut ds,
-                                ctl,
+                                ctl.gen_opt.jscore_match,
+                                ctl.gen_opt.jscore_mismatch,
+                                ctl.gen_opt.jscore_gap_open,
+                                ctl.gen_opt.jscore_gap_extend,
+                                ctl.gen_opt.jscore_bits_multiplier,
                                 rsi[i].vpids[col],
                             );
                             let mut opt = Vec::new();

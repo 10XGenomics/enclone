@@ -68,7 +68,11 @@ pub fn heavy_complexity(
                     dref,
                     &mut scores,
                     &mut ds,
-                    ctl,
+                    ctl.gen_opt.jscore_match,
+                    ctl.gen_opt.jscore_mismatch,
+                    ctl.gen_opt.jscore_gap_open,
+                    ctl.gen_opt.jscore_gap_extend,
+                    ctl.gen_opt.jscore_bits_multiplier,
                     ex.share[r].v_ref_id_donor,
                 );
                 let mut opt = Vec::new();

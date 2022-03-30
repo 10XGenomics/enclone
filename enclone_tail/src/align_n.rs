@@ -282,7 +282,11 @@ pub fn align_n(
                                     dref,
                                     &mut scores,
                                     &mut ds,
-                                    ctl,
+                                    ctl.gen_opt.jscore_match,
+                                    ctl.gen_opt.jscore_mismatch,
+                                    ctl.gen_opt.jscore_gap_open,
+                                    ctl.gen_opt.jscore_gap_extend,
+                                    ctl.gen_opt.jscore_bits_multiplier,
                                     rsi[oo].vpids[m],
                                 );
                                 let mut opt = Vec::new();

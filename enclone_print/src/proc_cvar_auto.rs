@@ -551,7 +551,11 @@ pub fn proc_cvar_auto(
                 dref,
                 &mut scores,
                 &mut ds,
-                ctl,
+                ctl.gen_opt.jscore_match,
+                ctl.gen_opt.jscore_mismatch,
+                ctl.gen_opt.jscore_gap_open,
+                ctl.gen_opt.jscore_gap_extend,
+                ctl.gen_opt.jscore_bits_multiplier,
                 rsi.vpids[col],
             );
             let mut opt = Vec::new();
@@ -587,7 +591,11 @@ pub fn proc_cvar_auto(
                 dref,
                 &mut scores,
                 &mut ds,
-                ctl,
+                ctl.gen_opt.jscore_match,
+                ctl.gen_opt.jscore_mismatch,
+                ctl.gen_opt.jscore_gap_open,
+                ctl.gen_opt.jscore_gap_extend,
+                ctl.gen_opt.jscore_bits_multiplier,
                 rsi.vpids[col],
             );
             let mut delta = 0.0;
@@ -614,7 +622,11 @@ pub fn proc_cvar_auto(
                 dref,
                 &mut scores,
                 &mut ds,
-                ctl,
+                ctl.gen_opt.jscore_match,
+                ctl.gen_opt.jscore_mismatch,
+                ctl.gen_opt.jscore_gap_open,
+                ctl.gen_opt.jscore_gap_extend,
+                ctl.gen_opt.jscore_bits_multiplier,
                 rsi.vpids[col],
             );
             let mut opt2 = Vec::new();
@@ -650,7 +662,11 @@ pub fn proc_cvar_auto(
                 dref,
                 &mut scores,
                 &mut ds,
-                ctl,
+                ctl.gen_opt.jscore_match,
+                ctl.gen_opt.jscore_mismatch,
+                ctl.gen_opt.jscore_gap_open,
+                ctl.gen_opt.jscore_gap_extend,
+                ctl.gen_opt.jscore_bits_multiplier,
                 rsi.vpids[col],
             );
             let mut score = 0.0;
@@ -677,7 +693,11 @@ pub fn proc_cvar_auto(
                 dref,
                 &mut scores,
                 &mut ds,
-                ctl,
+                ctl.gen_opt.jscore_match,
+                ctl.gen_opt.jscore_mismatch,
+                ctl.gen_opt.jscore_gap_open,
+                ctl.gen_opt.jscore_gap_extend,
+                ctl.gen_opt.jscore_bits_multiplier,
                 rsi.vpids[col],
             );
             let mut delta = 0.0;
@@ -784,7 +804,11 @@ pub fn proc_cvar_auto(
                 dref,
                 &mut scores,
                 &mut ds,
-                ctl,
+                ctl.gen_opt.jscore_match,
+                ctl.gen_opt.jscore_mismatch,
+                ctl.gen_opt.jscore_gap_open,
+                ctl.gen_opt.jscore_gap_extend,
+                ctl.gen_opt.jscore_bits_multiplier,
                 rsi.vpids[col],
             );
             let mut delta = 0.0;

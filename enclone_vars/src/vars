@@ -1264,7 +1264,13 @@ code:     let mut opt_name = String::new();
                   &ex.share[mid].seq_del,                  
                   &ex.share[mid].annv,
                   &ex.share[mid].cdr3_aa,      
-                  refdata, dref, &mut scores, &mut ds, ctl, rsi.vpids[col]);
+                  refdata, dref, &mut scores, &mut ds, 
+                  ctl.gen_opt.jscore_match,
+                  ctl.gen_opt.jscore_mismatch,
+                  ctl.gen_opt.jscore_gap_open,
+                  ctl.gen_opt.jscore_gap_extend,
+                  ctl.gen_opt.jscore_bits_multiplier,
+                  rsi.vpids[col]);
               let mut opt = Vec::new();
               if !ds.is_empty() {
                   opt = ds[0].clone();
@@ -1304,7 +1310,13 @@ code:     let mut score = String::new();
                   &ex.share[mid].seq_del,
                   &ex.share[mid].annv,
                   &ex.share[mid].cdr3_aa,
-                  refdata, dref, &mut scores, &mut ds, ctl, rsi.vpids[col]);
+                  refdata, dref, &mut scores, &mut ds,
+                  ctl.gen_opt.jscore_match,
+                  ctl.gen_opt.jscore_mismatch,
+                  ctl.gen_opt.jscore_gap_open,
+                  ctl.gen_opt.jscore_gap_extend,
+                  ctl.gen_opt.jscore_bits_multiplier,
+                  rsi.vpids[col]);
               let mut delta = 0.0;
               if scores.len() > 1 {
                   delta = scores[0] - scores[1];
@@ -1335,7 +1347,13 @@ code:     let mut opt2_name = String::new();
                   &ex.share[mid].seq_del,
                   &ex.share[mid].annv,
                   &ex.share[mid].cdr3_aa,
-                  refdata, dref, &mut scores, &mut ds, ctl, rsi.vpids[col]);
+                  refdata, dref, &mut scores, &mut ds,
+                  ctl.gen_opt.jscore_match,
+                  ctl.gen_opt.jscore_mismatch,
+                  ctl.gen_opt.jscore_gap_open,
+                  ctl.gen_opt.jscore_gap_extend,
+                  ctl.gen_opt.jscore_bits_multiplier,
+                  rsi.vpids[col]);
               let mut opt2 = Vec::new();
               if ds.len() > 1 {
                   opt2 = ds[1].clone();
@@ -1375,7 +1393,13 @@ code:     let mut scorex = String::new();
                   &ex.share[mid].seq_del,
                   &ex.share[mid].annv,
                   &ex.share[mid].cdr3_aa,
-                  refdata, dref, &mut scores, &mut ds, ctl, rsi.vpids[col]);
+                  refdata, dref, &mut scores, &mut ds,
+                  ctl.gen_opt.jscore_match,
+                  ctl.gen_opt.jscore_mismatch,
+                  ctl.gen_opt.jscore_gap_open,
+                  ctl.gen_opt.jscore_gap_extend,
+                  ctl.gen_opt.jscore_bits_multiplier,
+                  rsi.vpids[col]);
               let mut score = 0.0;
               if scores.len() > 1 {
                   score = scores[1];
@@ -1406,7 +1430,13 @@ code:     let mut del = String::new();
                   &ex.share[mid].seq_del,
                   &ex.share[mid].annv,
                   &ex.share[mid].cdr3_aa,
-                  refdata, dref, &mut scores, &mut ds, ctl, rsi.vpids[col]);
+                  refdata, dref, &mut scores, &mut ds,
+                  ctl.gen_opt.jscore_match,
+                  ctl.gen_opt.jscore_mismatch,
+                  ctl.gen_opt.jscore_gap_open,
+                  ctl.gen_opt.jscore_gap_extend,
+                  ctl.gen_opt.jscore_bits_multiplier,
+                  rsi.vpids[col]);
               let mut delta = 0.0;
               if scores.len() > 1 {
                   delta = scores[0] - scores[1];
@@ -1603,7 +1633,13 @@ code:     let mut del = String::new();
                   &ex.share[mid].seq_del,
                   &ex.share[mid].annv,
                   &ex.share[mid].cdr3_aa,
-                  refdata, dref, &mut scores, &mut ds, ctl, rsi.vpids[col]);
+                  refdata, dref, &mut scores, &mut ds,
+                  ctl.gen_opt.jscore_match,
+                  ctl.gen_opt.jscore_mismatch,
+                  ctl.gen_opt.jscore_gap_open,
+                  ctl.gen_opt.jscore_gap_extend,
+                  ctl.gen_opt.jscore_bits_multiplier,
+                  rsi.vpids[col]);
               let mut delta = 0.0;
               if scores.len() > 1 {
                   delta = scores[0] - scores[1];

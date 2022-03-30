@@ -5,7 +5,6 @@
 // segment may be null.  This is obvious from looking at data.
 
 use crate::align_to_vdj_ref::{align_to_vdj_ref, match_bit_score, zero_one};
-use crate::defs::EncloneControl;
 use enclone_proto::types::DonorReferenceItem;
 use std::cmp::min;
 use vdj_ann::refx::RefData;
@@ -128,7 +127,11 @@ pub fn opt_d(
     dref: &Vec<DonorReferenceItem>,
     scores: &mut Vec<f64>,
     dsx: &mut Vec<Vec<usize>>,
-    ctl: &EncloneControl,
+    jscore_match: i32,
+    jscore_mismatch: i32,
+    jscore_gap_open: i32,
+    jscore_gap_extend: i32,
+    jscore_bits_multiplier: f64,
     v_alt: Option<usize>,
 ) {
     let mut comp = 1000000.0;
@@ -166,11 +169,11 @@ pub fn opt_d(
             &todo[di],
             &jref,
             refdata,
-            ctl.gen_opt.jscore_match,
-            ctl.gen_opt.jscore_mismatch,
-            ctl.gen_opt.jscore_gap_open,
-            ctl.gen_opt.jscore_gap_extend,
-            ctl.gen_opt.jscore_bits_multiplier,
+            jscore_match,
+            jscore_mismatch,
+            jscore_gap_open,
+            jscore_gap_extend,
+            jscore_bits_multiplier,
         );
         counts.push(count);
         if !todo[di].is_empty() {
@@ -203,11 +206,11 @@ pub fn opt_d(
                 &todo[di],
                 &jref,
                 refdata,
-                ctl.gen_opt.jscore_match,
-                ctl.gen_opt.jscore_mismatch,
-                ctl.gen_opt.jscore_gap_open,
-                ctl.gen_opt.jscore_gap_extend,
-                ctl.gen_opt.jscore_bits_multiplier,
+                jscore_match,
+                jscore_mismatch,
+                jscore_gap_open,
+                jscore_gap_extend,
+                jscore_bits_multiplier,
             );
             counts.push(count);
             ds.push(todo[di].clone());
