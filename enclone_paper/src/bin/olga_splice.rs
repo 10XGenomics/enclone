@@ -101,6 +101,9 @@ fn main() {
     // for i in 0..n {
     // for i in 0..20000 {
     for i in 0..10 {
+        println!("\n-------------------------------------------------------------------------\
+            --------------------------");
+        println!("\nsequence {}", i + 1);
         let mut vseq = Vec::<u8>::new();
         let mut jseq = Vec::<u8>::new();
         for j in 0..nref {
@@ -126,6 +129,7 @@ fn main() {
         let junv = &jun[i][0..2];
         use string_utils::strme;
         println!("\nV gene = {}", hv[i]);
+        println!("J gene = {}", hj[i]);
         println!("\nlooking for {} in {}", strme(&junv), strme(&vseq));
         let mut vstart = None;
         for k in (0..=vseq.len() - junv.len()).rev() {
@@ -142,21 +146,27 @@ fn main() {
             println!("\nfailed to find vstart for entry {}\n", i + 1);
             std::process::exit(1);
         }
-        let _jtail = &jseq[jseq.len() - 31..]; // concatenate to junction
+        let mut jtail = jseq[jseq.len() - 31..].to_vec(); // concatenate to junction
         let mut full = vseq[0..vstart.unwrap()].to_vec();
         full.append(&mut jun[i].clone());
-        full.append(&mut jseq.clone());
+        full.append(&mut jtail);
         println!("\ncdr3[{}] = {}\n", i + 1, cdr3[i]);
         println!("full[{}] = {}\n", i + 1, strme(&full));
         let x = DnaString::from_dna_string(&strme(&full));
         let mut ann = Vec::<(i32, i32, i32, i32, i32)>::new();
         annotate_seq(&x, &refdata, &mut ann, true, false, true);
-        let mut cdr3 = Vec::<(usize, Vec<u8>, usize, usize)>::new();
-        get_cdr3_using_ann(&x, &refdata, &ann, &mut cdr3);
-        if cdr3.len() != 1 {
-            println!("\nfailed to find unique CDR3\n");
+        let mut cdr3x = Vec::<(usize, Vec<u8>, usize, usize)>::new();
+        get_cdr3_using_ann(&x, &refdata, &ann, &mut cdr3x);
+        if cdr3x.len() != 1 {
+            println!("failed to find unique CDR3\n");
+            println!("found {} CDR3s\n", cdr3.len());
+            std::process::exit(1);
         }
-        println!("CDR3 = {}", strme(&cdr3[0].1));
+        println!("CDR3 = {}", strme(&cdr3x[0].1));
+        if strme(&cdr3x[0].1) != cdr3[i] {
+            println!("\nmismatch");
+            std::process::exit(1);
+        }
     }
     println!("");
 }
