@@ -2,11 +2,13 @@
 //
 // Splice junctions from olga.
 
+use debruijn::dna_string::DnaString;
 use io_utils::*;
 use pretty_trace::*;
 use std::env;
 use std::io::BufRead;
 use string_utils::TextUtils;
+use vdj_ann::annotate::{annotate_seq, get_cdr3_using_ann};
 use vdj_ann::refx::make_vdj_ref_data_core;
 use vdj_ann::refx::RefData;
 use vdj_ann_ref::human_ref;
@@ -146,6 +148,15 @@ fn main() {
         full.append(&mut jseq.clone());
         println!("\ncdr3[{}] = {}\n", i + 1, cdr3[i]);
         println!("full[{}] = {}\n", i + 1, strme(&full));
+        let x = DnaString::from_dna_string(&strme(&full));
+        let mut ann = Vec::<(i32, i32, i32, i32, i32)>::new();
+        annotate_seq(&x, &refdata, &mut ann, true, false, true);
+        let mut cdr3 = Vec::<(usize, Vec<u8>, usize, usize)>::new();
+        get_cdr3_using_ann(&x, &refdata, &ann, &mut cdr3);
+        if cdr3.len() != 1 {
+            println!("\nfailed to find unique CDR3\n");
+        }
+        println!("CDR3 = {}", strme(&cdr3[0].1));
     }
     println!("");
 }
