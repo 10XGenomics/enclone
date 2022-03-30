@@ -7,6 +7,8 @@ use pretty_trace::*;
 use std::env;
 use std::io::BufRead;
 use string_utils::TextUtils;
+use vdj_ann::refx::make_vdj_ref_data_core;
+use vdj_ann::refx::RefData;
 use vdj_ann_ref::human_ref;
 
 fn main() {
@@ -18,8 +20,8 @@ fn main() {
     let mut refnames = Vec::<String>::new();
     let mut refs = Vec::<Vec<u8>>::new();
     let mut utr = Vec::<bool>::new();
+    let href = human_ref();
     {
-        let href = human_ref();
         for (i, line) in href.lines().enumerate() {
             if i % 2 == 0 {
                 let n = line.between("|", " ").to_string();
@@ -71,6 +73,9 @@ fn main() {
     );
     utr.push(false);
     let nref = refs.len();
+    let mut refdata = RefData::new();
+    let ext_ref = String::new();
+    make_vdj_ref_data_core(&mut refdata, &href, &ext_ref, false, true, None);
 
     // Load the input file.
 
