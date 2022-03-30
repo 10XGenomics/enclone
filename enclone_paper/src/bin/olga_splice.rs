@@ -1,6 +1,6 @@
 // Copyright (c) 2022 10x Genomics, Inc. All rights reserved.
 //
-// Splice junctions from pgen.
+// Splice junctions from olga.
 
 use io_utils::*;
 use pretty_trace::*;
@@ -13,7 +13,7 @@ fn main() {
     PrettyTrace::new().on();
     let args: Vec<String> = env::args().collect();
 
-    // Get the standard human reference.
+    // Get the human reference used by enclone.
 
     let mut refnames = Vec::<String>::new();
     let mut refs = Vec::<Vec<u8>>::new();
@@ -31,7 +31,10 @@ fn main() {
         }
     }
 
-    // Add extra genes.
+    // Add extra genes.  For IGHV3-NL1, we took the sequence in olga.seq, and found the leader
+    // in GenBank AC245166.2:
+    // ATGGAGAAATAGAGAGACTGAGTGTGAGTGAACAT
+    // GAGTGAGAAAAACTGGATTTGTGTGGCATTTTCTGATAACGGTGTCCTTCTGTTTGCAGGTGTCCAGTGT.
 
     refnames.push("IGHV3-43D".to_string());
     utr.push(false);
@@ -48,6 +51,13 @@ fn main() {
         GGTCCGCCAGGCTCCAGGCAAGGGGCTGGAGTGGGTGGCAGTTATATCATATGATGGAAGCAATAAATACTACGCAGACTCCGTGA\
         AGGGCCGATTCACCATCTCCAGAGACAATTCCAAGAACACGCTGTATCTGCAAATGAACAGCCTGAGAGCTGAGGACACGGCTGTG\
         TATTACTGTGCGAGAGA".to_vec()
+    );
+    refnames.push("IGHV3-NL1".to_string());
+    refs.push(b"ATGGAGAAATAGAGAGACTGAGTGTGAGTGAACATGAGTGAGAAAAACTGGATTTGTGTGGCATTTTCTGATAACGGT\
+        GTCCTTCTGTTTGCAGGTGTCCAGTGTCAGGTGCAGCTGGTGGAGTCTGGGGGAGGCGTGGTCCAGCCTGGGGGGTCCCTGAGACT\
+        CTCCTGTGCAGCGTCTGGATTCACCTTCAGTAGCTATGGCATGCACTGGGTCCGCCAGGCTCCAGGCAAGGGGCTGGAGTGGGTCT\
+        CAGTTATTTATAGCGGTGGTAGTAGCACATACTATGCAGACTCCGTGAAGGGCCGATTCACCATCTCCAGAGACAATTCCAAGAAC\
+        ACGCTGTATCTGCAAATGAACAGCCTGAGAGCTGAGGACACGGCTGTGTATTACTGTGCGAAAGA".to_vec()
     );
     let nref = refs.len();
 
@@ -69,10 +79,12 @@ fn main() {
     // Process entries.
 
     // for i in 0..n {
-    for i in 0..300 {
+    for i in 0..1500 {
+        /*
         if hv[i] == "IGHV3-NL1" {
             continue;
         }
+        */
         let mut vseq = Vec::<u8>::new();
         let mut jseq = Vec::<u8>::new();
         for j in 0..nref {
@@ -95,19 +107,18 @@ fn main() {
             println!("\nEntry {}, unable to find J gene named {}.\n", i + 1, hj[i]);
             std::process::exit(1);
         }
-        let junv = &jun[i][0..3];
+        let junv = &jun[i][0..2];
         use string_utils::strme;
         println!("\nV gene = {}", hv[i]);
         println!("\nlooking for {} in {}", strme(&junv), strme(&vseq));
         let mut vstart = None;
         for k in (0..=vseq.len() - junv.len()).rev() {
             if vseq[k..].starts_with(&junv) {
+                if k % 3 != 0 {
+                    continue;
+                }
                 vstart = Some(k);
                 println!("vstart for {} found at pos -{}", i + 1, vseq.len() - k);
-                if k % 3 != 0 {
-                    println!("\nillegal vstart\n");
-                    std::process::exit(1);
-                }
                 break;
             }
         }
