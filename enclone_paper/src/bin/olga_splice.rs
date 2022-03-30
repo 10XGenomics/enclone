@@ -35,6 +35,8 @@ fn main() {
     // in GenBank AC245166.2:
     // ATGGAGAAATAGAGAGACTGAGTGTGAGTGAACAT
     // GAGTGAGAAAAACTGGATTTGTGTGGCATTTTCTGATAACGGTGTCCTTCTGTTTGCAGGTGTCCAGTGT.
+    // However, this leader has stop codons.  Therefore we put in a FAKE leader, that for
+    // IGHV3-11.
 
     refnames.push("IGHV3-43D".to_string());
     utr.push(false);
@@ -53,8 +55,8 @@ fn main() {
         TATTACTGTGCGAGAGA".to_vec()
     );
     refnames.push("IGHV3-NL1".to_string());
-    refs.push(b"ATGGAGAAATAGAGAGACTGAGTGTGAGTGAACATGAGTGAGAAAAACTGGATTTGTGTGGCATTTTCTGATAACGGT\
-        GTCCTTCTGTTTGCAGGTGTCCAGTGTCAGGTGCAGCTGGTGGAGTCTGGGGGAGGCGTGGTCCAGCCTGGGGGGTCCCTGAGACT\
+    refs.push(b"ATGGAGTTTGGGCTGAGCTGGGTTTTCCTTGTTGCTATTATAAAAGGTG\
+        TCCAGTGTCAGGTGCAGCTGGTGGAGTCTGGGGGAGGCGTGGTCCAGCCTGGGGGGTCCCTGAGACT\
         CTCCTGTGCAGCGTCTGGATTCACCTTCAGTAGCTATGGCATGCACTGGGTCCGCCAGGCTCCAGGCAAGGGGCTGGAGTGGGTCT\
         CAGTTATTTATAGCGGTGGTAGTAGCACATACTATGCAGACTCCGTGAAGGGCCGATTCACCATCTCCAGAGACAATTCCAAGAAC\
         ACGCTGTATCTGCAAATGAACAGCCTGAGAGCTGAGGACACGGCTGTGTATTACTGTGCGAAAGA".to_vec()
@@ -75,6 +77,7 @@ fn main() {
     let mut jun = Vec::<Vec<u8>>::new();
     let mut hv = Vec::<String>::new();
     let mut hj = Vec::<String>::new();
+    let mut cdr3 = Vec::<String>::new();
     let f = open_for_read![&args[1]];
     for line in f.lines() {
         let s = line.unwrap();
@@ -82,13 +85,15 @@ fn main() {
         jun.push(fields[0].as_bytes().to_vec());
         hv.push(fields[2].to_string());
         hj.push(fields[3].to_string());
+        cdr3.push(fields[1].to_string());
     }
     let n = jun.len();
 
     // Process entries.
 
     // for i in 0..n {
-    for i in 0..20000 {
+    // for i in 0..20000 {
+    for i in 0..10 {
         let mut vseq = Vec::<u8>::new();
         let mut jseq = Vec::<u8>::new();
         for j in 0..nref {
@@ -131,6 +136,11 @@ fn main() {
             std::process::exit(1);
         }
         let _jtail = &jseq[jseq.len() - 31..]; // concatenate to junction
+        let mut full = vseq[0..vstart.unwrap()].to_vec();
+        full.append(&mut jun[i].clone());
+        full.append(&mut jseq.clone());
+        println!("\ncdr3[{}] = {}\n", i + 1, cdr3[i]);
+        println!("full[{}] = {}\n", i + 1, strme(&full));
     }
     println!("");
 }
