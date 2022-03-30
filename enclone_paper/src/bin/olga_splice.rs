@@ -98,6 +98,7 @@ fn main() {
 
     // Process entries.
 
+    let mut fails = 0;
     // for i in 0..n {
     // for i in 0..20000 {
     for i in 0..10 {
@@ -159,8 +160,9 @@ fn main() {
         get_cdr3_using_ann(&x, &refdata, &ann, &mut cdr3x);
         if cdr3x.len() != 1 {
             println!("failed to find unique CDR3\n");
-            println!("found {} CDR3s\n", cdr3.len());
-            std::process::exit(1);
+            println!("found {} CDR3s\n", cdr3x.len());
+            fails += 1;
+            continue;
         }
         println!("CDR3 = {}", strme(&cdr3x[0].1));
         if strme(&cdr3x[0].1) != cdr3[i] {
@@ -168,5 +170,5 @@ fn main() {
             std::process::exit(1);
         }
     }
-    println!("");
+    println!("\nThere were {} fails.\n", fails);
 }
