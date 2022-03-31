@@ -114,12 +114,12 @@ fn main() {
 
     let mut fails = 0;
     let mut drefnames = Vec::<String>::new();
-    // for i in 0.._n {
-    // for i in 0..20000 {
     let mut ds_all = Vec::<String>::new();
     let mut subs = Vec::<usize>::new();
     let mut rates = Vec::<f64>::new();
-    for i in 0..1000 {
+    for i in 0.._n {
+    // for i in 0..20000 {
+    // for i in 0..1000 {
         println!(
             "\n-------------------------------------------------------------------------\
             --------------------------"
@@ -234,6 +234,10 @@ fn main() {
             }
         }
         let v_ref_id = v_ref_id.unwrap();
+        if j_ref_id.is_none() {
+            fails += 1;
+            continue;
+        }
         let j_ref_id = j_ref_id.unwrap();
         opt_d(
             v_ref_id,
