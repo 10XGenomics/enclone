@@ -173,7 +173,7 @@ fn main() {
     let mut freq = Vec::<(u32, usize)>::new();
     make_freq(&x, &mut freq);
     println!(
-        "\nmost frequent substituion values for naive cells with junction insertion length 0 (of {})",
+        "\nmost frequent substitution values for naive cells with junction insertion length 0 (of {})",
         x.len()
     );
     for i in 0..10 {
