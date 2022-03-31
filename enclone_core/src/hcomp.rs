@@ -139,12 +139,16 @@ pub fn heavy_complexity(
                 let mut mismatches = 0;
                 for i in 0..ops.len() {
                     if ops[i] == Subst {
+                        if tigpos >= 2 {
+                            mismatches += 1;
+                        }
                         hcomp += 1;
                         tigpos += 1;
-                        mismatches += 1;
                     } else if ops[i] == Match {
+                        if tigpos >= 2 {
+                            matches += 1;
+                        }
                         tigpos += 1;
-                        matches += 1;
                     } else if ops[i] == Ins {
                         hcomp += 1;
                         jun_ins += 1;
