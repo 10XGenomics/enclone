@@ -107,12 +107,12 @@ fn main() {
         hj.push(fields[3].to_string());
         cdr3.push(fields[1].to_string());
     }
-    let n = jun.len();
+    let _n = jun.len();
 
     // Process entries.
 
     let mut fails = 0;
-    // for i in 0..n {
+    // for i in 0.._n {
     // for i in 0..20000 {
     let mut ds_all = Vec::<String>::new();
     let mut hcomps = Vec::<usize>::new();
