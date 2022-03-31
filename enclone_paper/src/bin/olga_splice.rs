@@ -183,6 +183,13 @@ fn main() {
         let x = DnaString::from_dna_string(&strme(&seq));
         let mut ann = Vec::<(i32, i32, i32, i32, i32)>::new();
         annotate_seq(&x, &refdata, &mut ann, true, false, true);
+        let mut annv = Vec::<(i32, i32, i32, i32, i32)>::new();
+        for i in 0..ann.len() {
+            let t = ann[i].2 as usize;
+            if refdata.is_v(t) {
+                annv.push(ann[i]);
+            }
+        }
         let mut cdr3x = Vec::<(usize, Vec<u8>, usize, usize)>::new();
         get_cdr3_using_ann(&x, &refdata, &ann, &mut cdr3x);
         if cdr3x.len() != 1 {
@@ -265,9 +272,9 @@ fn main() {
         let jend = jflank(&seq, &jref);
         let mut seq_start = vstart as isize;
         // probably not exactly right
-        if ann.len() > 1 {
-            let q1 = ann[0].0 + ann[0].1;
-            let q2 = ann[1].0;
+        if annv.len() > 1 {
+            let q1 = annv[0].0 + ann[0].1;
+            let q2 = annv[1].0;
             seq_start += q2 as isize - q1 as isize;
         }
         let mut seq_end = seq.len() - (jref.len() - jend);
@@ -345,7 +352,9 @@ fn main() {
             vstart: vstart,
             indels: indels,
         };
+        println!("D = {}", drefname);
         println!("junction insertion = {}", jun_ins);
+        println!("junction mismatches = {}", mismatches);
         let mut d = String::new();
         for j in 0..ds[0].len() {
             if j > 0 {
@@ -391,7 +400,6 @@ fn main() {
             pretty,
         );
         println!("{}", strme(&log));
-
     }
     println!("\nThere were {} fails.\n", fails);
     ds_all.sort();
