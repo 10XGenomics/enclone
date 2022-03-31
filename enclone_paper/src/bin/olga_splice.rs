@@ -206,9 +206,12 @@ fn main() {
         }
         let mut cdr3x = Vec::<(usize, Vec<u8>, usize, usize)>::new();
         get_cdr3_using_ann(&x, &refdata, &ann, &mut cdr3x);
-        if cdr3x.len() != 1 {
-            fwriteln!(log, "failed to find unique CDR3\n");
+        if cdr3x.len() != 1 || strme(&cdr3x[0].1) != cdr3[i] {
+            fwriteln!(log, "failed to find unique or matching CDR3\n");
             fwriteln!(log, "found {} CDR3s\n", cdr3x.len());
+            for i in 0..cdr3x.len() {
+                fwriteln!(log, "CDR3 = {}", strme(&cdr3x[i].1));
+            }
             res.1 = Data {
                 out: log,
                 fail: true,
@@ -220,10 +223,6 @@ fn main() {
             };
         } else {
             fwriteln!(log, "CDR3 = {}", strme(&cdr3x[0].1));
-            if strme(&cdr3x[0].1) != cdr3[i] {
-                eprintln!("\nmismatch");
-                std::process::exit(1);
-            }
     
             // Analyze the junction, following hcomp.rs.
     
