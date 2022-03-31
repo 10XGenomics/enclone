@@ -438,9 +438,23 @@ fn main() {
         total += subs[i];
     }
     println!("mean = {:.1}", total as f64 / subs.len() as f64);
+    let mut bins = vec![0; 21];
+    for i in 0..rates.len() {
+        bins[(20.0 * rates[i]).floor() as usize] += 1;
+    }
     let mut total = 0.0;
     for i in 0..rates.len() {
         total += rates[i];
+    }
+    println!("\nsubstitution rates");
+    for i in 0..bins.len() {
+        if bins[i] > 0 {
+            println!("{}-{}% ==> {:.1}%", 
+                5 * i,
+                5 * (i + 1),
+                100.0 * bins[i] as f64 / rates.len() as f64
+            );
+        }
     }
     println!("mean substitution rate = {:.1}%", 100.0 * total as f64 / rates.len() as f64);
 }

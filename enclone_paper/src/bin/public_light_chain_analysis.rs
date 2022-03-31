@@ -197,6 +197,75 @@ fn main() {
     for i in 0..rates.len() {
         total += rates[i];
     }
+    println!("\nsubstitution rates");
+    let mut bins = vec![0; 21];
+    for i in 0..rates.len() {
+        bins[(20.0 * rates[i]).floor() as usize] += 1;
+    }
+    for i in 0..bins.len() {
+        if bins[i] > 0 {
+            println!("{}-{}% ==> {:.1}%", 
+                5 * i,
+                5 * (i + 1),
+                100.0 * bins[i] as f64 / rates.len() as f64
+            );
+        }
+    }
+    println!("mean substitution rate = {:.1}%", 100.0 * total as f64 / rates.len() as f64);
+
+    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+    // Compute substitution rates for public naive cells having jun_ins = 0.
+
+    let mut i = 0;
+    let mut rates = Vec::<f64>::new();
+    while i < data.len() {
+        let mut j = i + 1;
+        while j < data.len() {
+            if data[j].0 != data[i].0 || data[j].2 != data[i].2 {
+                break;
+            }
+            j += 1;
+        }
+        let mut donors = Vec::<String>::new();
+        for k in i..j {
+            if data[k].5 == 0 {
+                donors.push(data[k].3.clone());
+            }
+        }
+        unique_sort(&mut donors);
+        if donors.len() > 1 {
+            for k in i..j {
+                let dref = data[k].5;
+                let jun_ins = data[k].9;
+                if dref == 0 && jun_ins == 0 {
+                    let matches = data[k].6;
+                    let subs = data[k].7;
+                    let rate = subs as f64 / (subs + matches) as f64;
+                    rates.push(rate);
+                }
+            }
+        }
+        i = j;
+    }
+    let mut total = 0.0;
+    for i in 0..rates.len() {
+        total += rates[i];
+    }
+    println!("\nsubstitution rates for public naive cells");
+    let mut bins = vec![0; 21];
+    for i in 0..rates.len() {
+        bins[(20.0 * rates[i]).floor() as usize] += 1;
+    }
+    for i in 0..bins.len() {
+        if bins[i] > 0 {
+            println!("{}-{}% ==> {:.1}%", 
+                5 * i,
+                5 * (i + 1),
+                100.0 * bins[i] as f64 / rates.len() as f64
+            );
+        }
+    }
     println!("mean substitution rate = {:.1}%", 100.0 * total as f64 / rates.len() as f64);
     if true {
         std::process::exit(0);
