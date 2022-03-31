@@ -113,6 +113,7 @@ fn main() {
     // Process entries.
 
     let mut fails = 0;
+    let mut drefnames = Vec::<String>::new();
     // for i in 0.._n {
     // for i in 0..20000 {
     let mut ds_all = Vec::<String>::new();
@@ -267,6 +268,7 @@ fn main() {
             }
             drefname += &mut refdata.name[d].clone();
         }
+        drefnames.push(drefname.clone());
         concat.append(&mut drefx.clone());
         concat.append(&mut d2ref.clone());
         let mut jref = refdata.refs[j_ref_id].to_ascii_vec();
@@ -457,4 +459,11 @@ fn main() {
         }
     }
     println!("mean substitution rate = {:.1}%", 100.0 * total as f64 / rates.len() as f64);
+    let mut dd = 0;
+    for i in 0..drefnames.len() {
+        if drefnames[i].contains(":") {
+            dd += 1;
+        }
+    }
+    println!("\nDD fraction = {:.1}%\n", 100.0 * dd as f64 / drefnames.len() as f64);
 }
