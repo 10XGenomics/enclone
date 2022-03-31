@@ -1,6 +1,7 @@
 // Copyright (c) 2022 10x Genomics, Inc. All rights reserved.
 //
 // Splice junctions from olga.
+// An optional second argument is the number of sequences to process.
 
 use bio_edit::alignment::AlignmentOperation::{Del, Ins, Match, Subst};
 use debruijn::dna_string::DnaString;
@@ -11,6 +12,7 @@ use enclone_tail::align_n::print_vis_align;
 use io_utils::*;
 use pretty_trace::*;
 use rayon::prelude::*;
+use std::cmp::min;
 use std::env;
 use std::io::{BufRead, Write};
 use string_utils::strme;
@@ -24,6 +26,10 @@ use vector_utils::make_freq;
 fn main() {
     PrettyTrace::new().on();
     let args: Vec<String> = env::args().collect();
+    let mut n = 0;
+    if args.len() >= 3 {
+        n = args[2].force_usize();
+    }
 
     // Get the human reference used by enclone.
 
@@ -110,7 +116,9 @@ fn main() {
         hj.push(fields[3].to_string());
         cdr3.push(fields[1].to_string());
     }
-    let _n = jun.len();
+    if n == 0 {
+        n = jun.len();
+    }
 
     // Process entries.
 
@@ -124,10 +132,8 @@ fn main() {
         subs: usize,
         rate: f64,
     }
-    let n_use = _n;
-    // let n_use = 10;
     let mut results = Vec::<(usize, Data)>::new();
-    for i in 0..n_use {
+    for i in 0..n {
         results.push((i, Data::default()));
     }
     results.par_iter_mut().for_each(|res| {
@@ -479,7 +485,7 @@ fn main() {
             "most frequent D genes for naive cells with junction insertion length 0 (of {})",
             ds_all.len()
         );
-        for i in 0..std::cmp::min(10, freq.len()) {
+        for i in 0..min(10, freq.len()) {
             println!(
                 "{} [{:.1}%]",
                 freq[i].1,
@@ -495,7 +501,7 @@ fn main() {
             "\nmost frequent substitution values for naive cells with junction insertion length 0 (of {})",
             subs.len()
         );
-        for i in 0..10 {
+        for i in 0..min(10, freq.len()) {
             println!(
                 "{} [{:.1}%]",
                 freq[i].1,
