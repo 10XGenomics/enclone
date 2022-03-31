@@ -7,6 +7,7 @@ use debruijn::dna_string::DnaString;
 use enclone_core::align_to_vdj_ref::align_to_vdj_ref;
 use enclone_core::defs::Junction;
 use enclone_core::opt_d::{jflank, opt_d};
+use enclone_tail::align_n::print_vis_align;
 use io_utils::*;
 use pretty_trace::*;
 use std::env;
@@ -155,7 +156,8 @@ fn main() {
         let junv = &jun[i][0..2];
         use string_utils::strme;
         println!("\nV gene = {}", hv[i]);
-        println!("J gene = {}", hj[i]);
+        let jrefname = &hj[i];
+        println!("J gene = {}", jrefname);
         println!("\nlooking for {} in {}", strme(&junv), strme(&vseq));
         let mut vstart = None;
         for k in (0..=vseq.len() - junv.len()).rev() {
@@ -355,6 +357,41 @@ fn main() {
             ds_all.push(d);
             subs.push(mismatches);
         }
+        let mut log = Vec::<u8>::new();
+        let width = 100;
+        let mut drefname = drefname.clone();
+        if drefname == *"" {
+            drefname = "none".to_string();
+        }
+        let rank = "1ST";
+        let add = format!("  •  D = {} = {}", rank, drefname);
+        let frame = seq_start as usize % 3;
+        let pretty = true;
+        print_vis_align(
+            &seq,
+            &concat,
+            1,
+            i,
+            &vref,
+            &drefx,
+            &d2ref,
+            &jref,
+            &jrefname,
+            true,
+            &mut log,
+            width,
+            &add,
+            frame,
+            true,
+            jscore_match,
+            jscore_mismatch,
+            jscore_gap_open,
+            jscore_gap_extend,
+            jscore_bits_multiplier,
+            pretty,
+        );
+        println!("{}", strme(&log));
+
     }
     println!("\nThere were {} fails.\n", fails);
     ds_all.sort();
