@@ -371,6 +371,8 @@ pub fn make_table(
                 if !ctl.nogray {
                     *logz += &format!("[38;5;{}m[48;5;{}m ", TEXTCOLOR, BACKGROUND);
                     barcode = true;
+                } else {
+                    logz.push(' ');
                 }
             } else {
                 logz.push('•');
