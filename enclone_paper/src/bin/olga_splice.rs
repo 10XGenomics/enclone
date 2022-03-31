@@ -49,34 +49,42 @@ fn main() {
 
     refnames.push("IGHV3-43D".to_string());
     utr.push(false);
-    refs.push(b"ATGGAGTTTGGACTGAGCTGGGTTTTCCTTGTTGCTATTTTAAAAGGTGTCCAGTGTGAAGTGCAGCTGGTGGAGTCT\
+    refs.push(
+        b"ATGGAGTTTGGACTGAGCTGGGTTTTCCTTGTTGCTATTTTAAAAGGTGTCCAGTGTGAAGTGCAGCTGGTGGAGTCT\
         GGGGGAGTCGTGGTACAGCCTGGGGGGTCCCTGAGACTCTCCTGTGCAGCCTCTGGATTCACCTTTGATGATTATGCCATGCACTG\
         GGTCCGTCAAGCTCCGGGGAAGGGTCTGGAGTGGGTCTCTCTTATTAGTTGGGATGGTGGTAGCACCTACTATGCAGACTCTGTGA\
         AGGGTCGATTCACCATCTCCAGAGACAACAGCAAAAACTCCCTGTATCTGCAAATGAACAGTCTGAGAGCTGAGGACACCGCCTTG\
-        TATTACTGTGCAAAAGATA".to_vec()
+        TATTACTGTGCAAAAGATA"
+            .to_vec(),
     );
     refnames.push("IGHV3-30-3".to_string());
     utr.push(false);
-    refs.push(b"ATGGAGTTTGGGCTGAGCTGGGTTTTCCTCGTTGCTCTTTTAAGAGGTGTCCAGTGTCAGGTGCAGCTGGTGGAGTCT\
+    refs.push(
+        b"ATGGAGTTTGGGCTGAGCTGGGTTTTCCTCGTTGCTCTTTTAAGAGGTGTCCAGTGTCAGGTGCAGCTGGTGGAGTCT\
         GGGGGAGGCGTGGTCCAGCCTGGGAGGTCCCTGAGACTCTCCTGTGCAGCCTCTGGATTCACCTTCAGTAGCTATGCTATGCACTG\
         GGTCCGCCAGGCTCCAGGCAAGGGGCTGGAGTGGGTGGCAGTTATATCATATGATGGAAGCAATAAATACTACGCAGACTCCGTGA\
         AGGGCCGATTCACCATCTCCAGAGACAATTCCAAGAACACGCTGTATCTGCAAATGAACAGCCTGAGAGCTGAGGACACGGCTGTG\
-        TATTACTGTGCGAGAGA".to_vec()
+        TATTACTGTGCGAGAGA"
+            .to_vec(),
     );
     refnames.push("IGHV3-NL1".to_string());
-    refs.push(b"ATGGAGTTTGGGCTGAGCTGGGTTTTCCTTGTTGCTATTATAAAAGGTG\
+    refs.push(
+        b"ATGGAGTTTGGGCTGAGCTGGGTTTTCCTTGTTGCTATTATAAAAGGTG\
         TCCAGTGTCAGGTGCAGCTGGTGGAGTCTGGGGGAGGCGTGGTCCAGCCTGGGGGGTCCCTGAGACT\
         CTCCTGTGCAGCGTCTGGATTCACCTTCAGTAGCTATGGCATGCACTGGGTCCGCCAGGCTCCAGGCAAGGGGCTGGAGTGGGTCT\
         CAGTTATTTATAGCGGTGGTAGTAGCACATACTATGCAGACTCCGTGAAGGGCCGATTCACCATCTCCAGAGACAATTCCAAGAAC\
-        ACGCTGTATCTGCAAATGAACAGCCTGAGAGCTGAGGACACGGCTGTGTATTACTGTGCGAAAGA".to_vec()
+        ACGCTGTATCTGCAAATGAACAGCCTGAGAGCTGAGGACACGGCTGTGTATTACTGTGCGAAAGA"
+            .to_vec(),
     );
     utr.push(false);
     refnames.push("IGHV4-30-2".to_string());
-    refs.push(b"ATGAAACACCTGTGGTTCTTCCTCCTGCTGGTGGCAGCTCCCAGATGGGTCCTGTCCCAGCTGCAGCTGCAGGAGTCC\
+    refs.push(
+        b"ATGAAACACCTGTGGTTCTTCCTCCTGCTGGTGGCAGCTCCCAGATGGGTCCTGTCCCAGCTGCAGCTGCAGGAGTCC\
         GGCTCAGGACTGGTGAAGCCTTCACAGACCCTGTCCCTCACCTGCGCTGTCTCTGGTGGCTCCATCAGCAGTGGTGGTTACTCCTG\
         GAGCTGGATCCGGCAGCCACCAGGGAAGGGCCTGGAGTGGATTGGGAGTATCTATTATAGTGGGAGCACCTACTACAACCCGTCCC\
         TCAAGAGTCGAGTCACCATATCCGTAGACACGTCCAAGAACCAGTTCTCCCTGAAGCTGAGCTCTGTGACCGCTGCAGACACGGCT\
-        GTGTATTACTGTGCGAGACA".to_vec()
+        GTGTATTACTGTGCGAGACA"
+            .to_vec(),
     );
     utr.push(false);
     let nref = refs.len();
@@ -109,8 +117,10 @@ fn main() {
     let mut ds_all = Vec::<String>::new();
     let mut hcomps = Vec::<usize>::new();
     for i in 0..1000 {
-        println!("\n-------------------------------------------------------------------------\
-            --------------------------");
+        println!(
+            "\n-------------------------------------------------------------------------\
+            --------------------------"
+        );
         println!("\nsequence {}", i + 1);
         let mut vseq = Vec::<u8>::new();
         let mut jseq = Vec::<u8>::new();
@@ -121,7 +131,11 @@ fn main() {
             }
         }
         if vseq.is_empty() {
-            println!("\nEntry {}, unable to find V gene named {}.\n", i + 1, hv[i]);
+            println!(
+                "\nEntry {}, unable to find V gene named {}.\n",
+                i + 1,
+                hv[i]
+            );
             std::process::exit(1);
         }
         for j in 0..nref {
@@ -131,7 +145,11 @@ fn main() {
             }
         }
         if jseq.is_empty() {
-            println!("\nEntry {}, unable to find J gene named {}.\n", i + 1, hj[i]);
+            println!(
+                "\nEntry {}, unable to find J gene named {}.\n",
+                i + 1,
+                hj[i]
+            );
             std::process::exit(1);
         }
         let junv = &jun[i][0..2];
@@ -260,26 +278,36 @@ fn main() {
         seq = seq[seq_start as usize..seq_end].to_vec();
         jref = jref[0..jend].to_vec();
         concat.append(&mut jref.clone());
-        let (ops, _score) =
-            align_to_vdj_ref(&seq, &vref, &drefx, &d2ref, &jref, &drefname, true,
-                jscore_match,
-                jscore_mismatch,
-                jscore_gap_open,
-                jscore_gap_extend,
-                jscore_bits_multiplier,
-            );
+        let (ops, _score) = align_to_vdj_ref(
+            &seq,
+            &vref,
+            &drefx,
+            &d2ref,
+            &jref,
+            &drefname,
+            true,
+            jscore_match,
+            jscore_mismatch,
+            jscore_gap_open,
+            jscore_gap_extend,
+            jscore_bits_multiplier,
+        );
         let mut tigpos = 0;
         let mut hcomp = 0;
         let mut jun_ins = 0;
         let mut indels = Vec::<(usize, isize)>::new();
         let mut ins_start = 0;
         let mut del_len = 0;
+        let mut matches = 0;
+        let mut mismatches = 0;
         for i in 0..ops.len() {
             if ops[i] == Subst {
                 hcomp += 1;
                 tigpos += 1;
+                mismatches += 1;
             } else if ops[i] == Match {
                 tigpos += 1;
+                matches += 1;
             } else if ops[i] == Ins {
                 hcomp += 1;
                 jun_ins += 1;
@@ -304,6 +332,8 @@ fn main() {
         }
         let _jun = Junction {
             hcomp: hcomp,
+            matches: matches,
+            mismatches: mismatches,
             jun_ins: jun_ins,
             d: ds[0].clone(),
             vstart: vstart,
@@ -324,20 +354,30 @@ fn main() {
     ds_all.sort();
     let mut freq = Vec::<(u32, String)>::new();
     make_freq(&ds_all, &mut freq);
-    println!("\nmost frequent D genes for naive cells with junction insertion length 0 (of {})",
+    println!(
+        "\nmost frequent D genes for naive cells with junction insertion length 0 (of {})",
         ds_all.len()
     );
     for i in 0..10 {
-        println!("{} [{:.1}%]", freq[i].1, 100.0 * freq[i].0 as f64 / ds_all.len() as f64);
+        println!(
+            "{} [{:.1}%]",
+            freq[i].1,
+            100.0 * freq[i].0 as f64 / ds_all.len() as f64
+        );
     }
     hcomps.sort();
     let mut freq = Vec::<(u32, usize)>::new();
     make_freq(&hcomps, &mut freq);
-    println!("\nmost frequent hcomp values for naive cells with junction insertion length 0 (of {})",
+    println!(
+        "\nmost frequent hcomp values for naive cells with junction insertion length 0 (of {})",
         hcomps.len()
     );
     for i in 0..10 {
-        println!("{} [{:.1}%]", freq[i].1, 100.0 * freq[i].0 as f64 / hcomps.len() as f64);
+        println!(
+            "{} [{:.1}%]",
+            freq[i].1,
+            100.0 * freq[i].0 as f64 / hcomps.len() as f64
+        );
     }
     let mut total = 0;
     for i in 0..hcomps.len() {

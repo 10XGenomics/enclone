@@ -135,12 +135,16 @@ pub fn heavy_complexity(
                 let mut indels = Vec::<(usize, isize)>::new();
                 let mut ins_start = 0;
                 let mut del_len = 0;
+                let mut matches = 0;
+                let mut mismatches = 0;
                 for i in 0..ops.len() {
                     if ops[i] == Subst {
                         hcomp += 1;
                         tigpos += 1;
+                        mismatches += 1;
                     } else if ops[i] == Match {
                         tigpos += 1;
+                        matches += 1;
                     } else if ops[i] == Ins {
                         hcomp += 1;
                         jun_ins += 1;
@@ -165,6 +169,8 @@ pub fn heavy_complexity(
                 }
                 res.1 = Junction {
                     hcomp: hcomp,
+                    matches: matches,
+                    mismatches: mismatches,
                     jun_ins: jun_ins,
                     d: ds[0].clone(),
                     vstart: vstart,

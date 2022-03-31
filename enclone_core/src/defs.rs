@@ -677,6 +677,8 @@ pub struct TigData0 {
 #[derive(Clone, Default)]
 pub struct Junction {
     pub hcomp: usize,                // junction alignment complexity
+    pub matches: usize,              // matches
+    pub mismatches: usize,           // mismatches
     pub jun_ins: usize,              // inserted bases in junction
     pub d: Vec<usize>,               // D gene ids
     pub vstart: usize,               // start of junction alignment on tig
