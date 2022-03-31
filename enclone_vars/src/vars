@@ -2632,6 +2632,48 @@ code:     let mut jun_ins = String::new();
           }
           exact: jun_ins
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     jun_mat
+inputs:   lvar_vdj
+limits:
+class:    lvar
+level:    exact
+val:      nonnegative_integer
+doc:      TBD
+brief:    number of matching bases in heavy chain junction, only computed in two-chain case
+page:     enclone help lvars
+avail:    public
+notes:
+code:     let mut jun_mat = String::new();
+          if ex.share.len() == 2 {
+              for j in 0..ex.share.len() {
+                  if ex.share[j].left {
+                      jun_mat = format!("{}", ex.share[j].jun.matches);
+                  }
+              }
+          }
+          exact: jun_mat
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+name:     jun_sub
+inputs:   lvar_vdj
+limits:
+class:    lvar
+level:    exact
+val:      nonnegative_integer
+doc:      TBD
+brief:    number of mismatched bases in heavy chain junction, only computed in two-chain case
+page:     enclone help lvars
+avail:    public
+notes:
+code:     let mut jun_mis = String::new();
+          if ex.share.len() == 2 {
+              for j in 0..ex.share.len() {
+                  if ex.share[j].left {
+                      jun_mis = format!("{}", ex.share[j].jun.mismatches);
+                  }
+              }
+          }
+          exact: jun_mis
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 name:     mait
 inputs:   lvar_vdj
 limits:
