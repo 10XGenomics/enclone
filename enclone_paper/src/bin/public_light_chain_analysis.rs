@@ -6,7 +6,7 @@
 //
 // enclone BCR=@test BUILT_IN CHAINS_EXACT=2 CHAINS=2 NOPRINT POUT=stdout PCELL ECHOC
 //         PCOLS=datasets_cell,donors_cell,v_name1,v_name2,dref,cdr3_aa1,clonotype_ncells,
-//         const1,hcomp,jun_ins,d1_name1
+//         const1,hcomp,jun_ins,jun_mat,jun_sub,d1_name1
 //         > per_cell_stuff
 //
 // public_light_chain_analysis per_cell_stuff
@@ -99,7 +99,7 @@ fn main() {
         String,
         usize,
         usize,
-        String,
+        usize,
         usize,
         usize,
         usize,
@@ -125,6 +125,8 @@ fn main() {
             assert!(tof.contains_key("const1"));
             assert!(tof.contains_key("hcomp"));
             assert!(tof.contains_key("jun_ins"));
+            assert!(tof.contains_key("jun_mat"));
+            assert!(tof.contains_key("jun_sub"));
             assert!(tof.contains_key("d1_name1"));
             first = false;
         } else {
@@ -135,8 +137,8 @@ fn main() {
                 /* 3 */ fields[tof["donors_cell"]].to_string(),
                 /* 4 */ fields[tof["v_name2"]].to_string(),
                 /* 5 */ fields[tof["dref"]].force_usize(),
-                /* 6 */ fields[tof["clonotype_ncells"]].force_usize(),
-                /* 7 */ fields[tof["const1"]].to_string(),
+                /* 6 */ fields[tof["jun_mat"]].force_usize(),
+                /* 7 */ fields[tof["jun_sub"]].force_usize(),
                 /* 8 */ fields[tof["hcomp"]].force_usize(),
                 /* 9 */ fields[tof["jun_ins"]].force_usize(),
                 /* 10 */ fields[tof["datasets_cell"]].force_usize(),
@@ -156,22 +158,22 @@ fn main() {
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-    // For naive cells with junction insertion length zero, show the hcomp distribution.
+    // For naive cells with junction insertion length zero, show the substitution distribution.
 
     let mut x = Vec::<usize>::new();
     for k in 0..data.len() {
         let dref = data[k].5;
         let jun_ins = data[k].9;
         if dref == 0 && jun_ins == 0 {
-            let hcomp = data[k].8;
-            x.push(hcomp);
+            let sub = data[k].7;
+            x.push(sub);
         }
     }
     x.sort();
     let mut freq = Vec::<(u32, usize)>::new();
     make_freq(&x, &mut freq);
     println!(
-        "\nmost frequent hcomp values for naive cells with junction insertion length 0 (of {})",
+        "\nmost frequent substituion values for naive cells with junction insertion length 0 (of {})",
         x.len()
     );
     for i in 0..10 {
