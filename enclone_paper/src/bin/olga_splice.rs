@@ -517,6 +517,6 @@ fn main() {
             }
         }
         println!("mean substitution rate = {:.1}%", 100.0 * total as f64 / rates.len() as f64);
-        println!("\nDD fraction = {:.1}%\n", 100.0 * dd as f64 / drefnames.len() as f64);
+        println!("\nDD fraction = {:.2}%\n", 100.0 * dd as f64 / drefnames.len() as f64);
     }
 }
