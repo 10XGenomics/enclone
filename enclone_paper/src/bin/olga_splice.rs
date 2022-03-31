@@ -117,6 +117,7 @@ fn main() {
     // for i in 0..20000 {
     let mut ds_all = Vec::<String>::new();
     let mut subs = Vec::<usize>::new();
+    let mut rates = Vec::<f64>::new();
     for i in 0..1000 {
         println!(
             "\n-------------------------------------------------------------------------\
@@ -365,6 +366,8 @@ fn main() {
         if jun_ins == 0 {
             ds_all.push(d);
             subs.push(mismatches);
+            let rate = mismatches as f64 / (matches + mismatches) as f64;
+            rates.push(rate);
         }
         let mut log = Vec::<u8>::new();
         let width = 100;
@@ -435,4 +438,9 @@ fn main() {
         total += subs[i];
     }
     println!("mean = {:.1}", total as f64 / subs.len() as f64);
+    let mut total = 0.0;
+    for i in 0..rates.len() {
+        total += rates[i];
+    }
+    println!("mean substitution rate = {:.1}%", 100.0 * total as f64 / rates.len() as f64);
 }

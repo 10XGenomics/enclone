@@ -158,15 +158,20 @@ fn main() {
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-    // For naive cells with junction insertion length zero, show the substitution distribution.
+    // For naive cells with junction insertion length zero, show the substitution and 
+    // substitution rate distribution.
 
     let mut x = Vec::<usize>::new();
+    let mut rates = Vec::<f64>::new();
     for k in 0..data.len() {
         let dref = data[k].5;
         let jun_ins = data[k].9;
         if dref == 0 && jun_ins == 0 {
-            let sub = data[k].7;
-            x.push(sub);
+            let matches = data[k].6;
+            let subs = data[k].7;
+            x.push(subs);
+            let rate = subs as f64 / (subs + matches) as f64;
+            rates.push(rate);
         }
     }
     x.sort();
@@ -188,6 +193,11 @@ fn main() {
         total += x[i];
     }
     println!("mean = {:.1}", total as f64 / x.len() as f64);
+    let mut total = 0.0;
+    for i in 0..rates.len() {
+        total += rates[i];
+    }
+    println!("mean substitution rate = {:.1}%", 100.0 * total as f64 / rates.len() as f64);
     if true {
         std::process::exit(0);
     }
