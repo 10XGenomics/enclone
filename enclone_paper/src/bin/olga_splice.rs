@@ -115,7 +115,7 @@ fn main() {
     // for i in 0.._n {
     // for i in 0..20000 {
     let mut ds_all = Vec::<String>::new();
-    let mut hcomps = Vec::<usize>::new();
+    let mut subs = Vec::<usize>::new();
     for i in 0..1000 {
         println!(
             "\n-------------------------------------------------------------------------\
@@ -351,8 +351,10 @@ fn main() {
             }
             d += &mut refdata.name[ds[0][j]].clone();
         }
-        ds_all.push(d);
-        hcomps.push(hcomp);
+        if jun_ins == 0 {
+            ds_all.push(d);
+            subs.push(mismatches);
+        }
     }
     println!("\nThere were {} fails.\n", fails);
     ds_all.sort();
@@ -369,23 +371,23 @@ fn main() {
             100.0 * freq[i].0 as f64 / ds_all.len() as f64
         );
     }
-    hcomps.sort();
+    subs.sort();
     let mut freq = Vec::<(u32, usize)>::new();
-    make_freq(&hcomps, &mut freq);
+    make_freq(&subs, &mut freq);
     println!(
-        "\nmost frequent hcomp values for naive cells with junction insertion length 0 (of {})",
-        hcomps.len()
+        "\nmost frequent substitution values for naive cells with junction insertion length 0 (of {})",
+        subs.len()
     );
     for i in 0..10 {
         println!(
             "{} [{:.1}%]",
             freq[i].1,
-            100.0 * freq[i].0 as f64 / hcomps.len() as f64
+            100.0 * freq[i].0 as f64 / subs.len() as f64
         );
     }
     let mut total = 0;
-    for i in 0..hcomps.len() {
-        total += hcomps[i];
+    for i in 0..subs.len() {
+        total += subs[i];
     }
-    println!("mean = {:.1}", total as f64 / hcomps.len() as f64);
+    println!("mean = {:.1}", total as f64 / subs.len() as f64);
 }
