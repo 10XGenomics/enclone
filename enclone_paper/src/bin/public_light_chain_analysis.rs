@@ -115,19 +115,6 @@ fn main() {
             for i in 0..fields.len() {
                 tof.insert(fields[i].to_string(), i);
             }
-            assert!(tof.contains_key("datasets_cell"));
-            assert!(tof.contains_key("donors_cell"));
-            assert!(tof.contains_key("v_name1"));
-            assert!(tof.contains_key("v_name2"));
-            assert!(tof.contains_key("dref"));
-            assert!(tof.contains_key("cdr3_aa1"));
-            assert!(tof.contains_key("clonotype_ncells"));
-            assert!(tof.contains_key("const1"));
-            assert!(tof.contains_key("hcomp"));
-            assert!(tof.contains_key("jun_ins"));
-            assert!(tof.contains_key("jun_mat"));
-            assert!(tof.contains_key("jun_sub"));
-            assert!(tof.contains_key("d1_name1"));
             first = false;
         } else {
             data.push((
@@ -188,15 +175,9 @@ fn main() {
             100.0 * freq[i].0 as f64 / x.len() as f64
         );
     }
-    let mut total = 0;
-    for i in 0..x.len() {
-        total += x[i];
-    }
+    let total: usize = x.iter().sum();
     println!("mean = {:.1}", total as f64 / x.len() as f64);
-    let mut total = 0.0;
-    for i in 0..rates.len() {
-        total += rates[i];
-    }
+    let total: f64 = rates.iter().sum();
     println!("\nsubstitution rates");
     let mut bins = vec![0; 21];
     for i in 0..rates.len() {
@@ -248,10 +229,7 @@ fn main() {
         }
         i = j;
     }
-    let mut total = 0.0;
-    for i in 0..rates.len() {
-        total += rates[i];
-    }
+    let total: f64 = rates.iter().sum();
     println!("\nsubstitution rates for public naive cells");
     let mut bins = vec![0; 21];
     for i in 0..rates.len() {
