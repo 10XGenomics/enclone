@@ -441,6 +441,7 @@ fn main() {
     let mut drefnames = Vec::<String>::new();
     let mut ds_all = Vec::<String>::new();
     let mut subs = Vec::<usize>::new();
+    let mut jun_ins = Vec::<usize>::new();
     let mut rates = Vec::<f64>::new();
     let mut fails = 0;
     let mut dd = 0;
@@ -455,6 +456,7 @@ fn main() {
             }
             drefnames.push(drefname);
             ds_all.push(results[i].1.d.clone());
+            jun_ins.push(results[i].1.jun_ins);
             if results[i].1.jun_ins == 0 {
                 subs.push(results[i].1.subs);
                 rates.push(results[i].1.rate);
@@ -462,6 +464,13 @@ fn main() {
         }
     }
     println!("\nThere were {} fails.\n", fails);
+    let mut total = 0;
+    for i in 0..jun_ins.len() {
+        total += jun_ins[i];
+    }
+    println!("mean junction insertion length = {:.1}\n",
+        total as f64 / jun_ins.len() as f64
+    );
     if ds_all.len() > 0 {
         ds_all.sort();
         let mut freq = Vec::<(u32, String)>::new();
