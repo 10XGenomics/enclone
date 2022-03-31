@@ -5,7 +5,6 @@
 // segment may be null.  This is obvious from looking at data.
 
 use crate::align_to_vdj_ref::{align_to_vdj_ref, match_bit_score, zero_one};
-use crate::defs::{EncloneControl, ExactClonotype};
 use enclone_proto::types::DonorReferenceItem;
 use std::cmp::min;
 use vdj_ann::refx::RefData;
@@ -55,7 +54,11 @@ pub fn evaluate_d(
     ds: &Vec<usize>,
     jref: &[u8],
     refdata: &RefData,
-    ctl: &EncloneControl,
+    jscore_match: i32,
+    jscore_mismatch: i32,
+    jscore_gap_open: i32,
+    jscore_gap_extend: i32,
+    jscore_bits_multiplier: f64,
 ) -> (Vec<bio_edit::alignment::AlignmentOperation>, f64) {
     // Start to build reference concatenation.  First append the V segment.
 
@@ -97,24 +100,41 @@ pub fn evaluate_d(
     let seq = tig[seq_start as usize..seq_end].to_vec();
     let jref = jref[0..jend].to_vec();
     concat.append(&mut jref.clone());
-    let (ops, count) = align_to_vdj_ref(&seq, &vref, &dref, &d2ref, &jref, &drefname, true, ctl);
+    let (ops, count) = align_to_vdj_ref(
+        &seq,
+        &vref,
+        &dref,
+        &d2ref,
+        &jref,
+        &drefname,
+        true,
+        jscore_match,
+        jscore_mismatch,
+        jscore_gap_open,
+        jscore_gap_extend,
+        jscore_bits_multiplier,
+    );
     (ops, count)
 }
 
 pub fn opt_d(
-    ex: &ExactClonotype,
-    mid: usize,
+    v_ref_id: usize,                       // ex.share[mid].v_ref_id
+    j_ref_id: usize,                       // ex.share[mid].j_ref_id
+    tig: &Vec<u8>,                         // ex.share[mid].seq_del
+    annv: &Vec<(i32, i32, i32, i32, i32)>, // ex.share[mid].annv
+    cdr3_aa: &str,                         // ex.share[mid].cdr3_aa
     refdata: &RefData,
     dref: &Vec<DonorReferenceItem>,
     scores: &mut Vec<f64>,
     dsx: &mut Vec<Vec<usize>>,
-    ctl: &EncloneControl,
+    jscore_match: i32,
+    jscore_mismatch: i32,
+    jscore_gap_open: i32,
+    jscore_gap_extend: i32,
+    jscore_bits_multiplier: f64,
     v_alt: Option<usize>,
 ) {
-    assert!(ex.share[mid].left);
     let mut comp = 1000000.0;
-    let td = &ex.share[mid];
-    let tig = &td.seq_del;
 
     // Go through every D segment, or possibly every concatenation of D segments.
 
@@ -126,20 +146,20 @@ pub fn opt_d(
     let mut ds = Vec::<Vec<usize>>::new();
     let mut counts = Vec::<f64>::new();
     let mut good_d = Vec::<usize>::new();
-    let mut vref = refdata.refs[ex.share[mid].v_ref_id].to_ascii_vec();
+    let mut vref = refdata.refs[v_ref_id].to_ascii_vec();
     if v_alt.is_some() {
         vref = dref[v_alt.unwrap()].nt_sequence.clone();
     }
     let vstart = vref.len() - vflank(tig, &vref);
     let mut seq_start = vstart as isize;
     // probably not exactly right
-    if ex.share[mid].annv.len() > 1 {
-        let q1 = ex.share[mid].annv[0].0 + ex.share[mid].annv[0].1;
-        let q2 = ex.share[mid].annv[1].0;
+    if annv.len() > 1 {
+        let q1 = annv[0].0 + annv[0].1;
+        let q2 = annv[1].0;
 
         seq_start += q1 as isize - q2 as isize;
     }
-    let jref = refdata.refs[ex.share[mid].j_ref_id].to_ascii_vec();
+    let jref = refdata.refs[j_ref_id].to_ascii_vec();
     const MIN_BITS_FOR_D2: f64 = 14.0;
     for di in 0..todo.len() {
         let (ops, count) = evaluate_d(
@@ -149,7 +169,11 @@ pub fn opt_d(
             &todo[di],
             &jref,
             refdata,
-            ctl,
+            jscore_match,
+            jscore_mismatch,
+            jscore_gap_open,
+            jscore_gap_extend,
+            jscore_bits_multiplier,
         );
         counts.push(count);
         if !todo[di].is_empty() {
@@ -167,7 +191,7 @@ pub fn opt_d(
             comp = count;
         }
     }
-    if ex.share[mid].cdr3_aa.len() >= 20 {
+    if cdr3_aa.len() >= 20 {
         todo.clear();
         for i1 in good_d.iter() {
             for i2 in good_d.iter() {
@@ -182,7 +206,11 @@ pub fn opt_d(
                 &todo[di],
                 &jref,
                 refdata,
-                ctl,
+                jscore_match,
+                jscore_mismatch,
+                jscore_gap_open,
+                jscore_gap_extend,
+                jscore_bits_multiplier,
             );
             counts.push(count);
             ds.push(todo[di].clone());

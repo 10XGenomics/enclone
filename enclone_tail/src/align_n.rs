@@ -46,7 +46,20 @@ fn print_vis_align(
 ) {
     // Make alignment.
 
-    let (ops, _score) = align_to_vdj_ref(seq, vref, dref, d2ref, jref, drefname, left, ctl);
+    let (ops, _score) = align_to_vdj_ref(
+        seq,
+        vref,
+        dref,
+        d2ref,
+        jref,
+        drefname,
+        left,
+        ctl.gen_opt.jscore_match,
+        ctl.gen_opt.jscore_mismatch,
+        ctl.gen_opt.jscore_gap_open,
+        ctl.gen_opt.jscore_gap_extend,
+        ctl.gen_opt.jscore_bits_multiplier,
+    );
 
     // Make visual alignment.
 
@@ -258,14 +271,22 @@ pub fn align_n(
                             if ex.share[r].left {
                                 let mut scores = Vec::<f64>::new();
                                 let mut ds = Vec::<Vec<usize>>::new();
+                                let mid = rsi[oo].mat[m][k].unwrap();
                                 opt_d(
-                                    ex,
-                                    rsi[oo].mat[m][k].unwrap(),
+                                    ex.share[mid].v_ref_id,
+                                    ex.share[mid].j_ref_id,
+                                    &ex.share[mid].seq_del,
+                                    &ex.share[mid].annv,
+                                    &ex.share[mid].cdr3_aa,
                                     refdata,
                                     dref,
                                     &mut scores,
                                     &mut ds,
-                                    ctl,
+                                    ctl.gen_opt.jscore_match,
+                                    ctl.gen_opt.jscore_mismatch,
+                                    ctl.gen_opt.jscore_gap_open,
+                                    ctl.gen_opt.jscore_gap_extend,
+                                    ctl.gen_opt.jscore_bits_multiplier,
                                     rsi[oo].vpids[m],
                                 );
                                 let mut opt = Vec::new();

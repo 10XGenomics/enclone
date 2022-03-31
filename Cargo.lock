@@ -1487,6 +1487,9 @@ dependencies = [
 name = "enclone_paper"
 version = "0.5.160"
 dependencies = [
+ "bio_edit 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "debruijn",
+ "enclone_core",
  "enclone_tail",
  "flate2",
  "io_utils 0.3.2 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -1497,6 +1500,9 @@ dependencies = [
  "rayon",
  "string_utils 0.1.4 (registry+https://github.com/rust-lang/crates.io-index)",
  "tables 0.1.5 (registry+https://github.com/rust-lang/crates.io-index)",
+ "triple_accel",
+ "vdj_ann",
+ "vdj_ann_ref",
  "vector_utils 0.1.5 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 

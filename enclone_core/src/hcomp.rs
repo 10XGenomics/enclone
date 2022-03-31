@@ -59,13 +59,20 @@ pub fn heavy_complexity(
                 let mut scores = Vec::<f64>::new();
                 let mut ds = Vec::<Vec<usize>>::new();
                 opt_d(
-                    ex,
-                    r,
+                    ex.share[r].v_ref_id,
+                    ex.share[r].j_ref_id,
+                    &ex.share[r].seq_del,
+                    &ex.share[r].annv,
+                    &ex.share[r].cdr3_aa,
                     refdata,
                     dref,
                     &mut scores,
                     &mut ds,
-                    ctl,
+                    ctl.gen_opt.jscore_match,
+                    ctl.gen_opt.jscore_mismatch,
+                    ctl.gen_opt.jscore_gap_open,
+                    ctl.gen_opt.jscore_gap_extend,
+                    ctl.gen_opt.jscore_bits_multiplier,
                     ex.share[r].v_ref_id_donor,
                 );
                 let mut opt = Vec::new();
@@ -108,19 +115,39 @@ pub fn heavy_complexity(
                 seq = seq[seq_start as usize..seq_end].to_vec();
                 jref = jref[0..jend].to_vec();
                 concat.append(&mut jref.clone());
-                let (ops, _score) =
-                    align_to_vdj_ref(&seq, &vref, &drefx, &d2ref, &jref, &drefname, true, ctl);
+                let (ops, _score) = align_to_vdj_ref(
+                    &seq,
+                    &vref,
+                    &drefx,
+                    &d2ref,
+                    &jref,
+                    &drefname,
+                    true,
+                    ctl.gen_opt.jscore_match,
+                    ctl.gen_opt.jscore_mismatch,
+                    ctl.gen_opt.jscore_gap_open,
+                    ctl.gen_opt.jscore_gap_extend,
+                    ctl.gen_opt.jscore_bits_multiplier,
+                );
                 let mut tigpos = 0;
                 let mut hcomp = 0;
                 let mut jun_ins = 0;
                 let mut indels = Vec::<(usize, isize)>::new();
                 let mut ins_start = 0;
                 let mut del_len = 0;
+                let mut matches = 0;
+                let mut mismatches = 0;
                 for i in 0..ops.len() {
                     if ops[i] == Subst {
+                        if tigpos >= 2 {
+                            mismatches += 1;
+                        }
                         hcomp += 1;
                         tigpos += 1;
                     } else if ops[i] == Match {
+                        if tigpos >= 2 {
+                            matches += 1;
+                        }
                         tigpos += 1;
                     } else if ops[i] == Ins {
                         hcomp += 1;
@@ -146,6 +173,8 @@ pub fn heavy_complexity(
                 }
                 res.1 = Junction {
                     hcomp: hcomp,
+                    matches: matches,
+                    mismatches: mismatches,
                     jun_ins: jun_ins,
                     d: ds[0].clone(),
                     vstart: vstart,

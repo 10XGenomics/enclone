@@ -2,23 +2,20 @@
 //
 // See also private_light_chain_analysis.rs.
 //
-// Analyze light chains.  Supply a single file of data, with one line per cell, and fields
-// including donors_cell,v_name1,v_name2,dref,cdr3_aa1,clonotype_ncells,const1.
-//
-// Data from:
+// Analyze light chains.  Supply a single file of data, with one line per cell, and various fields.
 //
 // enclone BCR=@test BUILT_IN CHAINS_EXACT=2 CHAINS=2 NOPRINT POUT=stdout PCELL ECHOC
-//         PCOLS=donors_cell,v_name1,v_name2,dref,cdr3_aa1,clonotype_ncells,const1,hcomp,jun_ins
+//         PCOLS=datasets_cell,donors_cell,v_name1,v_name2,dref,cdr3_aa1,clonotype_ncells,
+//         const1,hcomp,jun_ins,d1_name1
 //         > per_cell_stuff
 //
-// enclone BIB=@training BUILT_IN CHAINS_EXACT=2 CHAINS=2 NOPRINT POUT=stdout PCELL ECHOC
-//         PCOLS=donors_cell,v_name1,v_name2,dref,cdr3_aa1,clonotype_ncells,const1,hcomp
-//         > training_per_cell_stuff
+// public_light_chain_analysis per_cell_stuff
 //
-// enclone BIB=1,2,3,29 BUILT_IN CHAINS_EXACT=2 CHAINS=2 NOPRINT POUT=stdout PCELL ECHOC
-//         PCOLS=donors_cell,v_name1,v_name2,dref,cdr3_aa1,clonotype_ncells,const1,hcomp
-//         > training1_per_cell_stuff
+// Optional second arguments:
+// - FLOW: compute using flow classification of naive/memory rather than dref
+// - NAIVE: compute just some stats about naive cells.
 
+use enclone_core::test_def::test_donor_id;
 use io_utils::*;
 use pretty_trace::PrettyTrace;
 use rayon::prelude::*;
@@ -27,9 +24,9 @@ use std::collections::HashMap;
 use std::env;
 use std::io::BufRead;
 use std::mem::swap;
-use string_utils::{stringme, strme, TextUtils};
+use string_utils::{add_commas, stringme, strme, TextUtils};
 use tables::*;
-use vector_utils::unique_sort;
+use vector_utils::{bin_position, make_freq, unique_sort};
 
 pub fn hcat(col1: &[String], col2: &[String], sep: usize) -> Vec<String> {
     let mut cat = Vec::<String>::new();
@@ -55,9 +52,42 @@ pub fn hcat(col1: &[String], col2: &[String], sep: usize) -> Vec<String> {
     cat
 }
 
+const NAIVE: [usize; 40] = [
+    1279049, 1279053, 1279057, 1279061, 1279065, 1279069, 1279073, 1279077, 1287144, 1287145,
+    1287146, 1287147, 1287152, 1287153, 1287154, 1287155, 1287160, 1287161, 1287162, 1287163,
+    1287168, 1287169, 1287170, 1287171, 1287176, 1287177, 1287178, 1287179, 1287184, 1287185,
+    1287186, 1287187, 1287192, 1287193, 1287194, 1287195, 1287200, 1287201, 1287202, 1287203,
+];
+const PLASMABLAST: [usize; 6] = [1279052, 1279060, 1279068, 1279072, 1279076, 1279080];
+const SWITCHED: [usize; 24] = [
+    1279051, 1279055, 1279059, 1279063, 1279067, 1279071, 1279075, 1279079, 1287150, 1287151,
+    1287158, 1287159, 1287166, 1287167, 1287174, 1287175, 1287182, 1287183, 1287190, 1287191,
+    1287198, 1287199, 1287206, 1287207,
+];
+const UNSWITCHED: [usize; 24] = [
+    1279050, 1279054, 1279058, 1279062, 1279066, 1279070, 1279074, 1279078, 1287148, 1287149,
+    1287156, 1287157, 1287164, 1287165, 1287172, 1287173, 1287180, 1287181, 1287188, 1287189,
+    1287196, 1287197, 1287204, 1287205,
+];
+
 fn main() {
     PrettyTrace::new().on();
     let args: Vec<String> = env::args().collect();
+    let opt_flow = if args.len() >= 3 && args[2] == "FLOW" {
+        true
+    } else {
+        false
+    };
+    let opt_naive = if args.len() >= 3 && args[2] == "NAIVE" {
+        true
+    } else {
+        false
+    };
+
+    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+    // Load data.
+
     let f = open_for_read![&args[1]];
     let mut first = true;
     let mut tof = HashMap::<String, usize>::new();
@@ -72,6 +102,8 @@ fn main() {
         String,
         usize,
         usize,
+        usize,
+        String,
     )>::new();
     for line in f.lines() {
         let s = line.unwrap();
@@ -83,6 +115,7 @@ fn main() {
             for i in 0..fields.len() {
                 tof.insert(fields[i].to_string(), i);
             }
+            assert!(tof.contains_key("datasets_cell"));
             assert!(tof.contains_key("donors_cell"));
             assert!(tof.contains_key("v_name1"));
             assert!(tof.contains_key("v_name2"));
@@ -92,29 +125,335 @@ fn main() {
             assert!(tof.contains_key("const1"));
             assert!(tof.contains_key("hcomp"));
             assert!(tof.contains_key("jun_ins"));
+            assert!(tof.contains_key("d1_name1"));
             first = false;
         } else {
             data.push((
-                fields[tof["v_name1"]].to_string(),
-                fields[tof["cdr3_aa1"]].len(),
-                fields[tof["cdr3_aa1"]].to_string().as_bytes().to_vec(),
-                fields[tof["donors_cell"]].to_string(),
-                fields[tof["v_name2"]].to_string(),
-                fields[tof["dref"]].force_usize(),
-                fields[tof["clonotype_ncells"]].force_usize(),
-                fields[tof["const1"]].to_string(),
-                fields[tof["hcomp"]].force_usize(),
-                fields[tof["jun_ins"]].force_usize(),
+                /* 0 */ fields[tof["v_name1"]].to_string(),
+                /* 1 */ fields[tof["cdr3_aa1"]].len(),
+                /* 2 */ fields[tof["cdr3_aa1"]].to_string().as_bytes().to_vec(),
+                /* 3 */ fields[tof["donors_cell"]].to_string(),
+                /* 4 */ fields[tof["v_name2"]].to_string(),
+                /* 5 */ fields[tof["dref"]].force_usize(),
+                /* 6 */ fields[tof["clonotype_ncells"]].force_usize(),
+                /* 7 */ fields[tof["const1"]].to_string(),
+                /* 8 */ fields[tof["hcomp"]].force_usize(),
+                /* 9 */ fields[tof["jun_ins"]].force_usize(),
+                /* 10 */ fields[tof["datasets_cell"]].force_usize(),
+                /* 11 */ fields[tof["d1_name1"]].to_string(),
             ));
         }
     }
     data.sort();
+
+    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
     // Replace paralogs.
 
     for i in 0..data.len() {
         data[i].4 = data[i].4.replace("D", "");
     }
+
+    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+    // For naive cells with junction insertion length zero, show the hcomp distribution.
+
+    let mut x = Vec::<usize>::new();
+    for k in 0..data.len() {
+        let dref = data[k].5;
+        let jun_ins = data[k].9;
+        if dref == 0 && jun_ins == 0 {
+            let hcomp = data[k].8;
+            x.push(hcomp);
+        }
+    }
+    x.sort();
+    let mut freq = Vec::<(u32, usize)>::new();
+    make_freq(&x, &mut freq);
+    println!(
+        "\nmost frequent hcomp values for naive cells with junction insertion length 0 (of {})",
+        x.len()
+    );
+    for i in 0..10 {
+        println!(
+            "{} [{:.1}%]",
+            freq[i].1,
+            100.0 * freq[i].0 as f64 / x.len() as f64
+        );
+    }
+    let mut total = 0;
+    for i in 0..x.len() {
+        total += x[i];
+    }
+    println!("mean = {:.1}", total as f64 / x.len() as f64);
+    if true {
+        std::process::exit(0);
+    }
+
+    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+    // For naive cells with junction insertion length zero, show the D gene distribution.
+
+    let mut x = Vec::<String>::new();
+    for k in 0..data.len() {
+        let dref = data[k].5;
+        let jun_ins = data[k].9;
+        if dref == 0 && jun_ins == 0 {
+            let dname = &data[k].11;
+            x.push(dname.clone());
+        }
+    }
+    x.sort();
+    let mut freq = Vec::<(u32, String)>::new();
+    make_freq(&x, &mut freq);
+    println!(
+        "\nmost frequent D genes for naive cells with junction insertion length 0 (of {})",
+        x.len()
+    );
+    for i in 0..10 {
+        println!(
+            "{} [{:.1}%]",
+            freq[i].1,
+            100.0 * freq[i].0 as f64 / x.len() as f64
+        );
+    }
+
+    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+    // Compute number of public naive cells.
+
+    let mut pn = 0;
+    let mut i = 0;
+    while i < data.len() {
+        let mut j = i + 1;
+        while j < data.len() {
+            if data[j].0 != data[i].0 || data[j].2 != data[i].2 {
+                break;
+            }
+            j += 1;
+        }
+        let mut donors = Vec::<String>::new();
+        for k in i..j {
+            if data[k].5 == 0 {
+                donors.push(data[k].3.clone());
+            }
+        }
+        unique_sort(&mut donors);
+        if donors.len() > 1 {
+            for k in i..j {
+                let dref = data[k].5;
+                if dref == 0 {
+                    pn += 1;
+                }
+            }
+        }
+        i = j;
+    }
+    println!("\n{} public naive cells", pn);
+
+    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+    // Compute naive fraction for each of the sort classes.
+
+    let mut is_naive = vec![false; data.len()];
+    for i in 0..data.len() {
+        let dataset = data[i].10;
+        if NAIVE.contains(&dataset) {
+            is_naive[i] = true;
+        }
+    }
+    if opt_naive || opt_flow {
+        let mut all = Vec::<usize>::new();
+        all.append(&mut NAIVE.to_vec());
+        all.append(&mut UNSWITCHED.to_vec());
+        all.append(&mut SWITCHED.to_vec());
+        all.append(&mut PLASMABLAST.to_vec());
+        all.sort();
+        let mut naive = vec![(0, 0); 5];
+        let mut unswitched = vec![(0, 0); 5];
+        let mut switched = vec![(0, 0); 5];
+        let mut plasmablast = vec![(0, 0); 5];
+        let mut unswitched_naive = vec![(0, 0); 5];
+        let mut switched_naive = vec![(0, 0); 5];
+        let mut total = vec![(0, 0); 5];
+        let mut cells = vec![(0, 0); all.len()];
+        if opt_naive {
+            for pass in 1..=2 {
+                for i in 0..data.len() {
+                    let dref = data[i].5;
+                    let dataset = data[i].10;
+                    if pass == 1 && dataset.to_string().starts_with("128") {
+                        continue;
+                    }
+                    if pass == 2 && dataset.to_string().starts_with("127") {
+                        continue;
+                    }
+                    let donor_id = test_donor_id(dataset);
+                    let p = bin_position(&all, &dataset) as usize;
+                    cells[p].1 += 1;
+                    if dref == 0 {
+                        cells[p].0 += 1;
+                    }
+                    total[0].1 += 1;
+                    total[donor_id].1 += 1;
+                    if dref == 0 {
+                        total[0].0 += 1;
+                        total[donor_id].0 += 1;
+                    }
+                    if NAIVE.contains(&dataset) {
+                        naive[0].1 += 1;
+                        naive[donor_id].1 += 1;
+                        if dref == 0 {
+                            naive[0].0 += 1;
+                            naive[donor_id].0 += 1;
+                        }
+                    } else if UNSWITCHED.contains(&dataset) {
+                        if pass == 1 || donor_id == 1 {
+                            unswitched[0].1 += 1;
+                            unswitched[donor_id].1 += 1;
+                        } else {
+                            unswitched_naive[0].1 += 1;
+                            unswitched_naive[donor_id].1 += 1;
+                        }
+                        if dref == 0 {
+                            if pass == 1 || donor_id == 1 {
+                                unswitched[0].0 += 1;
+                                unswitched[donor_id].0 += 1;
+                            } else {
+                                unswitched_naive[0].0 += 1;
+                                unswitched_naive[donor_id].0 += 1;
+                            }
+                        }
+                    } else if SWITCHED.contains(&dataset) {
+                        if pass == 1 {
+                            switched[0].1 += 1;
+                            switched[donor_id].1 += 1;
+                        } else {
+                            switched_naive[0].1 += 1;
+                            switched_naive[donor_id].1 += 1;
+                        }
+                        if dref == 0 {
+                            if pass == 1 {
+                                switched[0].0 += 1;
+                                switched[donor_id].0 += 1;
+                            } else {
+                                switched_naive[0].0 += 1;
+                                switched_naive[donor_id].0 += 1;
+                            }
+                        }
+                    } else if PLASMABLAST.contains(&dataset) {
+                        plasmablast[0].1 += 1;
+                        plasmablast[donor_id].1 += 1;
+                        if dref == 0 {
+                            plasmablast[0].0 += 1;
+                            plasmablast[donor_id].0 += 1;
+                        }
+                    } else {
+                        panic!("unclassified dataset");
+                    }
+                }
+            }
+
+            // Print tables.
+
+            let counts = [
+                &naive,
+                &unswitched,
+                &switched,
+                &plasmablast,
+                &unswitched_naive,
+                &switched_naive,
+                &total,
+            ];
+            let names = [
+                "naive",
+                "unswitched",
+                "switched",
+                "plasmablast",
+                "unswitched_naive",
+                "switched_naive",
+                "total",
+            ];
+            let row1 = vec![
+                "class".to_string(),
+                "all".to_string(),
+                "d1".to_string(),
+                "d2".to_string(),
+                "d3".to_string(),
+                "d4".to_string(),
+            ];
+            println!("\nall cells");
+            let mut rows = vec![row1.clone()];
+            for i in 0..counts.len() {
+                rows.push(vec!["\\hline".to_string(); 6]);
+                let mut row = vec![names[i].to_string()];
+                for j in 0..5 {
+                    if counts[i][j].1 > 0 {
+                        row.push(format!("{}", add_commas(counts[i][j].1)));
+                    } else {
+                        row.push(String::new());
+                    }
+                }
+                rows.push(row);
+            }
+            let mut log = String::new();
+            print_tabular_vbox(&mut log, &rows, 0, &b"l|r|r|r|r|r".to_vec(), false, false);
+            println!("{}", log);
+            println!("naive cell fractions");
+            let mut rows = vec![row1.clone()];
+            for i in 0..counts.len() {
+                rows.push(vec!["\\hline".to_string(); 6]);
+                let mut row = vec![names[i].to_string()];
+                for j in 0..5 {
+                    if counts[i][j].1 > 0 {
+                        row.push(format!(
+                            "{:.1}%",
+                            100.0 * counts[i][j].0 as f64 / counts[i][j].1 as f64
+                        ));
+                    } else {
+                        row.push(String::new());
+                    }
+                }
+                rows.push(row);
+            }
+            let mut log = String::new();
+            print_tabular_vbox(&mut log, &rows, 0, &b"l|r|r|r|r|r".to_vec(), false, false);
+            println!("{}", log);
+            std::process::exit(0);
+        }
+    }
+
+    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+    // Compute DD fraction.
+
+    let mut naive = (0, 0);
+    let mut memory = (0, 0);
+    for i in 0..data.len() {
+        let dref = data[i].5;
+        let d = &data[i].11;
+        if dref == 0 {
+            naive.1 += 1;
+            if d.contains(":") {
+                naive.0 += 1;
+            }
+        } else {
+            memory.1 += 1;
+            if d.contains(":") {
+                memory.0 += 1;
+            }
+        }
+    }
+    println!(
+        "\nDD in naive cells = {} = {:.2}%",
+        naive.0,
+        100.0 * naive.0 as f64 / naive.1 as f64
+    );
+    println!(
+        "DD in memory cells = {} = {:.2}%",
+        memory.0,
+        100.0 * memory.0 as f64 / memory.1 as f64
+    );
 
     // Compute jun_ins frequency for memory and naive cells.
 
@@ -180,6 +519,8 @@ fn main() {
     let mut ins_mem = vec![0; 100];
     let mut ins = vec![vec![0; 1000]; 2];
     let mut total = vec![0; 2];
+    let mut dd_memory = 0;
+    let mut dd_naive = 0;
     println!("");
     while i < data.len() {
         let mut j = i + 1;
@@ -204,6 +545,9 @@ fn main() {
                     max_ins_naive = max(max_ins_naive, jun_ins);
                     ins[1][jun_ins] += 1;
                     total[1] += 1;
+                    if data[k].11.contains(":") {
+                        dd_naive += 1;
+                    }
                 } else {
                     n_memory += 1;
                     ins_memory += jun_ins;
@@ -224,6 +568,9 @@ fn main() {
                     max_ins_memory = max(max_ins_memory, jun_ins);
                     ins[0][jun_ins] += 1;
                     total[0] += 1;
+                    if data[k].11.contains(":") {
+                        dd_memory += 1;
+                    }
                 }
             }
         }
@@ -241,7 +588,16 @@ fn main() {
             println!("{i}: {:.3}%", 100.0 * ins[1][i] as f64 / total[1] as f64);
         }
     }
-
+    println!(
+        "DD public memory cells = {} = {:.1}%",
+        dd_memory,
+        100.0 * dd_memory as f64 / total[0] as f64,
+    );
+    println!(
+        "DD public naive cells = {} = {:.1}%",
+        dd_naive,
+        100.0 * dd_naive as f64 / total[1] as f64,
+    );
     println!(
         "mean junction insertion bases for public memory = {:.1}",
         ins_memory as f64 / n_memory as f64
@@ -478,13 +834,19 @@ fn main() {
 
                     // Add to results.
 
-                    if dref1 == 0 && dref2 == 0 {
+                    let mut naive = dref1 == 0 && dref2 == 0;
+                    let mut memory = dref1 > 0 && dref2 > 0;
+                    if opt_flow {
+                        naive = is_naive[k1] && is_naive[k2];
+                        memory = !is_naive[k1] && !is_naive[k2];
+                    }
+                    if naive {
                         if eq_light {
                             res.2[pass][ident].0 += 1;
                         } else {
                             res.2[pass][ident].1 += 1;
                         }
-                    } else if dref1 > 0 && dref2 > 0 {
+                    } else if memory {
                         if eq_light {
                             res.2[pass][ident].2 += 1;
                         } else {

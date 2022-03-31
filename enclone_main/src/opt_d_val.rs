@@ -46,14 +46,22 @@ pub fn make_opt_d_val(
                         if ex.share[m].left {
                             let mut scores = Vec::<f64>::new();
                             let mut ds = Vec::<Vec<usize>>::new();
+                            let mid = rsi[i].mat[col][u].unwrap();
                             opt_d(
-                                ex,
-                                rsi[i].mat[col][u].unwrap(),
+                                ex.share[mid].v_ref_id,
+                                ex.share[mid].j_ref_id,
+                                &ex.share[mid].seq_del,
+                                &ex.share[mid].annv,
+                                &ex.share[mid].cdr3_aa,
                                 refdata,
                                 drefs,
                                 &mut scores,
                                 &mut ds,
-                                ctl,
+                                ctl.gen_opt.jscore_match,
+                                ctl.gen_opt.jscore_mismatch,
+                                ctl.gen_opt.jscore_gap_open,
+                                ctl.gen_opt.jscore_gap_extend,
+                                ctl.gen_opt.jscore_bits_multiplier,
                                 rsi[i].vpids[col],
                             );
                             let mut opt = Vec::new();

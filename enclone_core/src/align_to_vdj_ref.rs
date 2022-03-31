@@ -21,7 +21,6 @@
 // "merge_html BUILD" and then manually examine the D gene page.  Note carefully that we do not
 // want to worsen the placement of indels.  Also run the above big test.
 
-use crate::defs::EncloneControl;
 use bio_edit::alignment::pairwise::{Aligner, Scoring, MIN_SCORE};
 use bio_edit::alignment::AlignmentMode;
 use bio_edit::alignment::AlignmentOperation::*;
@@ -176,19 +175,23 @@ pub fn align_to_vdj_ref(
     jref: &[u8],
     drefname: &str, // useful for debugging
     left: bool,
-    ctl: &EncloneControl,
+    jscore_match: i32,
+    jscore_mismatch: i32,
+    jscore_gap_open: i32,
+    jscore_gap_extend: i32,
+    jscore_bits_multiplier: f64,
 ) -> (Vec<bio_edit::alignment::AlignmentOperation>, f64) {
     // Define penalties.
 
-    let matchp = ctl.gen_opt.jscore_match;
-    let mismatch = ctl.gen_opt.jscore_mismatch;
-    let gap_open = ctl.gen_opt.jscore_gap_open;
-    let gap_extend = ctl.gen_opt.jscore_gap_extend;
+    let matchp = jscore_match;
+    let mismatch = jscore_mismatch;
+    let gap_open = jscore_gap_open;
+    let gap_extend = jscore_gap_extend;
     let gap_open_at_boundary = -40_i32;
     let gap_extend_at_boundary = -10_i32;
     let del_gap_extend_at_boundary = -20_i32;
     let align_div = 10.0;
-    let bits_multiplier = ctl.gen_opt.jscore_bits_multiplier;
+    let bits_multiplier = jscore_bits_multiplier;
     const MIN_BITS_FOR_D2: f64 = 14.0;
     const D2_PENALTY: f64 = -15.0;
 

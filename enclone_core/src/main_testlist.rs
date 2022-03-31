@@ -752,6 +752,7 @@ pub const TESTS: [&str; 302] = [
     // 301. test DATASET
     r###"BCR="86237;123085,123089" CELLS=1 SEG=IGHV4-34 SEG=IGKV1D-39 NGROUP
          DATASET="123085|123089""###,
-    // 302. test hcomp and jun_ins
-    r###"BCR=85333 JALIGN1 CHAINS_EXACT=2 CDR3=CAKGDRTGYSYGGGIFDYW LVARSP=hcomp,jun_ins"###,
+    // 302. test hcomp and jun_ins and jun_mat and jun_sub
+    r###"BCR=85333 JALIGN1 CHAINS_EXACT=2 CDR3=CAKGDRTGYSYGGGIFDYW
+         LVARSP=hcomp,jun_ins,jun_mat,jun_sub AMINO=cdr3 FOLD_HEADERS"###,
 ];

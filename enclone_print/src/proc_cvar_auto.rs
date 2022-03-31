@@ -488,7 +488,11 @@ pub fn proc_cvar_auto(
             &jref,
             "", // drefname
             ex.share[mid].left,
-            ctl,
+            ctl.gen_opt.jscore_match,
+            ctl.gen_opt.jscore_mismatch,
+            ctl.gen_opt.jscore_gap_open,
+            ctl.gen_opt.jscore_gap_extend,
+            ctl.gen_opt.jscore_bits_multiplier,
         )
         .0;
 
@@ -536,14 +540,22 @@ pub fn proc_cvar_auto(
         if ex.share[mid].left {
             let mut scores = Vec::<f64>::new();
             let mut ds = Vec::<Vec<usize>>::new();
+            let mid = rsi.mat[col][u].unwrap();
             opt_d(
-                ex,
-                rsi.mat[col][u].unwrap(),
+                ex.share[mid].v_ref_id,
+                ex.share[mid].j_ref_id,
+                &ex.share[mid].seq_del,
+                &ex.share[mid].annv,
+                &ex.share[mid].cdr3_aa,
                 refdata,
                 dref,
                 &mut scores,
                 &mut ds,
-                ctl,
+                ctl.gen_opt.jscore_match,
+                ctl.gen_opt.jscore_mismatch,
+                ctl.gen_opt.jscore_gap_open,
+                ctl.gen_opt.jscore_gap_extend,
+                ctl.gen_opt.jscore_bits_multiplier,
                 rsi.vpids[col],
             );
             let mut opt = Vec::new();
@@ -568,14 +580,22 @@ pub fn proc_cvar_auto(
         if ex.share[mid].left {
             let mut scores = Vec::<f64>::new();
             let mut ds = Vec::<Vec<usize>>::new();
+            let mid = rsi.mat[col][u].unwrap();
             opt_d(
-                ex,
-                rsi.mat[col][u].unwrap(),
+                ex.share[mid].v_ref_id,
+                ex.share[mid].j_ref_id,
+                &ex.share[mid].seq_del,
+                &ex.share[mid].annv,
+                &ex.share[mid].cdr3_aa,
                 refdata,
                 dref,
                 &mut scores,
                 &mut ds,
-                ctl,
+                ctl.gen_opt.jscore_match,
+                ctl.gen_opt.jscore_mismatch,
+                ctl.gen_opt.jscore_gap_open,
+                ctl.gen_opt.jscore_gap_extend,
+                ctl.gen_opt.jscore_bits_multiplier,
                 rsi.vpids[col],
             );
             let mut delta = 0.0;
@@ -591,14 +611,22 @@ pub fn proc_cvar_auto(
         if ex.share[mid].left {
             let mut scores = Vec::<f64>::new();
             let mut ds = Vec::<Vec<usize>>::new();
+            let mid = rsi.mat[col][u].unwrap();
             opt_d(
-                ex,
-                rsi.mat[col][u].unwrap(),
+                ex.share[mid].v_ref_id,
+                ex.share[mid].j_ref_id,
+                &ex.share[mid].seq_del,
+                &ex.share[mid].annv,
+                &ex.share[mid].cdr3_aa,
                 refdata,
                 dref,
                 &mut scores,
                 &mut ds,
-                ctl,
+                ctl.gen_opt.jscore_match,
+                ctl.gen_opt.jscore_mismatch,
+                ctl.gen_opt.jscore_gap_open,
+                ctl.gen_opt.jscore_gap_extend,
+                ctl.gen_opt.jscore_bits_multiplier,
                 rsi.vpids[col],
             );
             let mut opt2 = Vec::new();
@@ -623,14 +651,22 @@ pub fn proc_cvar_auto(
         if ex.share[mid].left {
             let mut scores = Vec::<f64>::new();
             let mut ds = Vec::<Vec<usize>>::new();
+            let mid = rsi.mat[col][u].unwrap();
             opt_d(
-                ex,
-                rsi.mat[col][u].unwrap(),
+                ex.share[mid].v_ref_id,
+                ex.share[mid].j_ref_id,
+                &ex.share[mid].seq_del,
+                &ex.share[mid].annv,
+                &ex.share[mid].cdr3_aa,
                 refdata,
                 dref,
                 &mut scores,
                 &mut ds,
-                ctl,
+                ctl.gen_opt.jscore_match,
+                ctl.gen_opt.jscore_mismatch,
+                ctl.gen_opt.jscore_gap_open,
+                ctl.gen_opt.jscore_gap_extend,
+                ctl.gen_opt.jscore_bits_multiplier,
                 rsi.vpids[col],
             );
             let mut score = 0.0;
@@ -646,14 +682,22 @@ pub fn proc_cvar_auto(
         if ex.share[mid].left {
             let mut scores = Vec::<f64>::new();
             let mut ds = Vec::<Vec<usize>>::new();
+            let mid = rsi.mat[col][u].unwrap();
             opt_d(
-                ex,
-                rsi.mat[col][u].unwrap(),
+                ex.share[mid].v_ref_id,
+                ex.share[mid].j_ref_id,
+                &ex.share[mid].seq_del,
+                &ex.share[mid].annv,
+                &ex.share[mid].cdr3_aa,
                 refdata,
                 dref,
                 &mut scores,
                 &mut ds,
-                ctl,
+                ctl.gen_opt.jscore_match,
+                ctl.gen_opt.jscore_mismatch,
+                ctl.gen_opt.jscore_gap_open,
+                ctl.gen_opt.jscore_gap_extend,
+                ctl.gen_opt.jscore_bits_multiplier,
                 rsi.vpids[col],
             );
             let mut delta = 0.0;
@@ -749,14 +793,22 @@ pub fn proc_cvar_auto(
         if ex.share[mid].left {
             let mut scores = Vec::<f64>::new();
             let mut ds = Vec::<Vec<usize>>::new();
+            let mid = rsi.mat[col][u].unwrap();
             opt_d(
-                ex,
-                rsi.mat[col][u].unwrap(),
+                ex.share[mid].v_ref_id,
+                ex.share[mid].j_ref_id,
+                &ex.share[mid].seq_del,
+                &ex.share[mid].annv,
+                &ex.share[mid].cdr3_aa,
                 refdata,
                 dref,
                 &mut scores,
                 &mut ds,
-                ctl,
+                ctl.gen_opt.jscore_match,
+                ctl.gen_opt.jscore_mismatch,
+                ctl.gen_opt.jscore_gap_open,
+                ctl.gen_opt.jscore_gap_extend,
+                ctl.gen_opt.jscore_bits_multiplier,
                 rsi.vpids[col],
             );
             let mut delta = 0.0;
