@@ -514,6 +514,7 @@ pub struct EncloneControl {
     pub gen_opt: GeneralOpt,                     // miscellaneous general options
     pub plot_opt: PlotOpt,                       // plot options
     pub pretty: bool,                            // use escape characters to enhance view
+    pub nogray: bool,                            // don't gray in per cell lines
     pub silent: bool,                            // turn off extra logging
     pub force: bool,                             // make joins even if redundant
     pub debug_table_printing: bool,              // turn on debugging for table printing
