@@ -107,6 +107,7 @@ fn main() {
     let mut hv = Vec::<String>::new();
     let mut hj = Vec::<String>::new();
     let mut cdr3 = Vec::<String>::new();
+    let mut cdr3_dna = Vec::<String>::new();
     let f = open_for_read![&args[1]];
     for line in f.lines() {
         let s = line.unwrap();
@@ -115,6 +116,7 @@ fn main() {
         hv.push(fields[2].to_string());
         hj.push(fields[3].to_string());
         cdr3.push(fields[1].to_string());
+        cdr3_dna.push(fields[0].to_string());
     }
     if n == 0 {
         n = jun.len();
@@ -179,7 +181,7 @@ fn main() {
         fwriteln!(log, "\nV gene = {}", hv[i]);
         let jrefname = &hj[i];
         fwriteln!(log, "J gene = {}", jrefname);
-        fwriteln!(log, "\nlooking for {} in {}", strme(&junv), strme(&vseq));
+        // fwriteln!(log, "\nlooking for {} in {}", strme(&junv), strme(&vseq));
         let mut vstart = None;
         for k in (0..=vseq.len() - junv.len()).rev() {
             if vseq[k..].starts_with(&junv) {
@@ -187,7 +189,7 @@ fn main() {
                     continue;
                 }
                 vstart = Some(k);
-                fwriteln!(log, "vstart for {} found at pos -{}", i + 1, vseq.len() - k);
+                // fwriteln!(log, "vstart for {} found at pos -{}", i + 1, vseq.len() - k);
                 break;
             }
         }
@@ -273,6 +275,19 @@ fn main() {
                 };
             } else {
                 let j_ref_id = j_ref_id.unwrap();
+                fwriteln!(log, "\nO:{},{},{},{}\n",
+                    cdr3_dna[i],
+                    cdr3[i],
+                    hv[i],
+                    hj[i],
+                );
+                fwriteln!(log, "Z:{},{},{},{}\n",
+                    cdr3_dna[i],
+                    cdr3[i],
+                    refdata.name[v_ref_id],
+                    refdata.name[j_ref_id],
+                );
+                let j_ref_id = j_ref_id;
                 opt_d(
                     v_ref_id,
                     j_ref_id,
@@ -448,6 +463,9 @@ fn main() {
             }
         }
     });
+
+    // Tally results and report.
+
     let mut drefnames = Vec::<String>::new();
     let mut ds_all = Vec::<String>::new();
     let mut subs = Vec::<usize>::new();
