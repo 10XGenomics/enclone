@@ -15,6 +15,7 @@
 // - FLOW: compute using flow classification of naive/memory rather than dref
 // - NAIVE: compute just some stats about naive cells.
 
+use enclone_core::hcat;
 use enclone_core::test_def::test_donor_id;
 use io_utils::*;
 use pretty_trace::PrettyTrace;
@@ -27,30 +28,6 @@ use std::mem::swap;
 use string_utils::{add_commas, stringme, strme, TextUtils};
 use tables::*;
 use vector_utils::{bin_position, make_freq, unique_sort};
-
-pub fn hcat(col1: &[String], col2: &[String], sep: usize) -> Vec<String> {
-    let mut cat = Vec::<String>::new();
-    let height = max(col1.len(), col2.len());
-    let mut width1 = 0;
-    for x in col1 {
-        width1 = max(width1, x.chars().count() + sep);
-    }
-    for i in 0..height {
-        let mut s = if i < col1.len() {
-            col1[i].clone()
-        } else {
-            String::new()
-        };
-        while s.chars().count() < width1 {
-            s += " ";
-        }
-        if i < col2.len() {
-            s += &col2[i];
-        }
-        cat.push(s);
-    }
-    cat
-}
 
 const NAIVE: [usize; 40] = [
     1279049, 1279053, 1279057, 1279061, 1279065, 1279069, 1279073, 1279077, 1287144, 1287145,
