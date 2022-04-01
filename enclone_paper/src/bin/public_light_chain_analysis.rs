@@ -145,6 +145,34 @@ fn main() {
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
+    // Show the CDRH3 length distribution for naive cells.
+
+    println!("\nCDRH3 length distribution for naive cells");
+    let mut bins = vec![0; 100];
+    let mut total = 0;
+    for k in 0..data.len() {
+        let dref = data[k].5;
+        if dref == 0 {
+            let len = data[k].1;
+            bins[len/5] += 1;
+            total += 1;
+        }
+    }
+    for i in 0..bins.len() {
+        if bins[i] > 0 {
+            println!("{}-{} ==> {:.1}%", 
+                5 * i,
+                5 * (i + 1),
+                100.0 * bins[i] as f64 / total as f64
+            );
+        }
+    }
+    if true {
+        std::process::exit(0);
+    }
+
+    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
     // For naive cells with junction insertion length zero, show the substitution and 
     // substitution rate distribution.
 
@@ -245,9 +273,6 @@ fn main() {
         }
     }
     println!("mean substitution rate = {:.1}%", 100.0 * total as f64 / rates.len() as f64);
-    if true {
-        std::process::exit(0);
-    }
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 

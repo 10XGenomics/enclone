@@ -131,6 +131,7 @@ fn main() {
         jun_ins: usize,
         subs: usize,
         rate: f64,
+        cdrh3_len: usize,
     }
     let mut results = Vec::<(usize, Data)>::new();
     for i in 0..n {
@@ -226,6 +227,7 @@ fn main() {
                 jun_ins: 0,
                 subs: 0,
                 rate: 0.0,
+                cdrh3_len: 0,
             };
         } else {
             fwriteln!(log, "CDR3 = {}", strme(&cdr3x[0].1));
@@ -267,6 +269,7 @@ fn main() {
                     jun_ins: 0,
                     subs: 0,
                     rate: 0.0,
+                    cdrh3_len: 0,
                 };
             } else {
                 let j_ref_id = j_ref_id.unwrap();
@@ -440,6 +443,7 @@ fn main() {
                     jun_ins: jun_ins,
                     subs: mismatches,
                     rate: rate,
+                    cdrh3_len: cdr3[i].len(),
                 };
             }
         }
@@ -451,6 +455,7 @@ fn main() {
     let mut rates = Vec::<f64>::new();
     let mut fails = 0;
     let mut dd = 0;
+    let mut cdrh3_lens = Vec::<usize>::new();
     for i in 0..results.len() {
         print!("{}", strme(&results[i].1.out));
         if results[i].1.fail {
@@ -462,6 +467,7 @@ fn main() {
             }
             drefnames.push(drefname);
             ds_all.push(results[i].1.d.clone());
+            cdrh3_lens.push(results[i].1.cdrh3_len);
             jun_ins.push(results[i].1.jun_ins);
             if results[i].1.jun_ins == 0 {
                 subs.push(results[i].1.subs);
@@ -470,6 +476,23 @@ fn main() {
         }
     }
     println!("\nThere were {} fails.\n", fails);
+    println!("CDRH3 length distribution");
+    let mut bins = vec![0; 100];
+    let mut total = 0;
+    for k in 0..cdrh3_lens.len() {
+        let len = cdrh3_lens[k];
+        bins[len/5] += 1;
+        total += 1;
+    }
+    for i in 0..bins.len() {
+        if bins[i] > 0 {
+            println!("{}-{} ==> {:.1}%",
+                5 * i,
+                5 * (i + 1),
+                100.0 * bins[i] as f64 / total as f64
+            );
+        }
+    }
     let mut total = 0;
     for i in 0..jun_ins.len() {
         total += jun_ins[i];
