@@ -122,6 +122,75 @@ fn main() {
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
+    // For naive cells with junction insertion length zero, show the substitution and 
+    // substitution rate distribution.
+
+    println!("\nsubstitutions for naive cells with junction insertion length 0\n");
+    for pass in 0..5 {
+        if pass == 0 {
+            println!("all donors");
+        } else {
+            println!("\ndonor {pass}");
+        }
+        let mut x = Vec::<usize>::new();
+        let mut rates = Vec::<f64>::new();
+        for k in 0..data.len() {
+            let dref = data[k].5;
+            let jun_ins = data[k].9;
+            if dref == 0 && jun_ins == 0 {
+                let donor = &data[k].3;
+                if pass == 0 || *donor == format!("d{pass}") {
+                    let matches = data[k].6;
+                    let subs = data[k].7;
+                    x.push(subs);
+                    let rate = subs as f64 / (subs + matches) as f64;
+                    rates.push(rate);
+                }
+            }
+        }
+        x.sort();
+        let mut freq = Vec::<(u32, usize)>::new();
+        make_freq(&x, &mut freq);
+        let total: usize = x.iter().sum();
+        let total_rates: f64 = rates.iter().sum();
+        if pass == 0 {
+            println!(
+                "\nmost frequent substitution values for naive cells with junction \
+                    insertion length 0 (of {})",
+                x.len()
+            );
+            for i in 0..10 {
+                println!(
+                    "{} [{:.1}%]",
+                    freq[i].1,
+                    100.0 * freq[i].0 as f64 / x.len() as f64
+                );
+            }
+            println!("mean = {:.1}", total as f64 / x.len() as f64);
+            println!("\nsubstitution rates");
+            let mut bins = vec![0; 21];
+            for i in 0..rates.len() {
+                bins[(20.0 * rates[i]).floor() as usize] += 1;
+            }
+            for i in 0..bins.len() {
+                if bins[i] > 0 {
+                    println!("{}-{}% ==> {:.1}%", 
+                        5 * i,
+                        5 * (i + 1),
+                        100.0 * bins[i] as f64 / rates.len() as f64
+                    );
+                }
+            }
+            println!("");
+        }
+        println!("mean substitution rate = {:.2}%", 100.0 * total_rates / rates.len() as f64);
+    }
+    if true {
+        std::process::exit(0);
+    }
+
+    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
     // Show the CDRH3 length distribution for naive cells.
 
     println!("\nCDRH3 length distribution for naive cells");
@@ -144,60 +213,6 @@ fn main() {
             );
         }
     }
-    if true {
-        std::process::exit(0);
-    }
-
-    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
-    // For naive cells with junction insertion length zero, show the substitution and 
-    // substitution rate distribution.
-
-    let mut x = Vec::<usize>::new();
-    let mut rates = Vec::<f64>::new();
-    for k in 0..data.len() {
-        let dref = data[k].5;
-        let jun_ins = data[k].9;
-        if dref == 0 && jun_ins == 0 {
-            let matches = data[k].6;
-            let subs = data[k].7;
-            x.push(subs);
-            let rate = subs as f64 / (subs + matches) as f64;
-            rates.push(rate);
-        }
-    }
-    x.sort();
-    let mut freq = Vec::<(u32, usize)>::new();
-    make_freq(&x, &mut freq);
-    println!(
-        "\nmost frequent substitution values for naive cells with junction insertion length 0 (of {})",
-        x.len()
-    );
-    for i in 0..10 {
-        println!(
-            "{} [{:.1}%]",
-            freq[i].1,
-            100.0 * freq[i].0 as f64 / x.len() as f64
-        );
-    }
-    let total: usize = x.iter().sum();
-    println!("mean = {:.1}", total as f64 / x.len() as f64);
-    let total: f64 = rates.iter().sum();
-    println!("\nsubstitution rates");
-    let mut bins = vec![0; 21];
-    for i in 0..rates.len() {
-        bins[(20.0 * rates[i]).floor() as usize] += 1;
-    }
-    for i in 0..bins.len() {
-        if bins[i] > 0 {
-            println!("{}-{}% ==> {:.1}%", 
-                5 * i,
-                5 * (i + 1),
-                100.0 * bins[i] as f64 / rates.len() as f64
-            );
-        }
-    }
-    println!("mean substitution rate = {:.1}%", 100.0 * total as f64 / rates.len() as f64);
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
