@@ -122,6 +122,47 @@ fn main() {
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
+    // Compute number of public naive and memory cells.
+
+    for pass in 1..=2 {
+        let mut p = 0;
+        let mut i = 0;
+        while i < data.len() {
+            let mut j = i + 1;
+            while j < data.len() {
+                if data[j].0 != data[i].0 || data[j].2 != data[i].2 {
+                    break;
+                }
+                j += 1;
+            }
+            let mut dx = Vec::new();
+            for k in i..j {
+                if (pass == 1 && data[k].5 == 0) || (pass == 2 && data[k].5 > 0) {
+                    dx.push(data[k].clone());
+                }
+            }
+            let mut donors = Vec::<String>::new();
+            for k in 0..dx.len() {
+                donors.push(dx[k].3.clone());
+            }
+            unique_sort(&mut donors);
+            if donors.len() > 1 {
+                p += dx.len();
+            }
+            i = j;
+        }
+        if pass == 1 {
+            println!("\n{} public naive cells", p);
+        } else {
+            println!("{} public memory cells", p);
+        }
+    }
+    if true {
+        std::process::exit(0);
+    }
+
+    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
     // For naive cells with junction insertion length zero, show the substitution and 
     // substitution rate distribution.
 
@@ -184,9 +225,6 @@ fn main() {
             println!("");
         }
         println!("mean substitution rate = {:.2}%", 100.0 * total_rates / rates.len() as f64);
-    }
-    if true {
-        std::process::exit(0);
     }
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -293,39 +331,6 @@ fn main() {
             100.0 * freq[i].0 as f64 / x.len() as f64
         );
     }
-
-    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
-    // Compute number of public naive cells.
-
-    let mut pn = 0;
-    let mut i = 0;
-    while i < data.len() {
-        let mut j = i + 1;
-        while j < data.len() {
-            if data[j].0 != data[i].0 || data[j].2 != data[i].2 {
-                break;
-            }
-            j += 1;
-        }
-        let mut donors = Vec::<String>::new();
-        for k in i..j {
-            if data[k].5 == 0 {
-                donors.push(data[k].3.clone());
-            }
-        }
-        unique_sort(&mut donors);
-        if donors.len() > 1 {
-            for k in i..j {
-                let dref = data[k].5;
-                if dref == 0 {
-                    pn += 1;
-                }
-            }
-        }
-        i = j;
-    }
-    println!("\n{} public naive cells", pn);
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
