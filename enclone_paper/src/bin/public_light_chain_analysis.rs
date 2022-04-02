@@ -27,7 +27,7 @@ use std::io::BufRead;
 use std::mem::swap;
 use string_utils::{add_commas, stringme, strme, TextUtils};
 use tables::*;
-use vector_utils::{bin_position, make_freq, unique_sort};
+use vector_utils::{bin_position, unique_sort};
 
 const NAIVE: [usize; 40] = [
     1279049, 1279053, 1279057, 1279061, 1279065, 1279069, 1279073, 1279077, 1287144, 1287145,
@@ -160,72 +160,6 @@ fn main() {
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-    // For naive cells with junction insertion length zero, show the substitution and 
-    // substitution rate distribution.
-
-    println!("\nsubstitutions for naive cells with junction insertion length 0\n");
-    for pass in 0..5 {
-        if pass == 0 {
-            println!("all donors");
-        } else {
-            println!("\ndonor {pass}");
-        }
-        let mut x = Vec::<usize>::new();
-        let mut rates = Vec::<f64>::new();
-        for k in 0..data.len() {
-            let dref = data[k].5;
-            let jun_ins = data[k].9;
-            if dref == 0 && jun_ins == 0 {
-                let donor = &data[k].3;
-                if pass == 0 || *donor == format!("d{pass}") {
-                    let matches = data[k].6;
-                    let subs = data[k].7;
-                    x.push(subs);
-                    let rate = subs as f64 / (subs + matches) as f64;
-                    rates.push(rate);
-                }
-            }
-        }
-        x.sort();
-        let mut freq = Vec::<(u32, usize)>::new();
-        make_freq(&x, &mut freq);
-        let total: usize = x.iter().sum();
-        let total_rates: f64 = rates.iter().sum();
-        if pass == 0 {
-            println!(
-                "\nmost frequent substitution values for naive cells with junction \
-                    insertion length 0 (of {})",
-                x.len()
-            );
-            for i in 0..10 {
-                println!(
-                    "{} [{:.1}%]",
-                    freq[i].1,
-                    100.0 * freq[i].0 as f64 / x.len() as f64
-                );
-            }
-            println!("mean = {:.1}", total as f64 / x.len() as f64);
-            println!("\nsubstitution rates");
-            let mut bins = vec![0; 21];
-            for i in 0..rates.len() {
-                bins[(20.0 * rates[i]).floor() as usize] += 1;
-            }
-            for i in 0..bins.len() {
-                if bins[i] > 0 {
-                    println!("{}-{}% ==> {:.1}%", 
-                        5 * i,
-                        5 * (i + 1),
-                        100.0 * bins[i] as f64 / rates.len() as f64
-                    );
-                }
-            }
-            println!("");
-        }
-        println!("mean substitution rate = {:.2}%", 100.0 * total_rates / rates.len() as f64);
-    }
-
-    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
     // Show the CDRH3 length distribution for naive cells.
 
     println!("\nCDRH3 length distribution for naive cells");
@@ -247,86 +181,6 @@ fn main() {
                 100.0 * bins[i] as f64 / total as f64
             );
         }
-    }
-
-    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
-    // Compute substitution rates for public naive cells having jun_ins = 0.
-
-    let mut i = 0;
-    let mut rates = Vec::<f64>::new();
-    while i < data.len() {
-        let mut j = i + 1;
-        while j < data.len() {
-            if data[j].0 != data[i].0 || data[j].2 != data[i].2 {
-                break;
-            }
-            j += 1;
-        }
-        let mut donors = Vec::<String>::new();
-        for k in i..j {
-            if data[k].5 == 0 {
-                donors.push(data[k].3.clone());
-            }
-        }
-        unique_sort(&mut donors);
-        if donors.len() > 1 {
-            for k in i..j {
-                let dref = data[k].5;
-                let jun_ins = data[k].9;
-                if dref == 0 && jun_ins == 0 {
-                    let matches = data[k].6;
-                    let subs = data[k].7;
-                    let rate = subs as f64 / (subs + matches) as f64;
-                    rates.push(rate);
-                }
-            }
-        }
-        i = j;
-    }
-    let total: f64 = rates.iter().sum();
-    println!("\nsubstitution rates for public naive cells");
-    let mut bins = vec![0; 21];
-    for i in 0..rates.len() {
-        bins[(20.0 * rates[i]).floor() as usize] += 1;
-    }
-    for i in 0..bins.len() {
-        if bins[i] > 0 {
-            println!("{}-{}% ==> {:.1}%", 
-                5 * i,
-                5 * (i + 1),
-                100.0 * bins[i] as f64 / rates.len() as f64
-            );
-        }
-    }
-    println!("mean substitution rate = {:.1}%", 100.0 * total as f64 / rates.len() as f64);
-
-    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
-    // For naive cells with junction insertion length zero, show the D gene distribution.
-
-    let mut x = Vec::<String>::new();
-    for k in 0..data.len() {
-        let dref = data[k].5;
-        let jun_ins = data[k].9;
-        if dref == 0 && jun_ins == 0 {
-            let dname = &data[k].11;
-            x.push(dname.clone());
-        }
-    }
-    x.sort();
-    let mut freq = Vec::<(u32, String)>::new();
-    make_freq(&x, &mut freq);
-    println!(
-        "\nmost frequent D genes for naive cells with junction insertion length 0 (of {})",
-        x.len()
-    );
-    for i in 0..10 {
-        println!(
-            "{} [{:.1}%]",
-            freq[i].1,
-            100.0 * freq[i].0 as f64 / x.len() as f64
-        );
     }
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -576,33 +430,6 @@ fn main() {
 
     // Compute mean jun_ins for various classes of cells.
 
-    let mut n_memory = 0;
-    let mut n_naive = 0;
-    let mut ins_memory = 0;
-    let mut ins_naive = 0;
-    for i in 0..data.len() {
-        let dref = data[i].5;
-        let jun_ins = data[i].9;
-        if dref == 0 {
-            n_naive += 1;
-            ins_naive += jun_ins
-        } else {
-            n_memory += 1;
-            ins_memory += jun_ins
-        }
-    }
-    println!(
-        "\nmean junction insertion bases for memory = {:.1}",
-        ins_memory as f64 / n_memory as f64
-    );
-    println!(
-        "mean junction insertion bases for naive = {:.1}",
-        ins_naive as f64 / n_naive as f64
-    );
-    let mut n_memory = 0;
-    let mut n_naive = 0;
-    let mut ins_memory = 0;
-    let mut ins_naive = 0;
     let mut max_ins_memory = 0;
     let mut max_ins_memory_cdr3 = String::new();
     let mut max_ins_naive = 0;
@@ -632,8 +459,6 @@ fn main() {
                 let dref = data[k].5;
                 let jun_ins = data[k].9;
                 if dref == 0 {
-                    n_naive += 1;
-                    ins_naive += jun_ins;
                     max_ins_naive = max(max_ins_naive, jun_ins);
                     ins[1][jun_ins] += 1;
                     total[1] += 1;
@@ -641,8 +466,6 @@ fn main() {
                         dd_naive += 1;
                     }
                 } else {
-                    n_memory += 1;
-                    ins_memory += jun_ins;
                     if k == i {
                         ins_mem[jun_ins] += 1;
                     }
@@ -668,18 +491,6 @@ fn main() {
         }
         i = j;
     }
-    println!("\njunction insertion length frequency for public memory cells");
-    for i in 0..=20 {
-        if ins[0][i] > 0 {
-            println!("{i}: {:.3}%", 100.0 * ins[0][i] as f64 / total[0] as f64);
-        }
-    }
-    println!("\njunction insertion length frequency for public naive cells");
-    for i in 0..=20 {
-        if ins[1][i] > 0 {
-            println!("{i}: {:.3}%", 100.0 * ins[1][i] as f64 / total[1] as f64);
-        }
-    }
     println!(
         "DD public memory cells = {} = {:.1}%",
         dd_memory,
@@ -691,24 +502,9 @@ fn main() {
         100.0 * dd_naive as f64 / total[1] as f64,
     );
     println!(
-        "mean junction insertion bases for public memory = {:.1}",
-        ins_memory as f64 / n_memory as f64
-    );
-    println!(
         "max = {} at CDR3H = {}",
         max_ins_memory, max_ins_memory_cdr3
     );
-    println!(
-        "mean junction insertion bases for public naive = {:.1}",
-        ins_naive as f64 / n_naive as f64
-    );
-    println!("max = {}", max_ins_naive);
-    println!("\npublic memory junction insertion length distribution, by cell group");
-    for i in 0..ins_mem.len() {
-        if ins_mem[i] > 0 {
-            println!("{} ==> {}", i, ins_mem[i]);
-        }
-    }
 
     // Compute light chain coherence for memory cells as a function of insertion length.
 
