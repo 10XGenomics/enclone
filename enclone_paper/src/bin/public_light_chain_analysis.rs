@@ -415,23 +415,10 @@ fn main() {
             }
         }
     }
-    println!("\njunction insertion length frequency for memory cells");
-    for i in 0..=20 {
-        if ins[0][i] > 0 {
-            println!("{i}: {:.3}%", 100.0 * ins[0][i] as f64 / total[0] as f64);
-        }
-    }
-    println!("\njunction insertion length frequency for naive cells");
-    for i in 0..=20 {
-        if ins[1][i] > 0 {
-            println!("{i}: {:.3}%", 100.0 * ins[1][i] as f64 / total[1] as f64);
-        }
-    }
 
     // Compute mean jun_ins for various classes of cells.
 
     let mut max_ins_memory = 0;
-    let mut max_ins_memory_cdr3 = String::new();
     let mut max_ins_naive = 0;
     let mut i = 0;
     let mut last = String::new();
@@ -470,15 +457,7 @@ fn main() {
                         ins_mem[jun_ins] += 1;
                     }
                     if jun_ins >= 6 && last != strme(&data[k].2) {
-                        println!(
-                            "public memory with CDR3H = {} has jun_ins = {}",
-                            stringme(&data[k].2),
-                            jun_ins
-                        );
                         last = stringme(&data[k].2);
-                    }
-                    if jun_ins > max_ins_memory {
-                        max_ins_memory_cdr3 = stringme(&data[k].2);
                     }
                     max_ins_memory = max(max_ins_memory, jun_ins);
                     ins[0][jun_ins] += 1;
@@ -500,67 +479,6 @@ fn main() {
         "DD public naive cells = {} = {:.1}%",
         dd_naive,
         100.0 * dd_naive as f64 / total[1] as f64,
-    );
-    println!(
-        "max = {} at CDR3H = {}",
-        max_ins_memory, max_ins_memory_cdr3
-    );
-
-    // Compute light chain coherence for memory cells as a function of insertion length.
-
-    let mut n = vec![0; 100];
-    let mut same = vec![0; 100];
-    let mut i = 0;
-    while i < data.len() {
-        let mut j = i + 1;
-        while j < data.len() {
-            if data[j].0 != data[i].0 || data[j].2 != data[i].2 {
-                break;
-            }
-            j += 1;
-        }
-        for k1 in i..j {
-            for k2 in k1 + 1..j {
-                if data[k1].5 > 0 && data[k2].5 > 0 {
-                    if data[k1].3 != data[k2].3 {
-                        let ins = data[k1].9;
-                        if ins == data[k2].9 {
-                            n[ins] += 1;
-                            if data[k1].4 == data[k2].4 {
-                                same[ins] += 1;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        i = j;
-    }
-    println!(
-        "\nlight chain coherence for public memory cells as function of junction insertion length"
-    );
-    for i in 0..=4 {
-        if n[i] > 0 {
-            println!(
-                "ins = {}  ==> coherence = {:.1}% ({} of {})",
-                i,
-                100.0 * same[i] as f64 / n[i] as f64,
-                same[i],
-                n[i],
-            );
-        }
-    }
-    let mut n_big = 0;
-    let mut same_big = 0;
-    for i in 5..n.len() {
-        n_big += n[i];
-        same_big += same[i];
-    }
-    println!(
-        "ins >= 5 ==> coherence = {:.1}% ({} of {})",
-        100.0 * same_big as f64 / n_big as f64,
-        same_big,
-        n_big,
     );
 
     // Define groups based on equal heavy chain gene names and CDR3H length.
