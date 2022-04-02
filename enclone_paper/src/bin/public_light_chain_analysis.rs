@@ -157,9 +157,6 @@ fn main() {
             println!("{} public memory cells", p);
         }
     }
-    if true {
-        std::process::exit(0);
-    }
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -354,6 +351,7 @@ fn main() {
         let mut unswitched = vec![(0, 0); 5];
         let mut switched = vec![(0, 0); 5];
         let mut plasmablast = vec![(0, 0); 5];
+        let mut memory_subtotal = vec![(0, 0); 5];
         let mut unswitched_naive = vec![(0, 0); 5];
         let mut switched_naive = vec![(0, 0); 5];
         let mut total = vec![(0, 0); 5];
@@ -392,6 +390,8 @@ fn main() {
                         if pass == 1 || donor_id == 1 {
                             unswitched[0].1 += 1;
                             unswitched[donor_id].1 += 1;
+                            memory_subtotal[0].1 += 1;
+                            memory_subtotal[donor_id].1 += 1;
                         } else {
                             unswitched_naive[0].1 += 1;
                             unswitched_naive[donor_id].1 += 1;
@@ -400,6 +400,8 @@ fn main() {
                             if pass == 1 || donor_id == 1 {
                                 unswitched[0].0 += 1;
                                 unswitched[donor_id].0 += 1;
+                                memory_subtotal[0].0 += 1;
+                                memory_subtotal[donor_id].0 += 1;
                             } else {
                                 unswitched_naive[0].0 += 1;
                                 unswitched_naive[donor_id].0 += 1;
@@ -409,6 +411,8 @@ fn main() {
                         if pass == 1 {
                             switched[0].1 += 1;
                             switched[donor_id].1 += 1;
+                            memory_subtotal[0].1 += 1;
+                            memory_subtotal[donor_id].1 += 1;
                         } else {
                             switched_naive[0].1 += 1;
                             switched_naive[donor_id].1 += 1;
@@ -417,6 +421,8 @@ fn main() {
                             if pass == 1 {
                                 switched[0].0 += 1;
                                 switched[donor_id].0 += 1;
+                                memory_subtotal[0].0 += 1;
+                                memory_subtotal[donor_id].0 += 1;
                             } else {
                                 switched_naive[0].0 += 1;
                                 switched_naive[donor_id].0 += 1;
@@ -425,9 +431,13 @@ fn main() {
                     } else if PLASMABLAST.contains(&dataset) {
                         plasmablast[0].1 += 1;
                         plasmablast[donor_id].1 += 1;
+                        memory_subtotal[0].1 += 1;
+                        memory_subtotal[donor_id].1 += 1;
                         if dref == 0 {
                             plasmablast[0].0 += 1;
                             plasmablast[donor_id].0 += 1;
+                            memory_subtotal[0].0 += 1;
+                            memory_subtotal[donor_id].0 += 1;
                         }
                     } else {
                         panic!("unclassified dataset");
@@ -442,6 +452,7 @@ fn main() {
                 &unswitched,
                 &switched,
                 &plasmablast,
+                &memory_subtotal,
                 &unswitched_naive,
                 &switched_naive,
                 &total,
@@ -451,6 +462,7 @@ fn main() {
                 "unswitched",
                 "switched",
                 "plasmablast",
+                "memory_subtotal",
                 "unswitched_naive",
                 "switched_naive",
                 "total",
