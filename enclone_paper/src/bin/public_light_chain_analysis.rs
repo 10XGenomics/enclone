@@ -334,12 +334,7 @@ fn main() {
     // Compute naive fraction for each of the sort classes.
 
     let mut is_naive = vec![false; data.len()];
-    for i in 0..data.len() {
-        let dataset = data[i].10;
-        if NAIVE.contains(&dataset) {
-            is_naive[i] = true;
-        }
-    }
+    let mut is_memory = vec![false; data.len()];
     if opt_naive || opt_flow {
         let mut all = Vec::<usize>::new();
         all.append(&mut NAIVE.to_vec());
@@ -356,163 +351,167 @@ fn main() {
         let mut switched_naive = vec![(0, 0); 5];
         let mut total = vec![(0, 0); 5];
         let mut cells = vec![(0, 0); all.len()];
-        if opt_naive {
-            for pass in 1..=2 {
-                for i in 0..data.len() {
-                    let dref = data[i].5;
-                    let dataset = data[i].10;
-                    if pass == 1 && dataset.to_string().starts_with("128") {
-                        continue;
-                    }
-                    if pass == 2 && dataset.to_string().starts_with("127") {
-                        continue;
-                    }
-                    let donor_id = test_donor_id(dataset);
-                    let p = bin_position(&all, &dataset) as usize;
-                    cells[p].1 += 1;
+        for pass in 1..=2 {
+            for i in 0..data.len() {
+                let dref = data[i].5;
+                let dataset = data[i].10;
+                if pass == 1 && dataset.to_string().starts_with("128") {
+                    continue;
+                }
+                if pass == 2 && dataset.to_string().starts_with("127") {
+                    continue;
+                }
+                let donor_id = test_donor_id(dataset);
+                let p = bin_position(&all, &dataset) as usize;
+                cells[p].1 += 1;
+                if dref == 0 {
+                    cells[p].0 += 1;
+                }
+                total[0].1 += 1;
+                total[donor_id].1 += 1;
+                if dref == 0 {
+                    total[0].0 += 1;
+                    total[donor_id].0 += 1;
+                }
+                if NAIVE.contains(&dataset) {
+                    naive[0].1 += 1;
+                    naive[donor_id].1 += 1;
+                    is_naive[i] = true;
                     if dref == 0 {
-                        cells[p].0 += 1;
+                        naive[0].0 += 1;
+                        naive[donor_id].0 += 1;
                     }
-                    total[0].1 += 1;
-                    total[donor_id].1 += 1;
-                    if dref == 0 {
-                        total[0].0 += 1;
-                        total[donor_id].0 += 1;
-                    }
-                    if NAIVE.contains(&dataset) {
-                        naive[0].1 += 1;
-                        naive[donor_id].1 += 1;
-                        if dref == 0 {
-                            naive[0].0 += 1;
-                            naive[donor_id].0 += 1;
-                        }
-                    } else if UNSWITCHED.contains(&dataset) {
-                        if pass == 1 || donor_id == 1 {
-                            unswitched[0].1 += 1;
-                            unswitched[donor_id].1 += 1;
-                            memory_subtotal[0].1 += 1;
-                            memory_subtotal[donor_id].1 += 1;
-                        } else {
-                            unswitched_naive[0].1 += 1;
-                            unswitched_naive[donor_id].1 += 1;
-                        }
-                        if dref == 0 {
-                            if pass == 1 || donor_id == 1 {
-                                unswitched[0].0 += 1;
-                                unswitched[donor_id].0 += 1;
-                                memory_subtotal[0].0 += 1;
-                                memory_subtotal[donor_id].0 += 1;
-                            } else {
-                                unswitched_naive[0].0 += 1;
-                                unswitched_naive[donor_id].0 += 1;
-                            }
-                        }
-                    } else if SWITCHED.contains(&dataset) {
-                        if pass == 1 {
-                            switched[0].1 += 1;
-                            switched[donor_id].1 += 1;
-                            memory_subtotal[0].1 += 1;
-                            memory_subtotal[donor_id].1 += 1;
-                        } else {
-                            switched_naive[0].1 += 1;
-                            switched_naive[donor_id].1 += 1;
-                        }
-                        if dref == 0 {
-                            if pass == 1 {
-                                switched[0].0 += 1;
-                                switched[donor_id].0 += 1;
-                                memory_subtotal[0].0 += 1;
-                                memory_subtotal[donor_id].0 += 1;
-                            } else {
-                                switched_naive[0].0 += 1;
-                                switched_naive[donor_id].0 += 1;
-                            }
-                        }
-                    } else if PLASMABLAST.contains(&dataset) {
-                        plasmablast[0].1 += 1;
-                        plasmablast[donor_id].1 += 1;
+                } else if UNSWITCHED.contains(&dataset) {
+                    if pass == 1 || donor_id == 1 {
+                        unswitched[0].1 += 1;
+                        unswitched[donor_id].1 += 1;
                         memory_subtotal[0].1 += 1;
                         memory_subtotal[donor_id].1 += 1;
-                        if dref == 0 {
-                            plasmablast[0].0 += 1;
-                            plasmablast[donor_id].0 += 1;
+                        is_memory[i] = true;
+                    } else {
+                        unswitched_naive[0].1 += 1;
+                        unswitched_naive[donor_id].1 += 1;
+                    }
+                    if dref == 0 {
+                        if pass == 1 || donor_id == 1 {
+                            unswitched[0].0 += 1;
+                            unswitched[donor_id].0 += 1;
                             memory_subtotal[0].0 += 1;
                             memory_subtotal[donor_id].0 += 1;
+                        } else {
+                            unswitched_naive[0].0 += 1;
+                            unswitched_naive[donor_id].0 += 1;
                         }
-                    } else {
-                        panic!("unclassified dataset");
                     }
+                } else if SWITCHED.contains(&dataset) {
+                    if pass == 1 {
+                        switched[0].1 += 1;
+                        switched[donor_id].1 += 1;
+                        memory_subtotal[0].1 += 1;
+                        memory_subtotal[donor_id].1 += 1;
+                        is_memory[i] = true;
+                    } else {
+                        switched_naive[0].1 += 1;
+                        switched_naive[donor_id].1 += 1;
+                    }
+                    if dref == 0 {
+                        if pass == 1 {
+                            switched[0].0 += 1;
+                            switched[donor_id].0 += 1;
+                            memory_subtotal[0].0 += 1;
+                            memory_subtotal[donor_id].0 += 1;
+                        } else {
+                            switched_naive[0].0 += 1;
+                            switched_naive[donor_id].0 += 1;
+                        }
+                    }
+                } else if PLASMABLAST.contains(&dataset) {
+                    plasmablast[0].1 += 1;
+                    plasmablast[donor_id].1 += 1;
+                    memory_subtotal[0].1 += 1;
+                    memory_subtotal[donor_id].1 += 1;
+                    is_memory[i] = true;
+                    if dref == 0 {
+                        plasmablast[0].0 += 1;
+                        plasmablast[donor_id].0 += 1;
+                        memory_subtotal[0].0 += 1;
+                        memory_subtotal[donor_id].0 += 1;
+                    }
+                } else {
+                    panic!("unclassified dataset");
                 }
             }
 
             // Print tables.
 
-            let counts = [
-                &naive,
-                &unswitched,
-                &switched,
-                &plasmablast,
-                &memory_subtotal,
-                &unswitched_naive,
-                &switched_naive,
-                &total,
-            ];
-            let names = [
-                "naive",
-                "unswitched",
-                "switched",
-                "plasmablast",
-                "memory_subtotal",
-                "unswitched_naive",
-                "switched_naive",
-                "total",
-            ];
-            let row1 = vec![
-                "class".to_string(),
-                "all".to_string(),
-                "d1".to_string(),
-                "d2".to_string(),
-                "d3".to_string(),
-                "d4".to_string(),
-            ];
-            println!("\nall cells");
-            let mut rows = vec![row1.clone()];
-            for i in 0..counts.len() {
-                rows.push(vec!["\\hline".to_string(); 6]);
-                let mut row = vec![names[i].to_string()];
-                for j in 0..5 {
-                    if counts[i][j].1 > 0 {
-                        row.push(format!("{}", add_commas(counts[i][j].1)));
-                    } else {
-                        row.push(String::new());
+            if opt_naive {
+                let counts = [
+                    &naive,
+                    &unswitched,
+                    &switched,
+                    &plasmablast,
+                    &memory_subtotal,
+                    &unswitched_naive,
+                    &switched_naive,
+                    &total,
+                ];
+                let names = [
+                    "naive",
+                    "unswitched",
+                    "switched",
+                    "plasmablast",
+                    "memory_subtotal",
+                    "unswitched_naive",
+                    "switched_naive",
+                    "total",
+                ];
+                let row1 = vec![
+                    "class".to_string(),
+                    "all".to_string(),
+                    "d1".to_string(),
+                    "d2".to_string(),
+                    "d3".to_string(),
+                    "d4".to_string(),
+                ];
+                println!("\nall cells");
+                let mut rows = vec![row1.clone()];
+                for i in 0..counts.len() {
+                    rows.push(vec!["\\hline".to_string(); 6]);
+                    let mut row = vec![names[i].to_string()];
+                    for j in 0..5 {
+                        if counts[i][j].1 > 0 {
+                            row.push(format!("{}", add_commas(counts[i][j].1)));
+                        } else {
+                            row.push(String::new());
+                        }
                     }
+                    rows.push(row);
                 }
-                rows.push(row);
-            }
-            let mut log = String::new();
-            print_tabular_vbox(&mut log, &rows, 0, &b"l|r|r|r|r|r".to_vec(), false, false);
-            println!("{}", log);
-            println!("naive cell fractions");
-            let mut rows = vec![row1.clone()];
-            for i in 0..counts.len() {
-                rows.push(vec!["\\hline".to_string(); 6]);
-                let mut row = vec![names[i].to_string()];
-                for j in 0..5 {
-                    if counts[i][j].1 > 0 {
-                        row.push(format!(
-                            "{:.1}%",
-                            100.0 * counts[i][j].0 as f64 / counts[i][j].1 as f64
-                        ));
-                    } else {
-                        row.push(String::new());
+                let mut log = String::new();
+                print_tabular_vbox(&mut log, &rows, 0, &b"l|r|r|r|r|r".to_vec(), false, false);
+                println!("{}", log);
+                println!("naive cell fractions");
+                let mut rows = vec![row1.clone()];
+                for i in 0..counts.len() {
+                    rows.push(vec!["\\hline".to_string(); 6]);
+                    let mut row = vec![names[i].to_string()];
+                    for j in 0..5 {
+                        if counts[i][j].1 > 0 {
+                            row.push(format!(
+                                "{:.1}%",
+                                100.0 * counts[i][j].0 as f64 / counts[i][j].1 as f64
+                            ));
+                        } else {
+                            row.push(String::new());
+                        }
                     }
+                    rows.push(row);
                 }
-                rows.push(row);
+                let mut log = String::new();
+                print_tabular_vbox(&mut log, &rows, 0, &b"l|r|r|r|r|r".to_vec(), false, false);
+                println!("{}", log);
+                std::process::exit(0);
             }
-            let mut log = String::new();
-            print_tabular_vbox(&mut log, &rows, 0, &b"l|r|r|r|r|r".to_vec(), false, false);
-            println!("{}", log);
-            std::process::exit(0);
         }
     }
 
@@ -931,7 +930,7 @@ fn main() {
                     let mut memory = dref1 > 0 && dref2 > 0;
                     if opt_flow {
                         naive = is_naive[k1] && is_naive[k2];
-                        memory = !is_naive[k1] && !is_naive[k2];
+                        memory = is_memory[k1] && is_memory[k2];
                     }
                     if naive {
                         if eq_light {
