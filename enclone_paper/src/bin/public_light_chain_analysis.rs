@@ -20,12 +20,11 @@ use enclone_core::test_def::test_donor_id;
 use io_utils::*;
 use pretty_trace::PrettyTrace;
 use rayon::prelude::*;
-use std::cmp::max;
 use std::collections::HashMap;
 use std::env;
 use std::io::BufRead;
 use std::mem::swap;
-use string_utils::{add_commas, stringme, strme, TextUtils};
+use string_utils::{add_commas, TextUtils};
 use tables::*;
 use vector_utils::{bin_position, unique_sort};
 
@@ -401,29 +400,9 @@ fn main() {
         100.0 * memory.0 as f64 / memory.1 as f64
     );
 
-    // Compute jun_ins frequency for memory and naive cells.
+    // Compute DD stuff.
 
-    let mut ins = vec![vec![0; 1000]; 2];
-    let mut total = vec![0; 2];
-    for pass in 0..2 {
-        for i in 0..data.len() {
-            let dref = data[i].5;
-            let jun_ins = data[i].9;
-            if (pass == 0 && dref > 0) || (pass == 1 && dref == 0) {
-                ins[pass][jun_ins] += 1;
-                total[pass] += 1;
-            }
-        }
-    }
-
-    // Compute mean jun_ins for various classes of cells.
-
-    let mut max_ins_memory = 0;
-    let mut max_ins_naive = 0;
     let mut i = 0;
-    let mut last = String::new();
-    let mut ins_mem = vec![0; 100];
-    let mut ins = vec![vec![0; 1000]; 2];
     let mut total = vec![0; 2];
     let mut dd_memory = 0;
     let mut dd_naive = 0;
@@ -444,23 +423,12 @@ fn main() {
         if donors.len() > 1 {
             for k in i..j {
                 let dref = data[k].5;
-                let jun_ins = data[k].9;
                 if dref == 0 {
-                    max_ins_naive = max(max_ins_naive, jun_ins);
-                    ins[1][jun_ins] += 1;
                     total[1] += 1;
                     if data[k].11.contains(":") {
                         dd_naive += 1;
                     }
                 } else {
-                    if k == i {
-                        ins_mem[jun_ins] += 1;
-                    }
-                    if jun_ins >= 6 && last != strme(&data[k].2) {
-                        last = stringme(&data[k].2);
-                    }
-                    max_ins_memory = max(max_ins_memory, jun_ins);
-                    ins[0][jun_ins] += 1;
                     total[0] += 1;
                     if data[k].11.contains(":") {
                         dd_memory += 1;
@@ -500,74 +468,6 @@ fn main() {
         bounds2.push((i, j, vec![0; 100], vec![0; 100]));
         i = j;
     }
-
-    // Compute light chain coherence for memory cells as a function of insertion length, as
-    // earlier but now using 90% CDRH3 identity.
-
-    bounds2.par_iter_mut().for_each(|res| {
-        let i = res.0;
-        let j = res.1;
-        for k1 in i..j {
-            for k2 in k1 + 1..j {
-                let mut samex = 0;
-                for m in 0..data[k1].2.len() {
-                    if data[k1].2[m] == data[k2].2[m] {
-                        samex += 1;
-                    }
-                }
-                let ident = 100.0 * samex as f64 / data[k1].2.len() as f64;
-                let ident = ident.floor() as usize;
-                if ident >= 90 {
-                    if data[k1].5 > 0 && data[k2].5 > 0 {
-                        if data[k1].3 != data[k2].3 {
-                            let ins = data[k1].9;
-                            if ins == data[k2].9 {
-                                res.3[ins] += 1;
-                                if data[k1].4 == data[k2].4 {
-                                    res.2[ins] += 1;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    });
-    let mut n = vec![0; 100];
-    let mut same = vec![0; 100];
-    for i in 0..bounds2.len() {
-        for j in 0..100 {
-            same[j] += bounds2[i].2[j];
-            n[j] += bounds2[i].3[j];
-        }
-    }
-    println!(
-        "\nlight chain coherence for public (>= 90%) memory cells as function of junction \
-        insertion length"
-    );
-    for i in 0..=9 {
-        if n[i] > 0 {
-            println!(
-                "ins = {}  ==> coherence = {:.1}% ({} of {})",
-                i,
-                100.0 * same[i] as f64 / n[i] as f64,
-                same[i],
-                n[i],
-            );
-        }
-    }
-    let mut n_big = 0;
-    let mut same_big = 0;
-    for i in 10..n.len() {
-        n_big += n[i];
-        same_big += same[i];
-    }
-    println!(
-        "ins >= 10 ==> coherence = {:.1}% ({} of {})",
-        100.0 * same_big as f64 / n_big as f64,
-        same_big,
-        n_big,
-    );
 
     // Results = for each percent identity, rounded down:
     // 1. count for equal light chain gene names and dref1 = 0 and dref2 = 0
