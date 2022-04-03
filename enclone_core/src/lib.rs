@@ -25,11 +25,36 @@ pub mod testlist;
 pub mod var_reg;
 
 use lazy_static::lazy_static;
+use std::cmp::max;
 use std::env;
 use std::io::BufRead;
 use std::sync::Mutex;
 use std::time::Duration;
 use string_utils::TextUtils;
+
+pub fn hcat(col1: &[String], col2: &[String], sep: usize) -> Vec<String> {
+    let mut cat = Vec::<String>::new();
+    let height = max(col1.len(), col2.len());
+    let mut width1 = 0;
+    for x in col1 {
+        width1 = max(width1, x.chars().count() + sep);
+    }
+    for i in 0..height {
+        let mut s = if i < col1.len() {
+            col1[i].clone()
+        } else {
+            String::new()
+        };
+        while s.chars().count() < width1 {
+            s += " ";
+        }
+        if i < col2.len() {
+            s += &col2[i];
+        }
+        cat.push(s);
+    }
+    cat
+}
 
 pub fn expand_integer_ranges(x: &str) -> String {
     let mut tokens = Vec::<String>::new();

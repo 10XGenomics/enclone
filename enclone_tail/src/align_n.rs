@@ -26,7 +26,7 @@ const JCOLOR: usize = 2;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-fn print_vis_align(
+pub fn print_vis_align(
     seq: &[u8],
     concat: &[u8],
     col: usize,
@@ -37,12 +37,17 @@ fn print_vis_align(
     jref: &[u8],
     drefname: &str,
     left: bool, // will be ex.share[r].left
-    ctl: &EncloneControl,
     logx: &mut Vec<u8>,
     width: usize,
     add: &str,
     frame: usize,
     jun: bool,
+    jscore_match: i32,
+    jscore_mismatch: i32,
+    jscore_gap_open: i32,
+    jscore_gap_extend: i32,
+    jscore_bits_multiplier: f64,
+    pretty: bool,
 ) {
     // Make alignment.
 
@@ -54,11 +59,11 @@ fn print_vis_align(
         jref,
         drefname,
         left,
-        ctl.gen_opt.jscore_match,
-        ctl.gen_opt.jscore_mismatch,
-        ctl.gen_opt.jscore_gap_open,
-        ctl.gen_opt.jscore_gap_extend,
-        ctl.gen_opt.jscore_bits_multiplier,
+        jscore_match,
+        jscore_mismatch,
+        jscore_gap_open,
+        jscore_gap_extend,
+        jscore_bits_multiplier,
     );
 
     // Make visual alignment.
@@ -73,7 +78,7 @@ fn print_vis_align(
     } else {
         vdj = "VJ".to_string();
     }
-    if ctl.pretty {
+    if pretty {
         let mut vis_new = String::new();
         let mut pos = 0;
         let mut vdj_bytes = Vec::<u8>::new();
@@ -387,12 +392,17 @@ pub fn align_n(
                                 &jref,
                                 &drefname,
                                 ex.share[r].left,
-                                ctl,
                                 &mut logx,
                                 widthx,
                                 &add,
                                 frame,
                                 jun,
+                                ctl.gen_opt.jscore_match,
+                                ctl.gen_opt.jscore_mismatch,
+                                ctl.gen_opt.jscore_gap_open,
+                                ctl.gen_opt.jscore_gap_extend,
+                                ctl.gen_opt.jscore_bits_multiplier,
+                                ctl.pretty,
                             );
                         }
                     }

@@ -3,16 +3,12 @@
 // Compute heavy chain similarity to light chain similarity, considering only memory cells from
 // different donors.
 //
-// enclone BCR=@test BUILT_IN CHAINS_EXACT=2 CHAINS=2 NOPRINT POUT=stdout PCELL ECHOC
-//         PCOLS=datasets_cell,donors_cell,v_name1,v_name2,dref,cdr3_aa1,clonotype_ncells,
-//         const1,hcomp,jun_ins,d1_name1,vj_aa_nl1,vj_aa_nl2
-//         > per_cell_stuff
-//
 // hl_similarity per_cell_stuff
 //
+// Second argument: option SVG file name for plot.
+//
 // Generate a CSV file as output with fields as follows.
-// class: 1 or 2; 2 has the additional restriction that the heavy chain gene names and
-//        CDRH3 lengths are the same
+// class: 1 or 2; 2 has the additional restriction that the CDRH3 lengths are the same
 // donor1: d1 or d2 or d3 or d4
 // donor2: d1 or d2 or d3 or d4
 // const1: const region name for first cell
@@ -20,6 +16,7 @@
 // hd: heavy chain edit distance, excluding leader
 // ld: light chain edit distance, excluding leader.
 
+use enclone_tail::plot_points::plot_points;
 use io_utils::*;
 use pretty_trace::PrettyTrace;
 use rand_chacha;
@@ -27,7 +24,7 @@ use rand_chacha::rand_core::RngCore;
 use rand_chacha::rand_core::SeedableRng;
 use std::collections::{HashMap, HashSet};
 use std::env;
-use std::io::BufRead;
+use std::io::{BufRead, Write};
 use string_utils::TextUtils;
 use triple_accel::levenshtein;
 
@@ -40,6 +37,10 @@ fn main() {
     // Load data.
 
     let f = open_for_read![&args[1]];
+    let mut svg_file = String::new();
+    if args.len() > 2 {
+        svg_file = args[2].to_string();
+    }
     let mut first = true;
     let mut tof = HashMap::<String, usize>::new();
     let mut data = Vec::<(
@@ -65,19 +66,8 @@ fn main() {
         if first {
             for i in 0..fields.len() {
                 tof.insert(fields[i].to_string(), i);
+                first = false;
             }
-            assert!(tof.contains_key("datasets_cell"));
-            assert!(tof.contains_key("donors_cell"));
-            assert!(tof.contains_key("v_name1"));
-            assert!(tof.contains_key("v_name2"));
-            assert!(tof.contains_key("dref"));
-            assert!(tof.contains_key("cdr3_aa1"));
-            assert!(tof.contains_key("clonotype_ncells"));
-            assert!(tof.contains_key("const1"));
-            assert!(tof.contains_key("hcomp"));
-            assert!(tof.contains_key("jun_ins"));
-            assert!(tof.contains_key("d1_name1"));
-            first = false;
         } else {
             data.push((
                 /* 0 */ fields[tof["v_name1"]].to_string(),
@@ -99,12 +89,6 @@ fn main() {
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-    // Replace paralogs.
-
-    for i in 0..data.len() {
-        data[i].4 = data[i].4.replace("D", "");
-    }
-
     // Print CSV header.
 
     println!("class,donor1,donor2,const1,const2,hd,ld");
@@ -114,9 +98,10 @@ fn main() {
     // Select pairs of cells having different donors at random.  Compute their heavy and light
     // chain edit distances.
 
-    const SAMPLE: usize = 5_000;
+    const SAMPLE: usize = 2_000;
     let mut randme = rand_chacha::ChaCha8Rng::seed_from_u64(123456789);
     let mut seen = HashSet::<(usize, usize)>::new();
+    let mut points = Vec::<(u32, (u8, u8, u8), f32, f32)>::new();
     while seen.len() < SAMPLE {
         let i1 = randme.next_u64() as usize % data.len();
         let i2 = randme.next_u64() as usize % data.len();
@@ -133,10 +118,13 @@ fn main() {
                 let l1 = &data[i1].11.as_bytes();
                 let l2 = &data[i2].11.as_bytes();
                 let ld = levenshtein(&l1, &l2) as usize;
-                let class = 1;
+                let class = 2;
                 let const1 = &data[i1].7;
                 let const2 = &data[i2].7;
-                println!("{class},{donor1},{donor2},{const1},{const2},{hd},{ld}");
+                if svg_file.len() == 0 {
+                    println!("{class},{donor1},{donor2},{const1},{const2},{hd},{ld}");
+                }
+                points.push((0, (0, 0, 0), hd as f32, ld as f32));
             }
         }
     }
@@ -170,9 +158,11 @@ fn main() {
                 let dref1 = data[k1].5;
                 let dref2 = data[k2].5;
                 if donor1 != donor2 && dref1 > 0 && dref2 > 0 {
-                    let hname1 = &data[k1].0;
-                    let hname2 = &data[k2].0;
-                    if hname1 == hname2 && data[k1].2 == data[k2].2 {
+                    let _hname1 = &data[k1].0;
+                    let _hname2 = &data[k2].0;
+                    if
+                    /* hname1 == hname2 && */
+                    data[k1].2 == data[k2].2 {
                         bucket.push((k1, k2));
                     }
                 }
@@ -199,7 +189,52 @@ fn main() {
             let donor2 = &data[i2].3;
             let const1 = &data[i1].7;
             let const2 = &data[i2].7;
-            println!("{class},{donor1},{donor2},{const1},{const2},{hd},{ld}");
+            if svg_file.len() == 0 {
+                println!("{class},{donor1},{donor2},{const1},{const2},{hd},{ld}");
+            }
+            points.push((0, (255, 0, 0), hd as f32, ld as f32));
         }
+    }
+
+    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+    // Make plot.
+
+    if svg_file.len() > 0 {
+        points.sort_by(|a, b| a.partial_cmp(b).unwrap());
+        let mut points2 = Vec::new();
+        let mut i = 0;
+        while i < points.len() {
+            let mut j = i + 1;
+            while j < points.len() {
+                if points[j] != points[i] {
+                    break;
+                }
+                j += 1;
+            }
+            let mut p = points[i].clone();
+            let n = j - i;
+            let r = (n as f64).sqrt();
+            p.0 = r.round() as u32;
+            points2.push(p);
+            i = j;
+        }
+        let mut svg = String::new();
+        plot_points(
+            &points2,
+            "heavy chain edit distance",
+            "light chain edit distance",
+            &mut svg,
+            true,
+            Some(String::new()),
+            None,
+            None,
+            None,
+            None,
+            None,
+        )
+        .unwrap();
+        let mut f = open_for_write_new![&svg_file];
+        fwrite!(f, "{}", svg);
     }
 }

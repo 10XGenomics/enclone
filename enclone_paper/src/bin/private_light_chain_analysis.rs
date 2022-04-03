@@ -11,39 +11,15 @@
 //         PCOLS=donors_cell,v_name1,v_name2,dref,cdr3_aa1,clonotype_ncells,const1,hcomp
 //         > per_cell_stuff
 
+use enclone_core::hcat;
 use io_utils::*;
 use pretty_trace::PrettyTrace;
 use rayon::prelude::*;
-use std::cmp::max;
 use std::collections::HashMap;
 use std::env;
 use std::io::BufRead;
 use string_utils::TextUtils;
 use tables::print_tabular_vbox;
-
-pub fn hcat(col1: &[String], col2: &[String], sep: usize) -> Vec<String> {
-    let mut cat = Vec::<String>::new();
-    let height = max(col1.len(), col2.len());
-    let mut width1 = 0;
-    for x in col1 {
-        width1 = max(width1, x.chars().count() + sep);
-    }
-    for i in 0..height {
-        let mut s = if i < col1.len() {
-            col1[i].clone()
-        } else {
-            String::new()
-        };
-        while s.chars().count() < width1 {
-            s += " ";
-        }
-        if i < col2.len() {
-            s += &col2[i];
-        }
-        cat.push(s);
-    }
-    cat
-}
 
 fn main() {
     PrettyTrace::new().on();
