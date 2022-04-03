@@ -103,7 +103,6 @@ fn main() {
     let mut randme = rand_chacha::ChaCha8Rng::seed_from_u64(123456789);
     let mut seen = HashSet::<(usize, usize)>::new();
     let mut points = Vec::<(u32, (u8, u8, u8), f32, f32)>::new();
-    const POINT_SIZE: u32 = 4;
     while seen.len() < SAMPLE {
         let i1 = randme.next_u64() as usize % data.len();
         let i2 = randme.next_u64() as usize % data.len();
@@ -124,30 +123,9 @@ fn main() {
                 let const1 = &data[i1].7;
                 let const2 = &data[i2].7;
                 println!("{class},{donor1},{donor2},{const1},{const2},{hd},{ld}");
-                points.push((POINT_SIZE, (0, 0, 0), hd as f32, ld as f32));
+                points.push((0, (0, 0, 0), hd as f32, ld as f32));
             }
         }
-    }
-    if svg_file.len() > 0 {
-        let mut svg = String::new();
-        plot_points(
-            &points,
-            "heavy chain edit distance",
-            "light chain edit distance",
-            &mut svg,
-            false,
-            Some(String::new()),
-            None,
-            None,
-            None,
-            None,
-            None,
-        ).unwrap();
-        let mut f = open_for_write_new![&svg_file];
-        fwrite!(f, "{}", svg);
-    }
-    if true {
-        std::process::exit(0);
     }
 
     // Define groups based on equal heavy chain gene names and CDRH3 amino acid sequences.
@@ -209,6 +187,46 @@ fn main() {
             let const1 = &data[i1].7;
             let const2 = &data[i2].7;
             println!("{class},{donor1},{donor2},{const1},{const2},{hd},{ld}");
+            points.push((0, (255, 0, 0), hd as f32, ld as f32));
         }
+    }
+
+    // Make plot.
+
+    if svg_file.len() > 0 {
+        points.sort_by(|a, b| a.partial_cmp(b).unwrap());
+        let mut points2 = Vec::new();
+        let mut i = 0;
+        while i < points.len() {
+            let mut j = i + 1;
+            while j < points.len() {
+                if points[j] != points[i] {
+                    break;
+                }
+                j += 1;
+            }
+            let mut p = points[i].clone();
+            let n = j - i;
+            let r = (n as f64).sqrt();
+            p.0 = r.round() as u32;
+            points2.push(p);
+            i = j;
+        }
+        let mut svg = String::new();
+        plot_points(
+            &points2,
+            "heavy chain edit distance",
+            "light chain edit distance",
+            &mut svg,
+            false,
+            Some(String::new()),
+            None,
+            None,
+            None,
+            None,
+            None,
+        ).unwrap();
+        let mut f = open_for_write_new![&svg_file];
+        fwrite!(f, "{}", svg);
     }
 }
