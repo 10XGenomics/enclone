@@ -142,7 +142,7 @@ fn main() {
 
     // Replace paralogs.
 
-    if !opt_no_paralogs {
+    if !opt_no_paralogs && !opt_reverse {
         for i in 0..data.len() {
             data[i].4 = data[i].4.replace("D", "");
         }
