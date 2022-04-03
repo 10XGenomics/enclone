@@ -3,12 +3,9 @@
 // Compute heavy chain similarity to light chain similarity, considering only memory cells from
 // different donors.
 //
-// enclone BCR=@test BUILT_IN CHAINS_EXACT=2 CHAINS=2 NOPRINT POUT=stdout PCELL ECHOC
-//         PCOLS=datasets_cell,donors_cell,v_name1,v_name2,dref,cdr3_aa1,clonotype_ncells,
-//         const1,hcomp,jun_ins,d1_name1,vj_aa_nl1,vj_aa_nl2
-//         > per_cell_stuff
-//
 // hl_similarity per_cell_stuff
+//
+// Second argument: option SVG file name for plot.
 //
 // Generate a CSV file as output with fields as follows.
 // class: 1 or 2; 2 has the additional restriction that the heavy chain gene names and
@@ -20,6 +17,7 @@
 // hd: heavy chain edit distance, excluding leader
 // ld: light chain edit distance, excluding leader.
 
+use enclone_tail::plot_points::plot_points;
 use io_utils::*;
 use pretty_trace::PrettyTrace;
 use rand_chacha;
@@ -27,7 +25,7 @@ use rand_chacha::rand_core::RngCore;
 use rand_chacha::rand_core::SeedableRng;
 use std::collections::{HashMap, HashSet};
 use std::env;
-use std::io::BufRead;
+use std::io::{BufRead, Write};
 use string_utils::TextUtils;
 use triple_accel::levenshtein;
 
@@ -40,6 +38,10 @@ fn main() {
     // Load data.
 
     let f = open_for_read![&args[1]];
+    let mut svg_file = String::new();
+    if args.len() > 2 {
+        svg_file = args[2].to_string();
+    }
     let mut first = true;
     let mut tof = HashMap::<String, usize>::new();
     let mut data = Vec::<(
@@ -65,19 +67,8 @@ fn main() {
         if first {
             for i in 0..fields.len() {
                 tof.insert(fields[i].to_string(), i);
-            }
-            assert!(tof.contains_key("datasets_cell"));
-            assert!(tof.contains_key("donors_cell"));
-            assert!(tof.contains_key("v_name1"));
-            assert!(tof.contains_key("v_name2"));
-            assert!(tof.contains_key("dref"));
-            assert!(tof.contains_key("cdr3_aa1"));
-            assert!(tof.contains_key("clonotype_ncells"));
-            assert!(tof.contains_key("const1"));
-            assert!(tof.contains_key("hcomp"));
-            assert!(tof.contains_key("jun_ins"));
-            assert!(tof.contains_key("d1_name1"));
             first = false;
+            }
         } else {
             data.push((
                 /* 0 */ fields[tof["v_name1"]].to_string(),
@@ -111,6 +102,8 @@ fn main() {
     const SAMPLE: usize = 5_000;
     let mut randme = rand_chacha::ChaCha8Rng::seed_from_u64(123456789);
     let mut seen = HashSet::<(usize, usize)>::new();
+    let mut points = Vec::<(u32, (u8, u8, u8), f32, f32)>::new();
+    const POINT_SIZE: u32 = 4;
     while seen.len() < SAMPLE {
         let i1 = randme.next_u64() as usize % data.len();
         let i2 = randme.next_u64() as usize % data.len();
@@ -127,12 +120,34 @@ fn main() {
                 let l1 = &data[i1].11.as_bytes();
                 let l2 = &data[i2].11.as_bytes();
                 let ld = levenshtein(&l1, &l2) as usize;
-                let class = 1;
+                let class = 2;
                 let const1 = &data[i1].7;
                 let const2 = &data[i2].7;
                 println!("{class},{donor1},{donor2},{const1},{const2},{hd},{ld}");
+                points.push((POINT_SIZE, (0, 0, 0), hd as f32, ld as f32));
             }
         }
+    }
+    if svg_file.len() > 0 {
+        let mut svg = String::new();
+        plot_points(
+            &points,
+            "heavy chain edit distance",
+            "light chain edit distance",
+            &mut svg,
+            false,
+            Some(String::new()),
+            None,
+            None,
+            None,
+            None,
+            None,
+        ).unwrap();
+        let mut f = open_for_write_new![&svg_file];
+        fwrite!(f, "{}", svg);
+    }
+    if true {
+        std::process::exit(0);
     }
 
     // Define groups based on equal heavy chain gene names and CDRH3 amino acid sequences.
