@@ -99,12 +99,6 @@ fn main() {
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-    // Replace paralogs.
-
-    for i in 0..data.len() {
-        data[i].4 = data[i].4.replace("D", "");
-    }
-
     // Print CSV header.
 
     println!("class,donor1,donor2,const1,const2,hd,ld");
