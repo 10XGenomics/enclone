@@ -14,7 +14,8 @@
 // Optional second arguments:
 // - FLOW: compute using flow classification of naive/memory rather than dref
 // - NAIVE: compute just some stats about naive cells
-// - NO_PARALOGS: do not make paralogs equivalent.
+// - NO_PARALOGS: do not make paralogs equivalent
+// - REVERSE: reverse role of heavy and light.
 
 use enclone_core::hcat;
 use enclone_core::test_def::test_donor_id;
@@ -65,6 +66,11 @@ fn main() {
     } else {
         false
     };
+    let opt_reverse = if args.len() >= 3 && args[2] == "REVERSE" {
+        true
+    } else {
+        false
+    };
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -98,13 +104,28 @@ fn main() {
                 tof.insert(fields[i].to_string(), i);
             }
             first = false;
-        } else {
+        } else if !opt_reverse {
             data.push((
                 /* 0 */ fields[tof["v_name1"]].to_string(),
                 /* 1 */ fields[tof["cdr3_aa1"]].len(),
                 /* 2 */ fields[tof["cdr3_aa1"]].to_string().as_bytes().to_vec(),
                 /* 3 */ fields[tof["donors_cell"]].to_string(),
                 /* 4 */ fields[tof["v_name2"]].to_string(),
+                /* 5 */ fields[tof["dref"]].force_usize(),
+                /* 6 */ fields[tof["jun_mat"]].force_usize(),
+                /* 7 */ fields[tof["jun_sub"]].force_usize(),
+                /* 8 */ fields[tof["hcomp"]].force_usize(),
+                /* 9 */ fields[tof["jun_ins"]].force_usize(),
+                /* 10 */ fields[tof["datasets_cell"]].force_usize(),
+                /* 11 */ fields[tof["d1_name1"]].to_string(),
+            ));
+        } else {
+            data.push((
+                /* 0 */ fields[tof["v_name2"]].to_string(),
+                /* 1 */ fields[tof["cdr3_aa2"]].len(),
+                /* 2 */ fields[tof["cdr3_aa2"]].to_string().as_bytes().to_vec(),
+                /* 3 */ fields[tof["donors_cell"]].to_string(),
+                /* 4 */ fields[tof["v_name1"]].to_string(),
                 /* 5 */ fields[tof["dref"]].force_usize(),
                 /* 6 */ fields[tof["jun_mat"]].force_usize(),
                 /* 7 */ fields[tof["jun_sub"]].force_usize(),
