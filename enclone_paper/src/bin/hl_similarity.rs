@@ -8,8 +8,7 @@
 // Second argument: option SVG file name for plot.
 //
 // Generate a CSV file as output with fields as follows.
-// class: 1 or 2; 2 has the additional restriction that the heavy chain gene names and
-//        CDRH3 lengths are the same
+// class: 1 or 2; 2 has the additional restriction that the CDRH3 lengths are the same
 // donor1: d1 or d2 or d3 or d4
 // donor2: d1 or d2 or d3 or d4
 // const1: const region name for first cell
@@ -122,7 +121,9 @@ fn main() {
                 let class = 2;
                 let const1 = &data[i1].7;
                 let const2 = &data[i2].7;
-                println!("{class},{donor1},{donor2},{const1},{const2},{hd},{ld}");
+                if svg_file.len() == 0 {
+                    println!("{class},{donor1},{donor2},{const1},{const2},{hd},{ld}");
+                }
                 points.push((0, (0, 0, 0), hd as f32, ld as f32));
             }
         }
@@ -157,8 +158,8 @@ fn main() {
                 let dref1 = data[k1].5;
                 let dref2 = data[k2].5;
                 if donor1 != donor2 && dref1 > 0 && dref2 > 0 {
-                    let hname1 = &data[k1].0;
-                    let hname2 = &data[k2].0;
+                    let _hname1 = &data[k1].0;
+                    let _hname2 = &data[k2].0;
                     if /* hname1 == hname2 && */ data[k1].2 == data[k2].2 {
                         bucket.push((k1, k2));
                     }
@@ -186,10 +187,14 @@ fn main() {
             let donor2 = &data[i2].3;
             let const1 = &data[i1].7;
             let const2 = &data[i2].7;
-            println!("{class},{donor1},{donor2},{const1},{const2},{hd},{ld}");
+            if svg_file.len() == 0 {
+                println!("{class},{donor1},{donor2},{const1},{const2},{hd},{ld}");
+            }
             points.push((0, (255, 0, 0), hd as f32, ld as f32));
         }
     }
+
+    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
     // Make plot.
 
