@@ -99,7 +99,7 @@ fn main() {
     // Select pairs of cells having different donors at random.  Compute their heavy and light
     // chain edit distances.
 
-    const SAMPLE: usize = 5_000;
+    const SAMPLE: usize = 2_000;
     let mut randme = rand_chacha::ChaCha8Rng::seed_from_u64(123456789);
     let mut seen = HashSet::<(usize, usize)>::new();
     let mut points = Vec::<(u32, (u8, u8, u8), f32, f32)>::new();
@@ -159,7 +159,7 @@ fn main() {
                 if donor1 != donor2 && dref1 > 0 && dref2 > 0 {
                     let hname1 = &data[k1].0;
                     let hname2 = &data[k2].0;
-                    if hname1 == hname2 && data[k1].2 == data[k2].2 {
+                    if /* hname1 == hname2 && */ data[k1].2 == data[k2].2 {
                         bucket.push((k1, k2));
                     }
                 }
@@ -218,7 +218,7 @@ fn main() {
             "heavy chain edit distance",
             "light chain edit distance",
             &mut svg,
-            false,
+            true,
             Some(String::new()),
             None,
             None,
