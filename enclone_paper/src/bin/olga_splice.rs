@@ -142,7 +142,8 @@ fn main() {
     results.par_iter_mut().for_each(|res| {
         let i = res.0;
         let mut log = Vec::<u8>::new();
-        fwriteln!(log,
+        fwriteln!(
+            log,
             "\n-------------------------------------------------------------------------\
             --------------------------"
         );
@@ -233,9 +234,9 @@ fn main() {
             };
         } else {
             fwriteln!(log, "CDR3 = {}", strme(&cdr3x[0].1));
-    
+
             // Analyze the junction, following hcomp.rs.
-    
+
             let mut vref = vseq.clone();
             let cdr3_start = cdr3x[0].0;
             let vstart = cdr3_start - 2;
@@ -275,13 +276,10 @@ fn main() {
                 };
             } else {
                 let j_ref_id = j_ref_id.unwrap();
-                fwriteln!(log, "\nO:{},{},{},{}\n",
-                    cdr3_dna[i],
-                    cdr3[i],
-                    hv[i],
-                    hj[i],
-                );
-                fwriteln!(log, "Z:{},{},{},{}\n",
+                fwriteln!(log, "\nO:{},{},{},{}\n", cdr3_dna[i], cdr3[i], hv[i], hj[i],);
+                fwriteln!(
+                    log,
+                    "Z:{},{},{},{}\n",
                     cdr3_dna[i],
                     cdr3[i],
                     refdata.name[v_ref_id],
@@ -499,12 +497,13 @@ fn main() {
     let mut total = 0;
     for k in 0..cdrh3_lens.len() {
         let len = cdrh3_lens[k];
-        bins[len/5] += 1;
+        bins[len / 5] += 1;
         total += 1;
     }
     for i in 0..bins.len() {
         if bins[i] > 0 {
-            println!("{}-{} ==> {:.1}%",
+            println!(
+                "{}-{} ==> {:.1}%",
                 5 * i,
                 5 * (i + 1),
                 100.0 * bins[i] as f64 / total as f64
@@ -515,7 +514,8 @@ fn main() {
     for i in 0..jun_ins.len() {
         total += jun_ins[i];
     }
-    println!("mean junction insertion length = {:.1}\n",
+    println!(
+        "mean junction insertion length = {:.1}\n",
         total as f64 / jun_ins.len() as f64
     );
     if ds_all.len() > 0 {
@@ -565,14 +565,21 @@ fn main() {
         println!("\nsubstitution rates");
         for i in 0..bins.len() {
             if bins[i] > 0 {
-                println!("{}-{}% ==> {:.1}%", 
+                println!(
+                    "{}-{}% ==> {:.1}%",
                     5 * i,
                     5 * (i + 1),
                     100.0 * bins[i] as f64 / rates.len() as f64
                 );
             }
         }
-        println!("mean substitution rate = {:.1}%", 100.0 * total as f64 / rates.len() as f64);
-        println!("\nDD fraction = {:.2}%\n", 100.0 * dd as f64 / drefnames.len() as f64);
+        println!(
+            "mean substitution rate = {:.1}%",
+            100.0 * total as f64 / rates.len() as f64
+        );
+        println!(
+            "\nDD fraction = {:.2}%\n",
+            100.0 * dd as f64 / drefnames.len() as f64
+        );
     }
 }

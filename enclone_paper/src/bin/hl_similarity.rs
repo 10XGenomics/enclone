@@ -66,7 +66,7 @@ fn main() {
         if first {
             for i in 0..fields.len() {
                 tof.insert(fields[i].to_string(), i);
-            first = false;
+                first = false;
             }
         } else {
             data.push((
@@ -160,7 +160,9 @@ fn main() {
                 if donor1 != donor2 && dref1 > 0 && dref2 > 0 {
                     let _hname1 = &data[k1].0;
                     let _hname2 = &data[k2].0;
-                    if /* hname1 == hname2 && */ data[k1].2 == data[k2].2 {
+                    if
+                    /* hname1 == hname2 && */
+                    data[k1].2 == data[k2].2 {
                         bucket.push((k1, k2));
                     }
                 }
@@ -230,7 +232,8 @@ fn main() {
             None,
             None,
             None,
-        ).unwrap();
+        )
+        .unwrap();
         let mut f = open_for_write_new![&svg_file];
         fwrite!(f, "{}", svg);
     }

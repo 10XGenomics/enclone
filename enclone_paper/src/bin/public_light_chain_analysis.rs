@@ -197,13 +197,14 @@ fn main() {
         let dref = data[k].5;
         if dref == 0 {
             let len = data[k].1;
-            bins[len/5] += 1;
+            bins[len / 5] += 1;
             total += 1;
         }
     }
     for i in 0..bins.len() {
         if bins[i] > 0 {
-            println!("{}-{} ==> {:.1}%", 
+            println!(
+                "{}-{} ==> {:.1}%",
                 5 * i,
                 5 * (i + 1),
                 100.0 * bins[i] as f64 / total as f64

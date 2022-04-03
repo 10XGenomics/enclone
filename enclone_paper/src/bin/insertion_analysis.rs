@@ -77,7 +77,7 @@ fn main() {
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-    // For naive cells with junction insertion length zero, show the substitution and 
+    // For naive cells with junction insertion length zero, show the substitution and
     // substitution rate distribution.
 
     println!("\nsubstitutions for naive cells with junction insertion length 0\n");
@@ -129,7 +129,8 @@ fn main() {
             }
             for i in 0..bins.len() {
                 if bins[i] > 0 {
-                    println!("{}-{}% ==> {:.1}%", 
+                    println!(
+                        "{}-{}% ==> {:.1}%",
                         5 * i,
                         5 * (i + 1),
                         100.0 * bins[i] as f64 / rates.len() as f64
@@ -138,7 +139,10 @@ fn main() {
             }
             println!("");
         }
-        println!("mean substitution rate = {:.2}%", 100.0 * total_rates / rates.len() as f64);
+        println!(
+            "mean substitution rate = {:.2}%",
+            100.0 * total_rates / rates.len() as f64
+        );
     }
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -184,14 +188,18 @@ fn main() {
     }
     for i in 0..bins.len() {
         if bins[i] > 0 {
-            println!("{}-{}% ==> {:.1}%", 
+            println!(
+                "{}-{}% ==> {:.1}%",
                 5 * i,
                 5 * (i + 1),
                 100.0 * bins[i] as f64 / rates.len() as f64
             );
         }
     }
-    println!("mean substitution rate = {:.1}%", 100.0 * total as f64 / rates.len() as f64);
+    println!(
+        "mean substitution rate = {:.1}%",
+        100.0 * total as f64 / rates.len() as f64
+    );
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
