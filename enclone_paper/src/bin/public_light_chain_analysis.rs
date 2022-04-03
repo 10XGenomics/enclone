@@ -13,7 +13,8 @@
 //
 // Optional second arguments:
 // - FLOW: compute using flow classification of naive/memory rather than dref
-// - NAIVE: compute just some stats about naive cells.
+// - NAIVE: compute just some stats about naive cells
+// - NO_PARALOGS: do not make paralogs equivalent.
 
 use enclone_core::hcat;
 use enclone_core::test_def::test_donor_id;
@@ -55,6 +56,11 @@ fn main() {
         false
     };
     let opt_naive = if args.len() >= 3 && args[2] == "NAIVE" {
+        true
+    } else {
+        false
+    };
+    let opt_no_paralogs = if args.len() >= 3 && args[2] == "NO_PARALOGS" {
         true
     } else {
         false
@@ -115,8 +121,10 @@ fn main() {
 
     // Replace paralogs.
 
-    for i in 0..data.len() {
-        data[i].4 = data[i].4.replace("D", "");
+    if !opt_no_paralogs {
+        for i in 0..data.len() {
+            data[i].4 = data[i].4.replace("D", "");
+        }
     }
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
