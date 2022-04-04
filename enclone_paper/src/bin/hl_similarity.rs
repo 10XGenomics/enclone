@@ -101,7 +101,6 @@ fn main() {
 
     // Define groups based on equal CDRH3 amino acid sequences.
 
-    println!("making groups"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     let mut bounds = Vec::<(usize, usize)>::new();
     let mut i = 0;
     while i < data.len() {
@@ -118,7 +117,6 @@ fn main() {
 
     // Find pairs.
 
-    println!("finding pairs"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     let mut bucket = Vec::<(usize, usize)>::new();
     for m in 0..bounds.len() {
         let i = bounds[m].0;
@@ -141,11 +139,9 @@ fn main() {
             }
         }
     }
-    println!("bucket has size {}", bucket.len()); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
     // Add points.
 
-    println!("adding points"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     let mut randme = rand_chacha::ChaCha8Rng::seed_from_u64(123456789);
     let mut points2 = Vec::<(u32, (u8, u8, u8), f32, f32)>::new();
     let mut x = Vec::<f64>::new();
@@ -154,7 +150,7 @@ fn main() {
     let mut select = vec![false; bucket.len()];
     let mut count = 0;
     loop {
-        if count == bucket.len() / 2 {
+        if count == bucket.len() / 3 {
             break;
         }
         let m = randme.next_u64() as usize % bucket.len();
@@ -230,7 +226,6 @@ fn main() {
     // Select pairs of cells having different donors at random.  Compute their heavy and light
     // chain edit distances.
 
-    println!("first set"); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     let mut seen = HashSet::<(usize, usize)>::new();
     let mut points1 = Vec::<(u32, (u8, u8, u8), f32, f32)>::new();
     let mut lds = Vec::<usize>::new();
