@@ -91,7 +91,9 @@ fn main() {
 
     // Print CSV header.
 
-    println!("class,donor1,donor2,const1,const2,hd,ld");
+    if svg_file.len() == 0 {
+        println!("class,donor1,donor2,const1,const2,hd,ld");
+    }
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
