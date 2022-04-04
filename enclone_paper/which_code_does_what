@@ -1,0 +1,79 @@
+
+A single command was used to generate a file per_cell_stuff that was used by other commands:
+
+enclone BCR=@test BUILT_IN CHAINS_EXACT=2 CHAINS=2 NOPRINT POUT=stdout PCELL PCOLS=donors_cell,v_name1,v_name2,dref,cdr3_aa1,cdr3_aa2, jun_mat,jun_sub,jun_ins,hcomp,d1_name1,vj_aa_nl1,vj_aa_nl2 > per_cell_stuff
+
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+FIGURE 1
+
+public_light_chain_analysis per_cell_stuff
+ 
+FIGURE 2 
+
+private_light_chain_analysis per_cell_stuff
+
+FIGURE 3 
+
+(a) weighted_light_chain_analysis per_cell_stuff
+
+(b) enclone BCR=@test MIN_GROUP_DONORS=2 SUMMARY MIN_CHAINS_EXACT=2 CHAINS=2 
+GROUP=v_heavy_refname,cdr3_heavy_len,cdr3_aa_heavy≥90% BUILT_IN NOPRINT KEEP_CLONO_IF_CELL_MIN=”dref>0”
+
+and the same with the group argument changed to
+
+GROUP=v_heavy_refname,cdr3_heavy_len,cdr3_aa_heavy≥90%:h:@mat.575142
+
+in both cases with several values substituted for 90.
+
+(c) enclone BCR=@test MIN_CHAINS_EXACT=2 CHAINS=2 BUILT_IN SUMMARY
+
+GROUP=v_heavy_refname,cdr3_heavy_len,cdr3_aa_heavy≥95%:h:@mat.575142 HONEY=out=plot.svg,color=catvar,v_name2+donors_cell,maxcat:10 GROUP_CDR3=CARRVATKPVYCFDYW NOPRINT KEEP_CLONO_IF_CELL_MIN="dref>0" POUT=stdout PCOLS=cdr3_aa1,cdr3_aa2 PCELL NOPRINT
+
+which generated a plot of cells as plot.svg and generated CDR3 values as standard output, from 
+which the logo plots were created.
+
+FIGURE 4
+
+(a) is from enclone BCR=@test3 CDR3=CARDGGYGSGSYDAFDIW BUILT_IN JALIGN1
+
+(b-e) are from:
+
+insertion_analysis per_cell_stuff
+public_light_chain_analysis per_cell_stuff
+olga_splice hpgen_sim.csv
+where hpgen_sim.csv is the file produced by OLGA.
+
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+LIGHT CHAIN COHERENCE CALCULATED INSTEAD USING FLOW DEFINITIONS OF NAIVE AND MEMORY
+
+public_light_chain_analysis per_cell_stuff FLOW
+
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+ 
+EXTENDED TABLE 1
+
+public_light_chain_analysis per_cell_stuff
+
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+EXTENDED FIGURE 1
+
+public_light_chain_analysis per_cell_stuff REVERSE
+
+EXTENDED FIGURE 2
+
+public_light_chain_analysis per_cell_stuff NO_PARALOGS
+
+EXTENDED FIGURE 3
+
+hl_similarity per_cell_stuff
+
+EXTENDED FIGURE 4
+
+light_chain_coherence per_cell_stuff
+
+EXTENDED FIGURE 5
+
+insertion_analysis per_cell_stuff

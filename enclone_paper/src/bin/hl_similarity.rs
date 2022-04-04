@@ -129,7 +129,7 @@ fn main() {
         }
     }
 
-    // Define groups based on equal heavy chain gene names and CDRH3 amino acid sequences.
+    // Define groups based on equal CDRH3 amino acid sequences.
 
     let mut bounds = Vec::<(usize, usize)>::new();
     let mut i = 0;
@@ -170,8 +170,10 @@ fn main() {
         }
     }
 
-    // The same, but now assume that heavy chain gene names and CDRH3 lengths are the same.
+    // Add points.
 
+    let mut x = Vec::<f64>::new();
+    let mut y = Vec::<f64>::new();
     while seen.len() < 2 * SAMPLE {
         let m = randme.next_u64() as usize % bucket.len();
         let i1 = bucket[m].0;
@@ -184,6 +186,8 @@ fn main() {
             let l1 = &data[i1].11.as_bytes();
             let l2 = &data[i2].11.as_bytes();
             let ld = levenshtein(&l1, &l2) as usize;
+            x.push(hd as f64);
+            y.push(ld as f64);
             let class = 2;
             let donor1 = &data[i1].3;
             let donor2 = &data[i2].3;
@@ -195,6 +199,34 @@ fn main() {
             points.push((0, (255, 0, 0), hd as f32, ld as f32));
         }
     }
+
+    // Compute R^2.
+
+    let n = x.len();
+    let mean_x = x.iter().sum::<f64>() / n as f64;
+    let mean_y = y.iter().sum::<f64>() / n as f64;
+    let mut sd_x = 0.0;
+    for i in 0..n {
+        sd_x += (x[i] - mean_x) * (x[i] - mean_x);
+    }
+    sd_x = sd_x / n as f64;
+    sd_x = sd_x.sqrt();
+    let mut sd_y = 0.0;
+    for i in 0..n {
+        sd_y += (y[i] - mean_y) * (y[i] - mean_y);
+    }
+    sd_y = sd_y / n as f64;
+    sd_y = sd_y.sqrt();
+    println!("\nx has mean = {mean_x:.1}, sd = {sd_x:.1}");
+    println!("y has mean = {mean_y:.1}, sd = {sd_y:.1}");
+    let mut cov = 0.0;
+    for i in 0..n {
+        cov += (x[i] - mean_x) * (y[i] - mean_y);
+    }
+    cov /= n as f64;
+    let pearson_correl_coeff = cov / (sd_x * sd_y);
+    let r2 = pearson_correl_coeff * pearson_correl_coeff;
+    println!("R^2 = {r2:.3}\n");
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
