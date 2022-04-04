@@ -16,6 +16,7 @@ fn main() {
     PrettyTrace::new().on();
     let args: Vec<String> = env::args().collect();
     let f = open_for_read![&args[1]];
+    // Data = pairs of heavy chain gene names and CDRH3 amino acid sequences.
     let mut data = Vec::<(String, String)>::new();
     for line in f.lines() {
         let s = line.unwrap();
@@ -34,13 +35,14 @@ fn main() {
             start1 += counts[i];
         }
         let stop1 = start1 + counts[m1];
+        // [start1, stop1) are the range of data entries for donor m1+1
         for m2 in m1 + 1..4 {
             let mut start2 = 0;
             for i in 0..m2 {
                 start2 += counts[i];
             }
             let stop2 = start2 + counts[m2];
-
+            // [start2, stop2) are the range of data entries for donor m2+1
             let mut results = Vec::<(usize, Vec<usize>)>::new();
             for k1 in start1..stop1 {
                 results.push((k1, Vec::new()));
@@ -49,6 +51,7 @@ fn main() {
                 let k1 = res.0;
                 for k2 in start2..stop2 {
                     if data[k1] == data[k2] {
+                        // push the entries for both cells
                         res.1.push(k1);
                         res.1.push(k2);
                     }
