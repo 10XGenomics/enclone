@@ -19,7 +19,6 @@ olga-generate_sequences --humanIGH -n 1408939 --seed=600 -d ',' -o hpgen_sim_r6.
 olga-generate_sequences --humanIGH -n 1408939 --seed=700 -d ',' -o hpgen_sim_r7.csv
 olga-generate_sequences --humanIGH -n 1408939 --seed=800 -d ',' -o hpgen_sim_r8.csv
 olga-generate_sequences --humanIGH -n 1408939 --seed=900 -d ',' -o hpgen_sim_r9.csv
-olga-generate_sequences --humanIGH -n 1408939 --seed=1000 -d ',' -o hpgen_sim_r10.csv
 
 ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
