@@ -27,6 +27,15 @@ fn main() {
         x.remove("info").unwrap();
         x.remove("start_codon_pos").unwrap();
         x.remove("stop_codon_pos").unwrap();
+        x.remove("cdr1").unwrap();
+        x.remove("cdr2").unwrap();
+        x.remove("fwr1").unwrap();
+        x.remove("fwr2").unwrap();
+        x.remove("fwr3").unwrap();
+        x.remove("fwr4").unwrap();
+        x.remove("validated_umis").unwrap();
+        x.remove("non_validated_umis").unwrap();
+        x.remove("invalidated_umis").unwrap();
         entries[i] = serde_json::Value::Object(x);
     }
     let mut f = open_for_write_new![&args[2]];
