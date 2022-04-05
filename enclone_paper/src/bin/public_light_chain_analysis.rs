@@ -624,7 +624,7 @@ fn main() {
         let mut rows = Vec::<Vec<String>>::new();
         let row = vec![
             "CDRH3-AA".to_string(),
-            "cell pairs".to_string(),
+            "log10(cell pairs)".to_string(),
             "any".to_string(),
             "d1,d2".to_string(),
             "d1,d3".to_string(),
@@ -640,7 +640,7 @@ fn main() {
             let mut row = vec![format!("{}%", 10 * j)];
             let n = if xpass == 1 { res[0][j].2 + res[0][j].3 } 
                 else { res[0][j].0 + res[0][j].1 };
-            row.push(add_commas(n));
+            row.push(format!("{:.1}", (n as f64).log10()));
             for pass in 0..7 {
                 if xpass == 1 {
                     let n = res[pass][j].2 + res[pass][j].3;
@@ -670,7 +670,7 @@ fn main() {
         logr[xpass] = r;
     }
     print!("\n both cells have dref > 0");
-    print!("                                           ");
+    print!("                                                 ");
     println!("both cells have dref = 0");
     let r = hcat(&logr[0], &logr[1], 3);
     for i in 0..r.len() {
