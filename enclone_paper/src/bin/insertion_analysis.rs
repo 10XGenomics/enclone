@@ -426,12 +426,12 @@ fn main() {
     }
     let mut n_big = 0;
     let mut same_big = 0;
-    for i in 5..n.len() {
+    for i in 8..n.len() {
         n_big += n[i];
         same_big += same[i];
     }
     println!(
-        "ins >= 5 ==> coherence = {:.1}% ({} of {})",
+        "ins >= 8 ==> coherence = {:.1}% ({} of {})",
         100.0 * same_big as f64 / n_big as f64,
         same_big,
         n_big,
@@ -508,7 +508,7 @@ fn main() {
             insertion length",
             min_ident
         );
-        for i in 0..=9 {
+        for i in 0..=7 {
             if n[i] > 0 {
                 println!(
                     "ins = {}  ==> coherence = {:.1}% ({} of {})",
@@ -521,12 +521,12 @@ fn main() {
         }
         let mut n_big = 0;
         let mut same_big = 0;
-        for i in 10..n.len() {
+        for i in 8..n.len() {
             n_big += n[i];
             same_big += same[i];
         }
         println!(
-            "ins >= 10 ==> coherence = {:.1}% ({} of {})",
+            "ins >= 8 ==> coherence = {:.1}% ({} of {})",
             100.0 * same_big as f64 / n_big as f64,
             same_big,
             n_big,
