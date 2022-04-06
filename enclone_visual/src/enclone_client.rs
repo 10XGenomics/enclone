@@ -152,6 +152,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
 
     // For Linux, pretest for existence of libXcursor.so.
 
+    /*
     if cfg!(target_os = "linux") {
         let o = Command::new("/sbin/ldconfig")
             .arg("-p")
@@ -174,6 +175,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             std::process::exit(1);
         }
     }
+    */
 
     // Announce.
 
