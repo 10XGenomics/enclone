@@ -445,7 +445,7 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                     Message::ArchiveName(x, i)
                 })
                 .width(Units(300))
-                .max_width(300)
+                // .max_width(300)
                 .padding(2),
             );
             row = row.push(Space::with_width(Units(8)));
