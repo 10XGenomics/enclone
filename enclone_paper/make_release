@@ -1,0 +1,64 @@
+#!/bin/csh
+
+# script for packing the paper data into a tarball
+# not tested in its entirety
+
+rm -rf release
+mkdir release
+
+cp -pr 1279049 1279050 1279051 1279052 1279053 1279054 1279055 1279057 1279058 1279059 1279060 1279061 1279062 1279063 1279065 1279066 1279067 1279068 1279069 1279070 1279071 1279072 1279073 1279074 1279075 1279076 1279077 1279078 1279079 1279080 1287144 1287145 1287146 1287147 1287148 1287149 1287150 1287151 1287152 1287153 1287154 1287155 1287156 1287157 1287158 1287159 1287160 1287161 1287162 1287163 1287164 1287165 1287166 1287167 1287168 1287169 1287170 1287171 1287172 1287173 1287174 1287175 1287176 1287177 1287178 1287179 1287180 1287181 1287182 1287183 1287184 1287185 1287186 1287187 1287188 1287189 1287190 1287191 1287192 1287193 1287194 1287195 1287196 1287197 1287198 1287199 1287200 1287201 1287202 1287203 1287204 1287205 1287206 1287207 release
+
+cd release
+
+rm */_invocation
+rm */_log
+rm -r */outs/multi_web_summary_json
+rm */outs/count_pd/metrics*.json
+rm */outs/count_pd/web*
+rm -rf */outs/count_pd/analysis_csv/sample_quality_metrics
+
+rm -rf */outs/count_pd/analysis_csv/cb2_cell_calling
+rm -rf */outs/count_pd/analysis_csv/celltypes
+
+# note that enclone requires metrics_summary.csv or metrics_summary_csv.csv
+
+foreach d (*)
+    mv $d/outs/count_pd $d/outs/count
+    mv $d/outs/count/analysis_csv $d/outs/count/analysis
+    cd $d/outs/per_sample_outs
+    mv * $d
+    mv $d/count/analysis_csv $d/count/analysis
+    cd ../../..
+end
+
+# create release_tiny and also shrink files in release
+
+cd ..
+rm -rf release_tiny
+mkdir release_tiny
+cd release
+foreach x (1*)
+    mkdir ../release_tiny/$x
+    mkdir ../release_tiny/$x/outs
+    cd $x/outs/multi/vdj_b
+    unlz4 -f all_contig_annotations.json.lz4
+    echo "shrinking $x"
+    shrink_json all_contig_annotations.json shrunk.json
+    if ( $status != 0 ) then
+        exit 1
+    endif
+    mv shrunk.json all_contig_annotations.json
+    lz4 -9 -BD -f all_contig_annotations.json
+    rm all_contig_annotations.json
+    cd ../../../..
+    cp -pr $x/outs/multi ../release_tiny/$x/outs
+end
+cd ..
+tar cf - release_tiny | gzip -9 > release_tiny.tar.gz
+mv release_tiny.tar.gz release
+
+# tarring and gzipping is very slow
+
+cd ..
+tar cf - release | gzip > release.tar.gz
+mv release.tar.gz release

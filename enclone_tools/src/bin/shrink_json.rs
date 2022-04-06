@@ -19,14 +19,23 @@ fn main() {
     let entries = &mut v.as_array().unwrap().clone();
     for i in 0..entries.len() {
         let mut x = entries[i].as_object().unwrap().clone();
-        x.remove("aa_sequence").unwrap();
-        x.remove("annotations").unwrap();
-        x.remove("clonotype").unwrap();
-        x.remove("frame").unwrap();
-        let _ = x.remove("full_length");
-        x.remove("info").unwrap();
-        x.remove("start_codon_pos").unwrap();
-        x.remove("stop_codon_pos").unwrap();
+        x.remove("aa_sequence");
+        x.remove("annotations");
+        x.remove("clonotype");
+        x.remove("frame");
+        x.remove("full_length");
+        x.remove("info");
+        x.remove("start_codon_pos");
+        x.remove("stop_codon_pos");
+        x.remove("cdr1");
+        x.remove("cdr2");
+        x.remove("fwr1");
+        x.remove("fwr2");
+        x.remove("fwr3");
+        x.remove("fwr4");
+        x.remove("validated_umis");
+        x.remove("non_validated_umis");
+        x.remove("invalidated_umis");
         entries[i] = serde_json::Value::Object(x);
     }
     let mut f = open_for_write_new![&args[2]];

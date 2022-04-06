@@ -479,7 +479,7 @@ fn main() {
         100.0 * dd_naive as f64 / total[1] as f64,
     );
 
-    // Define groups based on equal heavy chain gene names and CDR3H length.
+    // Define groups based on equal heavy chain gene names and CDRH3 length.
     // Plus placeholder for results, see next.
 
     let mut bounds = Vec::<(usize, usize, Vec<Vec<(usize, usize, usize, usize)>>)>::new();
@@ -498,6 +498,8 @@ fn main() {
         bounds2.push((i, j, vec![0; 100], vec![0; 100]));
         i = j;
     }
+
+    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
     // Results = for each percent identity, rounded down:
     // 1. count for equal light chain gene names and dref1 = 0 and dref2 = 0
@@ -612,7 +614,7 @@ fn main() {
 
     println!(
         "\nConsider two cells from different donors that have the same heavy chain gene name \
-        and CDR3H length."
+        and CDRH3 length."
     );
     println!("\nColumn 1: percent identity rounded down to nearest ten percent");
     println!("Column > 1: probability that light chain gene names are the same");
@@ -621,7 +623,8 @@ fn main() {
         let mut log = String::new();
         let mut rows = Vec::<Vec<String>>::new();
         let row = vec![
-            "CDR3H-AA".to_string(),
+            "CDRH3-AA".to_string(),
+            "log10(cell pairs)".to_string(),
             "any".to_string(),
             "d1,d2".to_string(),
             "d1,d3".to_string(),
@@ -632,9 +635,15 @@ fn main() {
         ];
         rows.push(row);
         for j in 0..=10 {
-            let row = vec!["\\hline".to_string(); 8];
+            let row = vec!["\\hline".to_string(); 9];
             rows.push(row);
             let mut row = vec![format!("{}%", 10 * j)];
+            let n = if xpass == 1 {
+                res[0][j].2 + res[0][j].3
+            } else {
+                res[0][j].0 + res[0][j].1
+            };
+            row.push(format!("{:.1}", (n as f64).log10()));
             for pass in 0..7 {
                 if xpass == 1 {
                     let n = res[pass][j].2 + res[pass][j].3;
@@ -652,7 +661,7 @@ fn main() {
             &mut log,
             &rows,
             0,
-            &b"l|r|r|r|r|r|r|r".to_vec(),
+            &b"l|r|r|r|r|r|r|r|r".to_vec(),
             false,
             false,
         );
@@ -664,7 +673,7 @@ fn main() {
         logr[xpass] = r;
     }
     print!("\n both cells have dref > 0");
-    print!("                               ");
+    print!("                                                 ");
     println!("both cells have dref = 0");
     let r = hcat(&logr[0], &logr[1], 3);
     for i in 0..r.len() {

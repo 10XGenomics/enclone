@@ -258,6 +258,8 @@ fn main() {
         }
     }
 
+    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
     // Compute mean jun_ins for various classes of cells.
 
     let mut n_memory = 0;
@@ -376,6 +378,8 @@ fn main() {
         }
     }
 
+    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
     // Compute light chain coherence for memory cells as a function of insertion length.
 
     let mut n = vec![0; 100];
@@ -422,16 +426,18 @@ fn main() {
     }
     let mut n_big = 0;
     let mut same_big = 0;
-    for i in 5..n.len() {
+    for i in 8..n.len() {
         n_big += n[i];
         same_big += same[i];
     }
     println!(
-        "ins >= 5 ==> coherence = {:.1}% ({} of {})",
+        "ins >= 8 ==> coherence = {:.1}% ({} of {})",
         100.0 * same_big as f64 / n_big as f64,
         same_big,
         n_big,
     );
+
+    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
     // Define groups based on equal heavy chain gene names and CDR3H length.
     // Plus placeholder for results, see next.
@@ -453,71 +459,78 @@ fn main() {
         i = j;
     }
 
-    // Compute light chain coherence for memory cells as a function of insertion length, as
-    // earlier but now using 90% CDRH3 identity.
+    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-    bounds2.par_iter_mut().for_each(|res| {
-        let i = res.0;
-        let j = res.1;
-        for k1 in i..j {
-            for k2 in k1 + 1..j {
-                let mut samex = 0;
-                for m in 0..data[k1].2.len() {
-                    if data[k1].2[m] == data[k2].2[m] {
-                        samex += 1;
+    // Compute light chain coherence for memory cells as a function of insertion length, as
+    // earlier but now using 90% or 80% CDRH3 identity.
+
+    for pass in 1..=2 {
+        let min_ident = if pass == 1 { 90 } else { 80 };
+        bounds2.par_iter_mut().for_each(|res| {
+            let i = res.0;
+            let j = res.1;
+            for k1 in i..j {
+                for k2 in k1 + 1..j {
+                    let mut samex = 0;
+                    for m in 0..data[k1].2.len() {
+                        if data[k1].2[m] == data[k2].2[m] {
+                            samex += 1;
+                        }
                     }
-                }
-                let ident = 100.0 * samex as f64 / data[k1].2.len() as f64;
-                let ident = ident.floor() as usize;
-                if ident >= 90 {
-                    if data[k1].5 > 0 && data[k2].5 > 0 {
-                        if data[k1].3 != data[k2].3 {
-                            let ins = data[k1].9;
-                            if ins == data[k2].9 {
-                                res.3[ins] += 1;
-                                if data[k1].4 == data[k2].4 {
-                                    res.2[ins] += 1;
+                    let ident = 100.0 * samex as f64 / data[k1].2.len() as f64;
+                    let ident = ident.floor() as usize;
+                    if ident >= min_ident {
+                        if data[k1].5 > 0 && data[k2].5 > 0 {
+                            if data[k1].3 != data[k2].3 {
+                                let ins = data[k1].9;
+                                if ins == data[k2].9 {
+                                    res.3[ins] += 1;
+                                    if data[k1].4 == data[k2].4 {
+                                        res.2[ins] += 1;
+                                    }
                                 }
                             }
                         }
                     }
                 }
             }
+        });
+        let mut n = vec![0; 100];
+        let mut same = vec![0; 100];
+        for i in 0..bounds2.len() {
+            for j in 0..100 {
+                same[j] += bounds2[i].2[j];
+                n[j] += bounds2[i].3[j];
+            }
         }
-    });
-    let mut n = vec![0; 100];
-    let mut same = vec![0; 100];
-    for i in 0..bounds2.len() {
-        for j in 0..100 {
-            same[j] += bounds2[i].2[j];
-            n[j] += bounds2[i].3[j];
+        println!(
+            "\nlight chain coherence for public (>= {}%) memory cells as function of junction \
+            insertion length",
+            min_ident
+        );
+        for i in 0..=7 {
+            if n[i] > 0 {
+                println!(
+                    "ins = {}  ==> coherence = {:.1}% ({} of {})",
+                    i,
+                    100.0 * same[i] as f64 / n[i] as f64,
+                    same[i],
+                    n[i],
+                );
+            }
         }
-    }
-    println!(
-        "\nlight chain coherence for public (>= 90%) memory cells as function of junction \
-        insertion length"
-    );
-    for i in 0..=9 {
-        if n[i] > 0 {
-            println!(
-                "ins = {}  ==> coherence = {:.1}% ({} of {})",
-                i,
-                100.0 * same[i] as f64 / n[i] as f64,
-                same[i],
-                n[i],
-            );
+        let mut n_big = 0;
+        let mut same_big = 0;
+        for i in 8..n.len() {
+            n_big += n[i];
+            same_big += same[i];
         }
+        println!(
+            "ins >= 8 ==> coherence = {:.1}% ({} of {})",
+            100.0 * same_big as f64 / n_big as f64,
+            same_big,
+            n_big,
+        );
     }
-    let mut n_big = 0;
-    let mut same_big = 0;
-    for i in 10..n.len() {
-        n_big += n[i];
-        same_big += same[i];
-    }
-    println!(
-        "ins >= 10 ==> coherence = {:.1}% ({} of {})",
-        100.0 * same_big as f64 / n_big as f64,
-        same_big,
-        n_big,
-    );
+    println!("");
 }

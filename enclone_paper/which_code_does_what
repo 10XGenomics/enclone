@@ -5,6 +5,23 @@ enclone BCR=@test BUILT_IN CHAINS_EXACT=2 CHAINS=2 NOPRINT POUT=stdout PCELL PCO
 
 ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
+RUNNING OLGA
+
+#!/usr/bin/env bash
+conda activate olga
+olga-generate_sequences --humanIGH -n 1408939 --seed=42 -d ',' -o hpgen_sim.csv
+olga-generate_sequences --humanIGH -n 1408939 --seed=100 -d ',' -o hpgen_sim_r1.csv
+olga-generate_sequences --humanIGH -n 1408939 --seed=200 -d ',' -o hpgen_sim_r2.csv
+olga-generate_sequences --humanIGH -n 1408939 --seed=300 -d ',' -o hpgen_sim_r3.csv
+olga-generate_sequences --humanIGH -n 1408939 --seed=400 -d ',' -o hpgen_sim_r4.csv
+olga-generate_sequences --humanIGH -n 1408939 --seed=500 -d ',' -o hpgen_sim_r5.csv
+olga-generate_sequences --humanIGH -n 1408939 --seed=600 -d ',' -o hpgen_sim_r6.csv
+olga-generate_sequences --humanIGH -n 1408939 --seed=700 -d ',' -o hpgen_sim_r7.csv
+olga-generate_sequences --humanIGH -n 1408939 --seed=800 -d ',' -o hpgen_sim_r8.csv
+olga-generate_sequences --humanIGH -n 1408939 --seed=900 -d ',' -o hpgen_sim_r9.csv
+
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
 FIGURE 1
 
 public_light_chain_analysis per_cell_stuff
@@ -42,7 +59,7 @@ FIGURE 4
 insertion_analysis per_cell_stuff
 public_light_chain_analysis per_cell_stuff
 olga_splice hpgen_sim.csv
-where hpgen_sim.csv is the file produced by OLGA.
+where hpgen_sim.csv is the file produced by OLGA (the first one produce above)
 
 ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 

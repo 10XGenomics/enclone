@@ -10,6 +10,42 @@ use io_utils::*;
 use std::time::Duration;
 use vector_utils::*;
 
+pub fn do_recompute(slf: &mut EncloneVisual) -> Command<Message> {
+    let n = slf.state_count();
+    if n == 0 {
+        return Command::none();
+    }
+    let mut messages = Vec::<Message>::new();
+    messages.push(Message::ConsoleClose);
+    let k = slf.hi();
+    for _ in 0..k {
+        messages.push(Message::BackButtonPressed(Ok(())));
+    }
+    for i in 0..n {
+        messages.push(Message::SubmitButtonPressed(Ok(())));
+        messages.push(Message::CopyLastNarrative);
+        messages.push(Message::BackButtonPressed(Ok(())));
+        messages.push(Message::DelButtonPressed(Ok(())));
+        if i < n - 1 {
+            messages.push(Message::ForwardButtonPressed(Ok(())));
+            if i > 0 {
+                messages.push(Message::ForwardButtonPressed(Ok(())));
+            }
+        }
+    }
+    if n >= 2 {
+        for _ in 0..n - 2 {
+            messages.push(Message::BackButtonPressed(Ok(())));
+        }
+    }
+    messages.push(Message::ConsoleOpen);
+    slf.meta_pos = 0;
+    slf.this_meta = messages;
+    META_TESTING.store(true, SeqCst);
+    PSEUDO_META.store(true, SeqCst);
+    Command::perform(noop0(), Message::Meta)
+}
+
 pub fn do_archive_close(slf: &mut EncloneVisual, save: bool) -> Command<Message> {
     let mut index = None;
     for i in 0..slf.restore_requested.len() {

@@ -400,6 +400,7 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         let j = alluv.unwrap();
         let tables = FeatureBarcodeAlluvialReadsTableSet::from_string(&hets[j].content);
         slf.alluvial_reads_tables_for_spreadsheet.clear();
+        slf.alluvial_reads_tables_for_spreadsheet_cr.clear();
         let mut tables_text = String::new();
         for i in 0..tables.s.len() {
             tables_text += &mut format!(
@@ -407,6 +408,12 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                 tables.s[i].id, tables.s[i].display_text
             );
             slf.alluvial_reads_tables_for_spreadsheet += &mut tables.s[i].spreadsheet_text.clone();
+            let mut s = format!(
+                "{}\t {}\n",
+                tables.s[i].id,
+                tables.s[i].display_text.before(" reference").rev_after("│")
+            );
+            slf.alluvial_reads_tables_for_spreadsheet_cr += &mut s;
         }
         tables_text += "\n \n";
         let tables_font_size = appropriate_font_size(&tables_text, slf.width, 16);
@@ -485,6 +492,14 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                 .on_press(Message::CopyAlluvialReadsTables),
             )
             .push(Space::with_height(Units(8)))
+            .push(
+                Button::new(
+                    &mut slf.alluvial_reads_tables_cr_copy_button,
+                    Text::new("Copy cellular reference reads")
+                        .color(slf.alluvial_reads_tables_cr_copy_button_color),
+                )
+                .on_press(Message::CopyAlluvialReadsTablesCR),
+            )
             .push(Rule::horizontal(10).style(style::RuleStyle2))
             .push(Space::with_height(Units(8)))
             .push(
@@ -506,6 +521,7 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         let j = alluv.unwrap();
         let tables = FeatureBarcodeAlluvialTableSet::from_string(&hets[j].content);
         slf.alluvial_tables_for_spreadsheet.clear();
+        slf.alluvial_tables_for_spreadsheet_cr.clear();
         let mut tables_text = String::new();
         for i in 0..tables.s.len() {
             tables_text += &mut format!(
@@ -513,6 +529,12 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                 tables.s[i].id, tables.s[i].display_text
             );
             slf.alluvial_tables_for_spreadsheet += &mut tables.s[i].spreadsheet_text.clone();
+            let mut s = format!(
+                "{}\t {}\n",
+                tables.s[i].id,
+                tables.s[i].display_text.before(" reference").rev_after("│")
+            );
+            slf.alluvial_tables_for_spreadsheet_cr += &mut s;
         }
         tables_text += "\n \n";
         let tables_font_size = appropriate_font_size(&tables_text, slf.width, 20);
@@ -541,6 +563,15 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                     Text::new("Copy").color(slf.alluvial_tables_copy_button_color),
                 )
                 .on_press(Message::CopyAlluvialTables),
+            )
+            .push(Space::with_height(Units(8)))
+            .push(
+                Button::new(
+                    &mut slf.alluvial_tables_cr_copy_button,
+                    Text::new("Copy cellular reference reads")
+                        .color(slf.alluvial_tables_cr_copy_button_color),
+                )
+                .on_press(Message::CopyAlluvialTablesCR),
             )
             .push(Space::with_height(Units(8)))
             .push(Rule::horizontal(10).style(style::RuleStyle2))

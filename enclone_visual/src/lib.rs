@@ -372,7 +372,12 @@ pub async fn launch_gui() -> iced::Result {
     window_settings.size = (INITIAL_WIDTH, INITIAL_HEIGHT); // reasonable minimum size
     settings.window = window_settings;
     settings.exit_on_close_request = false;
-    EncloneVisual::run(settings)
+    let result = EncloneVisual::run(settings);
+    if result.is_err() {
+        eprintln!("\nLaunch failed.\n");
+        std::process::exit(1);
+    }
+    result
 }
 
 pub fn capture(testname: &str, window_id: usize) {
