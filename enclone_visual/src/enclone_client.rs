@@ -54,9 +54,9 @@ use std::time::{Duration, Instant, SystemTime, UNIX_EPOCH};
 
 pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error>> {
     //
-    // Fail if not running on a Mac.
+    // Fail if not running on a Mac or Linux.
 
-    #[cfg(not(any(target_os = "macos", target_os = "ios")))]
+    #[cfg(not(any(target_os = "macos", target_os = "ios", target_os = "linux")))]
     {
         xprintln!(
             "\nenclone visual only runs on a Mac at present.  Please let us know if you\n\
@@ -773,7 +773,11 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
 
         // Launch GUI.
 
-        launch_gui().await?;
+        let gui = launch_gui().await;
+        if gui.is_err() {
+            eprintln!("\nFailed to launch enclone visual GUI.\n");
+            std::process::exit(1);
+        }
         cleanup();
         return Ok(());
     }
