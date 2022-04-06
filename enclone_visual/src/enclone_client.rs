@@ -150,6 +150,31 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
         });
     }
 
+    // For Linux, pretest for existence of libXcursor.so.
+
+    if cfg!(target_os = "linux") {
+        let o = Command::new("/sbin/ldconfig")
+            .arg("-p")
+            .output()
+            .expect("failed to execute /sbin/ldconfig");
+        if o.status.code() != Some(0) {
+            eprintln!("\nCould not run /sbin/ldconfig.\n");
+            std::process::exit(1);
+        }
+        let mut have_lib = false;
+        let out = strme(&o.stdout);
+        for line in out.lines() {
+            if line.contains("libXcursor.so") {
+                have_lib = true;
+            }
+        }
+        if !have_lib {
+            eprintln!("\nThere is a system installation issue, can't find libXcursor.so.");
+            eprintln!("Please ask someone who knows how to fix this.\n");
+            std::process::exit(1);
+        }
+    }
+
     // Announce.
 
     if !verbose {
@@ -770,6 +795,8 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
         tokio::spawn(async move {
             process_requests(&mut client, &mut server_process, verbose).await;
         });
+
+        // /sbin/ldconfig -p | grep libXcursor.so
 
         // Launch GUI.
 
