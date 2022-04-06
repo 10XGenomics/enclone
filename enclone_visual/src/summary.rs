@@ -408,7 +408,8 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                 tables.s[i].id, tables.s[i].display_text
             );
             slf.alluvial_reads_tables_for_spreadsheet += &mut tables.s[i].spreadsheet_text.clone();
-            let mut s = format!("{}\t {}\n", 
+            let mut s = format!(
+                "{}\t {}\n",
                 tables.s[i].id,
                 tables.s[i].display_text.before(" reference").rev_after("│")
             );
@@ -494,7 +495,8 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
             .push(
                 Button::new(
                     &mut slf.alluvial_reads_tables_cr_copy_button,
-                    Text::new("Copy cellular reference reads").color(slf.alluvial_reads_tables_cr_copy_button_color),
+                    Text::new("Copy cellular reference reads")
+                        .color(slf.alluvial_reads_tables_cr_copy_button_color),
                 )
                 .on_press(Message::CopyAlluvialReadsTablesCR),
             )
@@ -527,7 +529,8 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                 tables.s[i].id, tables.s[i].display_text
             );
             slf.alluvial_tables_for_spreadsheet += &mut tables.s[i].spreadsheet_text.clone();
-            let mut s = format!("{}\t {}\n", 
+            let mut s = format!(
+                "{}\t {}\n",
                 tables.s[i].id,
                 tables.s[i].display_text.before(" reference").rev_after("│")
             );
@@ -565,7 +568,8 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
             .push(
                 Button::new(
                     &mut slf.alluvial_tables_cr_copy_button,
-                    Text::new("Copy cellular reference reads").color(slf.alluvial_tables_cr_copy_button_color),
+                    Text::new("Copy cellular reference reads")
+                        .color(slf.alluvial_tables_cr_copy_button_color),
                 )
                 .on_press(Message::CopyAlluvialTablesCR),
             )
