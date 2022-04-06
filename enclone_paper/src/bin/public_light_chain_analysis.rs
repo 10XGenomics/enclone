@@ -638,8 +638,11 @@ fn main() {
             let row = vec!["\\hline".to_string(); 9];
             rows.push(row);
             let mut row = vec![format!("{}%", 10 * j)];
-            let n = if xpass == 1 { res[0][j].2 + res[0][j].3 } 
-                else { res[0][j].0 + res[0][j].1 };
+            let n = if xpass == 1 {
+                res[0][j].2 + res[0][j].3
+            } else {
+                res[0][j].0 + res[0][j].1
+            };
             row.push(format!("{:.1}", (n as f64).log10()));
             for pass in 0..7 {
                 if xpass == 1 {

@@ -191,7 +191,8 @@ fn main() {
             small += 1;
         }
     }
-    println!("\nsame CDR3H_AA: {:.1}% of cell pairs have ld <= 20\n",
+    println!(
+        "\nsame CDR3H_AA: {:.1}% of cell pairs have ld <= 20\n",
         100.0 * small as f64 / lds.len() as f64
     );
 
@@ -262,7 +263,8 @@ fn main() {
             small += 1;
         }
     }
-    println!("\nunrestricted: {:.1}% of cell pairs have ld <= 20\n",
+    println!(
+        "\nunrestricted: {:.1}% of cell pairs have ld <= 20\n",
         100.0 * small as f64 / lds.len() as f64
     );
 
@@ -272,7 +274,11 @@ fn main() {
 
     if svg_file1.len() > 0 {
         for pass in 1..=2 {
-            let mut points = if pass == 1 { points1.clone() } else { points2.clone() };
+            let mut points = if pass == 1 {
+                points1.clone()
+            } else {
+                points2.clone()
+            };
             points.sort_by(|a, b| a.partial_cmp(b).unwrap());
             let mut pointsx = Vec::new();
             let mut i = 0;
