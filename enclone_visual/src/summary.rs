@@ -404,6 +404,9 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         slf.alluvial_reads_tables_for_spreadsheet_crd.clear();
         let mut tables_text = String::new();
         for i in 0..tables.s.len() {
+            if tables.s[i].display_text.len() == 0 {
+                continue;
+            }
             tables_text += &mut format!(
                 "\nfeature barcode read distribution for {}\n{}",
                 tables.s[i].id, tables.s[i].display_text
@@ -554,6 +557,9 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         slf.alluvial_tables_for_spreadsheet_crd.clear();
         let mut tables_text = String::new();
         for i in 0..tables.s.len() {
+            if tables.s[i].display_text.len() == 0 {
+                continue;
+            }
             tables_text += &mut format!(
                 "\nfeature barcode UMI distribution for {}\n{}",
                 tables.s[i].id, tables.s[i].display_text
