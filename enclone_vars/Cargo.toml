@@ -1,6 +1,6 @@
 [package]
 name = "enclone_vars"
-version = "0.5.162"
+version = "0.5.163"
 authors = ["""David Jaffe <david.jaffe@10xgenomics.com>,
               Nigel Delaney <nigel.delaney@10xgenomics.com>,
               Keri Dockter <keri.dockter@10xgenomics.com>,
