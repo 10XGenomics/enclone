@@ -185,6 +185,28 @@ impl EncloneVisual {
                 Command::none()
             }
 
+            Message::CopyAlluvialReadsTablesCRD => {
+                self.alluvial_reads_tables_crd_copy_button_color = Color::from_rgb(1.0, 0.0, 0.0);
+                copy_bytes_to_clipboard(&self.alluvial_reads_tables_for_spreadsheet_crd.as_bytes());
+                Command::perform(noop1(), Message::CompleteCopyAlluvialReadsTablesCRD)
+            }
+
+            Message::CompleteCopyAlluvialReadsTablesCRD(_) => {
+                self.alluvial_reads_tables_crd_copy_button_color = Color::from_rgb(0.0, 0.0, 0.0);
+                Command::none()
+            }
+
+            Message::CopyAlluvialTablesCRD => {
+                self.alluvial_tables_crd_copy_button_color = Color::from_rgb(1.0, 0.0, 0.0);
+                copy_bytes_to_clipboard(&self.alluvial_tables_for_spreadsheet_crd.as_bytes());
+                Command::perform(noop1(), Message::CompleteCopyAlluvialTablesCRD)
+            }
+
+            Message::CompleteCopyAlluvialTablesCRD(_) => {
+                self.alluvial_tables_crd_copy_button_color = Color::from_rgb(0.0, 0.0, 0.0);
+                Command::none()
+            }
+
             Message::TooltipToggle => {
                 self.tooltip_toggle_button_color = Color::from_rgb(1.0, 0.0, 0.0);
                 let pos = (TOOLTIP_POS.load(SeqCst) + 1) % 4;
