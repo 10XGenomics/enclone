@@ -60,8 +60,10 @@ impl Application for EncloneVisual {
         x.tooltip_toggle_button_color = Color::from_rgb(0.0, 0.0, 0.0);
         x.alluvial_tables_copy_button_color = Color::from_rgb(0.0, 0.0, 0.0);
         x.alluvial_tables_cr_copy_button_color = Color::from_rgb(0.0, 0.0, 0.0);
+        x.alluvial_tables_crd_copy_button_color = Color::from_rgb(0.0, 0.0, 0.0);
         x.alluvial_reads_tables_copy_button_color = Color::from_rgb(0.0, 0.0, 0.0);
         x.alluvial_reads_tables_cr_copy_button_color = Color::from_rgb(0.0, 0.0, 0.0);
+        x.alluvial_reads_tables_crd_copy_button_color = Color::from_rgb(0.0, 0.0, 0.0);
         x.descrips_copy_button_color = Color::from_rgb(0.0, 0.0, 0.0);
         x.png_button_color = Color::from_rgb(0.0, 0.0, 0.0);
         x.graphic_help_title = "Help".to_string();
