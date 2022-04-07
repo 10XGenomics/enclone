@@ -428,10 +428,8 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                     let percent = y[j].before(" ");
                     let barcode = y[j].between(" ", " = ");
                     let id = y[j].after(" = ");
-                    let mut s = format!(
-                        "{}\t {}\t {}\t {}\n",
-                        tables.s[i].id, percent, barcode, id
-                    );
+                    let mut s =
+                        format!("{}\t {}\t {}\t {}\n", tables.s[i].id, percent, barcode, id);
                     slf.alluvial_reads_tables_for_spreadsheet_crd += &mut s;
                 }
             }
@@ -580,10 +578,8 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                     let percent = y[j].before(" ");
                     let barcode = y[j].between(" ", " = ");
                     let id = y[j].after(" = ");
-                    let mut s = format!(
-                        "{}\t {}\t {}\t {}\n",
-                        tables.s[i].id, percent, barcode, id
-                    );
+                    let mut s =
+                        format!("{}\t {}\t {}\t {}\n", tables.s[i].id, percent, barcode, id);
                     slf.alluvial_tables_for_spreadsheet_crd += &mut s;
                 }
             }
