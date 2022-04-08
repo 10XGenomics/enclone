@@ -251,6 +251,7 @@ pub struct GeneralOpt {
     pub bc_joint: String,
     pub post_filter: String,
     pub mix_only: bool,
+    pub no_alt_alleles: bool,
 }
 
 // Some plot options.  Note that plot options are not allowed to affect intermediate computation.
