@@ -815,18 +815,21 @@ pub fn join_one(
                     let cdr2_stop1 = x1.fr3_start.unwrap();
                     let cdr2_start2 = x2.cdr2_start.unwrap();
                     let cdr2_stop2 = x2.fr3_start.unwrap();
-                    let len = cdr2_stop1 - cdr2_start1;
-                    if cdr2_stop2 - cdr2_start2 == len {
-                        let mut diffs = 0;
-                        for p in 0..len {
-                            if x1.seq_del_amino[p + cdr2_start1]
-                                != x2.seq_del_amino[p + cdr2_start2]
-                            {
-                                diffs += 1;
+                    // this was violated once when using IMGT reference
+                    if cdr2_start1 <= cdr2_stop1 {
+                        let len = cdr2_stop1 - cdr2_start1;
+                        if cdr2_stop2 - cdr2_start2 == len {
+                            let mut diffs = 0;
+                            for p in 0..len {
+                                if x1.seq_del_amino[p + cdr2_start1]
+                                    != x2.seq_del_amino[p + cdr2_start2]
+                                {
+                                    diffs += 1;
+                                }
                             }
+                            cdr2_len = len;
+                            cdr2_diffs = diffs;
                         }
-                        cdr2_len = len;
-                        cdr2_diffs = diffs;
                     }
                 }
             }
