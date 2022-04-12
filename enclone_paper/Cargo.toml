@@ -36,6 +36,6 @@ pretty_trace = "0.5"
 string_utils = "0.1"
 tables = "0.1"
 triple_accel = "0.4"
-vdj_ann = { git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
-vdj_ann_ref = { git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
+vdj_ann = { version = "0.4", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
+vdj_ann_ref = { version = "0.2", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 vector_utils = "0.1"
