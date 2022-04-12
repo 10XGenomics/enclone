@@ -189,7 +189,7 @@ pub const TESTS: [(&str, MsgFn, &str); 40] = [
     ("",     BACK,    "test4"),   // #2
     ("",     FORWARD, "test5"),   // #3
     (N4,     SUBMIT,  "test6"),   // enclone BCR=testset_bcr_micro GEX=testset_gex_micro ALLOW_INCONSISTENT NGEX
-    ("200",  SUBMIT,  "test7"),   // 200
+    ("1",    SUBMIT,  "test7"),   // 1
     ("",     BACK,    "test8"),   // #4
     ("",     BACK,    "test9"),   // #3
     ("10",   SUBMIT,  "test10"),  // 10
