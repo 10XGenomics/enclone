@@ -1,6 +1,6 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-pub const TESTS: [&str; 302] = [
+pub const TESTS: [&str; 305] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -755,4 +755,12 @@ pub const TESTS: [&str; 302] = [
     // 302. test hcomp and jun_ins and jun_mat and jun_sub
     r###"BCR=85333 JALIGN1 CHAINS_EXACT=2 CDR3=CAKGDRTGYSYGGGIFDYW
          LVARSP=hcomp,jun_ins,jun_mat,jun_sub AMINO=cdr3 FOLD_HEADERS"###,
+    // 303. test GD_BC
+    r###"BCR=testx/inputs/flaky GD_BC=testx/inputs/flaky NO_PRE BUILT_IN AMINO=cdr3
+         LVARSP=status PER_CELL CDR3=CVRDPPEELELFDYW"###,
+    // 304. test Ab-only data
+    r###"BCR=1031851 GEX=1031779 NGEX LVARSP=n_gex,CD19_ab
+         CDR3="CARDELDILTGYNIPTFGGCVYW|CAHHGSARYSSSWHAAPGPYYFDYW" BUILT_IN"###,
+    // 305. test that LVARSP=gex fails on Ab-only data
+    r###"BCR=1031851 GEX=1031779 NGEX LVARSP=gex EXPECT_FAIL"###,
 ];

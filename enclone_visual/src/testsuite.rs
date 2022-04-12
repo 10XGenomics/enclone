@@ -68,7 +68,7 @@ pub fn metatests() -> Vec<Vec<Message>> {
         ],
         // 4 = enclone VIS
         vec![
-            Message::InputChanged1("enclone TCR_GEX=1175299-1175300 SUMMARY_CLEAN".to_string()),
+            Message::InputChanged1("enclone PRE=~/enclone/datasets BCR_GEX=tiny_multi_PD SUMMARY_CLEAN".to_string()),
             Message::SubmitButtonPressed(Ok(())),
             Message::WaitCommand(Ok(())),
             Message::SummaryOpen(Ok(())),
@@ -76,6 +76,7 @@ pub fn metatests() -> Vec<Vec<Message>> {
             Message::MetricButton(2),
             Message::MetricButton(3),
             Message::CondenseMetrics,
+            Message::SetName("metrics"), // this is totally flaky
             Message::SetName("select_metrics"),
             Message::SummaryClose(Ok(())),
             Message::Save,
@@ -119,9 +120,9 @@ pub fn metatests() -> Vec<Vec<Message>> {
         // 6 = enclone VIS
         vec![
 
-            Message::InputChanged1("enclone TCR_GEX=1175299".to_string()),
+            Message::InputChanged1("enclone BCR=testset_bcr_micro GEX=testset_gex_micro".to_string()),
             Message::SubmitButtonPressed(Ok(())),
-            Message::SetSummaryScrollablePos(0.2),
+            Message::SetSummaryScrollablePos(1.0),
             Message::SummaryOpen(Ok(())),
             Message::SetName("alluvial_tables"),
         ],
@@ -158,14 +159,14 @@ const X2: &str = "enclone BCR=123085 CHAINS=4 PLOT_BY_ISOTYPE=gui";
 const X3: &str = "enclone + BCR=123085 NOPRINT";
 const X4: &str = "enclone BCR=123085 CHAINS=10";
 const X5: &str = "enclone BCR=123085 KEEP_CLONO_IF_CELL_MAX=\"u1 >= 6000\" SEG=IGHM";
-const X6: &str = "enclone BCR=1145040 GEX=1142282 ALLOW_INCONSISTENT NGEX \
+const X6: &str = "enclone BCR=testset_bcr_micro GEX=testset_gex_micro ALLOW_INCONSISTENT NGEX \
                           SIM_MAT_PLOT=gui,fb1_n,fb2_n,fb3_n,fb4_n,fb5_n SUMMARY_CLEAN";
 const N1: &str = "enclone BCR=123085 PLOT=gui MIN_CELLS=5";
 const N2: &str = "enclone BCR=123085 PLOT_BY_ISOTYPE=gui MIN_CELLS=5";
 const N3: &str = "enclone BCR=123085 GEX=123217 PLOTXY_EXACT=HLA-A_g,CD74_g,gui";
-const N4: &str = "enclone BCR=1145040 GEX=1142282 ALLOW_INCONSISTENT NGEX";
+const N4: &str = "enclone BCR=testset_bcr_micro GEX=testset_gex_micro ALLOW_INCONSISTENT NGEX";
 const N5: &str =
-    "enclone BCR=1145040 GEX=1142282 ALLOW_INCONSISTENT NGEX LVARSP=fb1,fb1_n,fb2,fb2_n";
+    "enclone BCR=testset_bcr_micro GEX=testset_gex_micro ALLOW_INCONSISTENT NGEX LVARSP=fb1,fb1_n,fb2,fb2_n";
 
 // This block of tests is good because it tests a lot, but bad because one can't test parts of it.
 // For future tests, it would be better to have smaller chunks, as in the earlier tests.  Except
@@ -188,8 +189,8 @@ pub const TESTS: [(&str, MsgFn, &str); 40] = [
     (N3,     SUBMIT,  "test3"),   // enclone BCR=123085 GEX=123217 PLOTXY_EXACT=HLA-A_g,CD74_g,gui
     ("",     BACK,    "test4"),   // #2
     ("",     FORWARD, "test5"),   // #3
-    (N4,     SUBMIT,  "test6"),   // enclone BCR=1145040 GEX=1142282 ALLOW_INCONSISTENT NGEX
-    ("200",  SUBMIT,  "test7"),   // 200
+    (N4,     SUBMIT,  "test6"),   // enclone BCR=testset_bcr_micro GEX=testset_gex_micro ALLOW_INCONSISTENT NGEX
+    ("1",    SUBMIT,  "test7"),   // 1
     ("",     BACK,    "test8"),   // #4
     ("",     BACK,    "test9"),   // #3
     ("10",   SUBMIT,  "test10"),  // 10
@@ -206,17 +207,17 @@ pub const TESTS: [(&str, MsgFn, &str); 40] = [
     ("",     BACK,    "test13"),  // enclone + BCR=123085 NOPRINT
     (X4,     SUBMIT,  "test14"),  // enclone BCR=123085 CHAINS=10
     (X5,     SUBMIT,  "test15"),  // enclone BCR=123085 KEEP_CLONO_IF_CELL_MAX="u1 >= 6000" SEG=IGHM
-    (N5,     SUBMIT,  "test16"),  // enclone BCR=1145040 GEX=1142282 ALLOW_INCONSISTENT 
+    (N5,     SUBMIT,  "test16"),  // enclone BCR=testset_bcr_micro GEX=testset_gex_micro ALLOW_INCONSISTENT 
                                   //         NGEX LVARSP=fb1,fb1_n,fb2,fb2_n
-    (X6,     SUBMIT,  "test17"),  // enclone BCR=1145040 GEX=1142282 ALLOW_INCONSISTENT NGEX 
+    (X6,     SUBMIT,  "test17"),  // enclone BCR=testset_bcr_micro GEX=testset_gex_micro ALLOW_INCONSISTENT NGEX 
                                   //         SIM_MAT_PLOT=gui,fb1_n,fb2_n,fb3_n,fb4_n,fb5_n
                                   //         SUMMARY_CLEAN
     ("",     HELP1,   "test18"),  // (help)
-    ("",     HELP2,   ""),        // enclone BCR=1145040 GEX=1142282 ALLOW_INCONSISTENT NGEX
+    ("",     HELP2,   ""),        // enclone BCR=testset_bcr_micro GEX=testset_gex_micro ALLOW_INCONSISTENT NGEX
                                   //         SIM_MAT_PLOT=gui,fb1_n,fb2_n,fb3_n,fb4_n,fb5_n
                                   //         SUMMARY_CLEAN
     ("",     SUMMARY1, "test19"), // (summary)
-    ("",     SUMMARY2, ""),       // enclone BCR=1145040 GEX=1142282 ALLOW_INCONSISTENT NGEX
+    ("",     SUMMARY2, ""),       // enclone BCR=testset_bcr_micro GEX=testset_gex_micro ALLOW_INCONSISTENT NGEX
                                   //         SIM_MAT_PLOT=gui,fb1_n,fb2_n,fb3_n,fb4_n,fb5_n
                                   //         SUMMARY_CLEAN
     ("",     ARCH1,    "test20"), // (archive)

@@ -28,16 +28,16 @@ debruijn = "0.3"
 enclone_core = { path = "../enclone_core" }
 enclone_vars = { path = "../enclone_vars" }
 evalexpr = "7"
-expr_tools = "0.1"
+expr_tools = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 hdf5 = { git = "https://github.com/10xGenomics/hdf5-rust.git", branch = "conda_nov2021", default-features=false, features = ["conda"] }
-io_utils = "0.3"
+io_utils = { version = "0.3", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 itertools = "0.10"
-mirror_sparse_matrix = "0.1"
+mirror_sparse_matrix = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 rand = "0.8"
 rayon = "1"
 regex = { version = "1", default-features = false, features = ["std", "perf"] }
 serde_json = "1"
-string_utils = "0.1"
+string_utils = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 tilde-expand = "0.1"
 vdj_ann = { version = "0.4", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
-vector_utils = "0.1"
+vector_utils = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
