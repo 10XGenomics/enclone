@@ -1,6 +1,6 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
-pub const TESTS: [&str; 303] = [
+pub const TESTS: [&str; 304] = [
     // 1. tests variant base after CDR3, parseable output
     r###"BCR=123089 CDR3=CVRDRQYYFDYW POUT=stdout
      PCOLS=exact_subclonotype_id,n,v_name1,v_name2,nchains,var_indices_aa1,barcodes"###,
@@ -758,4 +758,7 @@ pub const TESTS: [&str; 303] = [
     // 303. test GD_BC
     r###"BCR=testx/inputs/flaky GD_BC=testx/inputs/flaky NO_PRE NFORCE BUILT_IN AMINO=cdr3
          LVARSP=status PER_CELL CDR3=CVRDPPEELELFDYW"###,
+    // 304. test Ab-only data
+    r###"BCR=1031851 GEX=1031779 NGEX LVARSP=n_gex,CD19_ab
+         CDR3="CARDELDILTGYNIPTFGGCVYW|CAHHGSARYSSSWHAAPGPYYFDYW" BUILT_IN NO_PRE NFORCE"###,
 ];
