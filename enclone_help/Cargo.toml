@@ -20,12 +20,12 @@ publish = false
 # in the root of the enclone repo.
 
 [dependencies]
-ansi_escape = "0.1"
+ansi_escape = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 enclone_core = { path = "../enclone_core" }
-io_utils = "0.3"
+io_utils = { version = "0.3", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 itertools = "0.10"
-string_utils = "0.1"
-tables = "0.1"
+string_utils = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
+tables = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 
 
 

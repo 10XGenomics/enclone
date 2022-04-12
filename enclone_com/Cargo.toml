@@ -22,10 +22,10 @@ publish = false
 [dependencies]
 bytes = "1"
 enclone_core = { path = "../enclone_core" }
-io_utils = "0.3"
+io_utils = { version = "0.3", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 lazy_static = "1"
-pretty_trace = "0.5"
-string_utils = "0.1"
+pretty_trace = { version = "0.5", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
+string_utils = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 tokio = { version = "1", default-features = false, features = ["io-util", "macros", "rt-multi-thread"] }
 vdj_ann = { version = "0.4", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 

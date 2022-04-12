@@ -21,4 +21,4 @@ publish = false
 
 [dependencies]
 chrono = { version = "0.4", default-features = false, features = ["std", "clock"] }
-string_utils = "0.1"
+string_utils = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }

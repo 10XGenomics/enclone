@@ -27,14 +27,14 @@ path = "src/bin/enclone.rs"
 enclone_core = { path = "../enclone_core" }
 enclone_main = { path = "../enclone_main" }
 enclone_visual = { path = "../enclone_visual", optional=true }
-io_utils = "0.3"
+io_utils = { version = "0.3", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 nix = "0.23"
-pretty_trace = "0.5"
-string_utils = "0.1"
+pretty_trace = { version = "0.5", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
+string_utils = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 tokio = { version = "1", default-features = false, features = ["io-util", "macros", "rt-multi-thread"] }
 
 [dev-dependencies]
-ansi_escape = "0.1"
+ansi_escape = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 anyhow = "1"
 attohttpc = { version = "0.18", default-features = false, features = ["compress", "tls-rustls"] }
 enclone_vars = { path = "../enclone_vars" }
@@ -44,12 +44,12 @@ enclone_tools = { path = "../enclone_tools" }
 flate2 = "1"
 fs_extra = "1"
 itertools = "0.10"
-perf_stats = "0.1"
+perf_stats = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 rayon = "1"
 serde_json = "1"
 sha2 = "0.10"
-stats_utils = "0.1"
-vector_utils = "0.1"
+stats_utils = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
+vector_utils = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 yaml-rust = "0.4"
 
 [features]

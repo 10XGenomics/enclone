@@ -30,10 +30,10 @@ lazy_static = "1"
 libc = "0.2"
 log = "0.4"
 nix = "0.23"
-perf_stats = "0.1"
-pretty_trace = "0.5"
+perf_stats = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
+pretty_trace = { version = "0.5", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 prost = { version = "0.9", default_features = false, features = ["std", "prost-derive"] }
-string_utils = "0.1"
+string_utils = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 tokio = { version = "1", default-features = false, features = ["io-util", "macros", "rt-multi-thread"] }
 tokio-stream = { version = "0.1", default-features = false, features = ["net"] }
 tonic = { version = "0.6", default-features = false, features = ["transport", "codegen", "prost"] }

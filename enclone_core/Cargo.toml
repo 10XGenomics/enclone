@@ -21,34 +21,34 @@ publish = false
 # in the root of the enclone repo.
 
 [dependencies]
-align_tools = "0.1"
-amino = "0.1"
-ansi_escape = "0.1"
+align_tools = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
+amino = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
+ansi_escape = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 attohttpc = { version = "0.18", default-features = false, features = ["compress", "tls-rustls"] }
-bio_edit = "0.1"
+bio_edit = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 chrono = { version = "0.4", default-features = false, features = ["std", "clock"] }
 debruijn = "0.3"
 enclone_proto = { path = "../enclone_proto" }
 evalexpr = "7"
 hdf5 = { git = "https://github.com/10xGenomics/hdf5-rust.git", branch = "conda_nov2021", default-features=false, features = ["conda"] }
-io_utils = "0.3"
+io_utils = { version = "0.3", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 itertools = "0.10"
 lazy_static = "1"
-mirror_sparse_matrix = "0.1"
-perf_stats = "0.1"
-pretty_trace = "0.5"
+mirror_sparse_matrix = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
+perf_stats = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
+pretty_trace = { version = "0.5", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 qd = { git = "https://github.com/Barandis/qd" }
 rayon = "1"
 regex = { version = "1", default-features = false, features = ["std", "perf"] }
-stats_utils = "0.1"
-stirling_numbers = "0.1"
-string_utils = "0.1"
+stats_utils = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
+stirling_numbers = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
+string_utils = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 superslice = "1"
-tables = "0.1"
+tables = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 vdj_ann = { version = "0.4", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
-vector_utils = "0.1"
+vector_utils = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 zstd = "0.9"
 
 [build-dependencies]
 chrono = { version = "0.4", default-features = false, features = ["std", "clock"] }
-string_utils = "0.1"
+string_utils = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }

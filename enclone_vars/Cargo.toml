@@ -20,8 +20,8 @@ publish = false
 # in the root of the enclone repo.
 
 [dependencies]
-io_utils = "0.3"
+io_utils = { version = "0.3", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 itertools = "0.10"
-pretty_trace = "0.5"
-string_utils = "0.1"
-vector_utils = "0.1"
+pretty_trace = { version = "0.5", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
+string_utils = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
+vector_utils = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }

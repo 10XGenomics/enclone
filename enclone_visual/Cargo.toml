@@ -40,27 +40,27 @@ iced = { git = "https://github.com/hecrj/iced", rev = "3042fa2cb63c651ebed2abe6f
 iced_native = { git = "https://github.com/hecrj/iced", rev = "3042fa2cb63c651ebed2abe6f4054e61f70b0331" }
 image = { version = "0.23", features = ["jpeg", "png", "jpeg_rayon"], default-features = false }
 include_dir = { version = "0.6", features = ["search"] }
-io_utils = "0.3"
+io_utils = { version = "0.3", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 itertools = "0.10"
 jpeg-decoder = "0.2"
 lazy_static = "1"
 libc = "0.2"
 log = "0.4"
 nix = "0.23"
-perf_stats = "0.1"
+perf_stats = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 png-decoder = "0.1"
-pretty_trace = "0.5"
+pretty_trace = { version = "0.5", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 prost = { version = "0.9", default_features = false, features = ["std", "prost-derive"] }
 rayon = "1"
 serde_json = "1"
-string_utils = "0.1"
-tables = "0.1"
+string_utils = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
+tables = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 tilde-expand = "0.1"
 tokio = { version = "1", default-features = false, features = ["io-util", "macros", "rt-multi-thread"] }
 tokio-stream = { version = "0.1", default-features = false, features = ["net"] }
 tonic = { version = "0.6", default-features = false, features = ["transport", "codegen", "prost"] }
 users = "0.11"
-vector_utils = "0.1"
+vector_utils = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 
 [target.'cfg(target_os = "linux")'.dependencies]
 arboard = "2"
