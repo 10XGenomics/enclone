@@ -121,7 +121,7 @@ pub fn metatests() -> Vec<Vec<Message>> {
 
             Message::InputChanged1("enclone BCR=testset_bcr_micro GEX=testset_gex_micro".to_string()),
             Message::SubmitButtonPressed(Ok(())),
-            Message::SetSummaryScrollablePos(0.6),
+            Message::SetSummaryScrollablePos(1.0),
             Message::SummaryOpen(Ok(())),
             Message::SetName("alluvial_tables"),
         ],
