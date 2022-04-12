@@ -76,6 +76,7 @@ pub fn metatests() -> Vec<Vec<Message>> {
             Message::MetricButton(2),
             Message::MetricButton(3),
             Message::CondenseMetrics,
+            Message::SetName("metrics"), // this is totally flaky
             Message::SetName("select_metrics"),
             Message::SummaryClose(Ok(())),
             Message::Save,
