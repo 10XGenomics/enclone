@@ -173,12 +173,10 @@ pub const EXTENDED_TESTS: [&str; 15] = [
     // 4. crashed at one point
     r###"BCR=128037,128040 GEX=127798,127801 LVARSP=pe1 NOPRINT EXPECT_OK NO_PRE NFORCE"###,
     //
-    // NOT ALL PUBLIC
+    // DUPLICATE TEST, TO DELETE
     //
-    // 5. test BCR_GEX and GD_BC
-    // Internal data.  To replace this we would need to find a public dataset on which genetic
-    // demux was run.
-    r###"BCR_GEX=1089851 GD_BC=1089848 NOPRINT NO_PRE NFORCE EXPECT_OK"###,
+    // 5. crashed at one point
+    r###"BCR=128037,128040 GEX=127798,127801 LVARSP=pe1 NOPRINT EXPECT_OK NO_PRE NFORCE"###,
     //
     // THE FOLLOWING ARE ALL PUBLIC DATA
     //
