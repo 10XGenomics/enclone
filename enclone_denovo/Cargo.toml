@@ -23,10 +23,10 @@ debruijn = "0.3"
 equiv = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 fasta_tools = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 graph_simple = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
-hyperbase = "0.1.2"
+hyperbase = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 io_utils = { version = "0.3", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 itertools = "0.10"
-kmer_lookup = "0.1.1"
+kmer_lookup = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 # poa_hmm = { git = "https://github.com/ban-m/partial_order_alignment.git" }
 perf_stats = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 permutation = "0.4"
