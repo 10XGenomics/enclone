@@ -756,7 +756,7 @@ pub const TESTS: [&str; 305] = [
     r###"BCR=85333 JALIGN1 CHAINS_EXACT=2 CDR3=CAKGDRTGYSYGGGIFDYW
          LVARSP=hcomp,jun_ins,jun_mat,jun_sub AMINO=cdr3 FOLD_HEADERS"###,
     // 303. test GD_BC
-    r###"BCR=testx/inputs/flaky GD_BC=testx/inputs/flaky NO_PRE NFORCE BUILT_IN AMINO=cdr3
+    r###"BCR=testx/inputs/flaky GD_BC=testx/inputs/flaky NO_PRE BUILT_IN AMINO=cdr3
          LVARSP=status PER_CELL CDR3=CVRDPPEELELFDYW"###,
     // 304. test Ab-only data
     r###"BCR=1031851 GEX=1031779 NGEX LVARSP=n_gex,CD19_ab
