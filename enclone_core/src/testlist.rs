@@ -155,13 +155,10 @@ pub const CRASH_SETS: [&str; 6] = [
     "GROUP=vj_refname,cdr3_aa_heavy≥90%,cdr3_aa_light≥90%",
 ];
 
-// Test using datasets that are either in the extended public dataset collection, or which are
-// not publicly avaiable, or which require samtools.
+// Test using datasets that are either in the extended public dataset collection,
+// or which require samtools.
 
-pub const EXTENDED_TESTS: [&str; 13] = [
-    //
-    // THE FOLLOWING ARE ALL PUBLIC DATA
-    //
+pub const EXTENDED_TESTS: [&str; 12] = [
     // 1. Make sure that POUT works on full dataset.
     // If we experience failures on other lena ids, we can add them to this list.
     r###"BCR="86213;86237" RE POUT=/dev/null NOPRINT EXPECT_OK NO_PRE NFORCE"###,
@@ -173,13 +170,8 @@ pub const EXTENDED_TESTS: [&str; 13] = [
     // 4. crashed at one point
     r###"BCR=128037,128040 GEX=127798,127801 LVARSP=pe1 NOPRINT EXPECT_OK NO_PRE NFORCE"###,
     //
-    // DUPLICATE TEST, TO DELETE
-    //
-    // 5. crashed at one point
-    r###"BCR=128037,128040 GEX=127798,127801 LVARSP=pe1 NOPRINT EXPECT_OK NO_PRE NFORCE"###,
-    //
-    // THE FOLLOWING ARE ALL PUBLIC DATA
-    //
+    // 5. this added because it got better when a bug in bads detection was fixed
+    r###"TCR=163914 CDR3=CASRLGGEETQYF NO_PRE NFORCE"###,
     // 6. Test PCHAINS=max.  For this we need a clonotype having at least five chains, and the
     // question is whether the header line represents cvars for all the chains.  The output of
     // this is expected to change whenever variables are added.
@@ -200,8 +192,6 @@ pub const EXTENDED_TESTS: [&str; 13] = [
     r###"TCR=163914 CDR3=CASSLVQPSTDTQYF CVARSP=u_max NO_PRE NFORCE"###,
     // 12. this added because it got better when a noise filter was added; also test FASTA
     r###"TCR=163914 CDR3=CAFRGGSYIPTF FASTA=stdout NO_PRE NFORCE"###,
-    // 13. this added because it got better when a bug in bads detection was fixed
-    r###"TCR=163914 CDR3=CASRLGGEETQYF NO_PRE NFORCE"###,
 ];
 
 // Tests of internal features.
