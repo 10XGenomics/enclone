@@ -119,7 +119,7 @@ pub fn metatests() -> Vec<Vec<Message>> {
         // 6 = enclone VIS
         vec![
 
-            Message::InputChanged1("enclone TCR_GEX=1175299".to_string()),
+            Message::InputChanged1("enclone BCR=testset_bcr_micro GEX=testset_gex_micro".to_string()),
             Message::SubmitButtonPressed(Ok(())),
             Message::SetSummaryScrollablePos(0.2),
             Message::SummaryOpen(Ok(())),
