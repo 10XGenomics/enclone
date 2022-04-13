@@ -392,6 +392,9 @@ fn main() {
     } else {
         "unofficial_images"
     };
+    if unofficial {
+        std::fs::create_dir_all("enclone_visual/unofficial_images").unwrap();
+    }
     for i in 0..all_testnames.len() {
         let mut image_new = Vec::<u8>::new();
         let old_png_file = format!("enclone_visual/{reg}/{}.png", all_testnames[i]);
@@ -421,9 +424,19 @@ fn main() {
         let mut decoder_new = Decoder::new(BufReader::new(file));
         let image_data_new = decoder_new.decode().expect("failed to decode image");
 
-        // Check for existence of old jpg file.
+        // In create mode, just copy file.
 
         let old_jpg_file = format!("{}.jpg", old_png_file.rev_before(".png"));
+        if create {
+            copy(&new_png_file, &old_png_file).unwrap();
+            if !unofficial {
+                copy(&new_jpg_file, &old_jpg_file).unwrap();
+            }
+            continue;
+        }
+
+        // Check for existence of old jpg file.
+
         if !path_exists(&old_jpg_file) {
             eprintln!(
                 "\nLooks like you've added a test.  Please look at \
@@ -442,12 +455,7 @@ fn main() {
 
         // Test for differences.
 
-        if create {
-            copy(&new_png_file, &old_png_file).unwrap();
-            if !unofficial {
-                copy(&new_jpg_file, &old_jpg_file).unwrap();
-            }
-        } else if image_data_old.len() != image_data_new.len() {
+        if image_data_old.len() != image_data_new.len() {
             eprintln!(
                 "\nimage size for {} = {} changed from {} x {} to {} x {}",
                 i,
