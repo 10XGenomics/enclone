@@ -21,7 +21,7 @@ const LOUPE_OUT_FILENAME: &str = "testx/__test_proto";
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// 27. Test Linux executable size.
+// 27. Test Linux executable size.  This only runs under Linux.
 
 // NOT BASIC
 
@@ -50,7 +50,8 @@ fn test_executable_size() {
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 // 28. Test cpu usage.  This is designed for one server at 10x Genomics.  It runs
-// single-threaded and measures total instructions used.
+// single-threaded and measures total instructions used.  It only runs under Linux because
+// perf is not available on OSX and possibly also because the results would be incomparable.
 //
 // Using BUILT_IN because it increases code coverage.
 
@@ -58,6 +59,7 @@ fn test_executable_size() {
 
 #[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
+#[cfg(target_os = "linux")]
 #[test]
 fn test_cpu_usage() {
     PrettyTrace::new().on();
