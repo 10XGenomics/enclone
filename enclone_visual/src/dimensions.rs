@@ -4,7 +4,11 @@ use crate::*;
 use std::sync::atomic::AtomicUsize;
 use std::sync::atomic::Ordering::SeqCst;
 
-// These are the window dimensions that are requested initially.
+// These are the window dimensions that are requested initially.  The INITIAL_HEIGHT used to
+// be 1060, but was changed to 1051 to get dimensions to be equal on two different 16" Macs,
+// for purposes of testing.  Arguably, possibly, the change should apply only for testing.
+// Note also that presumably a smaller value would be needed for testing on smaller Macs.
+// Perhaps that smaller value would work on all Macs of at least that size.
 
 pub const INITIAL_WIDTH: u32 = 1100;
 pub const INITIAL_HEIGHT: u32 = 1051;
