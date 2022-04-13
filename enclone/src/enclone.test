@@ -1,8 +1,6 @@
 #!/bin/bash
 
-# This is the giant clonotyping specificity test, for internal use because the datasets
-# it uses are not all appropriate for public release (e.g. because we're not absolutely
-# certain that they're consented for that).
+# This is a large clonotyping specificity test that uses public data.
 #
 # The argument NOPAGER is included because of a trap: if the output is typed to less, then
 # it is relatively easy to think that the test succeeded, even though it failed, because you
@@ -15,8 +13,7 @@
 rootdir=$(dirname $0)
 
 enclone \
-    BCR=`cat $rootdir/../../enclone_core/src/enclone.testdata | grep -v '#' | tr -d ' ' | grep -v '^$' | head --bytes=-1 | \
-        tr '\n' ';' | tr -s ';'` \
+    BCR="1279050,1279058,1287196,1287197,1287204,1287205:1279051,1279059;1279054,1279062:1279055,1279063;1279066,1279074:1279067,1279075;1279070,1279078:1279071,1279079" \
     NOPRINT \
     SUMMARY \
     PRE=/mnt/assembly/vdj/current15 \
@@ -25,12 +22,12 @@ enclone \
     \
     BUILT_IN \
     \
-    REQUIRED_FPS=16 \
-    REQUIRED_CELLS=580949 \
-    REQUIRED_CLONOTYPES=516910 \
-    REQUIRED_DONORS=31 \
-    REQUIRED_TWO_CELL_CLONOTYPES=12864 \
-    REQUIRED_DATASETS=462 \
+    REQUIRED_FPS=46 \
+    REQUIRED_CELLS=279751 \
+    REQUIRED_CLONOTYPES=198374 \
+    REQUIRED_DONORS=4 \
+    REQUIRED_TWO_CELL_CLONOTYPES=28014 \
+    REQUIRED_DATASETS=20 \
     \
     $*
 

@@ -1,35 +1,55 @@
-// Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
+// Copyright (c) 2022 10X Genomics, Inc. All rights reserved.
 //
-// Run some tests of enclone visual on a Mac.  As part of the tests, this opens a window.
+// Run some tests of enclone visual on a Mac.
 //
-// If you run with the single argument UPDATE, failing results will be replaced.
+// As part of the tests, this opens a window.  Ideally we would instead run this without opening
+// a window, and that might be eventually possible, given changes on the roadmap for iced.
 //
-// Argument: QUIET.
-// Argument: VERBOSE.
-// Argument: TESTS=... (comma-separated list, subset of 1,2,3,4,5,main).
-// Argument: PRINTER.
-// Argument: LOCAL -- only run local tests.
+// The current images vary some from laptop to laptop, depending on hardware, OS, and personal
+// configuration.  Because of this, perhaps only one person can run this test "officially".
+// However other people can create their own regression test results, and test against those, as
+// described below.
+//
+// Create mode.  This mode is invoked by adding the argument CREATE.  This creates png images,
+// which exist only locally, and are not in git.  When the enclone repo is initialized, this needs
+// to be run.  You might also want to run it if you somehow mess up the images.  Otherwise, do
+// not run in this mode.
+//
+// Unofficial mode.  This mode is invoked by adding the argument UNOFFICIAL.  This does not read or
+// write files in regression_images, some of which are in git, and instead uses a directory
+// unofficial_images.  If you are running "unofficially" you need this.
+//
+// Local mode.  This mode is invoked by adding the argument LOCAL.  It does not run the remote
+// tests, which is currently only possible at 10x.
+//
+// Update mode.  This mode is invoked by adding the argument UPDATE.  This causing failing results
+// to be replaced.
+//
+// If you are outside 10x, then the first time you run you should:
+// test_vis CREATE UNOFFICIAL LOCAL
+// and thereafter:
+// test_vis UNOFFICIAL LOCAL.
+// This will allow you to tell if, with fairly high probability, changes you make have an effect
+// on enclone visual.  However they cannot tell you with with certainty, and if you deliberately
+// make a change, there is no mechanism for you to create the jpg files that need to be updated.
+//
+// Other arguments:
+// QUIET.
+// VERBOSE.
+// TESTS=... (comma-separated list, subset of 1,2,3,4,5,main).
+// PRINTER.
+//
 //
 // This code works by comparing lowest resolution JPEG files.  We use that format to avoid
 // having larger files in git.  A better solution would be to use lowest resolution
 // JPEG2000 files, which would be even smaller.
 //
-// You need the following datasets to run this:
-// dataset   notes
-// 123085    public
-// 123217    public, but we use our internal copy, which includes feature_barcode_matrix.bin
-// 1145040   not public
-// 1142282   not public
-// 1175299   not public
-// 1175300   not public
+// The tests use only public data.
 //
 // Part of these tests assume that you can connect to a server.  Also we test receiving shares,
 // and this could fail and mess things up if someone else happened to send a share.
 //
 // See also show_diffs.
-//
-// The regression images changed when we updated from Catalina to Big Sur and it is quite possible
-// that other version changes (and Mac hardware changes) could also affect the images.
 
 use enclone_visual::compare_images::*;
 use enclone_visual::messages::*;
@@ -58,6 +78,8 @@ fn main() {
     let mut verbose = false;
     let mut printer = false;
     let mut local = false;
+    let mut create = false;
+    let mut unofficial = false;
     let mut tests = Vec::<String>::new();
     for i in 1..args.len() {
         if args[i] == "UPDATE" {
@@ -70,6 +92,10 @@ fn main() {
             printer = true;
         } else if args[i] == "LOCAL" {
             local = true;
+        } else if args[i] == "CREATE" {
+            create = true;
+        } else if args[i] == "UNOFFICIAL" {
+            unofficial = true;
         } else if args[i].starts_with("TESTS=") {
             tests = args[i]
                 .after("TESTS=")
@@ -92,6 +118,7 @@ fn main() {
     if path_exists(&target) {
         fs_extra::dir::remove("enclone_visual/outputs/sample_visual").unwrap();
     }
+    std::fs::create_dir_all("enclone_visual/outputs").unwrap();
     fs_extra::dir::copy(&source, "enclone_visual/outputs", &options).unwrap();
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -368,9 +395,17 @@ fn main() {
 
     let mut fail = false;
     const MAX_DIFFS: usize = 450;
+    let reg = if !unofficial {
+        "regression_images"
+    } else {
+        "unofficial_images"
+    };
+    if unofficial {
+        std::fs::create_dir_all("enclone_visual/unofficial_images").unwrap();
+    }
     for i in 0..all_testnames.len() {
         let mut image_new = Vec::<u8>::new();
-        let old_png_file = format!("enclone_visual/regression_images/{}.png", all_testnames[i]);
+        let old_png_file = format!("enclone_visual/{reg}/{}.png", all_testnames[i]);
         let new_png_file = format!("enclone_visual/outputs/{}.png", all_testnames[i]);
         let mut f = File::open(&new_png_file).unwrap();
         f.read_to_end(&mut image_new).unwrap();
@@ -394,12 +429,20 @@ fn main() {
                 .unwrap();
         }
         let file = open_for_read![&new_jpg_file];
-        let mut decoder = Decoder::new(BufReader::new(file));
-        let image_data_new = decoder.decode().expect("failed to decode image");
+        let mut decoder_new = Decoder::new(BufReader::new(file));
+        let image_data_new = decoder_new.decode().expect("failed to decode image");
+
+        // In create mode, just copy file.
+
+        let old_jpg_file = format!("{}.jpg", old_png_file.rev_before(".png"));
+        if create {
+            copy(&new_png_file, &old_png_file).unwrap();
+            copy(&new_jpg_file, &old_jpg_file).unwrap();
+            continue;
+        }
 
         // Check for existence of old jpg file.
 
-        let old_jpg_file = format!("{}.jpg", old_png_file.rev_before(".png"));
         if !path_exists(&old_jpg_file) {
             eprintln!(
                 "\nLooks like you've added a test.  Please look at \
@@ -413,18 +456,20 @@ fn main() {
         // Read in the old jpg file as a bit image.
 
         let file = open_for_read![&old_jpg_file];
-        let mut decoder = Decoder::new(BufReader::new(file));
-        let image_data_old = decoder.decode().expect("failed to decode image");
+        let mut decoder_old = Decoder::new(BufReader::new(file));
+        let image_data_old = decoder_old.decode().expect("failed to decode image");
 
         // Test for differences.
 
         if image_data_old.len() != image_data_new.len() {
             eprintln!(
-                "\nimage size for {} = {} changed from {} to {}",
+                "\nimage size for {} = {} changed from {} x {} to {} x {}",
                 i,
                 all_testnames[i],
-                image_data_old.len(),
-                image_data_new.len()
+                decoder_old.info().unwrap().width,
+                decoder_old.info().unwrap().height,
+                decoder_new.info().unwrap().width,
+                decoder_new.info().unwrap().height,
             );
             fail = true;
         } else {
@@ -526,6 +571,10 @@ fn main() {
         );
         if percent_over > MAX_PERCENT_OVER_MEM {
             eprintln!("That's too high.  This happens occasionally, so please retry.\n");
+            eprintln!(
+                "Also the value is probably different if you're using a Mac with an \
+                Apple chip.\n"
+            );
             std::process::exit(1);
         }
     }

@@ -1,0 +1,95 @@
+dataset,donor,flow_class
+1279049,2,naive
+1279050,1,unswitched
+1279051,1,switched
+1279052,1,plasmablast
+1279053,1,naive
+1279054,2,unswitched
+1279055,2,switched
+1279057,2,naive
+1279058,1,unswitched
+1279059,1,switched
+1279060,1,plasmablast
+1279061,1,naive
+1279062,2,unswitched
+1279063,2,switched
+1279065,3,naive
+1279066,3,unswitched
+1279067,3,switched
+1279068,3,plasmablast
+1279069,4,naive
+1279070,4,unswitched
+1279071,4,switched
+1279072,4,plasmablast
+1279073,3,naive
+1279074,3,unswitched
+1279075,3,switched
+1279076,3,plasmablast
+1279077,4,naive
+1279078,4,unswitched
+1279079,4,switched
+1279080,4,plasmablast
+1287144,3,naive
+1287145,3,naive
+1287146,3,naive
+1287147,3,naive
+1287148,3,unswitched + naive
+1287149,3,unswitched + naive
+1287150,3,switched + naive
+1287151,3,switched + naive
+1287152,3,naive
+1287153,3,naive
+1287154,3,naive
+1287155,3,naive
+1287156,3,unswitched + naive
+1287157,3,unswitched + naive
+1287158,3,switched + naive
+1287159,3,switched + naive
+1287160,4,naive
+1287161,4,naive
+1287162,4,naive
+1287163,4,naive
+1287164,4,unswitched + naive
+1287165,4,unswitched + naive
+1287166,4,switched + naive
+1287167,4,switched + naive
+1287168,4,naive
+1287169,4,naive
+1287170,4,naive
+1287171,4,naive
+1287172,4,unswitched + naive
+1287173,4,unswitched + naive
+1287174,4,switched + naive
+1287175,4,switched + naive
+1287176,2,naive
+1287177,2,naive
+1287178,2,naive
+1287179,2,naive
+1287180,2,unswitched + naive
+1287181,2,unswitched + naive
+1287182,2,switched + naive
+1287183,2,switched + naive
+1287184,2,naive
+1287185,2,naive
+1287186,2,naive
+1287187,2,naive
+1287188,2,unswitched + naive
+1287189,2,unswitched + naive
+1287190,2,switched + naive
+1287191,2,switched + naive
+1287192,1,naive
+1287193,1,naive
+1287194,1,naive
+1287195,1,naive
+1287196,1,unswitched
+1287197,1,unswitched
+1287198,1,switched + naive
+1287199,1,switched + naive
+1287200,1,naive
+1287201,1,naive
+1287202,1,naive
+1287203,1,naive
+1287204,1,unswitched
+1287205,1,unswitched
+1287206,1,switched + naive
+1287207,1,switched + naive

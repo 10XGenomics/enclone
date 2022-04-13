@@ -116,6 +116,11 @@ message ExactSubClonotypeChain {
   optional uint32 fwr3_start = 18;
   // Index of the end of the FWR4 sequence in the `nt_sequence` (exclusive).
   optional uint32 fwr4_end = 19;
+  // Nucleotide percent identity with the donor reference, outside junction region.
+  required float dna_percent = 20;
+  // Amino acid percent identity with the donor reference, outside junction region.
+  required float aa_percent = 21;
+  
 }
 
 // The chains in a clonotype are ordered an hence they have a unique index.

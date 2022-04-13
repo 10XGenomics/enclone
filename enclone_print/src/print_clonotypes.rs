@@ -364,6 +364,7 @@ pub fn print_clonotypes(
                     &rsi,
                     refdata,
                     dref,
+                    ctl,
                 ));
             }
 

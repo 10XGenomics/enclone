@@ -119,35 +119,14 @@ fn html_header(level: usize, title: &str, extra_head: &str) -> String {
 
 pub fn insert_html(in_file: &str, out_file: &str, up: bool, level: usize) {
     // Extract requirements for the big test from the file enclone.test.
+    // For now, hardcoded.
 
-    let x = include_str!("../../enclone/src/enclone.test");
-    let mut required_fps = None;
-    let mut required_cells = None;
-    let mut required_donors = None;
-    let mut required_two_cell_clonotypes = None;
-    let mut required_datasets = None;
-    let mut required_clonotypes = None;
-    for line in x.lines() {
-        if line.contains("REQUIRED_FPS=") {
-            required_fps = Some(line.between("=", " ").force_usize());
-        } else if line.contains("REQUIRED_CELLS=") {
-            required_cells = Some(line.between("=", " ").force_usize());
-        } else if line.contains("REQUIRED_CLONOTYPES=") {
-            required_clonotypes = Some(line.between("=", " ").force_usize());
-        } else if line.contains("REQUIRED_DONORS=") {
-            required_donors = Some(line.between("=", " ").force_usize());
-        } else if line.contains("REQUIRED_TWO_CELL_CLONOTYPES=") {
-            required_two_cell_clonotypes = Some(line.between("=", " ").force_usize());
-        } else if line.contains("REQUIRED_DATASETS=") {
-            required_datasets = Some(line.between("=", " ").force_usize());
-        }
-    }
-    let required_fps = required_fps.unwrap();
-    let required_cells = required_cells.unwrap();
-    let required_clonotypes = required_clonotypes.unwrap();
-    let required_donors = required_donors.unwrap();
-    let required_two_cell_clonotypes = required_two_cell_clonotypes.unwrap();
-    let required_datasets = required_datasets.unwrap();
+    let required_fps = 16;
+    let required_cells = 580949;
+    let required_clonotypes = 516910;
+    let required_donors = 31;
+    let required_two_cell_clonotypes = 12864;
+    let required_datasets = 462;
     let required_fp_percent = format!(
         "{:.2}%",
         percent_ratio(required_fps, required_two_cell_clonotypes)
