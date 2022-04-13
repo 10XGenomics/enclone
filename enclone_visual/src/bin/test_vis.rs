@@ -1,13 +1,13 @@
 // Copyright (c) 2022 10X Genomics, Inc. All rights reserved.
 //
-// Run some tests of enclone visual on a Mac.  
+// Run some tests of enclone visual on a Mac.
 //
 // As part of the tests, this opens a window.  Ideally we would instead run this without opening
 // a window, and that might be eventually possible, given changes on the roadmap for iced.
 //
 // The current images vary some from laptop to laptop, depending on hardware, OS, and personal
-// configuration.  Because of this, perhaps only one person can run this test "officially".  
-// However other people can create their own regression test results, and test against those, as 
+// configuration.  Because of this, perhaps only one person can run this test "officially".
+// However other people can create their own regression test results, and test against those, as
 // described below.
 //
 // Create mode.  This mode is invoked by adding the argument CREATE.  This creates png images,
@@ -15,7 +15,10 @@
 // to be run.  You might also want to run it if you somehow mess up the images.  Otherwise, do
 // not run in this mode.
 //
-// Local mode.  This mode is invoked by adding the argument LOCAL.  It does not run the remote 
+// Readonly mode.  This mode is invoked by adding the argument READONLY.  This does not modify
+// the jpg images that are in git.  If you are running "unofficially" you need this.
+//
+// Local mode.  This mode is invoked by adding the argument LOCAL.  It does not run the remote
 // tests, which is currently only possible at 10x.
 //
 // Update mode.  This mode is invoked by adding the argument UPDATE.  This causing failing results
@@ -67,6 +70,7 @@ fn main() {
     let mut printer = false;
     let mut local = false;
     let mut create = false;
+    let mut readonly = false;
     let mut tests = Vec::<String>::new();
     for i in 1..args.len() {
         if args[i] == "UPDATE" {
@@ -81,6 +85,8 @@ fn main() {
             local = true;
         } else if args[i] == "CREATE" {
             create = true;
+        } else if args[i] == "READONLY" {
+            readonly = true;
         } else if args[i].starts_with("TESTS=") {
             tests = args[i]
                 .after("TESTS=")
@@ -432,7 +438,9 @@ fn main() {
 
         if create {
             copy(&new_png_file, &old_png_file).unwrap();
-            copy(&new_jpg_file, &old_jpg_file).unwrap();
+            if !readonly {
+                copy(&new_jpg_file, &old_jpg_file).unwrap();
+            }
         } else if image_data_old.len() != image_data_new.len() {
             eprintln!(
                 "\nimage size for {} = {} changed from {} x {} to {} x {}",
@@ -489,7 +497,9 @@ fn main() {
                 fail = true;
                 if update {
                     copy(&new_png_file, &old_png_file).unwrap();
-                    copy(&new_jpg_file, &old_jpg_file).unwrap();
+                    if !readonly {
+                        copy(&new_jpg_file, &old_jpg_file).unwrap();
+                    }
                 }
             }
         }
