@@ -29,6 +29,9 @@
 // test_vis CREATE UNOFFICIAL LOCAL
 // and thereafter:
 // test_vis UNOFFICIAL LOCAL.
+// This will allow you to tell if, with fairly high probability, changes you make have an effect
+// on enclone visual.  However they cannot tell you with with certainty, and if you deliberately
+// make a change, there is no mechanism for you to create the jpg files that need to be updated.
 //
 // Other arguments:
 // QUIET.
