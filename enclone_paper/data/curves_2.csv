@@ -1,0 +1,60 @@
+﻿ndn,category,percent of data
+0,public memory,81.87
+1,public memory,6.487
+2,public memory,6.853
+3,public memory,1.331
+4,public memory,0.865
+5,public memory,0.765
+6,public memory,0.432
+7,public memory,0.632
+8,public memory,0.699
+9,public memory,0.067
+0,public naive,88.767
+1,public naive,4.185
+2,public naive,2.533
+3,public naive,2.423
+4,public naive,1.101
+5,public naive,0.771
+6,public naive,0.22
+0,memory,42.135
+1,memory,7.962
+2,memory,7.125
+3,memory,7.579
+4,memory,5.432
+5,memory,4.986
+6,memory,4.927
+7,memory,3.334
+8,memory,2.854
+9,memory,2.682
+10,memory,1.972
+11,memory,1.714
+12,memory,1.499
+13,memory,1.049
+14,memory,0.929
+15,memory,0.717
+16,memory,0.567
+17,memory,0.481
+18,memory,0.384
+19,memory,0.302
+20,memory,0.246
+0,naive,31.49
+1,naive,6.927
+2,naive,6.748
+3,naive,7.723
+4,naive,5.784
+5,naive,5.461
+6,naive,5.801
+7,naive,4.245
+8,naive,3.82
+9,naive,3.741
+10,naive,2.763
+11,naive,2.581
+12,naive,2.207
+13,naive,1.748
+14,naive,1.618
+15,naive,1.234
+16,naive,1.02
+17,naive,0.949
+18,naive,0.687
+19,naive,0.596
+20,naive,0.551
