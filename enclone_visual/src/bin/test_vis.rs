@@ -92,6 +92,7 @@ fn main() {
     if path_exists(&target) {
         fs_extra::dir::remove("enclone_visual/outputs/sample_visual").unwrap();
     }
+    std::fs::create_dir_all("enclone_visual/outputs").unwrap();
     fs_extra::dir::copy(&source, "enclone_visual/outputs", &options).unwrap();
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
