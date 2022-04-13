@@ -7,6 +7,8 @@
 // Argument: QUIET.
 // Argument: VERBOSE.
 // Argument: TESTS=... (comma-separated list, subset of 1,2,3,4,5,main).
+// Argument: PRINTER.
+// Argument: LOCAL -- only run local tests.
 //
 // This code works by comparing lowest resolution JPEG files.  We use that format to avoid
 // having larger files in git.  A better solution would be to use lowest resolution
@@ -55,6 +57,7 @@ fn main() {
     let mut quiet = false;
     let mut verbose = false;
     let mut printer = false;
+    let mut local = false;
     let mut tests = Vec::<String>::new();
     for i in 1..args.len() {
         if args[i] == "UPDATE" {
@@ -65,6 +68,8 @@ fn main() {
             verbose = true;
         } else if args[i] == "PRINTER" {
             printer = true;
+        } else if args[i] == "LOCAL" {
+            local = true;
         } else if args[i].starts_with("TESTS=") {
             tests = args[i]
                 .after("TESTS=")
@@ -99,7 +104,7 @@ fn main() {
     // permissions, then some people may not be able to share.  And the permissions on the remote
     // share dir might get accidentally changed by git.
 
-    if tests.is_empty() {
+    if !local && tests.is_empty() {
         let mut found = false;
         for (key, value) in env::vars() {
             if key == "ENCLONE_CONFIG_DEFAULT" {
@@ -230,7 +235,7 @@ fn main() {
     // This is dangerous, because it tests receiving shares, and someone else could send a share
     // before or during the test.  Should change to restrict to receiving only shares from self.
 
-    if tests.is_empty() || tests.contains(&"2".to_string()) {
+    if !local && (tests.is_empty() || tests.contains(&"2".to_string())) {
         if path_exists(&target) {
             fs_extra::dir::remove("enclone_visual/outputs/sample_visual").unwrap();
         }
