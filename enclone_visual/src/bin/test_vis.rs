@@ -15,8 +15,9 @@
 // to be run.  You might also want to run it if you somehow mess up the images.  Otherwise, do
 // not run in this mode.
 //
-// Readonly mode.  This mode is invoked by adding the argument READONLY.  This does not modify
-// the jpg images that are in git.  If you are running "unofficially" you need this.
+// Unofficial mode.  This mode is invoked by adding the argument UNOFFICIAL.  This does not read or
+// write files in regression_images, some of which are in git, and instead uses a directory
+// unofficial_images.  If you are running "unofficially" you need this.
 //
 // Local mode.  This mode is invoked by adding the argument LOCAL.  It does not run the remote
 // tests, which is currently only possible at 10x.
@@ -70,7 +71,7 @@ fn main() {
     let mut printer = false;
     let mut local = false;
     let mut create = false;
-    let mut readonly = false;
+    let mut unofficial = false;
     let mut tests = Vec::<String>::new();
     for i in 1..args.len() {
         if args[i] == "UPDATE" {
@@ -85,8 +86,8 @@ fn main() {
             local = true;
         } else if args[i] == "CREATE" {
             create = true;
-        } else if args[i] == "READONLY" {
-            readonly = true;
+        } else if args[i] == "UNOFFICIAL" {
+            unofficial = true;
         } else if args[i].starts_with("TESTS=") {
             tests = args[i]
                 .after("TESTS=")
@@ -386,9 +387,14 @@ fn main() {
 
     let mut fail = false;
     const MAX_DIFFS: usize = 450;
+    let reg = if !unofficial {
+        "regression_images"
+    } else {
+        "unofficial_images"
+    };
     for i in 0..all_testnames.len() {
         let mut image_new = Vec::<u8>::new();
-        let old_png_file = format!("enclone_visual/regression_images/{}.png", all_testnames[i]);
+        let old_png_file = format!("enclone_visual/{reg}/{}.png", all_testnames[i]);
         let new_png_file = format!("enclone_visual/outputs/{}.png", all_testnames[i]);
         let mut f = File::open(&new_png_file).unwrap();
         f.read_to_end(&mut image_new).unwrap();
@@ -438,7 +444,7 @@ fn main() {
 
         if create {
             copy(&new_png_file, &old_png_file).unwrap();
-            if !readonly {
+            if !unofficial {
                 copy(&new_jpg_file, &old_jpg_file).unwrap();
             }
         } else if image_data_old.len() != image_data_new.len() {
@@ -497,7 +503,7 @@ fn main() {
                 fail = true;
                 if update {
                     copy(&new_png_file, &old_png_file).unwrap();
-                    if !readonly {
+                    if !unofficial {
                         copy(&new_jpg_file, &old_jpg_file).unwrap();
                     }
                 }
