@@ -27,6 +27,7 @@ const LOUPE_OUT_FILENAME: &str = "testx/__test_proto";
 
 #[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
+#[cfg(target_os = "linux")]
 #[test]
 fn test_executable_size() {
     PrettyTrace::new().on();
