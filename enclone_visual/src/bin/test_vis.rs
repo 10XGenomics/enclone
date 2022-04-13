@@ -571,6 +571,10 @@ fn main() {
         );
         if percent_over > MAX_PERCENT_OVER_MEM {
             eprintln!("That's too high.  This happens occasionally, so please retry.\n");
+            eprintln!(
+                "Also the value is probably different if you're using a Mac with an \
+                Apple chip.\n"
+            );
             std::process::exit(1);
         }
     }
