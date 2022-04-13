@@ -110,7 +110,7 @@ some user datasets disproportionally.
 <tr>
 <td> Sept. 20, 2021 </td>
 <td> <code>95c951</code> </td>
-<td> TBD </td>
+<td> 7.0 </td>
 <td> 
 Add a new default filter called <i>signature filtering</i> that under certain rare circumstances
 will decompose complex clonotypes that are incorrectly glued together.  This filter can 
@@ -123,7 +123,7 @@ Please see <a href="../../pages/auto/default_filters.html">enclone default filte
 <tr>
 <td> Dec. 13, 2021 </td>
 <td> <code>803b05</code> </td>
-<td> TBD </td>
+<td> 7.0 </td>
 <td> 
 Make three changes to clonotyping that increase its specificity:
 <ol>
@@ -144,7 +144,7 @@ regions are different.  The old behavior maybe be obtained by adding the argumen
 <tr>
 <td> Jan. 5, 2022 </td>
 <td> <code>7e3d7b</code> </td>
-<td> TBD </td>
+<td> 7.0 </td>
 <td> 
 Make five changes to BCR clonotyping that increase its sensitivity and specificity:
 <ol>
@@ -179,7 +179,7 @@ still be turned off entirely using <code>OLD_LIGHT</code>.</li>
 <tr>
 <td> Jan. 13, 2022 </td>
 <td> <code>b0adb3</code> </td>
-<td> TBD </td>
+<td> 7.0 </td>
 <td> 
 Make three small changes to BCR clonotyping:
 <ol>
@@ -194,7 +194,7 @@ mutations.  The parameter <code>15</code> is accessible as <code>AUTO_SHARE</cod
 <tr>
 <td> Feb. 7, 2022 </td>
 <td> <code>34c334</code> </td>
-<td> TBD </td>
+<td> 7.0 </td>
 <td>Improve the correctness of V gene assignment.  The changes comprise several technical changes 
 to the alignment code and the addition of one gene IGHV3-9 to the VDJ reference.  Also remove some
 gene copies from the reference that were identical except for extension on the 3' end.
@@ -204,7 +204,7 @@ gene copies from the reference that were identical except for extension on the 3
 <tr>
 <td> Feb. 24, 2022 </td>
 <td> <code>37b7f0</code> </td>
-<td> TBD </td>
+<td> 7.0 </td>
 <td>
 Two more changes to the join algorithm.
 <br>
@@ -225,7 +225,7 @@ nucleotide identity on heavy chain CDR1+CDR2 (combined), then the join is reject
 <tr>
 <td> Mar. 11, 2022 </td>
 <td> <code>******</code> </td>
-<td> TBD </td>
+<td> 7.1 </td>
 <td>
 Two more changes to the join algorithm.
 <br>
