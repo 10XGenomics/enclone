@@ -132,10 +132,10 @@ pub const GTESTS: [&str; 21] = [
 // Crash tests.  These are tests to make sure that certain options do not result in a crash, even
 // when run on a large and complex dataset.  The options are in groups because not all are
 // compatible with each other.  The datasets are defined by a single fixed list, to be enlarged
-// over time based on discovery of pathologies in particular datasets.  In general these datasets
-// are not public.  All run with certain shared options.
+// over time based on discovery of pathologies in particular PUBLIC datasets.
+// All run with certain shared options.
 
-pub const CRASH_DATA: &str = "BCR=\"45977;123085;129517-129520;testx/inputs/flaky\"";
+pub const CRASH_DATA: &str = "BCR=\"45977;123085;testx/inputs/flaky\"";
 pub const CRASH_OPTS: &str = "NOPRINT BUILT_IN EXPECT_OK NO_PRE NFORCE";
 pub const CRASH_SETS: [&str; 6] = [
     /* 1 */ "CONP SEQC SUM MEAN BARCODES DIFF_STYLE=C1 GROUP_VJ_REFNAME",
@@ -160,8 +160,8 @@ pub const CRASH_SETS: [&str; 6] = [
 
 pub const EXTENDED_TESTS: [&str; 12] = [
     // 1. Make sure that POUT works on full dataset.
-    // If we experience failures on other ids, we can add them to this list.
-    r###"BCR="86237" RE POUT=/dev/null NOPRINT EXPECT_OK NO_PRE NFORCE"###,
+    // If we experience failures on other PUBLIC ids, we can add them to this list.
+    r###"BCR=86237 RE POUT=/dev/null NOPRINT EXPECT_OK NO_PRE NFORCE"###,
     // 2. tests nd2
     r###"BCR=47199,47200,47212 AMINO=cdr3 NCROSS LVARS=nd2 CDR3=CVKGKSGSFWYYFENW
          NO_PRE NFORCE"###,
