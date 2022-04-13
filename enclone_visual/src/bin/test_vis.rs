@@ -9,6 +9,7 @@
 // Argument: TESTS=... (comma-separated list, subset of 1,2,3,4,5,main).
 // Argument: PRINTER.
 // Argument: LOCAL -- only run local tests.
+// Argument: CREATE -- create png files.
 //
 // This code works by comparing lowest resolution JPEG files.  We use that format to avoid
 // having larger files in git.  A better solution would be to use lowest resolution
@@ -58,6 +59,7 @@ fn main() {
     let mut verbose = false;
     let mut printer = false;
     let mut local = false;
+    let mut create = false;
     let mut tests = Vec::<String>::new();
     for i in 1..args.len() {
         if args[i] == "UPDATE" {
@@ -70,6 +72,8 @@ fn main() {
             printer = true;
         } else if args[i] == "LOCAL" {
             local = true;
+        } else if args[i] == "CREATE" {
+            create = true;
         } else if args[i].starts_with("TESTS=") {
             tests = args[i]
                 .after("TESTS=")
@@ -419,7 +423,10 @@ fn main() {
 
         // Test for differences.
 
-        if image_data_old.len() != image_data_new.len() {
+        if create {
+            copy(&new_png_file, &old_png_file).unwrap();
+            copy(&new_jpg_file, &old_jpg_file).unwrap();
+        } else if image_data_old.len() != image_data_new.len() {
             eprintln!(
                 "\nimage size for {} = {} changed from {} x {} to {} x {}",
                 i,
