@@ -7,7 +7,7 @@ use std::sync::atomic::Ordering::SeqCst;
 // These are the window dimensions that are requested initially.
 
 pub const INITIAL_WIDTH: u32 = 1100;
-pub const INITIAL_HEIGHT: u32 = 1060;
+pub const INITIAL_HEIGHT: u32 = 1051;
 
 // Tracking the actual screen dimensions.
 
