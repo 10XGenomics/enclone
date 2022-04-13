@@ -27,13 +27,15 @@ fn main() {
         v = v.before("\n").to_string();
     }
     let x = v.split('.').collect::<Vec<&str>>();
-    if x.len() < 3 || !x[0].parse::<usize>().is_ok() 
-        || !x[1].parse::<usize>().is_ok() 
-        || !x[2].parse::<usize>().is_ok() {
+    if x.len() < 3
+        || !x[0].parse::<usize>().is_ok()
+        || !x[1].parse::<usize>().is_ok()
+        || !x[2].parse::<usize>().is_ok()
+    {
         eprintln!("\nCould not parse git version {v}.\n");
         std::process::exit(1);
     }
-    if x[0].force_usize() < 2 || ( x[0].force_usize() == 2 && x[1].force_usize() < 24 ) {
+    if x[0].force_usize() < 2 || (x[0].force_usize() == 2 && x[1].force_usize() < 24) {
         eprintln!("\ngit version must be at least 2.24.z\n");
         std::process::exit(1);
     }
