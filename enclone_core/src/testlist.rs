@@ -160,8 +160,8 @@ pub const CRASH_SETS: [&str; 6] = [
 
 pub const EXTENDED_TESTS: [&str; 12] = [
     // 1. Make sure that POUT works on full dataset.
-    // If we experience failures on other lena ids, we can add them to this list.
-    r###"BCR="86213;86237" RE POUT=/dev/null NOPRINT EXPECT_OK NO_PRE NFORCE"###,
+    // If we experience failures on other ids, we can add them to this list.
+    r###"BCR="86237" RE POUT=/dev/null NOPRINT EXPECT_OK NO_PRE NFORCE"###,
     // 2. tests nd2
     r###"BCR=47199,47200,47212 AMINO=cdr3 NCROSS LVARS=nd2 CDR3=CVKGKSGSFWYYFENW
          NO_PRE NFORCE"###,
