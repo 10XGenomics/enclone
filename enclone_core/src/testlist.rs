@@ -135,7 +135,7 @@ pub const GTESTS: [&str; 21] = [
 // over time based on discovery of pathologies in particular datasets.  In general these datasets
 // are not public.  All run with certain shared options.
 
-pub const CRASH_DATA: &str = "BCR=\"45987;123085;testx/inputs/flaky\"";
+pub const CRASH_DATA: &str = "BCR=\"45977;123085;129517-129520;testx/inputs/flaky\"";
 pub const CRASH_OPTS: &str = "NOPRINT BUILT_IN EXPECT_OK NO_PRE NFORCE";
 pub const CRASH_SETS: [&str; 6] = [
     /* 1 */ "CONP SEQC SUM MEAN BARCODES DIFF_STYLE=C1 GROUP_VJ_REFNAME",
