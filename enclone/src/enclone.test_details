@@ -5,8 +5,7 @@
 rootdir=$(dirname $0)
 
 enclone \
-    BCR=`cat $rootdir/../../enclone_core/src/enclone.testdata | grep -v '#' | tr -d ' ' | grep -v '^$' | head --bytes=-1 | \
-        tr '\n' ';' | tr -s ';'` \
+    BCR="1279050,1279058,1287196,1287197,1287204,1287205:1279051,1279059;1279054,1279062:1279055,1279063;1279066,1279074:1279067,1279075;1279070,1279078:1279071,1279079" \
     ANN SHOW_BC SEQ MIN_DONORS=2 PLAIN PRINT_FAILED_JOINS \
     PRE=/mnt/assembly/vdj/current15 MIX_DONORS \
     BUILT_IN \
