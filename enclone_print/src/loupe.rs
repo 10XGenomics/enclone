@@ -91,6 +91,7 @@ pub fn make_loupe_clonotype(
     rsi: &ColInfo,
     refdata: &RefData,
     dref: &Vec<DonorReferenceItem>,
+    ctl: &EncloneControl,
 ) -> Clonotype {
     // Define concatenated universal and donor reference sequences.
 
@@ -283,6 +284,77 @@ pub fn make_loupe_clonotype(
             let al = aligner.semiglobal(&nt_sequence, &concatd[cx]);
             let donor_reference_aln = Alignment::from(&al);
 
+            // Compute nucleotide percent identity.
+
+            let xm = &ex.share[m];
+            let mut diffs = 0;
+            let mut denom = 0;
+            let seq = &xm.seq_del_amino;
+            let mut vref = refdata.refs[xm.v_ref_id].to_ascii_vec();
+            if xm.v_ref_id_donor_alt_id.is_some() {
+                vref = dref[xm.v_ref_id_donor.unwrap()].nt_sequence.clone();
+            }
+            let jref = refdata.refs[xm.j_ref_id].to_ascii_vec();
+            let z = seq.len();
+            for p in 0..z {
+                let b = seq[p];
+                if b == b'-' {
+                    diffs += 1;
+                    denom += 1;
+                    continue;
+                }
+                if p < vref.len() - ctl.heur.ref_v_trim {
+                    denom += 1;
+                    if b != vref[p] {
+                        diffs += 1;
+                    }
+                }
+                if p >= z - (jref.len() - ctl.heur.ref_j_trim) {
+                    denom += 1;
+                    if b != jref[jref.len() - (z - p)] {
+                        diffs += 1;
+                    }
+                }
+            }
+            let dna_percent = 100.0 * (denom - diffs) as f32 / denom as f32;
+
+            // Compute amino acid percent identity.
+
+            let xm = &ex.share[m];
+            let mut diffs = 0;
+            let mut denom = 0;
+            let aa_seq = &xm.aa_mod_indel;
+            let mut vref = refdata.refs[xm.v_ref_id].to_ascii_vec();
+            if xm.v_ref_id_donor_alt_id.is_some() {
+                vref = dref[xm.v_ref_id_donor.unwrap()].nt_sequence.clone();
+            }
+            let jref = refdata.refs[xm.j_ref_id].to_ascii_vec();
+            let z = 3 * aa_seq.len() + 1;
+            for p in 0..aa_seq.len() {
+                if aa_seq[p] == b'-' {
+                    diffs += 1;
+                    denom += 1;
+                    continue;
+                }
+                if 3 * p + 3 <= vref.len() - ctl.heur.ref_v_trim {
+                    denom += 1;
+                    if aa_seq[p] != codon_to_aa(&vref[3 * p..3 * p + 3]) {
+                        diffs += 1;
+                    }
+                }
+                if 3 * p > z - (jref.len() - ctl.heur.ref_j_trim) + 3 {
+                    denom += 1;
+                    if aa_seq[p]
+                        != codon_to_aa(
+                            &jref[jref.len() - (z - 3 * p)..jref.len() - (z - 3 * p) + 3],
+                        )
+                    {
+                        diffs += 1;
+                    }
+                }
+            }
+            let aa_percent = 100.0 * (denom - diffs) as f32 / denom as f32;
+
             // Finally, define the ExactClonotypeChain.
 
             chains.push(Some(ExactSubClonotypeChain {
@@ -305,6 +377,8 @@ pub fn make_loupe_clonotype(
                 clonotype_consensus_aln,
                 donor_reference_aln,
                 universal_reference_aln,
+                dna_percent,
+                aa_percent,
             }));
         }
         let mut cell_barcodes = Vec::<String>::new();
