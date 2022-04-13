@@ -25,6 +25,11 @@
 // Update mode.  This mode is invoked by adding the argument UPDATE.  This causing failing results
 // to be replaced.
 //
+// If you are outside 10x, then the first time you run you should:
+// test_vis CREATE UNOFFICIAL LOCAL
+// and thereafter:
+// test_vis UNOFFICIAL LOCAL.
+//
 // Other arguments:
 // QUIET.
 // VERBOSE.
