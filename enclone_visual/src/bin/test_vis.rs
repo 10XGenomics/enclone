@@ -395,8 +395,8 @@ fn main() {
                 .unwrap();
         }
         let file = open_for_read![&new_jpg_file];
-        let mut decoder = Decoder::new(BufReader::new(file));
-        let image_data_new = decoder.decode().expect("failed to decode image");
+        let mut decoder_new = Decoder::new(BufReader::new(file));
+        let image_data_new = decoder_new.decode().expect("failed to decode image");
 
         // Check for existence of old jpg file.
 
@@ -414,18 +414,20 @@ fn main() {
         // Read in the old jpg file as a bit image.
 
         let file = open_for_read![&old_jpg_file];
-        let mut decoder = Decoder::new(BufReader::new(file));
-        let image_data_old = decoder.decode().expect("failed to decode image");
+        let mut decoder_old = Decoder::new(BufReader::new(file));
+        let image_data_old = decoder_old.decode().expect("failed to decode image");
 
         // Test for differences.
 
         if image_data_old.len() != image_data_new.len() {
             eprintln!(
-                "\nimage size for {} = {} changed from {} to {}",
+                "\nimage size for {} = {} changed from {} x {} to {} x {}",
                 i,
                 all_testnames[i],
-                image_data_old.len(),
-                image_data_new.len()
+                decoder_old.info().unwrap().width,
+                decoder_old.info().unwrap().height,
+                decoder_new.info().unwrap().width,
+                decoder_new.info().unwrap().height,
             );
             fail = true;
         } else {
