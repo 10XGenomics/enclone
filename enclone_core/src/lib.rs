@@ -30,17 +30,21 @@ use std::env;
 use std::io::BufRead;
 use std::sync::Mutex;
 use std::time::Duration;
-use string_utils::{stringme, TextUtils};
+
+#[cfg(not(target_os = "windows"))]
+use string_utils::stringme;
+
+use string_utils::TextUtils;
 
 #[cfg(not(target_os = "windows"))]
 use tilde_expand::tilde_expand;
 
 // tilde_expand_me: not that this is NOT implementd for Windows
 
-pub fn tilde_expand_me(s: &mut String) {
+pub fn tilde_expand_me(_s: &mut String) {
     #[cfg(not(target_os = "windows"))]
     {
-        *s = stringme(&tilde_expand(&*s.as_bytes()));
+        *_s = stringme(&tilde_expand(&*_s.as_bytes()));
     }
 }
 
