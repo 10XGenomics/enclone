@@ -5,13 +5,12 @@
 use crate::proc_args2::{is_f64_arg, is_usize_arg};
 use enclone_core::defs::EncloneControl;
 use enclone_core::linear_condition::LinearCondition;
-use enclone_core::require_readable_file;
+use enclone_core::{require_readable_file, tilde_expand_me};
 use evalexpr::build_operator_tree;
 use io_utils::open_for_read;
 use regex::Regex;
 use std::io::BufRead;
-use string_utils::{parse_csv, stringme, TextUtils};
-use tilde_expand::tilde_expand;
+use string_utils::{parse_csv, TextUtils};
 use vector_utils::unique_sort;
 
 pub fn process_special_arg2(
@@ -677,7 +676,8 @@ pub fn process_special_arg2(
     } else if arg.starts_with("META=") {
         let v = arg.after("META=").split(',').collect::<Vec<&str>>();
         for f in v.iter() {
-            let f = stringme(&tilde_expand(f.as_bytes()));
+            let mut f = f.to_string();
+            tilde_expand_me(&mut f);
             metas.push(f);
         }
     } else if arg.starts_with("METAX=") {

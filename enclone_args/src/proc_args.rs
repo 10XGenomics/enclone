@@ -7,12 +7,11 @@ use crate::proc_args_post::proc_args_post;
 use crate::process_special_arg1::process_special_arg1;
 use crate::process_special_arg2::process_special_arg2;
 use enclone_core::defs::{ClonotypeHeuristics, EncloneControl};
-use enclone_core::require_readable_file;
 use enclone_core::test_def::replace_at_test;
+use enclone_core::{require_readable_file, tilde_expand_me};
 use itertools::Itertools;
 use std::{process::Command, time::Instant};
-use string_utils::{stringme, strme, TextUtils};
-use tilde_expand::tilde_expand;
+use string_utils::{strme, TextUtils};
 
 // Process arguments.
 
@@ -795,8 +794,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
             let var = &set_string_writeable[j].0;
             if is_string_arg(&arg, var)? {
                 *(set_string_writeable[j].1) = arg.after(&format!("{}=", var)).to_string();
-                *(set_string_writeable[j].1) =
-                    stringme(&tilde_expand(set_string_writeable[j].1.as_bytes()));
+                tilde_expand_me(&mut *set_string_writeable[j].1);
                 let val = &(set_string_writeable[j].1);
                 if evil_eye {
                     println!("creating file {} to test writability", val);
@@ -813,9 +811,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
             if is_string_arg(&arg, var)? {
                 *(set_string_writeable_or_stdout[j].1) =
                     arg.after(&format!("{}=", var)).to_string();
-                *(set_string_writeable_or_stdout[j].1) = stringme(&tilde_expand(
-                    set_string_writeable_or_stdout[j].1.as_bytes(),
-                ));
+                tilde_expand_me(&mut *set_string_writeable_or_stdout[j].1);
                 let val = &(set_string_writeable_or_stdout[j].1);
                 if *val != "stdout" {
                     test_writeable(&val, evil_eye)?;
@@ -833,7 +829,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
                 if val.is_empty() {
                     return Err(format!("\nFilename input in {} cannot be empty.\n", val));
                 }
-                val = stringme(&tilde_expand(val.as_bytes()));
+                tilde_expand_me(&mut val);
                 *(set_string_readable[j].1) = Some(val.clone());
                 if evil_eye {
                     println!("testing ability to open file {}", val);
@@ -855,7 +851,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
                 if val.is_empty() {
                     return Err(format!("\nFilename input in {} cannot be empty.\n", val));
                 }
-                val = stringme(&tilde_expand(val.as_bytes()));
+                tilde_expand_me(&mut val);
                 *(set_string_readable_plain[j].1) = val.clone();
                 if evil_eye {
                     println!("testing ability to open file {}", val);
@@ -877,7 +873,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
                 if val.is_empty() {
                     return Err(format!("\nFilename input in {} cannot be empty.\n", val));
                 }
-                val = stringme(&tilde_expand(val.as_bytes()));
+                tilde_expand_me(&mut val);
                 if !val.ends_with(".csv") {
                     return Err(format!(
                         "\nFilename input in {} needs to end with .csv.\n",

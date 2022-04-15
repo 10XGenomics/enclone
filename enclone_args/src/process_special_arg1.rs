@@ -6,14 +6,14 @@ use crate::proc_args2::test_writeable;
 use crate::proc_args2::{is_simple_arg, is_usize_arg};
 use enclone_core::cell_color::*;
 use enclone_core::defs::EncloneControl;
+use enclone_core::tilde_expand_me;
 use enclone_vars::encode_arith;
 use evalexpr::build_operator_tree;
 use expr_tools::test_functions_in_node;
 use io_utils::path_exists;
 use itertools::Itertools;
 use std::fs::{remove_file, File};
-use string_utils::{stringme, TextUtils};
-use tilde_expand::tilde_expand;
+use string_utils::TextUtils;
 use vector_utils::{unique_sort, VecUtils};
 
 pub fn process_special_arg1(
@@ -374,7 +374,7 @@ pub fn process_special_arg1(
             );
         }
         let mut val = fields[0].to_string();
-        val = stringme(&tilde_expand(val.as_bytes()));
+        tilde_expand_me(&mut val);
         ctl.plot_opt.sim_mat_plot_file = val.clone();
         if val != "stdout" && val != "stdouth" && val != "gui" {
             let f = File::create(&val);
@@ -467,7 +467,7 @@ pub fn process_special_arg1(
         ctl.plot_opt.plot_xy_xvar = xvar;
         ctl.plot_opt.plot_xy_yvar = yvar;
         let mut val = fields[2].to_string();
-        val = stringme(&tilde_expand(val.as_bytes()));
+        tilde_expand_me(&mut val);
         ctl.plot_opt.plot_xy_filename = val.clone();
         if val != "stdout" && val != "stdouth" && val != "gui" {
             let f = File::create(&val);

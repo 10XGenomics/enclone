@@ -9,7 +9,7 @@ use enclone_args::proc_args2::is_simple_arg;
 use enclone_core::defs::{get_config, EncloneControl};
 use enclone_core::prepare_for_apocalypse::prepare_for_apocalypse;
 use enclone_core::testlist::TEST_FILES_VERSION;
-use enclone_core::{require_readable_file, REMOTE_HOST};
+use enclone_core::{require_readable_file, tilde_expand_me, REMOTE_HOST};
 use enclone_help::help1::help1;
 use enclone_help::help2::help2;
 use enclone_help::help3::help3;
@@ -20,12 +20,10 @@ use io_utils::{open_for_read, path_exists};
 use itertools::Itertools;
 use pretty_trace::{new_thread_message, PrettyTrace};
 use std::env;
-
 use std::io::BufRead;
 use std::sync::atomic::Ordering::SeqCst;
 use std::time::Instant;
-use string_utils::{stringme, TextUtils};
-use tilde_expand::tilde_expand;
+use string_utils::TextUtils;
 use vector_utils::erase_if;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -164,7 +162,8 @@ pub fn critical_args(args: &Vec<String>, ctl: &mut EncloneControl) -> Result<Vec
     for i in 1..args.len() {
         if args[i].starts_with("SOURCE=") {
             let f = args[i].after("SOURCE=");
-            let f2 = stringme(&tilde_expand(f.as_bytes()));
+            let mut f2 = f.to_string();
+            tilde_expand_me(&mut f2);
             let mut f2s = vec![f2.clone()];
             for pre in ctl.gen_opt.pre.iter() {
                 f2s.push(format!("{}/{}", pre, f2));

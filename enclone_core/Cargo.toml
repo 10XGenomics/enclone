@@ -49,6 +49,9 @@ vdj_ann = { version = "0.4", git = "https://github.com/10XGenomics/rust-toolbox.
 vector_utils = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 zstd = "0.9"
 
+[target.'cfg(not(windows))'.dependencies]
+tilde-expand = "0.1"
+
 [build-dependencies]
 chrono = { version = "0.4", default-features = false, features = ["std", "clock"] }
 string_utils = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }

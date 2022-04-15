@@ -51,6 +51,7 @@
 //
 // See also show_diffs.
 
+use enclone_core::tilde_expand_me;
 use enclone_visual::compare_images::*;
 use enclone_visual::messages::*;
 use enclone_visual::testsuite::{metatests, TESTS};
@@ -67,7 +68,6 @@ use std::io::{BufReader, BufWriter, Read};
 use std::process::Command;
 use std::time::Instant;
 use string_utils::*;
-use tilde_expand::*;
 
 fn main() {
     PrettyTrace::new().on();
@@ -643,7 +643,9 @@ fn main() {
             eprintln!("stderr =\n{}", strme(&o.stderr));
             std::process::exit(1);
         }
-        std::fs::remove_file(&strme(&tilde_expand("~/enclone_temp_test_file".as_bytes()))).unwrap();
+        let mut f = "~/enclone_temp_test_file".to_string();
+        tilde_expand_me(&mut f);
+        std::fs::remove_file(&f).unwrap();
     }
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓

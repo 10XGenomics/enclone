@@ -39,7 +39,4 @@ stats_utils = { version = "0.1", git = "https://github.com/10XGenomics/rust-tool
 stirling_numbers = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 string_utils = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 tar = "0.4"
-tilde-expand = "0.1"
 vector_utils = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
-
-
