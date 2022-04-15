@@ -41,7 +41,6 @@ io_utils = { version = "0.3", git = "https://github.com/10XGenomics/rust-toolbox
 itertools = "0.10"
 lz4 = "1"
 mirror_sparse_matrix = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
-pager = "0.16"
 perf_stats = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 pretty_trace = { version = "0.5", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 rand_chacha = "0.3"
@@ -54,3 +53,6 @@ string_utils = { version = "0.1", git = "https://github.com/10XGenomics/rust-too
 vdj_ann = { version = "0.4", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 vdj_ann_ref = { version = "0.2", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 vector_utils = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
+
+[target.'cfg(not(windows))'.dependencies]
+pager = "0.16"

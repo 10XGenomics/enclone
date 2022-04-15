@@ -429,7 +429,7 @@ impl Analyzer for EncloneAnalyzer {
         let req: GetMySharesRequest = request.into_inner();
         let dir = &req.share_dir;
         let me_only = req.me_only;
-        let me = users::get_current_username();
+        let me = whomai::username();
         if me.is_none() {
             return Err(Status::new(Code::Internal, "unable to determine user name"));
         }
@@ -532,7 +532,7 @@ impl Analyzer for EncloneAnalyzer {
         request: Request<ReleaseMySharesRequest>,
     ) -> Result<Response<ReleaseMySharesResponse>, Status> {
         let req: ReleaseMySharesRequest = request.into_inner();
-        let me = users::get_current_username();
+        let me = whoami::username();
         if me.is_none() {
             return Err(Status::new(Code::Internal, "unable to determine user name"));
         }

@@ -114,4 +114,5 @@ vdj_ann = { version = "0.4", git = "https://github.com/10XGenomics/rust-toolbox.
 vdj_ann_ref = { version = "0.2", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 
 vector_utils = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
+whoami = "1"
 yaml-rust = "0.4"

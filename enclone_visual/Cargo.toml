@@ -58,8 +58,8 @@ tables = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.g
 tokio = { version = "1", default-features = false, features = ["io-util", "macros", "rt-multi-thread"] }
 tokio-stream = { version = "0.1", default-features = false, features = ["net"] }
 tonic = { version = "0.6", default-features = false, features = ["transport", "codegen", "prost"] }
-users = "0.11"
 vector_utils = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
+whoami = "1"
 
 [target.'cfg(target_os = "linux")'.dependencies]
 arboard = "2"
@@ -72,6 +72,9 @@ core-foundation = "0.9"
 core-graphics = "0.22"
 mach = "0.3"
 objc = "0.2"
+
+#[cfg(not(target_os = "windows"))]
+users = "0.11"
 
 [build-dependencies]
 tonic-build = { version = "0.6", default-features = false, features = ["transport", "prost"] }
