@@ -10,8 +10,10 @@ use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype, GexInfo};
 use enclone_core::median::median;
 use io_utils::{fwrite, fwriteln};
 use perf_stats::elapsed;
-#[cfg(not(target_os = "macos"))]
+
+#[cfg(target_os = "linux")]
 use perf_stats::peak_mem_usage_gb;
+
 use stats_utils::percent_ratio;
 use std::cmp::max;
 use std::collections::HashMap;
@@ -354,7 +356,7 @@ pub fn print_stats(
                 "   • total elapsed time = {:.1} seconds",
                 elapsed(tall)
             );
-            #[cfg(not(target_os = "macos"))]
+            #[cfg(target_os = "linux")]
             fwriteln!(logx, "   • peak memory = {:.1} GB", peak_mem_usage_gb());
         }
 
