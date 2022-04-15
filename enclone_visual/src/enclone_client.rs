@@ -494,7 +494,8 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             xprintln!(
                 "It is possible that you did not follow the enclone installation \
                 instructions on bit.ly/enclone.\nIf so, please try that and see if the problem \
-                goes away.\n"
+                goes away.\n\nOne specific possibility is that the enclone executable is not \
+                in your path.\n"
             );
             std::process::exit(1);
         }
