@@ -375,6 +375,7 @@ pub async fn launch_gui() -> iced::Result {
     let result = EncloneVisual::run(settings);
     if result.is_err() {
         eprintln!("\nLaunch failed.\n");
+        eprintln!("error = {}\n", result.err().unwrap());
         std::process::exit(1);
     }
     result
