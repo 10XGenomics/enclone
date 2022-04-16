@@ -546,6 +546,7 @@ impl EncloneControl {
     pub fn perf_stats(&self, t: &Instant, msg: &str) {
         let used = elapsed(t);
         let t2 = Instant::now();
+        #[allow(unused_mut)]
         let mut usedx = String::new();
         #[cfg(not(target_os = "windows"))]
         {
