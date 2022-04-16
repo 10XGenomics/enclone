@@ -266,7 +266,7 @@ const SCROLLBAR_WIDTH: u16 = 12;
 pub fn is_user_name_valid(name: &str) -> bool {
     #[cfg(not(target_os = "windows"))]
     {
-        return users::get_user_by_name(&name).is_some()
+        return users::get_user_by_name(&name).is_some();
     }
     true
 }
