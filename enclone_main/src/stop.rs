@@ -12,6 +12,7 @@ use itertools::Itertools;
 use perf_stats::elapsed;
 #[cfg(not(target_os = "windows"))]
 use perf_stats::peak_mem_usage_gb;
+#[cfg(not(target_os = "windows"))]
 use pretty_trace::stop_profiling;
 use rayon::prelude::*;
 use stats_utils::percent_ratio;

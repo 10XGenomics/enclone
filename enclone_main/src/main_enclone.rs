@@ -25,6 +25,7 @@ use enclone_vars::decode_arith;
 use expr_tools::vars_of_node;
 use io_utils::{open_for_read, open_userfile_for_read, path_exists};
 use itertools::Itertools;
+#[cfg(not(target_os = "windows"))]
 use pretty_trace::start_profiling;
 use std::{collections::HashMap, env, fs, fs::read_to_string, io::BufRead, time::Instant};
 use string_utils::TextUtils;
