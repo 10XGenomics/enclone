@@ -430,11 +430,6 @@ impl Analyzer for EncloneAnalyzer {
         let dir = &req.share_dir;
         let me_only = req.me_only;
         let me = whoami::username();
-        if me.is_none() {
-            return Err(Status::new(Code::Internal, "unable to determine user name"));
-        }
-        let me = me.unwrap();
-        let me = me.to_string_lossy();
         if !path_exists(&dir) {
             return Err(Status::new(
                 Code::Internal,
@@ -533,11 +528,6 @@ impl Analyzer for EncloneAnalyzer {
     ) -> Result<Response<ReleaseMySharesResponse>, Status> {
         let req: ReleaseMySharesRequest = request.into_inner();
         let me = whoami::username();
-        if me.is_none() {
-            return Err(Status::new(Code::Internal, "unable to determine user name"));
-        }
-        let me = me.unwrap();
-        let me = me.to_string_lossy();
         for i in 0..req.filenames.len() {
             let path = format!("{}/{}/{}", req.share_dir, me, req.filenames[i]);
             if path_exists(&path) {
