@@ -3,7 +3,7 @@
 // This file contains the two functions proc_xcr and proc_meta.
 
 use enclone_core::defs::{EncloneControl, OriginInfo};
-use enclone_core::{expand_integer_ranges, fetch_url};
+use enclone_core::{expand_integer_ranges, fetch_url, tilde_expand_me};
 use io_utils::*;
 use itertools::Itertools;
 use rayon::prelude::*;
@@ -15,8 +15,7 @@ use std::sync::Arc;
 use std::thread;
 use std::time;
 use std::time::Instant;
-use string_utils::{stringme, TextUtils};
-use tilde_expand::tilde_expand;
+use string_utils::TextUtils;
 use vector_utils::unique_sort;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -69,15 +68,15 @@ fn expand_analysis_sets(x: &str, ctl: &EncloneControl) -> Result<String, String>
                             ids2.push(ids[j].to_string());
                         }
                     }
-                    let enclone = "~/enclone".to_string();
-                    let enclone = stringme(&tilde_expand(enclone.as_bytes()));
+                    let mut enclone = "~/enclone".to_string();
+                    tilde_expand_me(&mut enclone);
                     if path_exists(&enclone) {
-                        let sets = "~/enclone/sets".to_string();
-                        let sets = stringme(&tilde_expand(sets.as_bytes()));
+                        let mut sets = "~/enclone/sets".to_string();
+                        tilde_expand_me(&mut sets);
                         if !path_exists(&sets) {
                             std::fs::create_dir(&sets).unwrap();
-                            let setid = format!("~/enclone/sets/{}", setid);
-                            let setid = stringme(&tilde_expand(setid.as_bytes()));
+                            let mut setid = format!("~/enclone/sets/{}", setid);
+                            tilde_expand_me(&mut setid);
                             if !path_exists(&setid) {
                                 let mut f = open_for_write_new![&setid];
                                 let s = format!("{}\n", ids2.iter().format(","));
@@ -102,8 +101,8 @@ fn expand_analysis_sets(x: &str, ctl: &EncloneControl) -> Result<String, String>
                     ));
                 }
             } else if setid.parse::<usize>().is_ok() {
-                let set_file = format!("~/enclone/sets/{}", setid);
-                let set_file = stringme(&tilde_expand(set_file.as_bytes()));
+                let mut set_file = format!("~/enclone/sets/{}", setid);
+                tilde_expand_me(&mut set_file);
                 if path_exists(&set_file) {
                     let mut f = open_for_read![&set_file];
                     let mut s = String::new();
@@ -178,7 +177,7 @@ fn get_path(p: &str, ctl: &EncloneControl, ok: &mut bool) -> String {
     for x in ctl.gen_opt.pre.iter() {
         let mut pp = format!("{}/{}", x, p);
         if pp.starts_with('~') {
-            pp = stringme(&tilde_expand(pp.as_bytes()));
+            tilde_expand_me(&mut pp);
         }
         if path_exists(&pp) {
             *ok = true;
@@ -187,7 +186,7 @@ fn get_path(p: &str, ctl: &EncloneControl, ok: &mut bool) -> String {
     }
     let mut pp = p.to_string();
     if pp.starts_with('~') {
-        pp = stringme(&tilde_expand(pp.as_bytes()));
+        tilde_expand_me(&mut pp);
     }
     *ok = path_exists(&pp);
     pp

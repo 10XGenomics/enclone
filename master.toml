@@ -76,7 +76,6 @@ permutation = "0.4"
 petgraph = "0.6"
 plotters = { version = "0.3", default_features = false, features = ["svg_backend", "point_series"] }
 png-decoder = "0.1"
-pprof = "0.6"
 pretty_trace = { version = "0.5", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 procfs = { version = "0.12", default_features = false }
 # prost: enclone will compile without the std and prost-derive features, but other things
@@ -114,4 +113,5 @@ vdj_ann = { version = "0.4", git = "https://github.com/10XGenomics/rust-toolbox.
 vdj_ann_ref = { version = "0.2", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 
 vector_utils = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
+whoami = "1"
 yaml-rust = "0.4"

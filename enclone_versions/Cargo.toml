@@ -25,7 +25,6 @@ flate2 = "1"
 io_utils = { version = "0.3", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 itertools = "0.10"
 ndarray = "0.15"
-pager = "0.16"
 permutation = "0.4"
 petgraph = "0.6"
 pretty_trace = { version = "0.5", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
@@ -39,7 +38,7 @@ stats_utils = { version = "0.1", git = "https://github.com/10XGenomics/rust-tool
 stirling_numbers = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 string_utils = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 tar = "0.4"
-tilde-expand = "0.1"
 vector_utils = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 
-
+[target.'cfg(not(windows))'.dependencies]
+pager = "0.16"

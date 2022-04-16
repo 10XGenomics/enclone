@@ -4,6 +4,7 @@ use crate::proc_args2::proc_args_tail;
 use crate::proc_args3::{get_path_fail, proc_meta, proc_meta_core, proc_xcr};
 use crate::proc_args_check::check_cvars;
 use enclone_core::defs::EncloneControl;
+use enclone_core::tilde_expand_me;
 use enclone_vars::encode_arith;
 use evalexpr::build_operator_tree;
 use expr_tools::vars_of_node;
@@ -11,8 +12,7 @@ use io_utils::{open_for_read, open_userfile_for_read, path_exists};
 use std::collections::HashMap;
 use std::io::BufRead;
 use std::time::Instant;
-use string_utils::{parse_csv, stringme, TextUtils};
-use tilde_expand::tilde_expand;
+use string_utils::{parse_csv, TextUtils};
 use vector_utils::{bin_member, next_diff, sort_sync2, unique_sort};
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -268,7 +268,7 @@ pub fn proc_args_post(
         &mut ctl.parseable_opt.pout,
     ];
     for f in files.iter_mut() {
-        **f = stringme(&tilde_expand(f.as_bytes()));
+        tilde_expand_me(&mut *f);
     }
 
     // Test VAR_DEF arguments for circularity.

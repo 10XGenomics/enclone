@@ -777,10 +777,13 @@ pub fn feature_barcode_matrix(
     let m = MirrorSparseMatrix::build_from_vec(&x, &row_labels, &col_labels);
     if verbosity > 0 {
         println!("used {:.1} seconds\n", elapsed(&t));
-        println!(
-            "peak mem usage for feature barcode matrix = {:.1} GB\n",
-            peak_mem_usage_gb()
-        );
+        #[cfg(not(target_os = "windows"))]
+        {
+            println!(
+                "peak mem usage for feature barcode matrix = {:.1} GB\n",
+                peak_mem_usage_gb()
+            );
+        }
     }
     Ok((m, total_umis, brn, m_reads, total_reads as u64, brnr, bdcs))
 }

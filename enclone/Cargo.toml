@@ -34,7 +34,6 @@ itertools = "0.10"
 mirror_sparse_matrix = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 perf_stats = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 petgraph = "0.6"
-pprof = "0.6"
 pretty_trace = { version = "0.5", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 qd = { git = "https://github.com/Barandis/qd" }
 rayon = "1"

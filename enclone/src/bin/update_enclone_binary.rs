@@ -8,6 +8,8 @@ use io_utils::path_exists;
 use pretty_trace::PrettyTrace;
 use std::collections::HashMap;
 use std::env;
+
+#[cfg(not(target_os = "windows"))]
 use std::os::unix::fs::PermissionsExt;
 
 fn main() {
@@ -33,7 +35,10 @@ fn main() {
             std::fs::rename(&current, &last).unwrap();
         }
         std::fs::copy("target/debug/enclone", &current).unwrap();
-        let perms = std::fs::Permissions::from_mode(0o775);
-        std::fs::set_permissions(&current, perms).unwrap();
+        #[cfg(not(target_os = "windows"))]
+        {
+            let perms = std::fs::Permissions::from_mode(0o775);
+            std::fs::set_permissions(&current, perms).unwrap();
+        }
     }
 }

@@ -7,7 +7,11 @@ use evalexpr::Node;
 use hdf5::Dataset;
 use io_utils::{open_for_read, path_exists};
 use mirror_sparse_matrix::MirrorSparseMatrix;
-use perf_stats::{elapsed, peak_mem_usage_gb};
+use perf_stats::elapsed;
+
+#[cfg(not(target_os = "windows"))]
+use perf_stats::peak_mem_usage_gb;
+
 use regex::Regex;
 use std::cmp::max;
 use std::collections::HashMap;
@@ -542,21 +546,25 @@ impl EncloneControl {
     pub fn perf_stats(&self, t: &Instant, msg: &str) {
         let used = elapsed(t);
         let t2 = Instant::now();
+        #[allow(unused_mut)]
         let mut usedx = String::new();
-        if self.perf_opt.comp {
-            let peak = peak_mem_usage_gb();
-            let ipeak = (100.0 * peak).round();
-            let peak_mem = format!("peak mem = {:.2} GB", peak);
-            usedx = format!("{:.2}", used);
-            let mut ipeak_changed = false;
-            unsafe {
-                if ipeak != LAST_IPEAK {
-                    ipeak_changed = true;
-                    LAST_IPEAK = ipeak;
+        #[cfg(not(target_os = "windows"))]
+        {
+            if self.perf_opt.comp {
+                let peak = peak_mem_usage_gb();
+                let ipeak = (100.0 * peak).round();
+                let peak_mem = format!("peak mem = {:.2} GB", peak);
+                usedx = format!("{:.2}", used);
+                let mut ipeak_changed = false;
+                unsafe {
+                    if ipeak != LAST_IPEAK {
+                        ipeak_changed = true;
+                        LAST_IPEAK = ipeak;
+                    }
                 }
-            }
-            if usedx != "0.00" || ipeak_changed {
-                println!("used {} seconds {}, {}", usedx, msg, peak_mem);
+                if usedx != "0.00" || ipeak_changed {
+                    println!("used {} seconds {}, {}", usedx, msg, peak_mem);
+                }
             }
         }
 

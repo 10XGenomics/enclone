@@ -9,7 +9,10 @@ use enclone_tail::grouper::grouper;
 use enclone_tail::tail::tail_code;
 use io_utils::{dir_list, fwrite, fwriteln, open_for_read, open_for_write_new, path_exists};
 use itertools::Itertools;
-use perf_stats::{elapsed, peak_mem_usage_gb};
+use perf_stats::elapsed;
+#[cfg(not(target_os = "windows"))]
+use perf_stats::peak_mem_usage_gb;
+#[cfg(not(target_os = "windows"))]
 use pretty_trace::stop_profiling;
 use rayon::prelude::*;
 use stats_utils::percent_ratio;
@@ -421,7 +424,10 @@ pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<EncloneState
     ctl.perf_stats(tall, "total");
     if ctl.perf_opt.comp {
         println!("used {} seconds unaccounted for", deltas);
-        println!("peak mem usage = {:.1} MB", peak_mem_usage_gb() * 1000.0);
+        #[cfg(not(target_os = "windows"))]
+        {
+            println!("peak mem usage = {:.1} MB", peak_mem_usage_gb() * 1000.0);
+        }
     }
     if ctl.perf_opt.comp_enforce && deltas.force_f64() > 0.03 {
         return Err(format!(

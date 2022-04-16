@@ -9,6 +9,7 @@ use pretty_trace::PrettyTrace;
 use std::collections::HashMap;
 use std::env;
 use std::io::Write;
+#[cfg(not(target_os = "windows"))]
 use std::os::unix::fs::PermissionsExt;
 use std::process::{Command, Stdio};
 use std::thread;
@@ -161,8 +162,11 @@ fn main() {
                 );
                 std::process::exit(1);
             }
-            let perms = std::fs::Permissions::from_mode(0o775);
-            std::fs::set_permissions(&current, perms).unwrap();
+            #[cfg(not(target_os = "windows"))]
+            {
+                let perms = std::fs::Permissions::from_mode(0o775);
+                std::fs::set_permissions(&current, perms).unwrap();
+            }
             let msg = format!(
                 "release nanny end update from {} to {}",
                 remote_version, github_version,

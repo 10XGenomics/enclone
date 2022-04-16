@@ -30,7 +30,23 @@ use std::env;
 use std::io::BufRead;
 use std::sync::Mutex;
 use std::time::Duration;
+
+#[cfg(not(target_os = "windows"))]
+use string_utils::stringme;
+
 use string_utils::TextUtils;
+
+#[cfg(not(target_os = "windows"))]
+use tilde_expand::tilde_expand;
+
+// tilde_expand_me: not that this is NOT implementd for Windows
+
+pub fn tilde_expand_me(_s: &mut String) {
+    #[cfg(not(target_os = "windows"))]
+    {
+        *_s = stringme(&tilde_expand(&*_s.as_bytes()));
+    }
+}
 
 pub fn hcat(col1: &[String], col2: &[String], sep: usize) -> Vec<String> {
     let mut cat = Vec::<String>::new();
