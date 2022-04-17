@@ -384,6 +384,15 @@ pub async fn launch_gui() -> iced::Result {
     if result.is_err() {
         eprintln!("\nLaunch failed.\n");
         eprintln!("error = {}\n", result.err().unwrap());
+        eprintln!(
+            "If the error is something like\n\
+            a suitable graphics adapter or device could not be found\n\
+            then the problem may be that your system is not properly set up to use\n\
+            GPU acceleration.  OpenGL or Vulkan needs to be set up for this to work.\n\
+            A good test case is the program glxgears.  If you can run it and it displays\n\
+            some moving gears, then your system is likely set up properly.  Otherwise you\n\
+            should get that to work, and then see if this program will work.\n"
+        );
         std::process::exit(1);
     }
     result
