@@ -61,7 +61,6 @@ tokio-stream = { version = "0.1", default-features = false, features = ["net"] }
 tonic = { version = "0.6", default-features = false, features = ["transport", "codegen", "prost"] }
 vector_utils = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 whoami = "1"
-x11 = { version = "2.18", features = ["xlib", "xrandr"] }
 
 [target.'cfg(target_os = "linux")'.dependencies]
 arboard = "2"

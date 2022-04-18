@@ -1,6 +1,12 @@
 // This code is a minimally modified version of code in the crate shotgun:2.2.1.  It is
 // subject to the terms of the Mozilla Public License, v. 2.0. 
 
+// Originally this was used as part of screen capture for Linux.  But it only works under X,
+// and most Linux distros are moving to Wayland, so it's not very useful.  If we want to bring
+// this back, we should add
+// x11 = { version = "2.18", features = ["xlib", "xrandr"] }
+// to Cargo.toml.
+
 use std::mem;
 use std::os::raw;
 use std::ptr;

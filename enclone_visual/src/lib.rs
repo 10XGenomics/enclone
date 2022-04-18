@@ -68,7 +68,6 @@ pub mod summary;
 pub mod svg_to_geometry;
 pub mod testsuite;
 pub mod update_restart;
-pub mod xwrap;
 
 const DEJAVU_WIDTH_OVER_HEIGHT: f32 = 0.5175; // there's another different value at one point
 

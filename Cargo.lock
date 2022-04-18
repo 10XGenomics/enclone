@@ -1719,7 +1719,6 @@ dependencies = [
  "users",
  "vector_utils",
  "whoami",
- "x11",
 ]
 
 [[package]]
@@ -5797,16 +5796,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "baf6e163c25e3fac820b4b453185ea2dea3b6a3e0a721d4d23d75bd33734c295"
 dependencies = [
  "rand_core",
-]
-
-[[package]]
-name = "x11"
-version = "2.19.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6dd0565fa8bfba8c5efe02725b14dff114c866724eff2cfd44d76cea74bcd87a"
-dependencies = [
- "libc",
- "pkg-config",
 ]
 
 [[package]]
