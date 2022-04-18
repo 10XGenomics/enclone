@@ -324,77 +324,77 @@ fn main() {
                     panic!("unclassified dataset");
                 }
             }
+        }
 
-            // Print tables.
+        // Print tables.
 
-            if opt_naive {
-                let counts = [
-                    &naive,
-                    &unswitched,
-                    &switched,
-                    &plasmablast,
-                    &memory_subtotal,
-                    &unswitched_naive,
-                    &switched_naive,
-                    &total,
-                ];
-                let names = [
-                    "naive",
-                    "unswitched",
-                    "switched",
-                    "plasmablast",
-                    "memory_subtotal",
-                    "unswitched_naive",
-                    "switched_naive",
-                    "total",
-                ];
-                let row1 = vec![
-                    "class".to_string(),
-                    "all".to_string(),
-                    "d1".to_string(),
-                    "d2".to_string(),
-                    "d3".to_string(),
-                    "d4".to_string(),
-                ];
-                println!("\nall cells");
-                let mut rows = vec![row1.clone()];
-                for i in 0..counts.len() {
-                    rows.push(vec!["\\hline".to_string(); 6]);
-                    let mut row = vec![names[i].to_string()];
-                    for j in 0..5 {
-                        if counts[i][j].1 > 0 {
-                            row.push(format!("{}", add_commas(counts[i][j].1)));
-                        } else {
-                            row.push(String::new());
-                        }
+        if opt_naive {
+            let counts = [
+                &naive,
+                &unswitched,
+                &switched,
+                &plasmablast,
+                &memory_subtotal,
+                &unswitched_naive,
+                &switched_naive,
+                &total,
+            ];
+            let names = [
+                "naive",
+                "unswitched",
+                "switched",
+                "plasmablast",
+                "memory_subtotal",
+                "unswitched_naive",
+                "switched_naive",
+                "total",
+            ];
+            let row1 = vec![
+                "class".to_string(),
+                "all".to_string(),
+                "d1".to_string(),
+                "d2".to_string(),
+                "d3".to_string(),
+                "d4".to_string(),
+            ];
+            println!("\nall cells");
+            let mut rows = vec![row1.clone()];
+            for i in 0..counts.len() {
+                rows.push(vec!["\\hline".to_string(); 6]);
+                let mut row = vec![names[i].to_string()];
+                for j in 0..5 {
+                    if counts[i][j].1 > 0 {
+                        row.push(format!("{}", add_commas(counts[i][j].1)));
+                    } else {
+                        row.push(String::new());
                     }
-                    rows.push(row);
                 }
-                let mut log = String::new();
-                print_tabular_vbox(&mut log, &rows, 0, &b"l|r|r|r|r|r".to_vec(), false, false);
-                println!("{}", log);
-                println!("naive cell fractions");
-                let mut rows = vec![row1.clone()];
-                for i in 0..counts.len() {
-                    rows.push(vec!["\\hline".to_string(); 6]);
-                    let mut row = vec![names[i].to_string()];
-                    for j in 0..5 {
-                        if counts[i][j].1 > 0 {
-                            row.push(format!(
-                                "{:.1}%",
-                                100.0 * counts[i][j].0 as f64 / counts[i][j].1 as f64
-                            ));
-                        } else {
-                            row.push(String::new());
-                        }
-                    }
-                    rows.push(row);
-                }
-                let mut log = String::new();
-                print_tabular_vbox(&mut log, &rows, 0, &b"l|r|r|r|r|r".to_vec(), false, false);
-                println!("{}", log);
-                std::process::exit(0);
+                rows.push(row);
             }
+            let mut log = String::new();
+            print_tabular_vbox(&mut log, &rows, 0, &b"l|r|r|r|r|r".to_vec(), false, false);
+            println!("{}", log);
+            println!("naive cell fractions");
+            let mut rows = vec![row1.clone()];
+            for i in 0..counts.len() {
+                rows.push(vec!["\\hline".to_string(); 6]);
+                let mut row = vec![names[i].to_string()];
+                for j in 0..5 {
+                    if counts[i][j].1 > 0 {
+                        row.push(format!(
+                            "{:.1}%",
+                            100.0 * counts[i][j].0 as f64 / counts[i][j].1 as f64
+                        ));
+                    } else {
+                        row.push(String::new());
+                    }
+                }
+                rows.push(row);
+            }
+            let mut log = String::new();
+            print_tabular_vbox(&mut log, &rows, 0, &b"l|r|r|r|r|r".to_vec(), false, false);
+            println!("{}", log);
+            std::process::exit(0);
         }
     }
 
