@@ -1640,6 +1640,7 @@ dependencies = [
  "rayon",
  "regex",
  "serde_json",
+ "statrs",
  "stats_utils",
  "string_utils",
  "tables",
