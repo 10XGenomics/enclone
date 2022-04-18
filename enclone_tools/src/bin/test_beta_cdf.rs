@@ -19,10 +19,6 @@ fn main() {
     let args: Vec<String> = env::args().collect();
     let s = args[1].force_f64();
     let n = args[2].force_f64();
-
-    // let s = 900_000.0;
-    // let n = 100_000.0;
-
     let p = 1.0 - beta_cdf(0.9, s + 2.0, n + 2.0);
     println!("p = {:.1}%", 100.0 * p);
 }
