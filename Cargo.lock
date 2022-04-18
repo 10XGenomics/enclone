@@ -1717,6 +1717,7 @@ dependencies = [
  "users",
  "vector_utils",
  "whoami",
+ "x11",
 ]
 
 [[package]]
@@ -3876,7 +3877,7 @@ dependencies = [
  "io_utils",
  "lazy_static",
  "libc",
- "nix 0.22.3",
+ "nix 0.23.1",
  "pprof",
  "stats_utils",
  "string_utils",
@@ -5039,7 +5040,7 @@ version = "1.6.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4ee73e6e4924fe940354b8d4d98cad5231175d615cd855b758adc658c0aac6a0"
 dependencies = [
- "cfg-if 0.1.10",
+ "cfg-if 1.0.0",
  "rand",
  "static_assertions",
 ]
@@ -5794,6 +5795,16 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "baf6e163c25e3fac820b4b453185ea2dea3b6a3e0a721d4d23d75bd33734c295"
 dependencies = [
  "rand_core",
+]
+
+[[package]]
+name = "x11"
+version = "2.19.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6dd0565fa8bfba8c5efe02725b14dff114c866724eff2cfd44d76cea74bcd87a"
+dependencies = [
+ "libc",
+ "pkg-config",
 ]
 
 [[package]]
