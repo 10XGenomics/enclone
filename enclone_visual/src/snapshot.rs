@@ -1,14 +1,14 @@
 // Copyright (c) 2022 10x Genomics, Inc. All rights reserved.
 
+use crate::capture_as_file;
 use crate::copy_image_to_clipboard::*;
+use crate::get_window_id;
 use perf_stats::*;
 use std::env;
 use std::fs::{remove_file, File};
 use std::io::Read;
 use std::thread;
 use std::time::{Duration, Instant};
-use crate::get_window_id;
-use crate::capture_as_file;
 
 // Copy window image to clipboard.  If the environment variable ENCLONE_VIS_SNAPSHOT is defined,
 // also save to that file.

@@ -69,7 +69,7 @@ pub mod svg_to_geometry;
 pub mod testsuite;
 pub mod update_restart;
 
-#[cfg(target_os = "linux")]
+// #[cfg(target_os = "linux")]
 pub mod xwrap;
 
 const DEJAVU_WIDTH_OVER_HEIGHT: f32 = 0.5175; // there's another different value at one point

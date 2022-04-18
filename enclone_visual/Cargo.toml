@@ -47,6 +47,7 @@ lazy_static = "1"
 libc = "0.2"
 log = "0.4"
 nix = "0.23"
+num-traits = "0.2"
 perf_stats = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 png-decoder = "0.1"
 pretty_trace = { version = "0.5", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
@@ -60,11 +61,11 @@ tokio-stream = { version = "0.1", default-features = false, features = ["net"] }
 tonic = { version = "0.6", default-features = false, features = ["transport", "codegen", "prost"] }
 vector_utils = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 whoami = "1"
+x11 = { version = "2.18", features = ["xlib", "xrandr"] }
 
 [target.'cfg(target_os = "linux")'.dependencies]
 arboard = "2"
 procfs = { version = "0.12", default_features = false }
-x11 = { version = "2.18", features = ["xlib", "xrandr"] }
 
 [target.'cfg(any(target_os = "macos", target_os = "ios"))'.dependencies]
 clipboard = "0.5"

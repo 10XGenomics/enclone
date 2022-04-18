@@ -68,6 +68,7 @@ mach = "0.3"
 mirror_sparse_matrix = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 ndarray = "0.15"
 nix = "0.23"
+num-traits = "0.2"
 objc = "0.2"
 pager = "0.16"
 palette = "0.6"
