@@ -501,11 +501,14 @@ fn main() {
                 f.read_to_end(&mut image_old).unwrap();
                 let (_, image_data_old0) = png_decoder::decode(&image_old).unwrap();
                 if image_data_old0.len() != width * height * 4 {
-                    eprintln!("\nThe size of {} is wrong, so it is probably corrupted.\n",
+                    eprintln!(
+                        "\nThe size of {} is wrong, so it is probably corrupted.\n",
                         old_png_file
                     );
-                    eprintln!("You may want to checkout master and run with CREATE_PNG to \
-                        regenerate valid PNG files.\n");
+                    eprintln!(
+                        "You may want to checkout master and run with CREATE_PNG to \
+                        regenerate valid PNG files.\n"
+                    );
                     std::process::exit(1);
                 }
                 let mut joint = Vec::<u8>::new();
