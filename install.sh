@@ -221,7 +221,17 @@ main() {
                 printf "\nDownloading Linux version of latest enclone executable using curl.\n\n"
                 curl -s -L $repo/releases/latest/download/enclone_linux --output enclone
                 if ! [ "$?" -eq "0" ]; then
-                    printf "\ncurl appears to have failed\n\n"
+                    printf "ran curl -s -L $repo/releases/latest/download/enclone_linux --output enclone\n"
+                    printf "that command appears to have failed\n\n"
+                    printf "retrying curl in verbose mode by adding -v\n"
+                    curl -s -L -v $repo/releases/latest/download/enclone_linux --output enclone
+                    if ! [ "$?" -eq "0" ]; then
+                        printf "the command appears to have failed again\n\n"
+                        printf "giving up\n\n"
+                        printf "If you ran this using enclone UPDATE, please instead try running "
+                        printf "the install command on bit.ly/enclone directly.\n\n"
+                        exit
+                    fi
                 fi
             else
                 printf "\nDownloading Linux version of latest enclone executable using wget.\n\n"
