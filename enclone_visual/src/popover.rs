@@ -41,8 +41,7 @@ pub fn command(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
             .push(_command_snapshot_button)
             .push(Space::with_width(Units(8)));
     }
-    top_bar = top_bar
-        .push(command_close_button);
+    top_bar = top_bar.push(command_close_button);
 
     // Text input column.
 
