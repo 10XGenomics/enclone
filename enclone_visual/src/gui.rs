@@ -740,17 +740,19 @@ impl Application for EncloneVisual {
             Text::new("Console").font(LIBERATION_SANS),
         )
         .on_press(Message::ConsoleOpen);
-        let snapshot_button = Button::new(
+        let _snapshot_button = Button::new(
             &mut self.snapshot_button,
             Text::new("Snapshot")
                 .font(LIBERATION_SANS)
                 .color(self.snapshot_button_color),
         )
         .on_press(Message::Snapshot);
-        let console_row = Row::new()
-            .spacing(8)
-            .push(snapshot_button)
-            .push(console_button);
+        let mut console_row = Row::new().spacing(8);
+        #[cfg(any(target_os = "macos", target_os = "ios"))]
+        {
+            console_row = console_row.push(_snapshot_button);
+        }
+        console_row = console_row.push(console_button);
         let mut save_text = Text::new("Save").font(LIBERATION_SANS);
         if self.save_in_progress {
             save_text = save_text.color(Color::from_rgb(1.0, 0.0, 0.0));

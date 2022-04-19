@@ -217,11 +217,18 @@ main() {
     if [ "$_enclone_is_current" = false ]; then
         cd bin
         if [ "$_ostype" = Linux ]; then
-            printf "\nDownloading the Linux version of the latest enclone executable.\n\n"
             if $_have_curl; then
+                printf "\nDownloading Linux version of latest enclone executable using curl.\n\n"
                 curl -s -L $repo/releases/latest/download/enclone_linux --output enclone
+                if ! [ "$?" -eq "0" ]; then
+                    printf "\ncurl appears to have failed\n\n"
+                fi
             else
+                printf "\nDownloading Linux version of latest enclone executable using wget.\n\n"
                 wget -q $repo/releases/latest/download/enclone_linux -O enclone
+                if ! [ "$?" -eq "0" ]; then
+                    printf "\nwget appears to have failed\n\n"
+                fi
             fi
         fi
         if [ "$_ostype" = Darwin ]; then
