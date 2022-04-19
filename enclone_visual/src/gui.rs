@@ -375,6 +375,7 @@ impl Application for EncloneVisual {
             } else {
                 "thinking"
             })
+            .font(LIBERATION_SANS)
             .color(if self.compute_state == WaitingForRequest {
                 Color::from_rgb(0.0, 0.0, 0.0)
             } else {
@@ -383,9 +384,12 @@ impl Application for EncloneVisual {
         )
         .padding(10)
         .on_press(Message::SubmitButtonPressed(Ok(())));
-        let clear_button = Button::new(&mut self.clear_button, Text::new("Clear"))
-            .padding(10)
-            .on_press(Message::ClearButtonPressed);
+        let clear_button = Button::new(
+            &mut self.clear_button,
+            Text::new("Clear").font(LIBERATION_SANS),
+        )
+        .padding(10)
+        .on_press(Message::ClearButtonPressed);
 
         // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -414,7 +418,9 @@ impl Application for EncloneVisual {
             const COPY_BUTTON_FONT_SIZE: u16 = 15;
             let del_button = Button::new(
                 &mut self.del_button,
-                Text::new("Del ").size(COPY_BUTTON_FONT_SIZE),
+                Text::new("Del ")
+                    .font(LIBERATION_SANS)
+                    .size(COPY_BUTTON_FONT_SIZE),
             )
             .on_press(Message::DelButtonPressed(Ok(())));
 
@@ -432,13 +438,16 @@ impl Application for EncloneVisual {
             let copy_image_button = Button::new(
                 &mut self.copy_image_button,
                 Text::new("Copy image")
+                    .font(LIBERATION_SANS)
                     .size(COPY_BUTTON_FONT_SIZE)
                     .color(self.copy_image_button_color),
             )
             .on_press(Message::GraphicsCopyButtonPressed);
             let null_copy_image_button = Button::new(
                 &mut self.null_button3,
-                Text::new("          ").size(COPY_BUTTON_FONT_SIZE),
+                Text::new("          ")
+                    .font(LIBERATION_SANS)
+                    .size(COPY_BUTTON_FONT_SIZE),
             )
             .on_press(Message::GraphicsCopyButtonPressed);
             let mut state_pos = format!("{}", self.h.history_index);
@@ -449,7 +458,9 @@ impl Application for EncloneVisual {
             }
             let state_pos_button = Button::new(
                 &mut self.state_pos_button_null,
-                Text::new(&state_pos).size(COPY_BUTTON_FONT_SIZE),
+                Text::new(&state_pos)
+                    .font(LIBERATION_SANS)
+                    .size(COPY_BUTTON_FONT_SIZE),
             )
             .on_press(Message::DoNothing);
 
@@ -494,22 +505,30 @@ impl Application for EncloneVisual {
 
             let command_button = Button::new(
                 &mut self.command_button,
-                Text::new("Cmd").size(COPY_BUTTON_FONT_SIZE),
+                Text::new("Cmd")
+                    .font(LIBERATION_SANS)
+                    .size(COPY_BUTTON_FONT_SIZE),
             )
             .on_press(Message::CommandOpen(Ok(())));
             let summary_button = Button::new(
                 &mut self.summary_button,
-                Text::new("Summary").size(COPY_BUTTON_FONT_SIZE),
+                Text::new("Summary")
+                    .font(LIBERATION_SANS)
+                    .size(COPY_BUTTON_FONT_SIZE),
             )
             .on_press(Message::SummaryOpen(Ok(())));
             let graphic_button = Button::new(
                 &mut self.graphic_open_button,
-                Text::new("Pic").size(COPY_BUTTON_FONT_SIZE),
+                Text::new("Pic")
+                    .font(LIBERATION_SANS)
+                    .size(COPY_BUTTON_FONT_SIZE),
             )
             .on_press(Message::GraphicOpen(Ok(())));
             let clonotypes_button = Button::new(
                 &mut self.clonotypes_open_button,
-                Text::new("Clono").size(COPY_BUTTON_FONT_SIZE),
+                Text::new("Clono")
+                    .font(LIBERATION_SANS)
+                    .size(COPY_BUTTON_FONT_SIZE),
             )
             .on_press(Message::ClonotypesOpen(Ok(())));
             let mut summary_buttons_row = Row::new().spacing(8);
@@ -566,6 +585,7 @@ impl Application for EncloneVisual {
             let copy_narrative_button = Button::new(
                 &mut self.copy_narrative_button,
                 Text::new("Copy")
+                    .font(LIBERATION_SANS)
                     .size(COPY_BUTTON_FONT_SIZE)
                     .color(self.copy_narrative_button_color),
             )
@@ -582,7 +602,9 @@ impl Application for EncloneVisual {
             row = row.push(
                 Button::new(
                     &mut self.command_copy_button,
-                    Text::new("Copy command").size(COPY_BUTTON_FONT_SIZE),
+                    Text::new("Copy command")
+                        .font(LIBERATION_SANS)
+                        .size(COPY_BUTTON_FONT_SIZE),
                 )
                 .on_press(Message::CommandCopyButtonPressed),
             );
@@ -699,28 +721,42 @@ impl Application for EncloneVisual {
 
         let left_buttons = Column::new()
             .spacing(8)
-            .push(Button::new(&mut self.exit_state, Text::new("Exit")).on_press(Message::Exit))
             .push(
-                Button::new(&mut self.open_state, Text::new("Help"))
-                    .on_press(Message::HelpOpen(Ok(()))),
+                Button::new(
+                    &mut self.exit_state,
+                    Text::new("Exit").font(LIBERATION_SANS),
+                )
+                .on_press(Message::Exit),
+            )
+            .push(
+                Button::new(
+                    &mut self.open_state,
+                    Text::new("Help").font(LIBERATION_SANS),
+                )
+                .on_press(Message::HelpOpen(Ok(()))),
             );
-        let console_button = Button::new(&mut self.console_open_button, Text::new("Console"))
-            .on_press(Message::ConsoleOpen);
+        let console_button = Button::new(
+            &mut self.console_open_button,
+            Text::new("Console").font(LIBERATION_SANS),
+        )
+        .on_press(Message::ConsoleOpen);
         let snapshot_button = Button::new(
             &mut self.snapshot_button,
-            Text::new("Snapshot").color(self.snapshot_button_color),
+            Text::new("Snapshot")
+                .font(LIBERATION_SANS)
+                .color(self.snapshot_button_color),
         )
         .on_press(Message::Snapshot);
         let console_row = Row::new()
             .spacing(8)
             .push(snapshot_button)
             .push(console_button);
-        let mut save_text = Text::new("Save");
+        let mut save_text = Text::new("Save").font(LIBERATION_SANS);
         if self.save_in_progress {
             save_text = save_text.color(Color::from_rgb(1.0, 0.0, 0.0));
         }
         let save_button = Button::new(&mut self.save_button, save_text).on_press(Message::Save);
-        let mut save_on_exit_text = Text::new("On Exit").width(Units(66));
+        let mut save_on_exit_text = Text::new("On Exit").font(LIBERATION_SANS).width(Units(66));
         if self.save_on_exit {
             save_on_exit_text = save_on_exit_text.color(Color::from_rgb(1.0, 0.0, 0.0));
         }
@@ -732,12 +768,14 @@ impl Application for EncloneVisual {
             .push(save_on_exit_button);
         let tooltip_button = Button::new(
             &mut self.tooltip_toggle_button,
-            Text::new("Tooltip").color(self.tooltip_toggle_button_color),
+            Text::new("Tooltip")
+                .font(LIBERATION_SANS)
+                .color(self.tooltip_toggle_button_color),
         )
         .on_press(Message::TooltipToggle);
         let archive_button = Button::new(
             &mut self.archive_open_button,
-            Text::new("Archive").width(Units(66)),
+            Text::new("Archive").font(LIBERATION_SANS).width(Units(66)),
         )
         .on_press(Message::ArchiveOpen(Ok(())));
         let archive_row = Row::new()

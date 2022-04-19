@@ -69,6 +69,11 @@ pub mod svg_to_geometry;
 pub mod testsuite;
 pub mod update_restart;
 
+const LIBERATION_SANS: Font = Font::External {
+    name: "LIBERATION_SANS",
+    bytes: include_bytes!("../../fonts/LiberationSans-Regular.ttf"),
+};
+
 const DEJAVU_WIDTH_OVER_HEIGHT: f32 = 0.5175; // there's another different value at one point
 
 pub fn dejavu_text_dim(t: &str, font_size: f32) -> (f32, f32) {

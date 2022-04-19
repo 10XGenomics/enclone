@@ -11,16 +11,11 @@ use iced::{
     canvas::{self, Canvas, Cursor, Frame, Geometry, Path, Stroke, Text},
     mouse, Color, Element, Length, Rectangle, Size,
 };
-use iced_native::{Font, Point, Vector};
+use iced_native::{Point, Vector};
 use lazy_static::lazy_static;
 use std::sync::atomic::AtomicBool;
 use std::sync::atomic::Ordering::SeqCst;
 use std::sync::Mutex;
-
-const LIBERATION_SANS: Font = Font::External {
-    name: "LIBERATION_SANS",
-    bytes: include_bytes!("../../fonts/LiberationSans-Regular.ttf"),
-};
 
 lazy_static! {
     pub static ref IN_GEOMETRIES: Mutex<Vec<crate::geometry::Geometry>> =

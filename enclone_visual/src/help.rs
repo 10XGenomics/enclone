@@ -10,9 +10,12 @@ use messages::Message;
 
 pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     let version = VERSION.lock().unwrap()[0].clone();
-    let help_title = Text::new(&format!("Help")).size(30);
-    let help_close_button =
-        Button::new(&mut slf.open_state, Text::new("Dismiss")).on_press(Message::HelpClose(Ok(())));
+    let help_title = Text::new(&format!("Help")).font(LIBERATION_SANS).size(30);
+    let help_close_button = Button::new(
+        &mut slf.open_state,
+        Text::new("Dismiss").font(LIBERATION_SANS),
+    )
+    .on_press(Message::HelpClose(Ok(())));
     let top_bar = Row::new()
         .push(help_title)
         .push(Space::with_width(Length::Fill))
@@ -43,18 +46,19 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         //
         // Intro.
         //
-        .push(Text::new("Introduction").size(24))
+        .push(Text::new("Introduction").font(LIBERATION_SANS).size(24))
         .push(Space::with_height(Units(20)))
-        .push(Text::new(&format!(
-            "Welcome to enclone visual version {}!",
-            version,
-        )))
+        .push(
+            Text::new(&format!("Welcome to enclone visual version {}!", version,))
+                .font(LIBERATION_SANS),
+        )
         .push(Space::with_height(Units(20)))
         .push(
             Text::new(
                 "enclone visual is a semi-graphical \
             version of enclone.  You can find out more about enclone at the site",
             )
+            .font(LIBERATION_SANS)
             .width(max_width),
         )
         .push(Space::with_height(Units(20)))
@@ -65,6 +69,7 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                 "enclone visual simultaneously displays the text and graphical \
             output that enclone can produce.",
             )
+            .font(LIBERATION_SANS)
             .width(max_width),
         )
         .push(Space::with_height(Units(20)))
@@ -73,6 +78,7 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                 "This is alpha software: there are many more bugs than there \
             are in enclone.",
             )
+            .font(LIBERATION_SANS)
             .width(max_width),
         )
         //
@@ -81,7 +87,7 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         .push(Space::with_height(Units(20)))
         .push(Rule::horizontal(10).style(style::RuleStyle2))
         .push(Space::with_height(Units(20)))
-        .push(Text::new("Top of the page").size(24))
+        .push(Text::new("Top of the page").font(LIBERATION_SANS).size(24))
         .push(Space::with_height(Units(20)))
         .push(
             Row::new()
@@ -89,19 +95,23 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                 .push(Space::with_width(Units(15)))
                 .push(
                     Column::new()
-                        .push(Text::new(
-                            "Here are two buttons that appear in the upper left \
+                        .push(
+                            Text::new(
+                                "Here are two buttons that appear in the upper left \
                     corner of the screen:",
-                        ))
+                            )
+                            .font(LIBERATION_SANS),
+                        )
                         .push(Space::with_height(Units(20)))
                         .push(
                             Text::new(
                                 "1.  Exit, to leave enclone visual.  Note that the \
                     circular red button in the extreme upper left corner is busted.",
                             )
+                            .font(LIBERATION_SANS)
                             .width(max_width),
                         )
-                        .push(Text::new("2.  Help, to get to this page.")),
+                        .push(Text::new("2.  Help, to get to this page.").font(LIBERATION_SANS)),
                 ),
         )
         .push(Space::with_height(Units(20)))
@@ -111,16 +121,20 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                 .push(
                     Column::new()
                         .push(Space::with_height(Units(10)))
-                        .push(Text::new(
-                            "Here are six buttons that appear in the upper right \
+                        .push(
+                            Text::new(
+                                "Here are six buttons that appear in the upper right \
                              corner of the screen:",
-                        ))
+                            )
+                            .font(LIBERATION_SANS),
+                        )
                         .push(Space::with_height(Units(20)))
                         .push(
                             Text::new(
                                 "1.  Snapshot, to copy a screenshot of the entire window \
                                  to the clipboard.  This button is only present on Macs.",
                             )
+                            .font(LIBERATION_SANS)
                             .width(max_width2),
                         )
                         .push(
@@ -128,10 +142,12 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                                 "2.  Console, to show what's in the terminal window.  \
                                  At the moment this is mostly of interest to developers.",
                             )
+                            .font(LIBERATION_SANS)
                             .width(max_width2),
                         )
                         .push(
                             Text::new("3.  Save, to cause the session to be saved.")
+                                .font(LIBERATION_SANS)
                                 .width(max_width2),
                         )
                         .push(
@@ -139,6 +155,7 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                                 "4.  On Exit, to cause the session to be saved \
                                  when the Exit button is pushed.",
                             )
+                            .font(LIBERATION_SANS)
                             .width(max_width2),
                         )
                         .push(
@@ -149,6 +166,7 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                                  better overall view than another.  If you click, you'll see the \
                                  button flash, but no other change, until you mouse over a cell.",
                             )
+                            .font(LIBERATION_SANS)
                             .width(max_width2),
                         )
                         .push(
@@ -156,6 +174,7 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                                 "6.  Archive.  Opens a page to allow restoration or sharing of a \
                                  previous session.",
                             )
+                            .font(LIBERATION_SANS)
                             .width(max_width2),
                         )
                         .push(Space::with_height(Units(10)))
@@ -166,6 +185,7 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                                 pushing the Archive button on the main page.  The archive page \
                                 also provides access to cookbooks, which you should work through!",
                             )
+                            .font(LIBERATION_SANS)
                             .width(max_width2),
                         ),
                 )
@@ -179,20 +199,26 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         .push(Space::with_height(Units(20)))
         .push(Rule::horizontal(10).style(style::RuleStyle2))
         .push(Space::with_height(Units(20)))
-        .push(Text::new("Overall layout").size(24))
+        .push(Text::new("Overall layout").font(LIBERATION_SANS).size(24))
         .push(Space::with_height(Units(20)))
-        .push(Text::new("There are input boxes near the top (described next).").width(max_width))
+        .push(
+            Text::new("There are input boxes near the top (described next).")
+                .font(LIBERATION_SANS)
+                .width(max_width),
+        )
         .push(Space::with_height(Units(20)))
         .push(
             Text::new(
                 "Once you've typed your first command, the screen will \
             split into two main parts:",
             )
+            .font(LIBERATION_SANS)
             .width(max_width),
         )
         .push(Space::with_height(Units(20)))
         .push(
             Text::new("1.  A graphics subwindow, which may or may not be populated.")
+                .font(LIBERATION_SANS)
                 .width(max_width),
         )
         .push(Space::with_height(Units(20)))
@@ -203,6 +229,7 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                 Please see the special commands section for how to see a different set of \
                 clonotypes.",
             )
+            .font(LIBERATION_SANS)
             .width(max_width),
         )
         //
@@ -211,7 +238,7 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         .push(Space::with_height(Units(20)))
         .push(Rule::horizontal(10).style(style::RuleStyle2))
         .push(Space::with_height(Units(20)))
-        .push(Text::new("Entering input").size(24))
+        .push(Text::new("Entering input").font(LIBERATION_SANS).size(24))
         .push(Space::with_height(Units(20)))
         .push(input_region)
         .push(Space::with_height(Units(20)))
@@ -222,6 +249,7 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
             commands: you can split a command between the two boxes.  Pushing the Cmd button \
             (see below) will provide even more boxes.",
             )
+            .font(LIBERATION_SANS)
             .width(max_width),
         )
         .push(Space::with_height(Units(20)))
@@ -232,6 +260,7 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
             in the cookbooks on the Archive page.  You can learn about \
             enclone commands in general by going to the site bit.ly/enclone.",
             )
+            .font(LIBERATION_SANS)
             .width(max_width),
         )
         .push(Space::with_height(Units(20)))
@@ -244,6 +273,7 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                 "Then wait for the command to finish!  Some buttons are disabled during \
                 this period.",
             )
+            .font(LIBERATION_SANS)
             .width(max_width),
         )
         //
@@ -252,19 +282,20 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         .push(Space::with_height(Units(20)))
         .push(Rule::horizontal(10).style(style::RuleStyle2))
         .push(Space::with_height(Units(20)))
-        .push(Text::new("Special commands").size(24))
+        .push(Text::new("Special commands").font(LIBERATION_SANS).size(24))
         .push(Space::with_height(Units(20)))
         .push(
             Text::new(
                 "You can type a number into the text box, where the number \
             is the number of a clonotype group.  Things like this",
             )
+            .font(LIBERATION_SANS)
             .width(max_width),
         )
         .push(Space::with_height(Units(10)))
         .push(Text::new("1,7,10-15").font(DEJAVU_BOLD).size(20))
         .push(Space::with_height(Units(10)))
-        .push(Text::new("also work."))
+        .push(Text::new("also work.").font(LIBERATION_SANS))
         .push(Space::with_height(Units(20)))
         .push(
             Text::new(
@@ -273,6 +304,7 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
             provides some information about that cell.  See also the Tooltip button, that \
             controls the position of this box.",
             )
+            .font(LIBERATION_SANS)
             .width(max_width),
         )
         .push(Space::with_height(Units(20)))
@@ -282,15 +314,21 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
             the input box, thus displaying the corresponding clonotype table.  In addition, \
             clicking on a cell will copy the tooltip text to your clipboard.",
             )
+            .font(LIBERATION_SANS)
             .width(max_width),
         )
         .push(Space::with_height(Units(20)))
-        .push(Text::new("Group ids are converted into a special enclone argument").width(max_width))
+        .push(
+            Text::new("Group ids are converted into a special enclone argument")
+                .font(LIBERATION_SANS)
+                .width(max_width),
+        )
         .push(Space::with_height(Units(10)))
         .push(Text::new("G=...").font(DEJAVU_BOLD).size(20))
         .push(Space::with_height(Units(10)))
         .push(
             Text::new("that can also be supplied to enclone.  In addition, G=all works.")
+                .font(LIBERATION_SANS)
                 .width(max_width),
         )
         //
@@ -299,7 +337,11 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         .push(Space::with_height(Units(20)))
         .push(Rule::horizontal(10).style(style::RuleStyle2))
         .push(Space::with_height(Units(20)))
-        .push(Text::new("History, AKA the time machine").size(24))
+        .push(
+            Text::new("History, AKA the time machine")
+                .font(LIBERATION_SANS)
+                .size(24),
+        )
         .push(Space::with_height(Units(15)))
         .push(
             Row::new()
@@ -311,6 +353,7 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                                 "enclone visual remembers your previous commands and \
                     their outputs.",
                             )
+                            .font(LIBERATION_SANS)
                             .width(Units((slf.width - 120) as u16)),
                         )
                         .push(Space::with_height(Units(20)))
@@ -319,6 +362,7 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                                 "On the right, you can see boxes, that will appear on \
                     the right of your screen once you've entered your first command.",
                             )
+                            .font(LIBERATION_SANS)
                             .width(Units((slf.width - 120) as u16)),
                         )
                         .push(Space::with_height(Units(20)))
@@ -327,16 +371,18 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                                 "Initially, some of the boxes will be blank, meaning \
                     that they don't make sense yet and won't do anything.",
                             )
+                            .font(LIBERATION_SANS)
                             .width(Units((slf.width - 120) as u16)),
                         )
                         .push(Space::with_height(Units(20)))
-                        .push(Text::new("There are four boxes:"))
+                        .push(Text::new("There are four boxes:").font(LIBERATION_SANS))
                         .push(Space::with_height(Units(20)))
                         .push(
                             Text::new(
                                 "• The number at the top is the index of the current \
                     state.  This is not a button that can be pushed.",
                             )
+                            .font(LIBERATION_SANS)
                             .width(Units((slf.width - 120) as u16)),
                         )
                         .push(
@@ -344,16 +390,21 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                                 "• Push the up arrow to go back to the previous state, \
                     meaning the last command that you typed.",
                             )
+                            .font(LIBERATION_SANS)
                             .width(Units((slf.width - 120) as u16)),
                         )
                         .push(
                             Text::new("• Push the down arrow to go forward to the next state.")
+                                .font(LIBERATION_SANS)
                                 .width(Units((slf.width - 120) as u16)),
                         )
-                        .push(Text::new(
-                            "• Push the Del button to delete the current state, and go \
+                        .push(
+                            Text::new(
+                                "• Push the Del button to delete the current state, and go \
                     backward, if that makes sense.",
-                        ))
+                            )
+                            .font(LIBERATION_SANS),
+                        )
                         .width(Units((slf.width - 120) as u16)),
                 )
                 .push(Space::with_height(Units(20)))
@@ -365,7 +416,7 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         .push(Space::with_height(Units(20)))
         .push(Rule::horizontal(10).style(style::RuleStyle2))
         .push(Space::with_height(Units(20)))
-        .push(Text::new("The middle boxes").size(24))
+        .push(Text::new("The middle boxes").font(LIBERATION_SANS).size(24))
         .push(Space::with_height(Units(15)))
         .push(
             Row::new()
@@ -377,6 +428,7 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                                 "Just to the left of the history boxes are more, \
                     samples of which you can see on the right.",
                             )
+                            .font(LIBERATION_SANS)
                             .width(Units((slf.width - 350) as u16)),
                         )
                         .push(Space::with_height(Units(20)))
@@ -385,6 +437,7 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                                 "The top box is the translated command.  It is the same \
                     as the command you typed, unless you used a special command.",
                             )
+                            .font(LIBERATION_SANS)
                             .width(Units((slf.width - 350) as u16)),
                         )
                         .push(Space::with_height(Units(20)))
@@ -397,6 +450,7 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                     Then that number will be used as the width.  Note also that direct image copy \
                     from the screen can be a good alternative.",
                             )
+                            .font(LIBERATION_SANS)
                             .width(Units((slf.width - 350) as u16)),
                         )
                         .push(Space::with_height(Units(20)))
@@ -408,6 +462,7 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                     to actual file names.  You also need to add double quotes \
                     around arguments containing certain characters including < and >.",
                             )
+                            .font(LIBERATION_SANS)
                             .width(Units((slf.width - 350) as u16)),
                         )
                         .push(Space::with_height(Units(20)))
@@ -419,6 +474,7 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                                 and a button for entering long commands.  Each of these four \
                                 buttons opens a separate page.",
                             )
+                            .font(LIBERATION_SANS)
                             .width(Units((slf.width - 350) as u16)),
                         )
                         .push(Space::with_height(Units(20)))
@@ -430,6 +486,7 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                     the text into it.  Conversely, there is a Copy button below the narrative box \
                     that will copy the narrative text onto your clipboard.",
                             )
+                            .font(LIBERATION_SANS)
                             .width(Units((slf.width - 350) as u16)),
                         ),
                 )
@@ -442,7 +499,7 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         .push(Space::with_height(Units(20)))
         .push(Rule::horizontal(10).style(style::RuleStyle2))
         .push(Space::with_height(Units(20)))
-        .push(Text::new("Smarts").size(24))
+        .push(Text::new("Smarts").font(LIBERATION_SANS).size(24))
         .push(Space::with_height(Units(20)))
         .push(
             Text::new(
@@ -450,6 +507,7 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
             enclone visual may elide some calculations from the previous command, so as \
             to respond faster.  This capability is not pushed as far as it could be.",
             )
+            .font(LIBERATION_SANS)
             .width(max_width),
         )
         //
@@ -458,19 +516,29 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         .push(Space::with_height(Units(20)))
         .push(Rule::horizontal(10).style(style::RuleStyle2))
         .push(Space::with_height(Units(20)))
-        .push(Text::new("Limitations, AKA big bugs").size(24))
+        .push(
+            Text::new("Limitations, AKA big bugs")
+                .font(LIBERATION_SANS)
+                .size(24),
+        )
         .push(Space::with_height(Units(20)))
         .push(
             Text::new(
                 "There are two main limitations of the current version of enclone \
             visual:",
             )
+            .font(LIBERATION_SANS)
             .width(max_width),
         )
         .push(Space::with_height(Units(20)))
-        .push(Text::new("1.  The clonotype tables are black and white.").width(max_width))
+        .push(
+            Text::new("1.  The clonotype tables are black and white.")
+                .font(LIBERATION_SANS)
+                .width(max_width),
+        )
         .push(
             Text::new("2.  You can't use the mouse to copy text, except from text input boxes.")
+                .font(LIBERATION_SANS)
                 .width(max_width),
         )
         //

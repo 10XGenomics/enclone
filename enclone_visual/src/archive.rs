@@ -13,32 +13,41 @@ use itertools::izip;
 use messages::Message;
 
 pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
-    let archive_title = Text::new(&format!("Archive")).size(30);
+    let archive_title = Text::new(&format!("Archive"))
+        .font(LIBERATION_SANS)
+        .size(30);
     let archive_snapshot_button = Button::new(
         &mut slf.archive_snapshot_button,
-        Text::new("Snapshot").color(slf.archive_snapshot_button_color),
+        Text::new("Snapshot")
+            .font(LIBERATION_SANS)
+            .color(slf.archive_snapshot_button_color),
     )
     .on_press(Message::ArchiveSnapshot);
-    let archive_close_button = Button::new(&mut slf.archive_close_button, Text::new("Dismiss"))
-        .on_press(Message::ArchiveClose);
+    let archive_close_button = Button::new(
+        &mut slf.archive_close_button,
+        Text::new("Dismiss").font(LIBERATION_SANS),
+    )
+    .on_press(Message::ArchiveClose);
     let archive_save_close_button = Button::new(
         &mut slf.archive_save_close_button,
-        Text::new("Save and dismiss"),
+        Text::new("Save and dismiss").font(LIBERATION_SANS),
     )
     .on_press(Message::ArchiveSaveClose);
     let open_archive_doc_button = Button::new(
         &mut slf.open_archive_doc_button,
-        Text::new("Expand documentation"),
+        Text::new("Expand documentation").font(LIBERATION_SANS),
     )
     .on_press(Message::OpenArchiveDoc);
     let close_archive_doc_button = Button::new(
         &mut slf.close_archive_doc_button,
-        Text::new("Hide documentation"),
+        Text::new("Hide documentation").font(LIBERATION_SANS),
     )
     .on_press(Message::CloseArchiveDoc);
     let refresh_button = Button::new(
         &mut slf.archive_refresh_button,
-        Text::new("Refresh").color(slf.archive_refresh_button_color),
+        Text::new("Refresh")
+            .font(LIBERATION_SANS)
+            .color(slf.archive_refresh_button_color),
     )
     .on_press(Message::ArchiveRefresh);
 
@@ -75,43 +84,52 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     // Define help text messages.
 
     let text0 =
-        Text::new("enclone visual can save sessions to the directory ~/enclone/visual/history.");
+        Text::new("enclone visual can save sessions to the directory ~/enclone/visual/history.")
+            .font(LIBERATION_SANS);
     let text1 = Text::new(
         "For a given enclone visual session:\n\
          • click the Save box on the main screen to immediately save your session\n\
          • or click the On Exit box on the main screen; it will turn red \
            (pushing again toggles state)\n\
          • when you later push the Exit button, your session will be saved.",
-    );
+    )
+    .font(LIBERATION_SANS);
     let text1b = Text::new(
         "▒ cookbooks - These are hardcoded sessions that are provided with enclone visual.  They \
             do not have date or time fields and may not be deleted or renamed.",
-    );
+    )
+    .font(LIBERATION_SANS);
     let text2 =
-        Text::new("▒ expand - Display the commands in a saved session by checking the expand box.");
+        Text::new("▒ expand - Display the commands in a saved session by checking the expand box.")
+            .font(LIBERATION_SANS);
     let text3 = Text::new(
         "▒ restore - Restore a saved session or cookbook by checking the restore box, and then \
             pushing Dismiss.  If you want your current session to be saved first (rather than \
             deleted), you should instead push Save and dismiss.",
-    );
-    let text4 = Text::new("▒ delete - Delete a saved session by checking the delete box.");
+    )
+    .font(LIBERATION_SANS);
+    let text4 = Text::new("▒ delete - Delete a saved session by checking the delete box.")
+        .font(LIBERATION_SANS);
     let text5 = Text::new(
         "▒ share - Share with other users by checking the share box.  You will be prompted for \
             their names.\n\
          Conversely another user may share with you.  Use the Refresh button to receive shares.",
-    );
+    )
+    .font(LIBERATION_SANS);
     let text6 = Text::new(
         "▒ name - Name of a previous session is displayed:\n\
          • change it using the rectangular box and then click Apply\n\
          • up to 30 characters are allowed.",
-    );
+    )
+    .font(LIBERATION_SANS);
     let text7 = Text::new(
         "▒ Narrative is displayed in a box:\n\
          • if there is no narrative, a tiny box is seen\n\
          • clicking on the box will change the narrative to whatever is on your clipboard\n\
          • clicking on the Copy button to the right of it will copy the existing narrative \
            to your clipboard.",
-    );
+    )
+    .font(LIBERATION_SANS);
 
     // Define help column.
 
@@ -150,12 +168,14 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                     "           Enter user names (usually first.last), one per line, \
             and check the box to the right.",
                 )
+                .font(LIBERATION_SANS)
                 .size(16)
                 .color(c),
             )
             .push(Space::with_height(Units(4)))
             .push(
                 Text::new("           A new line will appear once you do so.")
+                    .font(LIBERATION_SANS)
                     .size(16)
                     .color(c),
             )
@@ -165,6 +185,7 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                     "           Lines may be prepopulated based on your recent shares; \
             you can check them.",
                 )
+                .font(LIBERATION_SANS)
                 .size(16)
                 .color(c),
             )
@@ -224,10 +245,18 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         if valids > 0 {
             let row = Row::new()
                 .align_items(Alignment::Center)
-                .push(Text::new("           check to complete share").size(16))
+                .push(
+                    Text::new("           check to complete share")
+                        .font(LIBERATION_SANS)
+                        .size(16),
+                )
                 .push(Space::with_width(Units(14)))
                 .push(Checkbox::new(slf.do_share, "", Message::DoShare))
-                .push(Text::new("or uncheck share to cancel").size(16));
+                .push(
+                    Text::new("or uncheck share to cancel")
+                        .font(LIBERATION_SANS)
+                        .size(16),
+                );
             share_body = share_body.push(Space::with_height(Units(8)));
             share_body = share_body.push(row);
             if slf.do_share_complete {
@@ -238,6 +267,7 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                             "           Done, your session has been shared!  \
                         You can uncheck the share box to make the share information vanish.",
                         )
+                        .font(LIBERATION_SANS)
                         .size(16),
                     )
                     .push(Space::with_height(Units(8)))
@@ -246,6 +276,7 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                             "           You have to uncheck the share box to do \
                         another share.",
                         )
+                        .font(LIBERATION_SANS)
                         .size(16),
                     );
             }
@@ -288,7 +319,7 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                 .push(Space::with_width(Units(39)));
         }
         row = row.push(Space::with_width(Units(5)));
-        row = row.push(Text::new(&*y));
+        row = row.push(Text::new(&*y).font(LIBERATION_SANS));
         archive_scrollable = archive_scrollable.push(Space::with_height(Units(8)));
         archive_scrollable = archive_scrollable.push(row);
         const MAX_LINE: usize = 113;
@@ -306,12 +337,15 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         }
         let copy_cookbook_narrative_button = Button::new(
             copynarbut,
-            Text::new("Copy").color(slf.copy_cookbook_narrative_button_color[i]),
+            Text::new("Copy")
+                .font(LIBERATION_SANS)
+                .color(slf.copy_cookbook_narrative_button_color[i]),
         )
         .on_press(Message::CopyCookbookNarrative(i));
-        let mut row = Row::new()
-            .push(Text::new("    ").font(DEJAVU))
-            .push(Button::new(narbut, Text::new(&log)).on_press(Message::CopyCookbookNarrative(i)));
+        let mut row = Row::new().push(Text::new("    ").font(DEJAVU)).push(
+            Button::new(narbut, Text::new(&log).font(LIBERATION_SANS))
+                .on_press(Message::CopyCookbookNarrative(i)),
+        );
         if slf.cookbook_narrative[i].len() > 0 {
             row = row
                 .push(Space::with_width(Units(8)))
@@ -444,6 +478,7 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                 TextInput::new(y, "", &slf.archive_name_value[i], move |x: String| {
                     Message::ArchiveName(x, i)
                 })
+                .font(LIBERATION_SANS)
                 .width(Units(300))
                 // .max_width(300)
                 .padding(2),
@@ -452,7 +487,9 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
             row = row.push(
                 Button::new(
                     q,
-                    Text::new("Apply").color(slf.archive_name_change_button_color[i]),
+                    Text::new("Apply")
+                        .font(LIBERATION_SANS)
+                        .color(slf.archive_name_change_button_color[i]),
                 )
                 .on_press(Message::ArchiveNameChange(i)),
             );
@@ -487,12 +524,15 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
             }
             let copy_narrative_button = Button::new(
                 copynarbut,
-                Text::new("Copy").color(slf.copy_archive_narrative_button_color[i]),
+                Text::new("Copy")
+                    .font(LIBERATION_SANS)
+                    .color(slf.copy_archive_narrative_button_color[i]),
             )
             .on_press(Message::CopyArchiveNarrative(i));
-            let mut row = Row::new()
-                .push(Text::new("    ").font(DEJAVU))
-                .push(Button::new(narbut, Text::new(&log)).on_press(Message::ArchiveNarrative(i)));
+            let mut row = Row::new().push(Text::new("    ").font(DEJAVU)).push(
+                Button::new(narbut, Text::new(&log).font(LIBERATION_SANS))
+                    .on_press(Message::ArchiveNarrative(i)),
+            );
             if slf.archive_narrative[i].len() > 0 {
                 row = row
                     .push(Space::with_width(Units(8)))
