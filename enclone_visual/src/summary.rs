@@ -310,7 +310,7 @@ pub fn appropriate_font_size(s: &str, w: u32, max_size: usize) -> usize {
 
 pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     let width = (slf.width - 65) as u16; // for text, so scrollbar is not on top of text
-    let summary_title = Text::new(&format!("Summary")).size(30);
+    let summary_title = Text::new(&format!("Summary")).font(LIBERATION_SANS).size(30);
 
     // Expand summary.
 
@@ -368,7 +368,7 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
             .push(Rule::horizontal(10).style(style::RuleStyle2))
             .push(Space::with_height(Units(8)))
             .push(
-                Text::new("Dataset descriptions")
+                Text::new("Dataset descriptions").font(LIBERATION_SANS)
                     .size(25)
                     .color(Color::from_rgb(0.9, 0.0, 0.9)),
             )
@@ -376,7 +376,7 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
             .push(
                 Button::new(
                     &mut slf.descrips_copy_button,
-                    Text::new("Copy").color(slf.descrips_copy_button_color),
+                    Text::new("Copy").font(LIBERATION_SANS).color(slf.descrips_copy_button_color),
                 )
                 .on_press(Message::CopyDescrips),
             )
@@ -444,7 +444,7 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
             .push(Rule::horizontal(10).style(style::RuleStyle2))
             .push(Space::with_height(Units(8)))
             .push(
-                Text::new("Feature barcode read count alluvial tables")
+                Text::new("Feature barcode read count alluvial tables").font(LIBERATION_SANS)
                     .size(25)
                     .color(Color::from_rgb(0.9, 0.0, 0.9)),
             )
@@ -454,7 +454,7 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                 .push(
                     Button::new(
                         &mut slf.close_alluvial_reads_doc_button,
-                        Text::new("Hide documentation"),
+                        Text::new("Hide documentation").font(LIBERATION_SANS),
                     )
                     .on_press(Message::CloseAlluvialReadsDoc),
                 )
@@ -484,6 +484,7 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                      where k is the maximum number of feature barcodes shown for reference (and \
                      likewise for nonreference).  The default value for k is 3.",
                     )
+.font(LIBERATION_SANS)
                     .width(Units(width)),
                 )
                 .push(Space::with_height(Units(8)))
@@ -493,13 +494,14 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                      a spreadsheet, by pushing the button below.  This copies the numbers in the \
                      last column, but not the numbers in the earlier columns.",
                     )
+.font(LIBERATION_SANS)
                     .width(Units(width)),
                 );
         } else {
             summary_scrollable = summary_scrollable.push(
                 Button::new(
                     &mut slf.open_alluvial_reads_doc_button,
-                    Text::new("Expand documentation"),
+                    Text::new("Expand documentation").font(LIBERATION_SANS),
                 )
                 .on_press(Message::OpenAlluvialReadsDoc),
             );
@@ -509,7 +511,7 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
             .push(
                 Button::new(
                     &mut slf.alluvial_reads_tables_copy_button,
-                    Text::new("Copy").color(slf.alluvial_reads_tables_copy_button_color),
+                    Text::new("Copy").font(LIBERATION_SANS).color(slf.alluvial_reads_tables_copy_button_color),
                 )
                 .on_press(Message::CopyAlluvialReadsTables),
             )
@@ -518,6 +520,7 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                 Button::new(
                     &mut slf.alluvial_reads_tables_cr_copy_button,
                     Text::new("Copy cellular reference info")
+.font(LIBERATION_SANS)
                         .color(slf.alluvial_reads_tables_cr_copy_button_color),
                 )
                 .on_press(Message::CopyAlluvialReadsTablesCR),
@@ -527,6 +530,7 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                 Button::new(
                     &mut slf.alluvial_reads_tables_crd_copy_button,
                     Text::new("Copy cellular reference details")
+.font(LIBERATION_SANS)
                         .color(slf.alluvial_reads_tables_crd_copy_button_color),
                 )
                 .on_press(Message::CopyAlluvialReadsTablesCRD),
@@ -598,6 +602,7 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
             .push(Space::with_height(Units(8)))
             .push(
                 Text::new("Feature barcode UMI count alluvial tables")
+.font(LIBERATION_SANS)
                     .size(25)
                     .color(Color::from_rgb(0.9, 0.0, 0.9)),
             )
@@ -609,12 +614,12 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                  All the tables can be copied at once, in a form suitable for inclusion in \
                  a spreadsheet, by pushing the button below.  This copies the numbers in the \
                  last column, but not the numbers in the earlier columns.",
-            ))
+            ).font(LIBERATION_SANS))
             .push(Space::with_height(Units(8)))
             .push(
                 Button::new(
                     &mut slf.alluvial_tables_copy_button,
-                    Text::new("Copy").color(slf.alluvial_tables_copy_button_color),
+                    Text::new("Copy").font(LIBERATION_SANS).color(slf.alluvial_tables_copy_button_color),
                 )
                 .on_press(Message::CopyAlluvialTables),
             )
@@ -623,6 +628,7 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                 Button::new(
                     &mut slf.alluvial_tables_cr_copy_button,
                     Text::new("Copy cellular reference info")
+.font(LIBERATION_SANS)
                         .color(slf.alluvial_tables_cr_copy_button_color),
                 )
                 .on_press(Message::CopyAlluvialTablesCR),
@@ -632,6 +638,7 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                 Button::new(
                     &mut slf.alluvial_tables_crd_copy_button,
                     Text::new("Copy cellular reference details")
+.font(LIBERATION_SANS)
                         .color(slf.alluvial_tables_crd_copy_button_color),
                 )
                 .on_press(Message::CopyAlluvialTablesCRD),
@@ -747,6 +754,7 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
             let mut button = Button::new(
                 y,
                 Text::new("")
+.font(LIBERATION_SANS)
                     .height(Units(font_size))
                     .width(Units(font_size)),
             );
@@ -777,15 +785,15 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
 
     let _summary_snapshot_button = Button::new(
         &mut slf.graphic_snapshot_button,
-        Text::new("Snapshot").color(slf.summary_snapshot_button_color),
+        Text::new("Snapshot").font(LIBERATION_SANS).color(slf.summary_snapshot_button_color),
     )
     .on_press(Message::SummarySnapshot);
     let summary_copy_button = Button::new(
         &mut slf.summary_copy_button,
-        Text::new("Copy").color(slf.copy_summary_button_color),
+        Text::new("Copy").font(LIBERATION_SANS).color(slf.copy_summary_button_color),
     )
     .on_press(Message::CopySummary);
-    let summary_close_button = Button::new(&mut slf.summary_button, Text::new("Dismiss"))
+    let summary_close_button = Button::new(&mut slf.summary_button, Text::new("Dismiss").font(LIBERATION_SANS))
         .on_press(Message::SummaryClose(Ok(())));
     let mut top_bar = Row::new()
         .push(summary_title)
@@ -814,6 +822,7 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
             summary_scrollable = summary_scrollable
                 .push(
                     Text::new("Dataset level metrics")
+.font(LIBERATION_SANS)
                         .size(25)
                         .color(Color::from_rgb(0.9, 0.0, 0.9)),
                 )
@@ -821,17 +830,17 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                 .push(Text::new(
                     "Metrics below can be selectively displayed by clicking on boxes, \
                     and then pushing the button below.",
-                ))
+                ).font(LIBERATION_SANS))
                 .push(Space::with_height(Units(4)))
                 .push(Text::new(
                     "The display choices made here are \
                     saveable, but cannot be recapitulated using an enclone command.",
-                ))
+                ).font(LIBERATION_SANS))
                 .push(Space::with_height(Units(4)))
                 .push(Text::new(
                     "The copy selected metrics button may be used to copy the selected \
                     metrics to the clipboard, in a form that can be pasted into a spreadsheet.",
-                ))
+                ).font(LIBERATION_SANS))
                 .push(Space::with_height(Units(12)));
         }
         let text = if slf.metrics_condensed {
@@ -840,14 +849,14 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
             "Show selected metrics".to_string()
         };
         summary_scrollable = summary_scrollable.push(
-            Button::new(&mut slf.condense_metrics_button, Text::new(&text))
+            Button::new(&mut slf.condense_metrics_button, Text::new(&text).font(LIBERATION_SANS))
                 .on_press(Message::CondenseMetrics),
         );
         summary_scrollable = summary_scrollable.push(Space::with_height(Units(8)));
         summary_scrollable = summary_scrollable.push(
             Button::new(
                 &mut slf.copy_selected_metrics_button,
-                Text::new("Copy selected metrics").color(slf.copy_selected_metrics_button_color),
+                Text::new("Copy selected metrics").font(LIBERATION_SANS).color(slf.copy_selected_metrics_button_color),
             )
             .on_press(Message::CopySelectedMetrics),
         );

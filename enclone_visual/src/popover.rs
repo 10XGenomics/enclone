@@ -13,16 +13,16 @@ use messages::Message;
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 pub fn command(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
-    let command_title = Text::new(&format!("Command")).size(30);
+    let command_title = Text::new(&format!("Command")).font(LIBERATION_SANS).size(30);
 
     // Buttons.
 
     let _command_snapshot_button = Button::new(
         &mut slf.command_snapshot_button,
-        Text::new("Snapshot").color(slf.command_snapshot_button_color),
+        Text::new("Snapshot").font(LIBERATION_SANS).color(slf.command_snapshot_button_color),
     )
     .on_press(Message::CommandSnapshot);
-    let command_close_button = Button::new(&mut slf.command_close_button, Text::new("Dismiss"))
+    let command_close_button = Button::new(&mut slf.command_close_button, Text::new("Dismiss").font(LIBERATION_SANS))
         .on_press(Message::CommandClose);
 
     // Help text.
@@ -88,11 +88,11 @@ pub fn command(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
             "Submit"
         } else {
             "thinking"
-        }),
+        }).font(LIBERATION_SANS),
     )
     .padding(10)
     .on_press(Message::SubmitButtonPressed(Ok(())));
-    let clear_button = Button::new(&mut slf.clear_button, Text::new("Clear"))
+    let clear_button = Button::new(&mut slf.clear_button, Text::new("Clear").font(LIBERATION_SANS))
         .padding(10)
         .on_press(Message::ClearButtonPressed);
 
@@ -119,31 +119,31 @@ pub fn command(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 pub fn graphic(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
-    let graphic_title = Text::new(&format!("Graphic")).size(30);
+    let graphic_title = Text::new(&format!("Graphic")).font(LIBERATION_SANS).size(30);
 
     // Buttons.
 
     let tooltip_button = Button::new(
         &mut slf.tooltip_toggle_button,
-        Text::new("Tooltip").color(slf.tooltip_toggle_button_color),
+        Text::new("Tooltip").font(LIBERATION_SANS).color(slf.tooltip_toggle_button_color),
     )
     .on_press(Message::TooltipToggle);
     let help_button = Button::new(
         &mut slf.graphic_help_button,
-        Text::new(&slf.graphic_help_title),
+        Text::new(&slf.graphic_help_title).font(LIBERATION_SANS),
     )
     .on_press(Message::GraphicHelp);
     let _graphic_snapshot_button = Button::new(
         &mut slf.graphic_snapshot_button,
-        Text::new("Snapshot").color(slf.graphic_snapshot_button_color),
+        Text::new("Snapshot").font(LIBERATION_SANS).color(slf.graphic_snapshot_button_color),
     )
     .on_press(Message::GraphicSnapshot);
     let png_button = Button::new(
         &mut slf.graphic_png_button,
-        Text::new(&slf.graphic_png_title).color(slf.png_button_color),
+        Text::new(&slf.graphic_png_title).font(LIBERATION_SANS).color(slf.png_button_color),
     )
     .on_press(Message::GraphicPng);
-    let graphic_close_button = Button::new(&mut slf.graphic_close_button, Text::new("Dismiss"))
+    let graphic_close_button = Button::new(&mut slf.graphic_close_button, Text::new("Dismiss").font(LIBERATION_SANS))
         .on_press(Message::GraphicClose);
 
     // Help text.
@@ -159,7 +159,7 @@ pub fn graphic(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         The Tooltip button may be used to move the tooltip box that is seen when hovering over \
         a cell.  Each push of the button causes a rotation of the box location between the four \
         corners.",
-    );
+    ).font(LIBERATION_SANS);
 
     // Top bar.
 
@@ -217,22 +217,22 @@ pub fn graphic(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 pub fn clonotypes(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
-    let clonotypes_title = Text::new(&format!("Clonotypes")).size(30);
+    let clonotypes_title = Text::new(&format!("Clonotypes")).font(LIBERATION_SANS).size(30);
 
     // Buttons.
 
     let _clonotypes_snapshot_button = Button::new(
         &mut slf.clonotypes_snapshot_button,
-        Text::new("Snapshot").color(slf.clonotypes_snapshot_button_color),
+        Text::new("Snapshot").font(LIBERATION_SANS).color(slf.clonotypes_snapshot_button_color),
     )
     .on_press(Message::ClonotypesSnapshot);
     let copy_button = Button::new(
         &mut slf.clonotypes_copy_button,
-        Text::new("Copy text").color(slf.clonotypes_copy_button_color),
+        Text::new("Copy text").font(LIBERATION_SANS).color(slf.clonotypes_copy_button_color),
     )
     .on_press(Message::ClonotypesCopy);
     let clonotypes_close_button =
-        Button::new(&mut slf.clonotypes_close_button, Text::new("Dismiss"))
+        Button::new(&mut slf.clonotypes_close_button, Text::new("Dismiss").font(LIBERATION_SANS))
             .on_press(Message::ClonotypesClose);
 
     // The rest.
@@ -291,14 +291,14 @@ pub fn clonotypes(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 pub fn console(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
-    let console_title = Text::new(&format!("Console")).size(30);
+    let console_title = Text::new(&format!("Console")).font(LIBERATION_SANS).size(30);
     let mut console = String::new();
     let n = CONSOLE.lock().unwrap().len();
     for i in 0..n {
         console += &mut format!("{}\n", CONSOLE.lock().unwrap()[i]);
     }
     console += " \n\n\n";
-    let console_close_button = Button::new(&mut slf.console_close_button, Text::new("Dismiss"))
+    let console_close_button = Button::new(&mut slf.console_close_button, Text::new("Dismiss").font(LIBERATION_SANS))
         .on_press(Message::ConsoleClose);
     let intro_text = "This console is mostly for developers.  It shows some logging and provides \
         some tools for tracing bugs and maintaining cookbooks.";
@@ -306,7 +306,7 @@ pub fn console(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         to be run on the current enclone visual state.";
     let sanity_button = Button::new(
         &mut slf.sanity_button,
-        Text::new("Sanity check").color(slf.sanity_button_color),
+        Text::new("Sanity check").font(LIBERATION_SANS).color(slf.sanity_button_color),
     )
     .on_press(Message::SanityCheck);
     let console_text = "The current console output is shown below.";
@@ -320,7 +320,7 @@ pub fn console(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         then you would push Save, and finally go to the archive page and delete the original \
         version.";
     let recompute_button =
-        Button::new(&mut slf.recompute_button, Text::new("Recompute")).on_press(Message::Recompute);
+        Button::new(&mut slf.recompute_button, Text::new("Recompute").font(LIBERATION_SANS)).on_press(Message::Recompute);
     let top_bar = Row::new()
         .push(console_title)
         .push(Space::with_width(Length::Fill))
@@ -342,15 +342,15 @@ pub fn console(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         .padding(20)
         .push(top_bar)
         .push(Rule::horizontal(10).style(style::RuleStyle2))
-        .push(Text::new(intro_text))
+        .push(Text::new(intro_text).font(LIBERATION_SANS))
         .push(Rule::horizontal(10).style(style::RuleStyle2))
-        .push(Text::new(sanity_text))
+        .push(Text::new(sanity_text).font(LIBERATION_SANS))
         .push(sanity_button)
         .push(Rule::horizontal(10).style(style::RuleStyle2))
-        .push(Text::new(recompute_text))
+        .push(Text::new(recompute_text).font(LIBERATION_SANS))
         .push(recompute_button)
         .push(Rule::horizontal(10).style(style::RuleStyle2))
-        .push(Text::new(console_text))
+        .push(Text::new(console_text).font(LIBERATION_SANS))
         .push(Rule::horizontal(10).style(style::RuleStyle2))
         .push(console_scrollable);
     Container::new(content)
