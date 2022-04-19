@@ -20,7 +20,8 @@
 // unofficial_images.  If you are running "unofficially" you need this.
 //
 // Local mode.  This mode is invoked by adding the argument LOCAL.  It does not run the remote
-// tests, which is currently only possible at 10x.
+// tests, which is currently only possible at 10x.  Local mode is also easier to run because it
+// does not require compiling on two machines.
 //
 // Update mode.  This mode is invoked by adding the argument UPDATE.  This causing failing results
 // to be replaced.
@@ -492,6 +493,12 @@ fn main() {
                 let mut image_old = Vec::<u8>::new();
                 f.read_to_end(&mut image_old).unwrap();
                 let (_, image_data_old0) = png_decoder::decode(&image_old).unwrap();
+                if image_data_old0.len() != width * height * 4 {
+                    eprintln!("\nThe size of {} is wrong, so it is probably corrupted.\n",
+                        old_png_file
+                    );
+                    std::process::exit(1);
+                }
                 let mut joint = Vec::<u8>::new();
                 for i in 0..height {
                     let start = i * width * 4;
