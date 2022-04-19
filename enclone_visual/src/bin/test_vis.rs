@@ -437,7 +437,7 @@ fn main() {
         let old_jpg_file = format!("{}.jpg", old_png_file.rev_before(".png"));
         if create {
             copy(&new_png_file, &old_png_file).unwrap();
-            copy(&new_jpg_file, &old_jpg_file).unwrap();
+            // copy(&new_jpg_file, &old_jpg_file).unwrap();
             continue;
         }
 
