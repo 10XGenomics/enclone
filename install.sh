@@ -223,8 +223,9 @@ main() {
                 if ! [ "$?" -eq "0" ]; then
                     printf "ran curl -s -L $repo/releases/latest/download/enclone_linux --output enclone\n"
                     printf "that command appears to have failed\n\n"
-                    printf "retrying curl in verbose mode by adding -v\n"
-                    curl -s -L -v $repo/releases/latest/download/enclone_linux --output enclone
+                    printf "current working directory is $PWD\n"
+                    printf "retrying curl in verbose mode by adding -v and showing just the last ten lines\n"
+                    curl -s -L -v $repo/releases/latest/download/enclone_linux --output enclone |& tail -10
                     if ! [ "$?" -eq "0" ]; then
                         printf "the command appears to have failed again\n\n"
                         printf "giving up\n\n"
