@@ -222,17 +222,28 @@ main() {
                 curl -s -L $repo/releases/latest/download/enclone_linux --output enclone
                 if ! [ "$?" -eq "0" ]; then
                     printf "ran curl -s -L $repo/releases/latest/download/enclone_linux --output enclone\n"
-                    printf "that command appears to have failed\n\n"
-                    printf "current working directory is $PWD\n"
-                    printf "retrying curl in verbose mode by adding -v and showing just the last ten lines\n"
-                    curl -s -L -v $repo/releases/latest/download/enclone_linux --output enclone |& tail -10
+                    printf "\nthat command appears to have failed\n\n"
+                    printf "current working directory is $PWD\n\n"
+                    printf "printing curl version\n\n"
+                    curl --version
+                    printf "\nmoving enclone executable aside preparatory to retrying\n\n"
+                    rm -f enclone.aside
+                    mv enclone enclone.aside
+                    if ! [ "$?" -eq "0" ]; then
+                        printf "\nattempt to move enclone aside failed\n"
+                        exit 1
+                    fi
+                    printf "\nretrying curl\n\n"
+                    curl -s -L $repo/releases/latest/download/enclone_linux --output enclone
                     if ! [ "$?" -eq "0" ]; then
                         printf "the command appears to have failed again\n\n"
                         printf "giving up\n\n"
                         printf "If you ran this using enclone UPDATE, please instead try running "
                         printf "the install command on bit.ly/enclone directly.\n\n"
-                        exit
+                        exit 1
                     fi
+                    println! "\nok that seems to have succeeded\n\n"
+                    rm -f enclone.aside
                 fi
             else
                 printf "\nDownloading Linux version of latest enclone executable using wget.\n\n"
