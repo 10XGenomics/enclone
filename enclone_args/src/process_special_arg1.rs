@@ -370,7 +370,7 @@ pub fn process_special_arg1(
         let val = arg.after("POUT=");
         ctl.parseable_opt.pout = val.to_string();
         tilde_expand_me(&mut ctl.parseable_opt.pout);
-        if val != "stdout" && val != "stdouth" {
+        if val != "stdout" && val != "stdouth" && val != "/dev/null" {
             test_writeable(&val, ctl.gen_opt.evil_eye)?;
         }
     } else if arg.starts_with("SIM_MAT_PLOT=") {
