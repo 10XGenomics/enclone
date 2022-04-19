@@ -1640,6 +1640,7 @@ dependencies = [
  "rayon",
  "regex",
  "serde_json",
+ "statrs",
  "stats_utils",
  "string_utils",
  "tables",
@@ -1700,6 +1701,7 @@ dependencies = [
  "log",
  "mach",
  "nix 0.23.1",
+ "num-traits",
  "objc",
  "perf_stats",
  "png-decoder",
@@ -3876,7 +3878,7 @@ dependencies = [
  "io_utils",
  "lazy_static",
  "libc",
- "nix 0.22.3",
+ "nix 0.23.1",
  "pprof",
  "stats_utils",
  "string_utils",
@@ -5039,7 +5041,7 @@ version = "1.6.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4ee73e6e4924fe940354b8d4d98cad5231175d615cd855b758adc658c0aac6a0"
 dependencies = [
- "cfg-if 0.1.10",
+ "cfg-if 1.0.0",
  "rand",
  "static_assertions",
 ]

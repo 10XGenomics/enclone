@@ -68,6 +68,7 @@ mach = "0.3"
 mirror_sparse_matrix = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 ndarray = "0.15"
 nix = "0.23"
+num-traits = "0.2"
 objc = "0.2"
 pager = "0.16"
 palette = "0.6"
@@ -93,6 +94,7 @@ serde_derive = "1"
 serde_json = "1"
 sha2 = "0.10"
 stats_utils = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
+statrs = "0.15"
 stirling_numbers = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 string_utils = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 superslice = "1"
@@ -111,7 +113,6 @@ usvg = { version = "0.19", features = ["text"] }
 # vdj_ann = "0.4"
 vdj_ann = { version = "0.4", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 vdj_ann_ref = { version = "0.2", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
-
 vector_utils = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 whoami = "1"
 yaml-rust = "0.4"

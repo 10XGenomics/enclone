@@ -10,17 +10,20 @@
 // However other people can create their own regression test results, and test against those, as
 // described below.
 //
-// Create mode.  This mode is invoked by adding the argument CREATE.  This creates png images,
+// Create mode.  This mode is invoked by adding the argument CREATE.  This creates PNG images,
 // which exist only locally, and are not in git.  When the enclone repo is initialized, this needs
 // to be run.  You might also want to run it if you somehow mess up the images.  Otherwise, do
-// not run in this mode.
+// not run in this mode.  Create mode also creates JPG images.
+//
+// Create PNG mode.  Similar, invoked by CREATE_PNG, only creates PNG files.
 //
 // Unofficial mode.  This mode is invoked by adding the argument UNOFFICIAL.  This does not read or
 // write files in regression_images, some of which are in git, and instead uses a directory
 // unofficial_images.  If you are running "unofficially" you need this.
 //
 // Local mode.  This mode is invoked by adding the argument LOCAL.  It does not run the remote
-// tests, which is currently only possible at 10x.
+// tests, which is currently only possible at 10x.  Local mode is also easier to run because it
+// does not require compiling on two machines.
 //
 // Update mode.  This mode is invoked by adding the argument UPDATE.  This causing failing results
 // to be replaced.
@@ -79,6 +82,7 @@ fn main() {
     let mut printer = false;
     let mut local = false;
     let mut create = false;
+    let mut create_png = false;
     let mut unofficial = false;
     let mut tests = Vec::<String>::new();
     for i in 1..args.len() {
@@ -94,6 +98,8 @@ fn main() {
             local = true;
         } else if args[i] == "CREATE" {
             create = true;
+        } else if args[i] == "CREATE_PNG" {
+            create_png = true;
         } else if args[i] == "UNOFFICIAL" {
             unofficial = true;
         } else if args[i].starts_with("TESTS=") {
@@ -435,9 +441,11 @@ fn main() {
         // In create mode, just copy file.
 
         let old_jpg_file = format!("{}.jpg", old_png_file.rev_before(".png"));
-        if create {
+        if create || create_png {
             copy(&new_png_file, &old_png_file).unwrap();
-            copy(&new_jpg_file, &old_jpg_file).unwrap();
+            if create {
+                copy(&new_jpg_file, &old_jpg_file).unwrap();
+            }
             continue;
         }
 
@@ -492,6 +500,17 @@ fn main() {
                 let mut image_old = Vec::<u8>::new();
                 f.read_to_end(&mut image_old).unwrap();
                 let (_, image_data_old0) = png_decoder::decode(&image_old).unwrap();
+                if image_data_old0.len() != width * height * 4 {
+                    eprintln!(
+                        "\nThe size of {} is wrong, so it is probably corrupted.\n",
+                        old_png_file
+                    );
+                    eprintln!(
+                        "You may want to checkout master and run with CREATE_PNG to \
+                        regenerate valid PNG files.\n"
+                    );
+                    std::process::exit(1);
+                }
                 let mut joint = Vec::<u8>::new();
                 for i in 0..height {
                     let start = i * width * 4;

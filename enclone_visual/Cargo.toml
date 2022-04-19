@@ -47,6 +47,7 @@ lazy_static = "1"
 libc = "0.2"
 log = "0.4"
 nix = "0.23"
+num-traits = "0.2"
 perf_stats = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 png-decoder = "0.1"
 pretty_trace = { version = "0.5", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }

@@ -6,6 +6,7 @@ use crate::history::*;
 use crate::messages::*;
 use crate::proc1::*;
 use crate::proc2::*;
+use crate::snapshot::snapshot;
 use crate::summary::*;
 use crate::testsuite::TESTS;
 use crate::*;

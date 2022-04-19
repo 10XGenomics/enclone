@@ -23,3 +23,6 @@ The file colors.rs is from Anton Mikhailov at Google.
 
 We redistribute LIBRA-seq data from Setliff et al. 2019, High-Throughput Mapping of B Cell 
 Receptor Sequences to Antigen Specificity.
+
+The file xwrap.rs (or possibly xwrap.rs.aside) is derived from the create shotgun:2.2.1 and is 
+licensed under MPL 2.0.

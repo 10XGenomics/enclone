@@ -17,7 +17,7 @@ pub fn command(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
 
     // Buttons.
 
-    let command_snapshot_button = Button::new(
+    let _command_snapshot_button = Button::new(
         &mut slf.command_snapshot_button,
         Text::new("Snapshot").color(slf.command_snapshot_button_color),
     )
@@ -32,12 +32,16 @@ pub fn command(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
 
     // Top bar.
 
-    let top_bar = Row::new()
+    let mut top_bar = Row::new()
         .push(command_title)
-        .push(Space::with_width(Length::Fill))
-        .push(command_snapshot_button)
-        .push(Space::with_width(Units(8)))
-        .push(command_close_button);
+        .push(Space::with_width(Length::Fill));
+    #[cfg(any(target_os = "macos", target_os = "ios"))]
+    {
+        top_bar = top_bar
+            .push(_command_snapshot_button)
+            .push(Space::with_width(Units(8)));
+    }
+    top_bar = top_bar.push(command_close_button);
 
     // Text input column.
 
@@ -129,7 +133,7 @@ pub fn graphic(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         Text::new(&slf.graphic_help_title),
     )
     .on_press(Message::GraphicHelp);
-    let graphic_snapshot_button = Button::new(
+    let _graphic_snapshot_button = Button::new(
         &mut slf.graphic_snapshot_button,
         Text::new("Snapshot").color(slf.graphic_snapshot_button_color),
     )
@@ -159,15 +163,20 @@ pub fn graphic(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
 
     // Top bar.
 
-    let top_bar = Row::new()
+    let mut top_bar = Row::new()
         .push(graphic_title)
         .push(Space::with_width(Length::Fill))
         .push(help_button)
         .push(Space::with_width(Units(8)))
         .push(tooltip_button)
-        .push(Space::with_width(Units(8)))
-        .push(graphic_snapshot_button)
-        .push(Space::with_width(Units(8)))
+        .push(Space::with_width(Units(8)));
+    #[cfg(any(target_os = "macos", target_os = "ios"))]
+    {
+        top_bar = top_bar
+            .push(_graphic_snapshot_button)
+            .push(Space::with_width(Units(8)))
+    }
+    top_bar = top_bar
         .push(png_button)
         .push(Space::with_width(Units(8)))
         .push(graphic_close_button);
@@ -212,7 +221,7 @@ pub fn clonotypes(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
 
     // Buttons.
 
-    let clonotypes_snapshot_button = Button::new(
+    let _clonotypes_snapshot_button = Button::new(
         &mut slf.clonotypes_snapshot_button,
         Text::new("Snapshot").color(slf.clonotypes_snapshot_button_color),
     )
@@ -243,11 +252,16 @@ pub fn clonotypes(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
         }
         trunc.push('\n');
     }
-    let top_bar = Row::new()
+    let mut top_bar = Row::new()
         .push(clonotypes_title)
-        .push(Space::with_width(Length::Fill))
-        .push(clonotypes_snapshot_button)
-        .push(Space::with_width(Units(8)))
+        .push(Space::with_width(Length::Fill));
+    #[cfg(any(target_os = "macos", target_os = "ios"))]
+    {
+        top_bar = top_bar
+            .push(_clonotypes_snapshot_button)
+            .push(Space::with_width(Units(8)));
+    }
+    top_bar = top_bar
         .push(copy_button)
         .push(Space::with_width(Units(8)))
         .push(clonotypes_close_button);

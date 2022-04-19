@@ -366,6 +366,13 @@ pub fn process_special_arg1(
                 .to_string());
         }
         ctl.gen_opt.fb_show = arg.after("FB_SHOW=").to_string();
+    } else if arg.starts_with("POUT=") {
+        let val = arg.after("POUT=");
+        ctl.parseable_opt.pout = val.to_string();
+        tilde_expand_me(&mut ctl.parseable_opt.pout);
+        if val != "stdout" && val != "stdouth" && val != "/dev/null" {
+            test_writeable(&val, ctl.gen_opt.evil_eye)?;
+        }
     } else if arg.starts_with("SIM_MAT_PLOT=") {
         let fields = arg.after("SIM_MAT_PLOT=").split(',').collect::<Vec<&str>>();
         if fields.len() < 2 {

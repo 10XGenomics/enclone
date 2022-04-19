@@ -119,7 +119,7 @@ pub fn help(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
                         .push(
                             Text::new(
                                 "1.  Snapshot, to copy a screenshot of the entire window \
-                                 to the clipboard.",
+                                 to the clipboard.  This button is only present on Macs.",
                             )
                             .width(max_width2),
                         )
