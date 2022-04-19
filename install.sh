@@ -233,7 +233,7 @@ main() {
                         printf "\nattempt to move enclone aside failed\n"
                         exit 1
                     fi
-                    printf "\nretrying curl\n\n"
+                    printf "retrying curl\n\n"
                     curl -s -L $repo/releases/latest/download/enclone_linux --output enclone
                     if ! [ "$?" -eq "0" ]; then
                         printf "the command appears to have failed again\n\n"
@@ -242,7 +242,7 @@ main() {
                         printf "the install command on bit.ly/enclone directly.\n\n"
                         exit 1
                     fi
-                    println! "\nok that seems to have succeeded\n\n"
+                    println "\nok that seems to have succeeded\n\n"
                     rm -f enclone.aside
                 fi
             else
