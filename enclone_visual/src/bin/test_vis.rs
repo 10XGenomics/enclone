@@ -504,6 +504,8 @@ fn main() {
                     eprintln!("\nThe size of {} is wrong, so it is probably corrupted.\n",
                         old_png_file
                     );
+                    eprintln!("You may want to checkout master and run with CREATE_PNG to \
+                        regenerate valid PNG files.\n");
                     std::process::exit(1);
                 }
                 let mut joint = Vec::<u8>::new();
