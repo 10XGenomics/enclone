@@ -1,0 +1,4 @@
+The two files in this directory demonstrate a standalone script that requires
+installation of the Immcantation Docker image. If Immcantation is available
+and installed, the shell script will source the R script and execute a SCOPer
+grouping run on the `filtered_contig.fasta` file specified in the script.
