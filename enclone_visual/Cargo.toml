@@ -36,7 +36,7 @@ enclone_tail = { path = "../enclone_tail" }
 enclone_version = { path = "../enclone_version" }
 flate2 = "1"
 fs_extra = "1"
-iced = { git = "https://github.com/hecrj/iced", rev = "3042fa2cb63c651ebed2abe6f4054e61f70b0331", features = ["canvas", "image", "async-std", "default_system_font"] }
+iced = { git = "https://github.com/hecrj/iced", rev = "3042fa2cb63c651ebed2abe6f4054e61f70b0331", features = ["canvas", "image", "async-std"] }
 iced_native = { git = "https://github.com/hecrj/iced", rev = "3042fa2cb63c651ebed2abe6f4054e61f70b0331" }
 image = { version = "0.23", features = ["jpeg", "png", "jpeg_rayon"], default-features = false }
 include_dir = { version = "0.6", features = ["search"] }
