@@ -18,7 +18,7 @@
 
 # This reuses code from the installation script for the rust language.
 #
-# This script expects a single argument, which is small, medium, large or giant, depending on how
+# This script expects a single argument, which is small, medium, large or colossus, depending on how
 # much data is to be downloaded.  
 #
 # If you run it a second time and forget the size, it will use the same size as last time,
@@ -76,7 +76,7 @@ main() {
     need_cmd mkdir
     need_cmd uname
     need_cmd zcat
-    if [ "$size" = giant ]; then
+    if [ "$size" = colossus ]; then
         need_cmd gzip
         need_cmd tar
     fi
@@ -113,10 +113,10 @@ main() {
 
     # 3. Get requested size.
 
-    if [ "$size" != small ] && [ "$size" != medium ] && [ "$size" != large ] && [ "$size" != giant ]; then
+    if [ "$size" != small ] && [ "$size" != medium ] && [ "$size" != large ] && [ "$size" != colossus ]; then
         printf "\nTo install or update enclone, please supply the single argument SIZE to the\n"
         printf "curl command shown on bit.ly/enclone.  The argument SIZE can be small, medium, "
-        printf "large, or giant.\n"
+        printf "large, or colossus.\n"
         echo "If you're stuck please ask for help by emailing enclone@10xgenomics.com."
         echo
         exit 1
@@ -130,13 +130,13 @@ main() {
     #    was downloaded, then it is current.
 
     local _datasets_small_current _datasets_medium_current _datasets_large_current
-    local _datasets_giant_current
+    local _datasets_colossus_current
     local _datasets_small_checksum_master _datasets_small_checksum_local
     local _datasets_medium_checksum_master _datasets_medium_checksum_local
     _datasets_small_current=false
     _datasets_medium_current=false
     _datasets_large_current=false
-    _datasets_giant_current=false
+    _datasets_colossus_current=false
     raw_repo=https://raw.githubusercontent.com/10XGenomics/enclone
     if [ "$size" = small ]; then
         if [ $_have_curl ] && [ "$MODE" != force_wget ]; then
@@ -158,7 +158,7 @@ main() {
             _datasets_small_current=true
         fi
     fi
-    if [ "$size" = medium ] || [ "$size" = large ] || [ "$size" = giant ]; then
+    if [ "$size" = medium ] || [ "$size" = large ] || [ "$size" = colossus ]; then
         raw_master=$raw_repo/master
         if $_have_curl; then
             _datasets_medium_checksum_master=$(curl -s $raw_master/datasets_medium_checksum)
@@ -183,7 +183,7 @@ main() {
         _datasets_large_current=true
     fi
     if test -f "$HOME/enclone/datasets2/1287207/outs/count/feature_barcode_matrix.bin"; then
-        _datasets_giant_current=true
+        _datasets_colossus_current=true
     fi
 
     #  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -330,8 +330,8 @@ main() {
     if [ "$size" = small ]; then
         if [ "$_datasets_small_current" = false ]; then
             printf "\nDownloading small version of datasets.\n"
-            printf "This seems to take roughly five seconds, even over home wireless,\n"
-            printf "however, you might have a slower connection.\n\n"
+            printf "This seems to take roughly five seconds, even over home wireless.\nHowever"
+            printf "it could be slower on a particular day or because of your connection.\n\n"
             mkdir -p enclone/datasets
             rm -rf enclone/datasets/123085
             cd enclone/datasets
@@ -358,7 +358,7 @@ main() {
     #
     #     This is not optimal, because if anything changed, all the files get re-downloaded.
 
-    if [ "$size" = medium ] || [ "$size" = large ] || [ "$size" = giant ]; then
+    if [ "$size" = medium ] || [ "$size" = large ] || [ "$size" = colossus ]; then
         if [ "$_datasets_medium_current" = false ]; then
             echo
             if [ "$size" = medium ]; then
@@ -367,11 +367,11 @@ main() {
             if [ "$size" = large ]; then
                 echo "Downloading medium version of datasets, as part of large."
             fi
-            if [ "$size" = giant ]; then
-                echo "Downloading medium version of datasets, as part of giant."
+            if [ "$size" = colossus ]; then
+                echo "Downloading medium version of datasets, as part of colossus."
             fi
-            printf "This seems to take roughly thirty seconds, even over home wireless,\n"
-            printf "however, you might have a slower connection.\n\n"
+            printf "This seems to take roughly thirty seconds, even over home wireless.\nHowever"
+            printf "it could be slower on a particular day or because of your connection.\n\n"
             rm -rf enclone/datasets enclone/version15
             cd enclone
             git clone --depth=1 https://github.com/10XGenomics/enclone-data.git
@@ -392,16 +392,16 @@ main() {
 
     # 12. Download large data.  
 
-    if [ "$size" = large ] || [ "$size" = giant ]; then
+    if [ "$size" = large ] || [ "$size" = colossus ]; then
         if [ "$_datasets_large_current" = false ]; then
             if [ "$size" = large ]; then
                 printf "\nDownloading large version of datasets.\n"
             fi
-            if [ "$size" = giant ]; then
-                printf "\nDownloading large version of datasets, as part of giant.\n"
+            if [ "$size" = colossus ]; then
+                printf "\nDownloading large version of datasets, as part of colossus.\n"
             fi
-            printf "This seems to take roughly one to three minutes, even over home wireless,\n"
-            printf "however, you might have a slower connection.\n\n"
+            printf "This seems to take roughly one to three minutes, even over home wireless.\n"
+            printf "However it could be slower on a particular day or because of your connection.\n\n"
             cd enclone
             rm -rf datasets2
             aws=https://s3-us-west-2.amazonaws.com
@@ -423,15 +423,15 @@ main() {
 
     #  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-    # 13. Download giant data.  
+    # 13. Download colossus data.  
 
-    if [ "$size" = giant ]; then
-        if [ "$_datasets_giant_current" = false ]; then
-            printf "\nDownloading giant version of datasets.\n"
-            printf "This seems to take roughly ten minutes,\n"
-            printf "however, you might have a slower connection.\n\n"
+    if [ "$size" = colossus ]; then
+        if [ "$_datasets_colossus_current" = false ]; then
+            printf "\nDownloading colossus version of datasets.\n"
+            printf "This takes roughly ten minutes.\nHowever "
+            printf "it could be slower on a particular day or because of your connection.\n\n"
             cd enclone
-            rm -rf datasets2/1279* datasets2/1287*
+            rm -rf datasets/1279* datasets/1287*
             if $_have_curl; then
                 curl -L -s https://figshare.com/ndownloader/files/34846953 --output test_data.tar.gz
             else
@@ -449,7 +449,7 @@ main() {
             rmdir test_data
             rm test_data.tar
         else
-            printf "\nGiant version of datasets already current so not downloading them.\n"
+            printf "\nColossus version of datasets already current so not downloading them.\n"
         fi
     fi
 

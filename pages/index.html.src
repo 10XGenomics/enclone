@@ -258,7 +258,7 @@ You can run #enclone directly from a <b>Linux</b> or <b>Mac</b> terminal window;
 </th>
 <th align=left style="font-weight: normal">
 &nbsp;where <code style="color:red; font-weight: bold">SIZE</code> is 
-<code>small</code>, <code>medium</code>, <code>large</code>, or <code>giant</code>, according to:
+<code>small</code>, <code>medium</code>, <code>large</code>, or <code>colossus</code>, according to:
 </th>
 </tr>
 </table>
@@ -336,17 +336,17 @@ You can run #enclone directly from a <b>Linux</b> or <b>Mac</b> terminal window;
   <tr>
   <th align=left style="font-weight: normal; border: 2px solid black">
        <p style="margin: 4px">
-       <code>giant</code>
+       <code>colossus</code>
        </p>
   </th>
   <th align=left style="font-weight: normal; border: 2px solid black">
        <p style="margin: 4px">
-       load giant dataset collection
+       load colossus dataset collection
        </p>
   </th>
   <th align=left style="font-weight: normal; border: 2px solid black">
        <p style="margin: 4px">
-       **** MB
+       26400 MB
        </p>
   </th>
   <th align=left style="font-weight: normal; border: 2px solid black">
