@@ -114,6 +114,8 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             EXEC.lock().unwrap().push(arg.after("EXEC=").to_string());
         } else if arg == "REQUIRE_COMPATIBLE" {
             require_compatible = true;
+        } else if arg == "CTRLC" {
+            // implemented elsewhere
         } else if arg.starts_with("EHOME=") {
             let ehome = arg.after("EHOME=").to_string();
             EHOME.lock().unwrap().push(ehome);

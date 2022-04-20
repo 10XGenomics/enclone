@@ -87,13 +87,23 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
 
     // Client run of enclone.
+
     #[cfg(feature = "enclone_visual")]
     {
-        let t = std::time::Instant::now();
+        let mut vis = false;
         for i in 0..args.len() {
             if args[i] == "VIS" || args[i].starts_with("VIS=") {
-                enclone_client(&t).await?;
+                vis = true;
             }
+        }
+        if vis {
+            let t = std::time::Instant::now();
+            for i in 0..args.len() {
+                if args[i] == "CTRLC" {
+                    PrettyTrace::new().ctrlc().on();
+                }
+            }
+            enclone_client(&t).await?;
         }
     }
 
