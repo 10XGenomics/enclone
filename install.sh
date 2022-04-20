@@ -210,6 +210,10 @@ main() {
     #  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
     # 6. Make directory ~/bin if needed and download the appropriate enclone executable into it.
+    #
+    # There is some complicated stuff that happens with temporarily moving the enclone executable.
+    # This is there so that when this script is called from enclone UPDATE, the executable in use
+    # is not clobbered.  There were failures associated with this.
 
     cd $HOME
     mkdir -p bin
