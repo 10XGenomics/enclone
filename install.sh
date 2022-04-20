@@ -438,7 +438,13 @@ main() {
                 wget -q https://figshare.com/ndownloader/files/34846953 -O test_data.tar.gz
             fi
             gzip -d test_data.tar.gz
+            if ! [ "$?" -eq "0" ]; then
+                printf "\ngzip failed, giving up\n\n"
+            fi
             cat test_data.tar | tar xf -
+            if ! [ "$?" -eq "0" ]; then
+                printf "\ntar failed, giving up\n\n"
+            fi
             mv test_data/* datasets2
             rmdir test_data
             rm test_data.tar
