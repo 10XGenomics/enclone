@@ -258,7 +258,7 @@ You can run #enclone directly from a <b>Linux</b> or <b>Mac</b> terminal window;
 </th>
 <th align=left style="font-weight: normal">
 &nbsp;where <code style="color:red; font-weight: bold">SIZE</code> is 
-<code>small</code>, <code>medium</code> or <code>large</code>, according to:
+<code>small</code>, <code>medium</code>, <code>large</code>, or <code>colossus</code>, according to:
 </th>
 </tr>
 </table>
@@ -302,12 +302,12 @@ You can run #enclone directly from a <b>Linux</b> or <b>Mac</b> terminal window;
   </th>
   <th align=left style="font-weight: normal; border: 2px solid black">
        <p style="margin: 4px">
-       350 MB
+       3400 MB
        </p>
   </th>
   <th align=left style="font-weight: normal; border: 2px solid black">
        <p style="margin: 4px">
-       do this for a moderate number of datasets (~15)
+       do this for a moderate number of datasets (~120)
        </p>
   </th>
   </tr>
@@ -324,12 +324,34 @@ You can run #enclone directly from a <b>Linux</b> or <b>Mac</b> terminal window;
   </th>
   <th align=left style="font-weight: normal; border: 2px solid black">
        <p style="margin: 4px">
-       2600 MB
+       4700 MB
        </p>
   </th>
   <th align=left style="font-weight: normal; border: 2px solid black">
        <p style="margin: 4px">
-	do this for a large number of datasets (~110)
+	do this for a large number of datasets (~240)
+       </p>
+  </th>
+  </tr>
+  <tr>
+  <th align=left style="font-weight: normal; border: 2px solid black">
+       <p style="margin: 4px">
+       <code>colossus</code>
+       </p>
+  </th>
+  <th align=left style="font-weight: normal; border: 2px solid black">
+       <p style="margin: 4px">
+       load colossus dataset collection
+       </p>
+  </th>
+  <th align=left style="font-weight: normal; border: 2px solid black">
+       <p style="margin: 4px">
+       26400 MB
+       </p>
+  </th>
+  <th align=left style="font-weight: normal; border: 2px solid black">
+       <p style="margin: 4px">
+        same as large but includes gene expression data for many datasets
        </p>
   </th>
   </tr>
