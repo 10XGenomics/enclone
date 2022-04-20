@@ -195,7 +195,9 @@ something simpler.  Specifically, the following commands should cause a clock to
 </pre>
 If not, let us know what happened.  The problem would have nothing to do with #enclone
 <i>per se</i>.  It may be necessary to file an issue at
-<a href="https://github.com/iced-rs/iced/issues">https://github.com/iced-rs/iced/issues</a>.</p>
+<a href="https://github.com/iced-rs/iced/issues">https://github.com/iced-rs/iced/issues</a>.
+For that you should exactly what you typed and the terminal output, as well as the output of the
+command <code>lsb_release -a</code>.</p>
  
 <! --- ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ --->
 
