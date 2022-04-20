@@ -182,7 +182,7 @@ main() {
     if test -f "$HOME/enclone/datasets2/download_complete"; then
         _datasets_large_current=true
     fi
-    if test -f "$HOME/enclone/datasets2/1287207/outs/count/feature_barcode_matrix.bin; then
+    if test -f "$HOME/enclone/datasets2/1287207/outs/count/feature_barcode_matrix.bin"; then
         _datasets_giant_current=true
     fi
 
@@ -365,10 +365,10 @@ main() {
                 echo "Downloading medium version of datasets."
             fi
             if [ "$size" = large ]; then
-                echo "Downloading medium version of datasets (as part of large)."
+                echo "Downloading medium version of datasets, as part of large."
             fi
             if [ "$size" = giant ]; then
-                echo "Downloading medium version of datasets (as part of giant)."
+                echo "Downloading medium version of datasets, as part of giant."
             fi
             printf "This seems to take roughly thirty seconds, even over home wireless,\n"
             printf "however, you might have a slower connection.\n\n"
@@ -398,7 +398,7 @@ main() {
                 printf "\nDownloading large version of datasets.\n"
             fi
             if [ "$size" = giant ]; then
-                printf "\nDownloading large version of datasets (as part of giant).\n"
+                printf "\nDownloading large version of datasets, as part of giant.\n"
             fi
             printf "This seems to take roughly one to three minutes, even over home wireless,\n"
             printf "however, you might have a slower connection.\n\n"
