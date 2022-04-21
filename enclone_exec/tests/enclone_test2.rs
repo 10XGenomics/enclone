@@ -571,8 +571,8 @@ fn test_for_broken_links_and_spellcheck() {
         plasmablast preinstalled prepends pwm pwms recombinants redownloads \
         researchsquare samtools screenshot segn \
         sloooooooow spacebar stackexchange standalone stcrdab stdout sthnqedkr subclonotype \
-        subclonotypes svg tattgtagtggtggtagct tctgtgcgagata tctgtgcgagat tctgtgcgagata testlist \
-        thresholding timeline timepoint \
+        subclonotypes sudo svg tattgtagtggtggtagct tctgtgcgagata tctgtgcgagat tctgtgcgagata \
+        testlist thresholding timeline timepoint \
         tracebacks trb tsv \
         tttctgtgcgaga \
         tttctgtgcgagat \
