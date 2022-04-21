@@ -235,7 +235,10 @@ main() {
                 curl -s -L $repo/releases/latest/download/enclone_linux --output enclone
                 if ! [ "$?" -eq "0" ]; then
                     printf "ran curl -s -L $repo/releases/latest/download/enclone_linux "
-                    printf "--output enclone\n"
+                    # mess below because sh is finicky about -
+                    printf "-"
+                    printf "-"
+                    printf "output enclone\n"
                     printf "\nthat command appears to have failed\n\n"
                     printf "current working directory is $PWD\n\n"
                     printf "printing curl version\n\n"

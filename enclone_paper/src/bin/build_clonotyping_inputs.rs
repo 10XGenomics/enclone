@@ -1,6 +1,6 @@
 // Copyright (c) 2022 10X Genomics, Inc. All rights reserved.
-
-// Build input files for Immcantation.  This is for experimental purposes only.
+//
+// Build inputs for running other clonotyping software.
 //
 // Pass one argument, a list of numerical ids of internal datasets, allowing hyphenated ranges.
 // Also, @test OK.
@@ -20,7 +20,7 @@ use std::io::{BufRead, Write};
 use string_utils::*;
 use vector_utils::VecUtils;
 
-pub fn main_build_immcantation_inputs() {
+pub fn main() {
     PrettyTrace::new().on();
 
     // Get list of ids.

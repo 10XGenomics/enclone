@@ -47,7 +47,6 @@ PROGRAM                        PURPOSE
 ------------------------------------------------------------------------------
 annotate_seq                   annotate a VDJ contig
 annotate_seqs                  annotate some VDJ contigs
-assess_immcantation            assess the output of immcantation
 convert_fasta                  convert fasta to binary Vec<Vec<u8>>
 copy_for_enclone               import data from 10x pipeline
 diff_enclone_ann               diff two enclone runs in which annotation was different

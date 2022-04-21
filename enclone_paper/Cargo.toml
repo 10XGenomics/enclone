@@ -28,6 +28,7 @@ enclone_core = { path = "../enclone_core" }
 enclone_tail = { path = "../enclone_tail" }
 flate2 = "1"
 io_utils = { version = "0.3", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
+itertools = "0.10"
 perf_stats = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 plotters = { version = "0.3", default_features = false, features = ["svg_backend", "point_series"] }
 rand_chacha = "0.3"
