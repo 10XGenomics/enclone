@@ -21,34 +21,6 @@ const LOUPE_OUT_FILENAME: &str = "testx/__test_proto";
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// 27. Test Linux executable size.  This only runs under Linux.
-
-// NOT BASIC
-
-#[cfg(not(feature = "basic"))]
-#[cfg(not(feature = "cpu"))]
-#[cfg(target_os = "linux")]
-#[test]
-fn test_executable_size() {
-    PrettyTrace::new().on();
-    const ENCLONE_SIZE: usize = 102003264;
-    const ENCLONE_SIZE_MAX_PER_DIFF: f64 = 1.0;
-    let f = format!("../target/debug/enclone");
-    let n = metadata(&f).unwrap().len() as usize;
-    let delta = 100.0 * abs_diff(ENCLONE_SIZE, n) as f64 / ENCLONE_SIZE as f64;
-    if delta > ENCLONE_SIZE_MAX_PER_DIFF {
-        eprintln!(
-            "\nenclone executable is only allowed to change by {}%, but it has changed \
-            by {:.1}%.\n",
-            ENCLONE_SIZE_MAX_PER_DIFF, delta,
-        );
-        eprintln!("old size = {}, new size = {}\n", ENCLONE_SIZE, n);
-        std::process::exit(1);
-    }
-}
-
-// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
 // 28. Test cpu usage.  This is designed for one server at 10x Genomics.  It runs
 // single-threaded and measures total instructions used.  It only runs under Linux because
 // perf is not available on OSX and possibly also because the results would be incomparable.
