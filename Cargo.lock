@@ -1401,6 +1401,7 @@ dependencies = [
  "enclone_tail",
  "flate2",
  "io_utils",
+ "itertools",
  "perf_stats",
  "plotters",
  "pretty_trace",
