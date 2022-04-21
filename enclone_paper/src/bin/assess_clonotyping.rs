@@ -1,14 +1,14 @@
 // Copyright (c) 2022 10X Genomics, Inc. All rights reserved.
 //
-// Assess immcantation clonotyping.
+// Assess alternative clonotyping algorithm.
 //
 // Usage is something like this:
 //
 // 1. Let ids by the list of ids.  These need to be in enclone.testdata.bcr.gex.
 //
-// 2. build_immcantation_inputs ids
+// 2. build_clonotyping_inputs ids
 //
-// 3. Run immcantation.
+// 3. Run alternative clonotyping software.
 //
 // 4. enclone BCR=ids MIX_DONORS MIN_CHAINS_EXACT=2 NOPRINT POUT=stdout PCELL
 //            PCOLS=datasets_cell,barcode PCOLS_SHOW=dataset,barcode > post_filter.csv
@@ -18,7 +18,7 @@
 // to get intra = number of intra-donor comparisons and
 //        cross = number of cross-donor comparisons.
 //
-// 6. assess_immcantation scoper_clones.tsv post_filter.csv intra cross
+// 6. assess_clonotyping scoper_clones.tsv post_filter.csv intra cross
 
 use io_utils::*;
 use itertools::Itertools;
@@ -98,7 +98,7 @@ pub fn main() {
     }
     post_filter.sort();
 
-    // Parse the immcantation output file.
+    // Parse the clonotyping output file.
 
     let mut assignments = Vec::<(usize, String, String)>::new();
     let mut datasets = Vec::<String>::new();
