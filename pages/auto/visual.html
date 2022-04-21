@@ -209,31 +209,50 @@ To release this feature we would need to devise general instructions.</p>
 
 <h2>Debugging under Linux</h2>
 
-<p><b>1.</b> To use <span style="color:rgb(120,123,175);font-weight:900">enclone visual</span> under Linux, you will probably need to install some packages
-and libraries.  
-The names of the libraries may be printed in error messages.  Then the libraries can be 
-installed e.g. with <code>apt install -y libxcursor-dev</code>.  If you are not root, that would 
-need to be prefaced with <code>sudo</code>.  Here are the commands that we used:
+<p>On a Linux computer, if you type <code>enclone VISUAL</code>, and get an error message, let
+us know.  We provide here followup steps that may be applicable.  The idea of these steps is that
+the problem may not be in <span style="color:rgb(120,123,175);font-weight:900">enclone</span>, but rather lie in upstream software, or be an issue with your
+computer.</p>
 
-<pre><code>apt install -y git curl sudo x11-apps libxcursor-dev libxrandr-dev libxi-dev libx11-xcb-dev mesa-utils</code>
+<p><b>1.</b> To run these steps, you need to have a current version of Rust on your computer.
+First, if Rust is not already installed in your computer, you can install it using
+<pre><code>sudo apt update</code>
+<code>sudo apt install cargo</code></pre>
+Now you can tell what version you have by typing <code>rustc --version</code>.  Go to 
+<a href="https://www.rust-lang.org">https://www.rust-lang.org</a> to see what the current version
+is.  If those are different, you may need to update, using approximately the following steps:
+<pre>
+<code>sudo apt remove cargo</code>
+<code>sudo apt autoremove cargo</code>
+<code>curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh</code>
+<code>go with option 1</code>
+<code>need ~/.cargo/bin to be in path</code></pre>
+Possibly you can get away without doing these things.</p>
+
+<p><b>2.</b> Now you can test to see if your problem lies in a particular Rust crate called
+<code>wgpu</code>, as follows:
+<pre>
+<code>git clone https://github.com/gfx-rs/wgpu</code>
+<code>cd wgpu</code>
+<code>cargo run --example cube</code>
 </pre>
-The command you need could be somewhat different.
-</p>
+If a cube shows up on your screen, then probably <code>wgpu</code> is working.  Otherwise it may
+make sense to file an issue at
+<a href="https://github.com/gfx-rs/wgpu/issues">https://github.com/gfx-rs/wgpu/issues</a>.
+For that you should show exactly what you typed and the terminal output, as well as the output of 
+the command <code>lsb_release -a</code>.</p>
 
-<p><b>2.</b> If when you type <code>enclone VIS</code>, a window does <i>not</i> appear, then try
-something simpler.  Specifically, the following commands should cause a clock to appear:
-
-<pre><code>apt install -y cargo</code>
+<p><b>3.</b> If <code>wgpu</code> works, then a next step would be to see if there is a problem 
+in the <code>iced</code> crate.  Try this:
+<pre>
 <code>git clone https://github.com/hecrj/iced</code>
 <code>cd iced</code>
 <code>cargo run --package clock</code>
 </pre>
-If not, let us know what happened.  The problem would have nothing to do with <span style="color:rgb(120,123,175);font-weight:900">enclone</span>
-<i>per se</i>.  It may be necessary to file an issue at
-<a href="https://github.com/iced-rs/iced/issues">https://github.com/iced-rs/iced/issues</a>.
-For that you should exactly what you typed and the terminal output, as well as the output of the
-command <code>lsb_release -a</code>.</p>
- 
+A clock should show up.  If not, you could file an issue at
+<a href="https://github.com/iced-rs/iced/issues">https://github.com/iced-rs/iced/issues</a>,
+with details as above.</p>
+
 <! --- ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ --->
 
 <h2>Feedback</h2>
