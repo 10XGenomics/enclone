@@ -175,40 +175,6 @@ fn test_source_code_file_length() {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// 30. Cap number of duplicated crates.
-
-#[cfg(not(feature = "cpu"))]
-#[test]
-fn test_dupped_crates() {
-    PrettyTrace::new().on();
-    let mut crates = Vec::<String>::new();
-    let f = open_for_read!["../Cargo.lock"];
-    let mut lines = Vec::<String>::new();
-    for line in f.lines() {
-        let s = line.unwrap();
-        lines.push(s.to_string());
-    }
-    for i in 0..lines.len() {
-        if lines[i] == "[[package]]" {
-            crates.push(lines[i + 1].clone());
-        }
-    }
-    let n1 = crates.len();
-    unique_sort(&mut crates);
-    let n2 = crates.len();
-    let d = n1 - n2;
-    const DUPPED_CRATES: usize = 27;
-    if d != DUPPED_CRATES {
-        eprintln!(
-            "\nThe number of duplicated crates is {}, but the required number is {}.\n",
-            d, DUPPED_CRATES,
-        );
-        std::process::exit(1);
-    }
-}
-
-// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
 // 30. Make sure that help page list is correct.
 
 #[cfg(not(feature = "cpu"))]
