@@ -8,17 +8,16 @@
 //
 // 2. build_clonotyping_inputs ids
 //
-// 3. Run alternative clonotyping software.
+// 3. Run alternative clonotyping software to yield clones.tsv.
 //
 // 4. enclone BCR=ids MIX_DONORS MIN_CHAINS_EXACT=2 NOPRINT POUT=stdout PCELL
 //            PCOLS=datasets_cell,barcode PCOLS_SHOW=dataset,barcode > post_filter.csv
 //
 // 5. enclone BCR=@test MIX_DONORS MIN_CHAINS_EXACT=2 NOPRINT SUMMARY
 //
-// to get intra = number of intra-donor comparisons and
-//        cross = number of cross-donor comparisons.
+// to get cross = number of cross-donor comparisons.
 //
-// 6. assess_clonotyping scoper_clones.tsv post_filter.csv intra cross
+// 6. assess_clonotyping clones.tsv post_filter.csv cross
 
 use io_utils::*;
 use itertools::Itertools;
@@ -36,19 +35,17 @@ pub fn main() {
     // Parse arguments.
 
     let args: Vec<String> = env::args().collect();
-    if args.len() != 5
+    if args.len() != 4
         || (!args[1].ends_with(".csv") && !args[1].ends_with(".tsv"))
         || !args[2].ends_with(".csv")
         || !args[3].parse::<usize>().is_ok()
-        || !args[4].parse::<usize>().is_ok()
     {
         eprintln!("\nPlease read the usage in the source file.\n");
         std::process::exit(1);
     }
     let clone_file = &args[1];
     let filter_file = &args[2];
-    let intra = args[3].force_usize();
-    let cross = args[4].force_usize();
+    let cross = args[3].force_usize();
 
     // Get dataset classification by sample.
 
@@ -245,7 +242,6 @@ pub fn main() {
             }
         }
     }
-    println!("number of intradonor comparisons = {}", add_commas(intra));
     println!(
         "number of intradonor cell-cell merges (quadratic) = {}",
         add_commas(merges2)
@@ -262,9 +258,4 @@ pub fn main() {
     );
     let rate = (mixes as f64) * 1_000_000_000.0 / (cross as f64);
     println!("rate of cross donor mixing = {:.2} x 10^-9", rate);
-    let bogus = (intra as f64) * (mixes as f64) / (cross as f64);
-    println!(
-        "estimated number of false intradonor merges = {}\n",
-        add_commas(bogus.round() as usize)
-    );
 }
