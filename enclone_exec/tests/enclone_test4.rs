@@ -21,34 +21,6 @@ const LOUPE_OUT_FILENAME: &str = "testx/__test_proto";
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// 27. Test Linux executable size.  This only runs under Linux.
-
-// NOT BASIC
-
-#[cfg(not(feature = "basic"))]
-#[cfg(not(feature = "cpu"))]
-#[cfg(target_os = "linux")]
-#[test]
-fn test_executable_size() {
-    PrettyTrace::new().on();
-    const ENCLONE_SIZE: usize = 102003264;
-    const ENCLONE_SIZE_MAX_PER_DIFF: f64 = 1.0;
-    let f = format!("../target/debug/enclone");
-    let n = metadata(&f).unwrap().len() as usize;
-    let delta = 100.0 * abs_diff(ENCLONE_SIZE, n) as f64 / ENCLONE_SIZE as f64;
-    if delta > ENCLONE_SIZE_MAX_PER_DIFF {
-        eprintln!(
-            "\nenclone executable is only allowed to change by {}%, but it has changed \
-            by {:.1}%.\n",
-            ENCLONE_SIZE_MAX_PER_DIFF, delta,
-        );
-        eprintln!("old size = {}, new size = {}\n", ENCLONE_SIZE, n);
-        std::process::exit(1);
-    }
-}
-
-// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
 // 28. Test cpu usage.  This is designed for one server at 10x Genomics.  It runs
 // single-threaded and measures total instructions used.  It only runs under Linux because
 // perf is not available on OSX and possibly also because the results would be incomparable.
@@ -169,40 +141,6 @@ fn test_source_code_file_length() {
         }
     }
     if fail {
-        std::process::exit(1);
-    }
-}
-
-// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
-// 30. Cap number of duplicated crates.
-
-#[cfg(not(feature = "cpu"))]
-#[test]
-fn test_dupped_crates() {
-    PrettyTrace::new().on();
-    let mut crates = Vec::<String>::new();
-    let f = open_for_read!["../Cargo.lock"];
-    let mut lines = Vec::<String>::new();
-    for line in f.lines() {
-        let s = line.unwrap();
-        lines.push(s.to_string());
-    }
-    for i in 0..lines.len() {
-        if lines[i] == "[[package]]" {
-            crates.push(lines[i + 1].clone());
-        }
-    }
-    let n1 = crates.len();
-    unique_sort(&mut crates);
-    let n2 = crates.len();
-    let d = n1 - n2;
-    const DUPPED_CRATES: usize = 27;
-    if d != DUPPED_CRATES {
-        eprintln!(
-            "\nThe number of duplicated crates is {}, but the required number is {}.\n",
-            d, DUPPED_CRATES,
-        );
         std::process::exit(1);
     }
 }

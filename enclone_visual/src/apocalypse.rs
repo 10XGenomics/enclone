@@ -13,6 +13,7 @@ use std::sync::atomic::Ordering::SeqCst;
 
 pub fn prepare_for_apocalypse_visual() {
     let email = INTERNAL.load(SeqCst);
+    let ctrlc = CTRLC.load(SeqCst);
     let bug_reports = &BUG_REPORTS.lock().unwrap()[0];
     let args: Vec<String> = std::env::args().collect();
     if email {
@@ -49,7 +50,11 @@ pub fn prepare_for_apocalypse_visual() {
             args.iter().format(" "),
             elapsed_message,
         );
-        PrettyTrace::new().exit_message(&exit_message).on();
+        if !ctrlc {
+            PrettyTrace::new().exit_message(&exit_message).on();
+        } else {
+            PrettyTrace::new().exit_message(&exit_message).ctrlc().on();
+        }
     } else {
         // Set up to email bug report on panic.  This is only for internal users!
 
@@ -211,9 +216,17 @@ pub fn prepare_for_apocalypse_visual() {
                 }
             }
         }
-        PrettyTrace::new()
-            .exit_message(&exit_message)
-            .run_this(exit_function)
-            .on();
+        if !ctrlc {
+            PrettyTrace::new()
+                .exit_message(&exit_message)
+                .run_this(exit_function)
+                .on();
+        } else {
+            PrettyTrace::new()
+                .exit_message(&exit_message)
+                .run_this(exit_function)
+                .ctrlc()
+                .on();
+        }
     }
 }

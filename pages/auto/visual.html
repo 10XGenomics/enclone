@@ -47,9 +47,9 @@ gtag('config', 'UA-58278925-3');
 
 <p>
 <span style="color:rgb(120,123,175);font-weight:900">enclone visual</span> is a graphical user
-interface (GUI) for <span style="color:rgb(120,123,175);font-weight:900">enclone</span> that can be run on a Mac.  It allows for simultaneous viewing of
-clonotype tables and graphical objects such as honeycomb plots that <span style="color:rgb(120,123,175);font-weight:900">enclone</span> can create, and has
-several other features that you may find convenient.
+interface (GUI) for <span style="color:rgb(120,123,175);font-weight:900">enclone</span> that can be run on a Mac or Linux box.  It allows for simultaneous 
+viewing of clonotype tables and graphical objects such as honeycomb plots that <span style="color:rgb(120,123,175);font-weight:900">enclone</span> can 
+create, and has several other features that you may find convenient.
 </p>
 
 <p style="border: 2px; border-style: solid; border-color: black; background-color: #EBF4FC;
@@ -59,17 +59,19 @@ padding: 8px; width: 900px; font-size: 110%">
 <b>Please note that <span style="color:rgb(120,123,175);font-weight:900">enclone visual</span> is alpha (α) software!</b>
 </span>
 
-<br>• Users <i>may</i> encounter bugs that we are unable to fix.  This is in
-part because different versions of the OS X (Mac) operating system may yield different behavior,
-and we may be unable to replicate such problems.
+<br>• Users <i>may</i> encounter bugs that we are unable to fix.  This is in part because different
+operating system versions may yield different behavior, and we may be unable to replicate such 
+problems.
 
 <br>• There are a few features of <span style="color:rgb(120,123,175);font-weight:900">enclone</span> that are not properly delivered in
 <span style="color:rgb(120,123,175);font-weight:900">enclone visual</span>.  Notably, clonotype
 tables are in black and white rather than color.  To fix this, we are waiting on code changes
 from developers outside 10x, and do not have a timeline for those changes.
 
-<br>• At present we only support the Mac platform.  We think it likely that the code could
-be generalized to Linux and Windows platforms, but we're not sure how difficult this would be.
+<br>• At present we only support the Mac and Linux platforms.  However, because of considerable
+variability between Linux configurations, we anticipate that there may be problems with Linux.
+Please see the debugging under Linux section, below.  We think it likely that the code could be 
+generalized to the Windows platforms, but have not yet done so.
 </p>
 
 <! --- ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ --->
@@ -77,8 +79,8 @@ be generalized to Linux and Windows platforms, but we're not sure how difficult 
 <h2>Getting started</h2>
 
 <p><b>1.</b> To use <span style="color:rgb(120,123,175);font-weight:900">enclone visual</span>,
-follow the installation instructions for <span style="color:rgb(120,123,175);font-weight:900">enclone</span>.  Choose the <code>medium</code> or
-<code>large</code> option.  Then open a terminal window, and type <code>enclone VIS</code>.  An 
+follow the installation instructions for <span style="color:rgb(120,123,175);font-weight:900">enclone</span>.  Choose the <code>medium</code> or a larger
+option.  Then open a terminal window, and type <code>enclone VIS</code>.  An 
 <span style="color:rgb(120,123,175);font-weight:900">enclone visual</span> window should appear.</p>
 
 <p><b>2.</b> The operating system will intercede and ask if you will allow certain kinds of
@@ -182,14 +184,14 @@ These saved sessions can also have names and narratives associated to them.</p>
 <h2>Remote computation (unreleased)</h2>
 
 <p>There is unreleased code in <span style="color:rgb(120,123,175);font-weight:900">enclone visual</span>
-that enables running on a Mac and doing "back end" computations on a remote server.  This is 
+that enables doing "back end" computations on a remote server.  This is 
 something that we could make public if there was sufficient demand.
 </p>
 
 <p>There are three motivations for this capability:
 <ol>
-<li>You may have datasets on the server, and not want to have to manually move them to your Mac.
-We believe this is the most compelling reason for remote computation.</li>
+<li>You may have datasets on the server, and not want to have to manually move them to your 
+personal machine.  We believe this is the most compelling reason for remote computation.</li>
 <li>Computation on the remote server <i>might</i> be faster.</li>
 <li>Remote computation enables direct sharing of sessions between users who can access the same
 server, instantaneously and just by pushing a button.  This can be a powerful enabler of 
@@ -198,10 +200,40 @@ collaboration.</li>
 </p>
 
 <p>The catch with the remote computation is that for most system configurations, a "magic
-incantation" is needed to "jump over" a firewall between your Mac and the server.  We only know
+incantation" is needed to "jump over" a firewall between your personal machine and the server.  
+We only know
 what this incantation is for our system, and thus some experimentation would be required for yours.
 To release this feature we would need to devise general instructions.</p>
 
+<! --- ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ --->
+
+<h2>Debugging under Linux</h2>
+
+<p><b>1.</b> To use <span style="color:rgb(120,123,175);font-weight:900">enclone visual</span> under Linux, you will probably need to install some packages
+and libraries.  
+The names of the libraries may be printed in error messages.  Then the libraries can be 
+installed e.g. with <code>apt install -y libxcursor-dev</code>.  If you are not root, that would 
+need to be prefaced with <code>sudo</code>.  Here are the commands that we used:
+
+<pre><code>apt install -y git curl sudo x11-apps libxcursor-dev libxrandr-dev libxi-dev libx11-xcb-dev mesa-utils</code>
+</pre>
+The command you need could be somewhat different.
+</p>
+
+<p><b>2.</b> If when you type <code>enclone VIS</code>, a window does <i>not</i> appear, then try
+something simpler.  Specifically, the following commands should cause a clock to appear:
+
+<pre><code>apt install -y cargo</code>
+<code>git clone https://github.com/hecrj/iced</code>
+<code>cd iced</code>
+<code>cargo run --package clock</code>
+</pre>
+If not, let us know what happened.  The problem would have nothing to do with <span style="color:rgb(120,123,175);font-weight:900">enclone</span>
+<i>per se</i>.  It may be necessary to file an issue at
+<a href="https://github.com/iced-rs/iced/issues">https://github.com/iced-rs/iced/issues</a>.
+For that you should exactly what you typed and the terminal output, as well as the output of the
+command <code>lsb_release -a</code>.</p>
+ 
 <! --- ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ --->
 
 <h2>Feedback</h2>

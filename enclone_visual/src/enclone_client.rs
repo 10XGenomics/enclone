@@ -69,13 +69,13 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
 
     // Set up to catch CTRL-C events.  Parse arguments.
 
-    let _ = install_signal_handler();
     let args: Vec<String> = env::args().collect();
     let mut verbose = false;
     let mut monitor_threads = false;
     let mut config_name = String::new();
     let mut fixed_port = None;
     let mut require_compatible = false;
+    let mut ctrlc = false;
     for i in 1..args.len() {
         let arg = &args[i];
 
@@ -114,6 +114,8 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             EXEC.lock().unwrap().push(arg.after("EXEC=").to_string());
         } else if arg == "REQUIRE_COMPATIBLE" {
             require_compatible = true;
+        } else if arg == "CTRLC" {
+            ctrlc = true;
         } else if arg.starts_with("EHOME=") {
             let ehome = arg.after("EHOME=").to_string();
             EHOME.lock().unwrap().push(ehome);
@@ -124,6 +126,10 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             );
             std::process::exit(1);
         }
+    }
+    if !ctrlc {
+        let _ = install_signal_handler();
+        CTRLC.store(true, SeqCst);
     }
     for (key, _value) in env::vars() {
         if key == "ENCLONE_VERBOSE" {
