@@ -29,6 +29,7 @@ pub fn update_shares(slf: &mut gui_structures::EncloneVisual) {
         let mut now = format!("{:?}", Local::now());
         now = now.replace("T", "___");
         now = now.before(".").to_string();
+        now = now.replace(":", "-");
         let filename = format!("{}.{}", now, i + 1);
         let path = format!("{}/{}", slf.archive_dir.as_ref().unwrap(), filename);
         let res = write_enclone_visual_history(&evh, &path);
