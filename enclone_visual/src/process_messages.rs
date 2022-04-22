@@ -539,6 +539,7 @@ impl EncloneVisual {
                         let mut now = format!("{:?}", Local::now());
                         now = now.replace("T", "___");
                         now = now.before(".").to_string();
+                        now = now.replace(":", "-");
                         let filename = format!("{}/{}", self.archive_dir.as_ref().unwrap(), now);
                         let res = write_enclone_visual_history(&self.h, &filename);
                         if res.is_err() {
