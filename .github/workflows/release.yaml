@@ -12,7 +12,7 @@ env:
 jobs:
 
   windows:
-    runs-on: windows-latest-10.15
+    runs-on: windows-latest
     steps:
       - name: Checkout git repository
         uses: actions/checkout@master
@@ -53,6 +53,25 @@ jobs:
           ';
           mkdir artifacts;
           cp -a target/release/enclone artifacts/enclone-linux
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: enclone
+          path: artifacts
+
+  macos:
+    runs-on: macos-10.15
+    env:
+      MACOSX_DEPLOYMENT_TARGET: 10.9
+    steps:
+      - name: Checkout git repository
+        uses: actions/checkout@master
+      - name: Make release build
+        run: |
+          cargo build --release
+          target/release/enclone --help | grep -q enclone
+          mkdir artifacts
+          cp -a target/release/enclone artifacts/enclone-macos
       - name: Upload build artifact
         uses: actions/upload-artifact@v1
         with:
