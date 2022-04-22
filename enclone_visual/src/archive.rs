@@ -433,7 +433,13 @@ pub fn archive(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
             let date1 = stringme(&date.as_bytes()[2..4]);
             let date2 = date.after("-").to_string();
             let mut date = format!("{}-{}", date2, date1);
-            let mut time = x.after("___").rev_before(":").to_string();
+            let mut time = x.after("___").to_string();
+            if time.contains(":") {
+                time = time.rev_before(":").to_string();
+            } else {
+                time = time.rev_before("-").to_string();
+                time = time.replace("-", ":");
+            }
             if TEST_MODE.load(SeqCst) || META_TESTING.load(SeqCst) {
                 date = stringme(&vec![b' '; 8]);
                 time = stringme(&vec![b' '; 5]);
