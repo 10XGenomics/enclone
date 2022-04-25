@@ -218,7 +218,9 @@ your terminal window to get the change to <code>PATH</code> to take effect.</li>
 <p>To varying degrees, the tests can either be run from the command line or through a CI which
 is triggered by pull requests.  The CI runs via GitHub Actions and Jenkins.  Because it is so slow 
 we tend not to use it.  The GitHub Actions part of the CI test is given by
-<code>.github/workflows/test.yaml</code>.</p>
+<code>.github/workflows/test.yaml</code>.  We strongly encourage that when tests are added to the
+CI, they are also added to test 1, as otherwise we force people to use the CI to test code
+changes.</p>
 
 <p>Notes on test 1.  
 <ul>
@@ -228,6 +230,7 @@ currently calibrated for use on one large Linux server at 10x.</li>
 <li>The test will fail sporadically because it tests for broken links on the site, and some of 
 those links break transiently, sometimes for about a day.  To run the tests without testing links, 
 one can use <code>./test linkless</code>.</li>
+<li>There are a few subtests that only run under Linux.</li>
 <li>See the following files:
     <ul>
     <li> <code>enclone_core/src/testlist.rs</code></li>
@@ -240,7 +243,18 @@ one can use <code>./test linkless</code>.</li>
 
 <p>Notes on test 2.  See the file <code>enclone/enclone.test</code>.</p>
 
-<p>Notes on test 3.  See the file <code>enclone_visual/src/bin/test_vis.rs</code>.</p>
+<p>Notes on test 3.  
+<ul>
+<li>This takes over the Mac while running.  It uses regression test images that are somewhat 
+specific to a particular desktop, so the test may only work verbatim for one person.  However 
+other people can run the test with their own personal regression test images.</li>
+<li>There is an annoying little bit.  When run at 10x Genomics, the code connects to a Linux server
+and uses the code there as part of the test process.  To get versions fully synced, you need to 
+<code>touch enclone/enclone_core/defs.rs</code> on the Linux server and then <code>cargo b</code>.
+Otherwise you’ll get an error message.</li>
+<li>See the file <code>enclone_visual/src/bin/test_vis.rs</code>.</li>
+</ul>
+</p>
 
 <p style="border: 2px; border-style: solid; border-color: black; padding: 8px; width: 450px">
 An individual test can be run e.g. by <code>cargo t test_enclone_d</code>.
