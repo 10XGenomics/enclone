@@ -172,6 +172,56 @@ your terminal window to get the change to <code>PATH</code> to take effect.</li>
 tests can be run by anyone; the remainder use datasets that are internal to 10x Genomics.
 (See earlier explanation.)</p>
 
+
+
+
+
+<table rules="all" cellpadding="3" style="border: 1px solid black">
+<tbody>
+
+<tr>
+<th align="left" style="width:20px">#</td>
+<th align="left" style="width:50px">command</td>
+<th align="left" style="width:50px">local host</td>
+<th align="left" style="width:50px">time (minutes)</td>
+<th align="left" style="width:200px">CI coverage</td>
+<th align="left" style="width:50px">CI time (minutes)</td>
+</tr>
+
+<tr>
+<td align="left">1</td>
+<td align="left"><code>./test</code></td>
+<td align="left">Linux</td>
+<td align="left">2</td>
+<td align="left">partial, but runs on both Linux and Mac (running all tests on Mac is overkill)</td>
+<td align="left" rowspan=2>60</td>
+</tr>
+
+<tr>
+<td align="left">2</td>
+<td align="left"><code>./test</code></td>
+<td align="left">Linux</td>
+<td align="left">2.5</td>
+<td align="left">full</td>
+</tr>
+
+<tr>
+<td align="left">3</td>
+<td align="left"><code>test_vis</code></td>
+<td align="left">Mac</td>
+<td align="left">1</td>
+<td align="left">none</td>
+<td align="left">N/A</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+
+
+
 <p>
 To run the main tests, type:
 <ul>
