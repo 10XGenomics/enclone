@@ -150,11 +150,6 @@ it using
 medium option.  This is not needed for developers at 10x Genomics.
 Doing this downloads data, which you will want for experimentation and testing.</li>
 
-<li>The <code>freetype</code> library needs to be accessible.  On a Linux system, we got this
-by adding the line
-<pre><code>PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/usr/lib64/pkgconfig</code></pre>
-to our <code>.bash_profile</code>, but we don't know if this works in general for Linux.</li>
-
 <li>There are a couple other minor prerequisites.  If you're using <code>homebrew</code>, you can 
 install these as follows:
 <br><code>brew install graphviz</code>
