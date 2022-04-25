@@ -175,12 +175,22 @@ To release this feature we would need to devise general instructions.</p>
 
 <h2>Debugging under Linux</h2>
 
-<p>On a Linux computer, if you type <code>enclone VISUAL</code>, and get an error message, let
+<p>On a Linux computer, if you type <code>enclone VIS</code>, and get an error message, let
 us know.  We provide here followup steps that may be applicable.  The idea of these steps is that
 the problem may not be in #enclone, but rather lie in upstream software, or be an issue with your
 computer.</p>
 
-<p><b>1.</b> To run these steps, you need to have a current version of Rust on your computer.
+<p><b>1.</b> The software underlying #enclone_vis uses the GPU on your computer.  It is possible
+that the GPU is not accessible to this software.
+You can try the following two commands as a diagnostic:
+<pre><code>sudo apt install -y mesa-utils</code>
+<code>glxinfo | grep Accelerated</code></pre>
+If when you do this you see
+<pre><code>    Accelerated: no</code></pre>
+then something is wrong.  It may help to reinstall the GPU driver.  Unless you solve this problem,
+the steps that follow are unlikely to yield useful information.</p>
+
+<p><b>2.</b> To run the next steps, you need to have a current version of Rust on your computer.
 First, if Rust is not already installed in your computer, you can install it using
 <pre><code>sudo apt update</code>
 <code>sudo apt install cargo</code></pre>
@@ -195,7 +205,7 @@ is.  If those are different, you may need to update, using approximately the fol
 <code>need ~/.cargo/bin to be in path</code></pre>
 Possibly you can get away without doing these things.</p>
 
-<p><b>2.</b> Now you can test to see if your problem lies in a particular Rust crate called
+<p><b>3.</b> Now you can test to see if your problem lies in a particular Rust crate called
 <code>wgpu</code>, as follows:
 <pre>
 <code>git clone https://github.com/gfx-rs/wgpu</code>
@@ -208,7 +218,7 @@ make sense to file an issue at
 For that you should show exactly what you typed and the terminal output, as well as the output of 
 the command <code>lsb_release -a</code>.</p>
 
-<p><b>3.</b> If <code>wgpu</code> works, then a next step would be to see if there is a problem 
+<p><b>4.</b> If <code>wgpu</code> works, then a next step would be to see if there is a problem 
 in the <code>iced</code> crate.  Try this:
 <pre>
 <code>git clone https://github.com/hecrj/iced</code>
