@@ -44,7 +44,7 @@ A separate GitHub repo
 <a href="https://github.com/10XGenomics/enclone-data">
 https://10xgenomics.github.io/enclone-data
 </a>
-that contains a small number of datasets.  If you build #enclone, this is automatically
+that contains some datasets.  If you build #enclone, this is automatically
 downloaded as part of the build process.  If you install #enclone, this is downloaded into
 a separate location (<code>~/enclone</code>), unless you 
 choose the <code>small</code> option, in which case you get only a subset of it.  The reason
@@ -53,7 +53,7 @@ for having a separate repo for data is to keep the #enclone repo itself small.
 
 <li>
 A larger collection of datasets that are downloaded if you install with the <code>large</code>
-option.
+option; the <code>colossus</code> option results in downloading of additional GEX data.
 </li>
 
 <li>
