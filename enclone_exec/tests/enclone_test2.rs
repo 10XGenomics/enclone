@@ -554,7 +554,7 @@ fn test_for_broken_links_and_spellcheck() {
     let extra_words =
         "abybank actgtgcgagag actgtgcgagagc adefghiklmnpqrstvwy amazonaws anarci autoremove \
         barcode barcodes barcoding bcn \
-        bioinf cdiff cellranger chmod clen clono clonotype clonotypes \
+        bioinf biorxiv cdiff cellranger chmod clen clono clonotype clonotypes \
         clonotyping codebase colorn contig contigs cqvwdsssdhpyvf cred crispr cshlp \
         csv ctrlc cvar cvars datalayer dejavusansmono dotplot \
         dref dyiid enclone executables false fcell \
@@ -566,7 +566,7 @@ fn test_for_broken_links_and_spellcheck() {
         jsdelivr json krh levenshtein lgc linux loh lvar lvars \
         macbook mait metadata minmax mkdir \
         moresies multiomic nall ncbi nchains ncross ndoublet newick nimproper \
-        nopager noprint nospaces nqual nseg nsegn nsig nwhitef oligos onesie onesies parseable \
+        nopager noprint nospaces nqual nseg nsegn nsig nwhitef oligos onesie onesies osx parseable \
         pbmc pcell pcols pdb pgas phad phylip png \
         plasmablast preinstalled prepends pwm pwms recombinants redownloads \
         researchsquare rustup samtools screenshot segn \
@@ -574,10 +574,9 @@ fn test_for_broken_links_and_spellcheck() {
         subclonotypes sudo svg tattgtagtggtggtagct tctgtgcgagata tctgtgcgagat tctgtgcgagata \
         testlist thresholding timeline timepoint \
         tracebacks trb tsv \
-        tttctgtgcgaga \
-        tttctgtgcgagat \
+        tttctgtgcgaga tttctgtgcgagat \
         twosie ubuntu udiff umi umis underperforming unicode untarring \
-        vddj vdj vdjc vilella vilfwym vilm vjlen website wget whitef whitelist wikimedia \
+        vddj vdj vdjc vilella vilfwym vilm vjlen wallclock website wget whitef whitelist wikimedia \
         wikipedia workaround workflow xf xhtml xkcd \
         xxxxxxxxxxx xxxxxxxxxxxxxxxxxxxxxxx xy yvar zenodo zx";
     let extra_words = extra_words.split(' ').collect::<Vec<&str>>();

@@ -349,7 +349,7 @@ site.</p>
 <pre><code>start_release</code></pre>
 This takes about five minutes.  It causes GitHub Actions to initiate creation of release binaries.
 That takes about thirty-five minutes.  When <code>start_release</code> finishes, it launches 
-<code>release_nanny</code> in the background, which at the appropriate time runs some final setps.
+<code>release_nanny</code> in the background, which at the appropriate time runs some final steps.
 </p>
 
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
