@@ -368,17 +368,23 @@ your <code>public_html</code> directory so that it can be previewed.</p>
 
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
-<hr><h2>Making a release (internal)</h2>
+<hr><h2>Releasing <span style="color:rgb(120,123,175);font-weight:900">enclone</span></h2>
 
-<p>If the release warrants announcement, edit <code>pages/history.html.src</code> to note the
-relevant changes.</p>
+<p><span style="color:rgb(120,123,175);font-weight:900">enclone</span> binaries for OSX and Linux can be released by “pushing a button”.
+This only works at 10x Genomics.</p>
 
-<p>Run <code>./test</code> on a branch if you're going to release it.  Issue a pull request,
-wait for the tests there to pass, then merge to master.</p>
+<p>First, if the release warrants announcement, edit <code>pages/history.html.src</code> to note 
+the relevant changes.  Running <code>build</code> will then update the actual file that goes on the
+site.</p>
 
-<p>Trigger the release using the program <code>start_release</code>, which is part
-of the repo.  GitHub Actions then goes to work, and something like twenty minutes later, a new
-release appears.</p>
+<p>Run the <span style="color:rgb(120,123,175);font-weight:900">enclone</span> test suite.</p>
+
+<p>From master on enclone, from a Linux server, type
+<pre><code>start_release</code></pre>
+This takes about five minutes.  It causes GitHub Actions to initiate creation of release binaries.
+That takes about thirty-five minutes.  When <code>start_release</code> finishes, it launches 
+<code>release_nanny</code> in the background, which at the appropriate time runs some final setps.
+</p>
 
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
