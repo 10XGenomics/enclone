@@ -242,8 +242,6 @@ one can use <code>./test linkless</code>.</li>
 
 <p>Notes on test 3.  See the file <code>enclone_visual/src/bin/test_vis.rs</code>.</p>
 
-
-
 <p style="border: 2px; border-style: solid; border-color: black; padding: 8px; width: 450px">
 An individual test can be run e.g. by <code>cargo t test_enclone_d</code>.
 </p>
