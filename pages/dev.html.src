@@ -308,6 +308,8 @@ release appears.</p>
 <pre><code>rustup target add x86_64-pc-windows-gnu</code>
 <code>cargo b --target=x86_64-pc-windows-gnu</code></pre>
 but when we tested this, we got linker errors.  This should be resolvable but we're not sure how.
+Also note that this will clobber the results of an ordinary <code>cargo b</code>.  In principle 
+this can be avoided by specifying the target for it too.
 </p>
 
 </body>
