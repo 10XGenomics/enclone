@@ -256,8 +256,9 @@ we tend not to use it.  The GitHub Actions part of the CI test is given by
 CI, they are also added to test 1, as otherwise we force people to use the CI to test code
 changes.</p>
 
-<p>Notes on test 1.  
+<p><b>Notes on test 1.</b>
 <ul>
+<li>An individual test can be run e.g. by <code>cargo t test_enclone_d</code>.</li>
 <li>The last part just checks that the total wallclock for the entire test is
 within bounds.  This is obviously dependent on the server that is used and system load.  It is 
 currently calibrated for use on one large Linux server at 10x.</li>
@@ -275,9 +276,9 @@ one can use <code>./test linkless</code>.</li>
 </ul>
 </p>
 
-<p>Notes on test 2.  See the file <code>enclone/enclone.test</code>.</p>
+<p><b>Notes on test 2.</b>  See the file <code>enclone/enclone.test</code>.</p>
 
-<p>Notes on test 3.  
+<p><b>Notes on test 3.</b>
 <ul>
 <li>This takes over the Mac while running.  It uses regression test images that are somewhat 
 specific to a particular desktop, so the test may only work verbatim for one person.  However 
@@ -290,33 +291,29 @@ Otherwise you’ll get an error message.</li>
 </ul>
 </p>
 
-<p style="border: 2px; border-style: solid; border-color: black; padding: 8px; width: 450px">
-An individual test can be run e.g. by <code>cargo t test_enclone_d</code>.
+<p>There are miscellaneous gnarly issues that we do not have automated testing for:
+<ul>
+<li>The code for <code>NOPAGER</code> accidentally broke at one point and we
+    don't want that to recur.  Some test cases that could be verified:
+    <ul>
+    <li><code>enclone BCR=...</code></li>
+    <li><code>enclone BCR=... NOPAGER</code></li>
+    <li><code>enclone help all</code></li>
+    <li><code>enclone help all NOPAGER</code></li>
+    <li><code>enclone help faq</code></li>
+    <li><code>enclone help faq NOPAGER</code>.</li>
+    </ul>
+</li>
+<li>In OS X Catalina, in full screen mode, at one point enclone appeared to have no output,
+    because the output was going to the alternate screen.</li>
+<li>We allow paths that start with ~ or ~user_name, but do not have automated testing for this.</li>
+<li>We had buggy behavior that when <span style="color:rgb(120,123,175);font-weight:900">enclone</span> was called from a terminal window, and it failed,
+    it returned zero exit status, even though when called e.g. from a script, it would return
+    a nonzero value.
+</li>
+<li>Manual tests listed at the bottom of <code>enclone_visual/src/testsuite.rs</code>.</li>
+</ul>
 </p>
-
-<p>There are miscellaneous gnarly issues that we have not automated testing for:
-
-<pre>
-1. The code for NOPAGER accidentally broke at one point and we
-   don't want that to recur.  Some test cases that could be verified:
-   enclone BCR=...
-   enclone BCR=... NOPAGER
-   enclone help all
-   enclone help all NOPAGER
-   enclone help faq
-   enclone help faq NOPAGER.
-   This seems to require manual testing.
-
-2. In OS X Catalina, in full screen mode, at one point enclone appeared to have no output,
-   because the output was going to the alternate screen.  This seems to require manual testing.
-
-3. We allow paths that start with ~ or ~user_name, but do not have automated testing for this.
-
-4. We had buggy behavior that when enclone was called from a terminal window, and it failed,
-   it returned zero exit status, even though when called e.g. from a script, it would return
-   a nonzero value.  We don't know how to automated testing for this behavior.
-
-</pre>
 
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
