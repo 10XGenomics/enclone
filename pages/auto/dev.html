@@ -90,19 +90,6 @@ A larger collection of datasets that are downloaded if you install with the <cod
 option; the <code>colossus</code> option results in downloading of additional GEX data.
 </li>
 
-<li>
-A still larger collection of datasets that are internal to 10x Genomics and not publicly
-available.  These datasets are kept internal because of consent restrictions, or because the
-datasets were generated as part of experiments using unpublished protocols.  Some of these
-datasets are used in the <span style="color:rgb(120,123,175);font-weight:900">enclone</span> test suite, although there is a shorter test suite that runs
-using only public data.  These are on disk and mirrored to solid-state disk (super fast 
-but less reliable).  We set <code>PRE</code> to that location.  The full dataset is not backed up, 
-however there is a catalog <code>enclone/src/enclone.testlist.all</code> that would facilitate 
-reconstruction in the event of loss.  Over time, we gradually enlarge the collection.  There is a 
-program <code>import_data</code> that copies a given dataset.  Note that someone outside 
-10x Genomics could use a similar system to enable fast access to data.
-</li>
-
 </ul>
 </p>
 
@@ -115,7 +102,7 @@ program <code>import_data</code> that copies a given dataset.  Note that someone
 <p>We used Rust because the language makes it extremely easy to use Rust code written by
 other people, because Rust has its own build system, and because it is fast and safe.</p>
 
-<p>Technical details.  The repo is itself a Rust workspace, with a half dozen or so
+<p>Technical details.  The repo is itself a Rust workspace, with a several
 subdirectories that comprise Rust crates.  Each of these crates has its own 
 <code>Cargo.toml</code> file.  Modification of dependency
 versions in these files files is done by modifying a file <code>master.toml</code> at the
@@ -128,8 +115,7 @@ sync each <code>Cargo.toml</code> to <code>master.toml</code>.
 
 <hr><h2>Prerequisites</h2>
 
-<p><span style="color:rgb(120,123,175);font-weight:900">enclone</span> can be built and run on an x86-64 Linux server or a Mac, although we have not
-tested on a Mac with an M1 processor.</p>
+<p><span style="color:rgb(120,123,175);font-weight:900">enclone</span> can be built and run on an x86-64 Linux server or a Mac.</p>
 
 <p>The following software are needed to build and test <span style="color:rgb(120,123,175);font-weight:900">enclone</span>:
 
@@ -146,9 +132,9 @@ it using
 
 <li><code>cargo-sweep</code>.  Install via <code>cargo install cargo-sweep</code>.</li>
 
-<li>standard utilities, including <code>git</code>, <code>curl</code> and <code>wget</code>.</li>
+<li>standard utilities, including <code>git</code>, <code>curl</code> and <code>wget</code></li>
 
-<li>samtools</li>
+<li><code>samtools</code>.</li>
 
 </ul>
 
@@ -160,8 +146,8 @@ it using
 
 <ol>
 
-<li>Follow the installation instructions on the main page to install <span style="color:rgb(120,123,175);font-weight:900">enclone</span>, using the
-medium or large options.  This is not needed for developers at 10x Genomics.
+<li>Follow the installation instructions on the main page to install <span style="color:rgb(120,123,175);font-weight:900">enclone</span>, using at least the
+medium option.  This is not needed for developers at 10x Genomics.
 Doing this downloads data, which you will want for experimentation and testing.</li>
 
 <li>The <code>freetype</code> library needs to be accessible.  On a Linux system, we got this
