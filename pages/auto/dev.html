@@ -334,5 +334,15 @@ wait for the tests there to pass, then merge to master.</p>
 of the repo.  GitHub Actions then goes to work, and something like twenty minutes later, a new
 release appears.</p>
 
+<! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
+
+<hr><h2>Cross building for Windows on a Mac</h2>
+
+<p>In principle the following should work:
+<pre><code>rustup target add x86_64-pc-windows-gnu</code>
+<code>cargo b --target=x86_64-pc-windows-gnu</code></pre>
+but when we tested this, we got linker errors.  This should be resolvable but we're not sure how.
+</p>
+
 </body>
 </html>
