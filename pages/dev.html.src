@@ -112,9 +112,12 @@ it using
 
 <ol>
 
-<li>Follow the installation instructions on the main page to install #enclone, using at least the
-medium option.  This is not needed for developers at 10x Genomics.
-Doing this downloads data, which you will want for experimentation and testing.</li>
+<li>Follow the installation instructions on the main page to install #enclone, using the
+large option.  Doing this downloads data, which you will want for experimentation and testing.
+If you are developing the code, then the downloaded #enclone binary is superfluous, but you do
+need to follow the download process to get test data, unless you are at 10x Genomics.  In that
+case the data will be accessible to you in a shared location.
+</li>
 
 <li>There are a couple of minor prerequisites.  If you're using <code>homebrew</code>, you can 
 install these as follows:
@@ -124,7 +127,7 @@ install these as follows:
 
 <li>
 Go to a directory where you want to put the #enclone code, and
-<p>clone the <code>enclone</code> repository using
+clone the <code>enclone</code> repository using
 <pre><code>git clone git@github.com:10XGenomics/enclone.git</code></pre>
 If you have a very slow internet connection, you might wish to download only the current version
 (and not the history) using
@@ -138,7 +141,7 @@ Please let us know if you encounter difficulties with compilation.</li>
 
 <li>Add the full path of <code>enclone/target/debug</code> to your <code>PATH</code>, and 
 make sure this comes <i>before</i> <code>~/bin</code>, which was where the precompiled
-version of #enclone was downloaded to by the install command.  You may need to close and reopen
+version of #enclone was downloaded by the install command.  You may need to close and reopen
 your terminal window to get the change to <code>PATH</code> to take effect.</li>
 
 <li>Now when you type #enclone, you'll get the version you just compiled.</li>
