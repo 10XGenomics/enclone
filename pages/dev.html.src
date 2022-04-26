@@ -44,7 +44,7 @@ A separate GitHub repo
 <a href="https://github.com/10XGenomics/enclone-data">
 https://10xgenomics.github.io/enclone-data
 </a>
-that contains a small number of datasets.  If you build #enclone, this is automatically
+that contains some datasets.  If you build #enclone, this is automatically
 downloaded as part of the build process.  If you install #enclone, this is downloaded into
 a separate location (<code>~/enclone</code>), unless you 
 choose the <code>small</code> option, in which case you get only a subset of it.  The reason
@@ -53,20 +53,7 @@ for having a separate repo for data is to keep the #enclone repo itself small.
 
 <li>
 A larger collection of datasets that are downloaded if you install with the <code>large</code>
-option.
-</li>
-
-<li>
-A still larger collection of datasets that are internal to 10x Genomics and not publicly
-available.  These datasets are kept internal because of consent restrictions, or because the
-datasets were generated as part of experiments using unpublished protocols.  Some of these
-datasets are used in the #enclone test suite, although there is a shorter test suite that runs
-using only public data.  These are on disk and mirrored to solid-state disk (super fast 
-but less reliable).  We set <code>PRE</code> to that location.  The full dataset is not backed up, 
-however there is a catalog <code>enclone/src/enclone.testlist.all</code> that would facilitate 
-reconstruction in the event of loss.  Over time, we gradually enlarge the collection.  There is a 
-program <code>import_data</code> that copies a given dataset.  Note that someone outside 
-10x Genomics could use a similar system to enable fast access to data.
+option; the <code>colossus</code> option results in downloading of additional GEX data.
 </li>
 
 </ul>
@@ -81,7 +68,7 @@ program <code>import_data</code> that copies a given dataset.  Note that someone
 <p>We used Rust because the language makes it extremely easy to use Rust code written by
 other people, because Rust has its own build system, and because it is fast and safe.</p>
 
-<p>Technical details.  The repo is itself a Rust workspace, with a half dozen or so
+<p>Technical details.  The repo is itself a Rust workspace, with a several
 subdirectories that comprise Rust crates.  Each of these crates has its own 
 <code>Cargo.toml</code> file.  Modification of dependency
 versions in these files files is done by modifying a file <code>master.toml</code> at the
@@ -94,8 +81,7 @@ sync each <code>Cargo.toml</code> to <code>master.toml</code>.
 
 <hr><h2>Prerequisites</h2>
 
-<p>#enclone can be built and run on an x86-64 Linux server or a Mac, although we have not
-tested on a Mac with an M1 processor.</p>
+<p>#enclone can be built and run on an x86-64 Linux server or a Mac.</p>
 
 <p>The following software are needed to build and test #enclone:
 
@@ -112,9 +98,9 @@ it using
 
 <li><code>cargo-sweep</code>.  Install via <code>cargo install cargo-sweep</code>.</li>
 
-<li>standard utilities, including <code>git</code>, <code>curl</code> and <code>wget</code>.</li>
+<li>standard utilities, including <code>git</code>, <code>curl</code> and <code>wget</code></li>
 
-<li>samtools</li>
+<li><code>samtools</code>.</li>
 
 </ul>
 
@@ -127,15 +113,13 @@ it using
 <ol>
 
 <li>Follow the installation instructions on the main page to install #enclone, using the
-medium or large options.  This is not needed for developers at 10x Genomics.
-Doing this downloads data, which you will want for experimentation and testing.</li>
+large option.  Doing this downloads data, which you will want for experimentation and testing.
+If you are developing the code, then the downloaded #enclone binary is superfluous, but you do
+need to follow the download process to get test data, unless you are at 10x Genomics.  In that
+case the data will be accessible to you in a shared location.
+</li>
 
-<li>The <code>freetype</code> library needs to be accessible.  On a Linux system, we got this
-by adding the line
-<pre><code>PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/usr/lib64/pkgconfig</code></pre>
-to our <code>.bash_profile</code>, but we don't know if this works in general for Linux.</li>
-
-<li>There are a couple other minor prerequisites.  If you're using <code>homebrew</code>, you can 
+<li>There are a couple of minor prerequisites.  If you're using <code>homebrew</code>, you can 
 install these as follows:
 <br><code>brew install graphviz</code>
 <br><code>brew install samtools</code>
@@ -143,7 +127,7 @@ install these as follows:
 
 <li>
 Go to a directory where you want to put the #enclone code, and
-<p>clone the <code>enclone</code> repository using
+clone the <code>enclone</code> repository using
 <pre><code>git clone git@github.com:10XGenomics/enclone.git</code></pre>
 If you have a very slow internet connection, you might wish to download only the current version
 (and not the history) using
@@ -157,7 +141,7 @@ Please let us know if you encounter difficulties with compilation.</li>
 
 <li>Add the full path of <code>enclone/target/debug</code> to your <code>PATH</code>, and 
 make sure this comes <i>before</i> <code>~/bin</code>, which was where the precompiled
-version of #enclone was downloaded to by the install command.  You may need to close and reopen
+version of #enclone was downloaded by the install command.  You may need to close and reopen
 your terminal window to get the change to <code>PATH</code> to take effect.</li>
 
 <li>Now when you type #enclone, you'll get the version you just compiled.</li>
@@ -168,72 +152,118 @@ your terminal window to get the change to <code>PATH</code> to take effect.</li>
 
 <hr><h2>Testing #enclone</h2>
 
-<p>#enclone has an extensive test suite. It has hundreds of tests.  Most but not all of the
-tests can be run by anyone; the remainder use datasets that are internal to 10x Genomics.
-(See earlier explanation.)</p>
+<p>#enclone has an extensive test suite, with three components as described here:</p>
 
-<p>
-To run the main tests, type:
+<table rules="all" cellpadding="3" style="border: 1px solid black">
+<tbody>
+
+<tr>
+<th align="left" style="width:20px">#</td>
+<th align="left" style="width:50px">command</td>
+<th align="left" style="width:150px">content</td>
+<th align="left" style="width:50px">minutes: large Linux server</td>
+<th align="left" style="width:50px">minutes: Mac</td>
+<th align="left" style="width:200px">CI coverage</td>
+<th align="left" style="width:50px">minutes: CI</td>
+</tr>
+
+<tr>
+<td align="left">1</td>
+<td align="left"><code>./test</code></td>
+<td align="left">hundreds of small tests</td>
+<td align="left">2</td>
+<td align="left">7</td>
+<td align="left">partial, but runs on both Linux and Mac (running all tests on Mac is overkill)</td>
+<td align="left" rowspan=2>60</td>
+</tr>
+
+<tr>
+<td align="left">2</td>
+<td align="left"><code>enclone.test</code></td>
+<td align="left">one big test</td>
+<td align="left">2.5</td>
+<td align="left">N/A</td>
+<td align="left">full</td>
+</tr>
+
+<tr>
+<td align="left">3</td>
+<td align="left"><code>test_vis</code></td>
+<td align="left">many tests of #enclone_visual using screenshots</td>
+<td align="left">N/A</td>
+<td align="left">1</td>
+<td align="left">none</td>
+<td align="left">N/A</td>
+</tr>
+
+</tbody>
+</table>
+
+<p>To varying degrees, the tests can either be run from the command line or through a CI which
+is triggered by pull requests.  The CI runs via GitHub Actions and Jenkins.  Because it is so slow 
+we tend not to use it.  The GitHub Actions part of the CI test is given by
+<code>.github/workflows/test.yaml</code>.  We strongly encourage that when tests are added to the
+CI, they are also added to test 1, as otherwise we force people to use the CI to test code
+changes.</p>
+
+<p><b>Notes on test 1.</b>
 <ul>
-<li>[external users] <code>./testx</code></li>
-<li>[internal users] <code>./test</code></li>
+<li>An individual test can be run e.g. by <code>cargo t test_enclone_d</code>.</li>
+<li>The last part just checks that the total wallclock for the entire test is
+within bounds.  This is obviously dependent on the server that is used and system load.  It is 
+currently calibrated for use on one large Linux server at 10x.</li>
+<li>The test will fail sporadically because it tests for broken links on the site, and some of 
+those links break transiently, sometimes for about a day.  To run the tests without testing links, 
+one can use <code>./test linkless</code>.</li>
+<li>There are a few subtests that only run under Linux.</li>
+<li>See the following files:
+    <ul>
+    <li> <code>enclone_core/src/testlist.rs</code></li>
+    <li> <code>enclone_main/tests/enclone_test*.rs</code></li>
+    <li> <code>test</code></code></li>
+    <li> <code>.cargo/config</code>.</li>
+    </ul>
 </ul>
 </p>
 
-<p>
-There is also a very large test, which can only be run internally, which one runs by
-<code>./enclone/enclone.test</code>.
-</p>
+<p><b>Notes on test 2.</b>  See the file <code>enclone/enclone.test</code>.</p>
 
-<p style="border: 2px; border-style: solid; border-color: black; padding: 8px; width: 450px">
-An individual test can be run e.g. by <code>cargo t test_enclone_d</code>.
-</p>
-
-<p>The command <code>./test</code> (for internal users) will fail sporadically because it tests
-for broken links on the site, and some of those links break transiently, sometimes for about a 
-day.  To run the tests without testing links, one can use <code>./test linkless</code>.</p>
-
-<p>Pull requests trigger <code>./testx</code> (via GitHub Actions) and the very large test
-(via Jenkins).  Note that the internal main test includes tests that are not tested as
-part of this.</p>
-
-<p>To better understand the testing machinery, please refer to the following files:
+<p><b>Notes on test 3.</b>
 <ul>
-<li> <code>enclone_core/src/testlist.rs</code></li>
-<li> <code>enclone_main/tests/enclone_test*.rs</code></li>
-<li> <code>test</code> and <code>testx</code></li>
-<li> <code>.cargo/config</code></li>
-<li> <code>enclone/enclone.test</code></li>
-<li> <code>.github/workflows/test.yaml</code>.</li>
+<li>This takes over the Mac while running.  It uses regression test images that are somewhat 
+specific to a particular desktop, so the test may only work verbatim for one person.  However 
+other people can run the test with their own personal regression test images.</li>
+<li>There is an annoying little bit.  When run at 10x Genomics, the code connects to a Linux server
+and uses the code there as part of the test process.  To get versions fully synced, you need to 
+<code>touch enclone/enclone_core/defs.rs</code> on the Linux server and then <code>cargo b</code>.
+Otherwise you’ll get an error message.</li>
+<li>See the file <code>enclone_visual/src/bin/test_vis.rs</code>.</li>
 </ul>
+</p>
 
-<p>The standard test battery includes a speed test, but there is some additional testing
-given by <code>./scripts/speed</code>.  However we don't routinely test this because it is too 
-subject to server load.  It also only runs at 10x Genomics.</p>
-
-<p>There are miscellaneous gnarly issues that we have not automated testing for:
-
-<pre>
-1. The code for NOPAGER accidentally broke at one point and we
-   don't want that to recur.  Some test cases that could be verified:
-   enclone BCR=...
-   enclone BCR=... NOPAGER
-   enclone help all
-   enclone help all NOPAGER
-   enclone help faq
-   enclone help faq NOPAGER.
-   This seems to require manual testing.
-
-2. In OS X Catalina, in full screen mode, at one point enclone appeared to have no output,
-   because the output was going to the alternate screen.  This seems to require manual testing.
-
-3. We allow paths that start with ~ or ~user_name, but do not have automated testing for this.
-
-4. We had buggy behavior that when enclone was called from a terminal window, and it failed,
-   it returned zero exit status, even though when called e.g. from a script, it would return
-   a nonzero value.  We don't know how to automated testing for this behavior.
-
-</pre>
+<p>There are miscellaneous gnarly issues that we do not have automated testing for:
+<ul>
+<li>The code for <code>NOPAGER</code> accidentally broke at one point and we
+    don't want that to recur.  Some test cases that could be verified:
+    <ul>
+    <li><code>enclone BCR=...</code></li>
+    <li><code>enclone BCR=... NOPAGER</code></li>
+    <li><code>enclone help all</code></li>
+    <li><code>enclone help all NOPAGER</code></li>
+    <li><code>enclone help faq</code></li>
+    <li><code>enclone help faq NOPAGER</code>.</li>
+    </ul>
+</li>
+<li>In OS X Catalina, in full screen mode, at one point enclone appeared to have no output,
+    because the output was going to the alternate screen.</li>
+<li>We allow paths that start with ~ or ~user_name, but do not have automated testing for this.</li>
+<li>We had buggy behavior that when #enclone was called from a terminal window, and it failed,
+    it returned zero exit status, even though when called e.g. from a script, it would return
+    a nonzero value.
+</li>
+<li>Manual tests listed at the bottom of <code>enclone_visual/src/testsuite.rs</code>.</li>
+</ul>
+</p>
 
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
@@ -271,9 +301,8 @@ version of #enclone or the master version, that's a bug that should be reported.
 in which case you should fix your disk space problem.  You might also need to
 <code>cargo clean</code>.</p>
 
-<p>Very rarely, you'll get weird error messages from the linker, with no apparent reason.
-(We've seen this happen once.)  If this happens, <code>cargo clean</code> should fix the
-problem.</p>
+<p>Somewhat rarely, you'll get weird error messages from the linker, with no apparent reason.
+If this happens, <code>cargo clean</code> should fix the problem.</p>
 
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
@@ -288,17 +317,35 @@ your <code>public_html</code> directory so that it can be previewed.</p>
 
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
-<hr><h2>Making a release (internal)</h2>
+<hr><h2>Releasing #enclone</h2>
 
-<p>If the release warrants announcement, edit <code>pages/history.html.src</code> to note the
-relevant changes.</p>
+<p>#enclone binaries for OSX and Linux can be released by “pushing a button”.
+This only works at 10x Genomics.</p>
 
-<p>Run <code>./test</code> on a branch if you're going to release it.  Issue a pull request,
-wait for the tests there to pass, then merge to master.</p>
+<p>First, if the release warrants announcement, edit <code>pages/history.html.src</code> to note 
+the relevant changes.  Running <code>build</code> will then update the actual file that goes on the
+site.</p>
 
-<p>Trigger the release using the program <code>start_release</code>, which is part
-of the repo.  GitHub Actions then goes to work, and something like twenty minutes later, a new
-release appears.</p>
+<p>Run the #enclone test suite.</p>
+
+<p>From master on enclone, from a Linux server, type
+<pre><code>start_release</code></pre>
+This takes about five minutes.  It causes GitHub Actions to initiate creation of release binaries.
+That takes about thirty-five minutes.  When <code>start_release</code> finishes, it launches 
+<code>release_nanny</code> in the background, which at the appropriate time runs some final steps.
+</p>
+
+<! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
+
+<hr><h2>Cross building for Windows on a Mac</h2>
+
+<p>In principle the following should work:
+<pre><code>rustup target add x86_64-pc-windows-gnu</code>
+<code>cargo b --target=x86_64-pc-windows-gnu</code></pre>
+but when we tested this, we got linker errors.  This should be resolvable but we're not sure how.
+Also note that this will clobber the results of an ordinary <code>cargo b</code>.  In principle 
+this can be avoided by specifying the target for it too.
+</p>
 
 </body>
 </html>
