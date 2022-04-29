@@ -31,9 +31,7 @@
 //                                     ******** *                 ** *  *****                 17
 // 7CDI                 IGHV3-53    CARDLVVY-GMDVW               CQQY-GSS--PTF dist = 1.57
 // 6XCM=6XCN            IGHV3-53    CARGEGWELPYDYW               CSSYEGSNNFVVF
-//
-// use bio::alignment::pairwise::*;
-// use bio::scores::*;
+
 use amino::*;
 use debruijn::dna_string::*;
 use edit_distance::*;
@@ -43,7 +41,6 @@ use fasta_tools::*;
 use io_utils::*;
 use pretty_trace::*;
 use rayon::prelude::*;
-// use stats_utils::*;
 use std::cmp::min;
 use std::env;
 use std::io::Write;
@@ -142,23 +139,6 @@ fn main() {
         let mut results = Vec::<(String, PdbStructure)>::new();
         for line in pdb_list.lines() {
             if !line.starts_with('#') && line.len() > 0 {
-                /*
-                if line.contains("sars-cov-2") || line.contains("influenza-group6")
-                    || line.contains("zika") || line.contains("hiv-group1")
-                    || line.contains("pd-1") || line.contains("hiv-group8") {
-                */
-
-                /*
-                if line.contains("sars-cov-2") || line.contains("influenza-group6")
-                    || line.contains("zika") || line.contains("pd-1")
-                    || line.contains("lysozyme-group1") || line.contains("influenza-group6")
-                    || line.contains("plasmodium-falciparum-group1")
-                    || line.contains("influenza-group2")
-                    || line.contains("respiratory-syncytial-virus")
-                    || line.contains("mers-cov")
-                    || line.contains("dengue-group1") {
-                */
-
                 if !line.contains("hiv") || hiv {
                     let mut x = line.after(" ").split(',').collect::<Vec<&str>>();
                     if !equal {
@@ -240,12 +220,6 @@ fn main() {
                 heavy = Some(i as u16);
             }
         }
-        /*
-        if !heavy.is_some() {
-            eprintln!("\nCan't find heavy chain for {}.\n", codes[z]);
-            std::process::exit(1);
-        }
-        */
         assert!(heavy.is_some());
         assert!(light.is_some());
         let (light, heavy) = (light.unwrap() as usize, heavy.unwrap() as usize);
@@ -460,19 +434,8 @@ fn main() {
                 let mut aa = pdb.chains[heavy].clone();
                 aa.truncate(heavy_cdr3_start + 1);
                 heavyy.push(stringme(&aa));
-                /*
-                for k in (0..aa.len()).rev() {
-                    if aa[k..].starts_with(b"YYC") || aa[k..].starts_with(b"YFC")
-                        || aa[k..].starts_with(b"YHC") || aa[k..].starts_with(b"FYC")
-                        || aa[k..].starts_with(b"YIC") || aa[k..].starts_with(b"YTC") {
-                        aa.truncate(k + 3);
-                        break;
-                    }
-                }
-                */
                 let f1 = fr1_start(&aa, "IGH");
                 aa = aa[f1..].to_vec();
-                // println!("using {}", strme(&aa)); // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
                 let mut r = 1000000;
                 for j in 0..vs.len() {
                     let dist = edit_distance(&strme(&aa), &strme(&vs[j]));
@@ -729,22 +692,6 @@ fn main() {
             if ref_diffs > MAX_REF_DIFFS && hdiffs > 1 && edit_distance(&hcdr3[0], &hcdr3[1]) >= 1 {
                 seq_dist += 10;
             }
-
-            /*
-            if abs_diff(hcdr3[0].len(), hcdr3[1].len()) >= 4 {
-                seq_dist += 10;
-            }
-
-            if hvrefnames[0] != hvrefnames[1] {
-                seq_dist += 10;
-            }
-
-            if edit_distance(&hcdr3[0], &hcdr3[1])
-               + abs_diff(hcdr3[0].len(), hcdr3[1].len())
-               + edit_distance(&lcdr3[0], &lcdr3[1]) >= 22 {
-                seq_dist += 10;
-            }
-            */
 
             /*
             let mut exception = false;
