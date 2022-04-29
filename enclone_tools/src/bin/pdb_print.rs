@@ -1,7 +1,7 @@
 // Copyright (c) 2020 10X Genomics, Inc. All rights reserved.
 
-use pretty_trace::*;
 use enclone_tools::pdb::*;
+use pretty_trace::*;
 use string_utils::*;
 
 fn main() {

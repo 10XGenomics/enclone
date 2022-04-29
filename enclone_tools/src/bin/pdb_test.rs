@@ -2,11 +2,11 @@
 
 // Run this from the top level of the repo.
 
-use vdj_ann::vdj_features::*;
-use pretty_trace::*;
 use enclone_tools::pdb::*;
+use pretty_trace::*;
 use std::env;
 use string_utils::*;
+use vdj_ann::vdj_features::*;
 use vector_utils::*;
 
 pub fn cdr3_start_longer(aa: &[u8], _chain_type: &str, _verbose: bool) -> usize {

@@ -48,9 +48,9 @@ use std::cmp::min;
 use std::env;
 use std::io::Write;
 use string_utils::*;
-use vector_utils::*;
-use vdj_ann_ref::*;
 use vdj_ann::vdj_features::*;
+use vdj_ann_ref::*;
+use vector_utils::*;
 
 pub fn cdr3_start_longer(aa: &[u8], _chain_type: &str, _verbose: bool) -> usize {
     let motif = [b"LQPEDSAVYYC", b"VEASQTGTYFC", b"ATSGQASLYLC"];
