@@ -333,7 +333,7 @@ main() {
     if [ "$size" = small ]; then
         if [ "$_datasets_small_current" = false ]; then
             printf "\nDownloading small version of datasets.\n"
-            printf "This seems to take roughly five seconds, even over home wireless.\nHowever"
+            printf "This seems to take roughly five seconds, even over home wireless.\nHowever "
             printf "it could be slower on a particular day or because of your connection.\n\n"
             mkdir -p enclone/datasets
             rm -rf enclone/datasets/123085
