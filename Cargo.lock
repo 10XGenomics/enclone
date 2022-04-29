@@ -1192,6 +1192,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9ea835d29036a4087793836fa931b08837ad5e957da9e23886b29586fb9b6650"
 
 [[package]]
+name = "edit-distance"
+version = "2.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "bbbaaaf38131deb9ca518a274a45bfdb8771f139517b073b16c2d3d32ae5037b"
+
+[[package]]
 name = "either"
 version = "1.6.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1559,6 +1565,7 @@ dependencies = [
 name = "enclone_tools"
 version = "0.5.182"
 dependencies = [
+ "amino",
  "ansi_escape",
  "attohttpc",
  "binary_vec_io",
@@ -1566,6 +1573,7 @@ dependencies = [
  "chrono",
  "debruijn",
  "dna",
+ "edit-distance",
  "enclone",
  "enclone_core",
  "enclone_denovo",
