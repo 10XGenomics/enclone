@@ -302,7 +302,7 @@ pub fn determine_ref(ctl: &mut EncloneControl, refx: &mut String) -> Result<(), 
             let ann = v["annotations"].as_array();
             if ann.is_none() {
                 return Err(format!(
-                    "\nThe file {jsonx}\ndoes not contain annotations.  To use enclone with it, \
+                    "\nThe file\n{jsonx}\ndoes not contain annotations.  To use enclone with it, \
                         please specify the argument BUILT_IN\nto force use of the internal \
                         reference and recompute annotations.\n"
                 ));
