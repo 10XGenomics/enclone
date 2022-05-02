@@ -89,7 +89,7 @@ pub struct OriginInfo {
     pub alt_bc_fields: Vec<Vec<(String, HashMap<String, String>)>>,
     pub cells_cellranger: Vec<Option<usize>>,
     pub mean_read_pairs_per_cell_cellranger: Vec<Option<usize>>,
-    // map dataset index to a map of barcode to (secreted, membrane) UMI counts
+    // map dataset index to a map of barcode to (secreted, membrane) UMI counts:
     pub secmem: Vec<HashMap<String, (usize, usize)>>,
 }
 
