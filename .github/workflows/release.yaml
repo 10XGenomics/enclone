@@ -11,6 +11,23 @@ env:
 
 jobs:
 
+  windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout git repository
+        uses: actions/checkout@master
+      - name: Make release build
+        run: |
+          cargo build --release
+          target/release/enclone --help | grep -q enclone
+          mkdir artifacts
+          cp -a target/release/enclone artifacts/enclone-windows
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: enclone
+          path: artifacts
+
   linux:
     runs-on: ubuntu-latest
     steps:
@@ -62,7 +79,7 @@ jobs:
           path: artifacts
 
   setup-release:
-    needs: [linux, macos]
+    needs: [linux, macos, windows]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@v1
@@ -85,6 +102,7 @@ jobs:
             SHA-256 checksums:
             - ${{hashFiles('artifacts/enclone-linux')}} `enclone_linux`
             - ${{hashFiles('artifacts/enclone-macos')}} `enclone_macos`
+            - ${{hashFiles('artifacts/enclone-windows')}} `enclone_windows`
       - name: Upload Linux
         id: upload-linux-release 
         uses: actions/upload-release-asset@v1
@@ -105,4 +123,15 @@ jobs:
           upload_url: ${{ steps.create_release.outputs.upload_url }} 
           asset_path: artifacts/enclone-macos
           asset_name: enclone_macos
+          asset_content_type: application/octet-stream
+
+      - name: Upload Windows
+        id: upload-windows-release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} 
+          asset_path: artifacts/enclone-windows
+          asset_name: enclone_windows
           asset_content_type: application/octet-stream

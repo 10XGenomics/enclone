@@ -893,6 +893,8 @@ pub fn get_gex_matrix_entry(
     raw_count
 }
 
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
 pub fn extra_args(ctl: &EncloneControl) -> Vec<String> {
     let mut extra_args = ctl.gen_opt.tree.clone();
     if !ctl.plot_opt.plot_xy_filename.is_empty() {
