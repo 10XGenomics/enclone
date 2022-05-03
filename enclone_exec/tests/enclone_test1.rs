@@ -654,7 +654,7 @@ fn test_licenses() {
     ];
     const A2: &str = "Apache-2.0";
     const ACCEPTABLE_10X_PACKAGES: [&str; 2] = ["exons", "vdj_ann"];
-    const ACCEPTABLE_OTHER_PACKAGES: [&str; 19] = [
+    const ACCEPTABLE_OTHER_PACKAGES: [&str; 20] = [
         "arrayref",
         "cloudabi",
         "fuchsia-cprng",
