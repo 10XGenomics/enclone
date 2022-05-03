@@ -37,6 +37,10 @@ pub fn test_internal_error_seq(seq: &[u8], dna: &[u8], cdr3: &str) -> Result<(),
     Ok(())
 }
 
+// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+// Code to compute VDJ features.
+
 pub fn get_cdr1(x: &TigData1, left: i64, right: i64) -> Option<String> {
     let left = left * 3;
     let right = right * 3;
