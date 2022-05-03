@@ -30,7 +30,6 @@ chrono = { version = "0.4", default-features = false, features = ["std", "clock"
 debruijn = "0.3"
 enclone_proto = { path = "../enclone_proto" }
 evalexpr = "7"
-hdf5 = { git = "https://github.com/10xGenomics/hdf5-rust.git", branch = "conda_may2022", default-features=false, features = ["conda"] }
 io_utils = { version = "0.3", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 itertools = "0.10"
 lazy_static = "1"
@@ -51,6 +50,11 @@ zstd = "0.9"
 
 [target.'cfg(not(windows))'.dependencies]
 tilde-expand = "0.1"
+hdf5 = { git = "https://github.com/10xGenomics/hdf5-rust.git", branch = "conda_may2022", default-features=false, features = ["conda"] }
+
+[target.'cfg(windows)'.dependencies]
+hdf5 = { git = "https://github.com/10xGenomics/hdf5-rust.git", branch = "conda_may2022", default-features=false }
+hdf5-sys = { git = "https://github.com/10xGenomics/hdf5-rust.git", branch = "conda_may2022", default-features=false, features = ["static","zlib"] }
 
 [build-dependencies]
 chrono = { version = "0.4", default-features = false, features = ["std", "clock"] }
