@@ -51,7 +51,7 @@ fontdb = "0.7"
 fs_extra = "1"
 git = "https://github.com/10xGenomics/hdf5-rust.git"
 graph_simple = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
-hdf5 = { git = "https://github.com/10xGenomics/hdf5-rust.git", branch = "conda_nov2021", default-features=false, features = ["conda"] }
+hdf5 = { git = "https://github.com/10xGenomics/hdf5-rust.git", branch = "conda_may2022", default-features=false, features = ["conda"] }
 hyperbase = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 iced = { git = "https://github.com/hecrj/iced", rev = "3042fa2cb63c651ebed2abe6f4054e61f70b0331", features = ["canvas", "image", "async-std"] }
 iced_native = { git = "https://github.com/hecrj/iced", rev = "3042fa2cb63c651ebed2abe6f4054e61f70b0331" }

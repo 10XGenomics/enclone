@@ -28,7 +28,7 @@ enclone_proto = { path = "../enclone_proto" }
 equiv = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 evalexpr = "7"
 graph_simple = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
-hdf5 = { git = "https://github.com/10xGenomics/hdf5-rust.git", branch = "conda_nov2021", default-features=false, features = ["conda"] }
+hdf5 = { git = "https://github.com/10xGenomics/hdf5-rust.git", branch = "conda_may2022", default-features=false, features = ["conda"] }
 io_utils = { version = "0.3", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 itertools = "0.10"
 mirror_sparse_matrix = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
