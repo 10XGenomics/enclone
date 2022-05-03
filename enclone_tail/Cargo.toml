@@ -33,7 +33,6 @@ enclone_proto = { path = "../enclone_proto" }
 equiv = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 float-ord = "0.3"
 fontdb = "0.7"
-hdf5 = { git = "https://github.com/10xGenomics/hdf5-rust.git", branch = "conda_may2022", default-features=false, features = ["conda"] }
 io_utils = { version = "0.3", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 itertools = "0.10"
 lazy_static = "1"
@@ -60,3 +59,10 @@ vdj_ann = { version = "0.4", git = "https://github.com/10XGenomics/rust-toolbox.
 vector_utils = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 # to replace by this after bumping version
 # vector_utils = "0.1.0"
+
+[target.'cfg(not(windows))'.dependencies]
+hdf5 = { git = "https://github.com/10xGenomics/hdf5-rust.git", branch = "conda_may2022", default-features=false, features = ["conda"] }
+
+[target.'cfg(windows)'.dependencies]
+hdf5 = { git = "https://github.com/10xGenomics/hdf5-rust.git", branch = "conda_may2022", default-features=false }
+hdf5-sys = { git = "https://github.com/10xGenomics/hdf5-rust.git", branch = "conda_may2022", default-features=false, features = ["static","zlib"] }

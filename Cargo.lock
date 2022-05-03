@@ -759,6 +759,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "cmake"
+version = "0.1.48"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e8ad8cef104ac57b68b89df3208164d228503abbdce70f6880ffa3d970e7443a"
+dependencies = [
+ "cc",
+]
+
+[[package]]
 name = "cocoa"
 version = "0.24.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1257,6 +1266,7 @@ dependencies = [
  "evalexpr",
  "graph_simple",
  "hdf5",
+ "hdf5-sys",
  "io_utils",
  "itertools",
  "mirror_sparse_matrix",
@@ -1287,6 +1297,7 @@ dependencies = [
  "evalexpr",
  "expr_tools",
  "hdf5",
+ "hdf5-sys",
  "io_utils",
  "itertools",
  "mirror_sparse_matrix",
@@ -1313,6 +1324,7 @@ dependencies = [
  "enclone_proto",
  "evalexpr",
  "hdf5",
+ "hdf5-sys",
  "io_utils",
  "itertools",
  "lazy_static",
@@ -1423,6 +1435,7 @@ dependencies = [
  "enclone_vars",
  "expr_tools",
  "hdf5",
+ "hdf5-sys",
  "io_utils",
  "itertools",
  "perf_stats",
@@ -1478,6 +1491,7 @@ dependencies = [
  "evalexpr",
  "expr_tools",
  "hdf5",
+ "hdf5-sys",
  "io_utils",
  "itertools",
  "mirror_sparse_matrix",
@@ -1524,6 +1538,7 @@ dependencies = [
  "enclone_proto",
  "enclone_stuff",
  "hdf5",
+ "hdf5-sys",
  "io_utils",
  "itertools",
  "rayon",
@@ -1546,6 +1561,7 @@ dependencies = [
  "equiv",
  "evalexpr",
  "hdf5",
+ "hdf5-sys",
  "io_utils",
  "itertools",
  "ndarray",
@@ -1575,6 +1591,7 @@ dependencies = [
  "float-ord",
  "fontdb",
  "hdf5",
+ "hdf5-sys",
  "io_utils",
  "itertools",
  "lazy_static",
@@ -1624,6 +1641,7 @@ dependencies = [
  "flate2",
  "fs_extra",
  "hdf5",
+ "hdf5-sys",
  "io_utils",
  "itertools",
  "lz4",
@@ -2326,14 +2344,25 @@ dependencies = [
 ]
 
 [[package]]
+name = "hdf5-src"
+version = "0.8.1"
+source = "git+https://github.com/10xGenomics/hdf5-rust.git?branch=conda_may2022#476eb4d4f56e51ff8714cf6ddb6b1e0411c515b2"
+dependencies = [
+ "cmake",
+ "libz-sys",
+]
+
+[[package]]
 name = "hdf5-sys"
 version = "0.8.1"
 source = "git+https://github.com/10xGenomics/hdf5-rust.git?branch=conda_may2022#476eb4d4f56e51ff8714cf6ddb6b1e0411c515b2"
 dependencies = [
  "attohttpc 0.17.0",
  "bzip2",
+ "hdf5-src",
  "libc",
  "libloading",
+ "libz-sys",
  "pkg-config",
  "regex",
  "serde",
@@ -2818,6 +2847,17 @@ name = "libm"
 version = "0.2.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "33a33a362ce288760ec6a508b94caaec573ae7d3bbbd91b87aa0bad4456839db"
+
+[[package]]
+name = "libz-sys"
+version = "1.1.6"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "92e7e15d7610cce1d9752e137625f14e61a28cd45929b6e12e47b50fe154ee2e"
+dependencies = [
+ "cc",
+ "pkg-config",
+ "vcpkg",
+]
 
 [[package]]
 name = "linked-hash-map"
@@ -5075,6 +5115,12 @@ dependencies = [
  "ctor",
  "version_check",
 ]
+
+[[package]]
+name = "vcpkg"
+version = "0.2.15"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "accd4ea62f7bb7a82fe23066fb0957d48ef677f6eeb8215f372f52e48bb32426"
 
 [[package]]
 name = "vdj_ann"
