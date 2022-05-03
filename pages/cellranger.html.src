@@ -224,7 +224,7 @@ nucleotide identity on heavy chain CDR1+CDR2 (combined), then the join is reject
 
 <tr>
 <td> Mar. 11, 2022 </td>
-<td> <code>******</code> </td>
+<td> <code>e81193</code> </td>
 <td> 7.1 </td>
 <td>
 Two more changes to the join algorithm.
