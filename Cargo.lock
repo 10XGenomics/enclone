@@ -1254,7 +1254,7 @@ checksum = "e78d4f1cc4ae33bbfc157ed5d5a5ef3bc29227303d595861deb238fcec4e9457"
 
 [[package]]
 name = "enclone"
-version = "0.5.187"
+version = "0.5.188"
 dependencies = [
  "amino",
  "ansi_escape",
@@ -1288,7 +1288,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_args"
-version = "0.5.187"
+version = "0.5.188"
 dependencies = [
  "attohttpc 0.18.0",
  "debruijn",
@@ -1312,7 +1312,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_core"
-version = "0.5.187"
+version = "0.5.188"
 dependencies = [
  "align_tools",
  "amino",
@@ -1347,7 +1347,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_denovo"
-version = "0.5.187"
+version = "0.5.188"
 dependencies = [
  "amino",
  "binary_vec_io",
@@ -1378,7 +1378,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_exec"
-version = "0.5.187"
+version = "0.5.188"
 dependencies = [
  "ansi_escape",
  "anyhow",
@@ -1409,7 +1409,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_help"
-version = "0.5.187"
+version = "0.5.188"
 dependencies = [
  "ansi_escape",
  "enclone_core",
@@ -1421,7 +1421,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_main"
-version = "0.5.187"
+version = "0.5.188"
 dependencies = [
  "dirs",
  "enclone",
@@ -1452,7 +1452,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_paper"
-version = "0.5.187"
+version = "0.5.188"
 dependencies = [
  "bio_edit",
  "debruijn",
@@ -1476,7 +1476,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_print"
-version = "0.5.187"
+version = "0.5.188"
 dependencies = [
  "amino",
  "ansi_escape",
@@ -1514,7 +1514,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_proto"
-version = "0.5.187"
+version = "0.5.188"
 dependencies = [
  "bio_edit",
  "byteorder",
@@ -1529,7 +1529,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_ranger"
-version = "0.5.187"
+version = "0.5.188"
 dependencies = [
  "enclone",
  "enclone_args",
@@ -1549,7 +1549,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_stuff"
-version = "0.5.187"
+version = "0.5.188"
 dependencies = [
  "amino",
  "debruijn",
@@ -1577,7 +1577,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_tail"
-version = "0.5.187"
+version = "0.5.188"
 dependencies = [
  "align_tools",
  "amino",
@@ -1620,7 +1620,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_tools"
-version = "0.5.187"
+version = "0.5.188"
 dependencies = [
  "amino",
  "ansi_escape",
@@ -1664,7 +1664,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_vars"
-version = "0.5.187"
+version = "0.5.188"
 dependencies = [
  "io_utils",
  "itertools",
@@ -1675,7 +1675,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_version"
-version = "0.5.187"
+version = "0.5.188"
 dependencies = [
  "chrono",
  "string_utils",
@@ -1683,7 +1683,7 @@ dependencies = [
 
 [[package]]
 name = "enclone_visual"
-version = "0.5.187"
+version = "0.5.188"
 dependencies = [
  "anyhow",
  "arboard",
