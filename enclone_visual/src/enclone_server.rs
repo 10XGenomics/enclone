@@ -25,6 +25,7 @@ use pretty_trace::*;
 use std::env;
 use std::fs::File;
 use std::io::{Read, Write};
+#[cfg(not(target_os = "windows"))]
 use std::os::unix::fs::PermissionsExt;
 use std::sync::{Arc, Mutex};
 use std::time::{Duration, Instant};

@@ -107,4 +107,4 @@ pub fn copy_bytes_to_clipboard(bytes: &[u8]) {
 }
 
 #[cfg(not(any(target_os = "macos", target_os = "ios", target_os = "linux")))]
-pub fn copy_bytes_to_mac_clipboard(_bytes: &[u8]) {}
+pub fn copy_bytes_to_clipboard(_bytes: &[u8]) {}

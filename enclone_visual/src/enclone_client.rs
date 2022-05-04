@@ -40,8 +40,11 @@ use enclone_version::*;
 use io_utils::*;
 use itertools::Itertools;
 use libc::atexit;
+#[cfg(not(target_os = "windows"))]
 use nix::sys::signal::{kill, SIGINT as SIGINT_nix};
+#[cfg(not(target_os = "windows"))]
 use nix::unistd::Pid;
+#[cfg(not(target_os = "windows"))]
 use perf_stats::peak_mem_usage_gb;
 use std::env;
 use std::io::Read;
@@ -744,6 +747,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
                     "\nfailed to launch setup, err =\n{}.\n",
                     setup_process.as_ref().unwrap_err()
                 );
+                #[cfg(not(target_os = "windows"))]
                 kill(Pid::from_raw(server_process_id as i32), SIGINT_nix).unwrap();
                 cleanup();
                 std::process::exit(1);
