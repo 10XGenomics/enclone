@@ -130,9 +130,12 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             std::process::exit(1);
         }
     }
-    if !ctrlc {
-        let _ = install_signal_handler();
-        CTRLC.store(true, SeqCst);
+    #[cfg(not(target_os = "windows"))]
+    {
+        if !ctrlc {
+            let _ = install_signal_handler();
+            CTRLC.store(true, SeqCst);
+        }
     }
     for (key, _value) in env::vars() {
         if key == "ENCLONE_VERBOSE" {
@@ -794,11 +797,14 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             xprintln!("used {:.1} seconds connecting", elapsed(&tconnect));
         }
         xprintln!("connected");
-        xprintln!(
-            "time since startup = {:.1} seconds, peak mem = {:.1} GB\n",
-            elapsed(&t),
-            peak_mem_usage_gb()
-        );
+        #[cfg(not(target_os = "windows"))]
+        {
+            xprintln!(
+                "time since startup = {:.1} seconds, peak mem = {:.1} GB\n",
+                elapsed(&t),
+                peak_mem_usage_gb()
+            );
+        }
         let mut client = client.unwrap();
 
         // Process commands via the server in the background.
