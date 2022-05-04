@@ -9,11 +9,15 @@ use iced::{Application, Font, Settings};
 use itertools::Itertools;
 use lazy_static::lazy_static;
 use libc::SIGINT;
+#[cfg(not(target_os = "windows"))]
 use nix::sys::signal::{kill, Signal, SIGINT as SIGINT_nix};
+#[cfg(not(target_os = "windows"))]
 use nix::sys::signal::{sigaction, SaFlags, SigAction, SigHandler, SigSet};
+#[cfg(not(target_os = "windows"))]
 use nix::unistd::Pid;
 use perf_stats::*;
 use std::collections::HashMap;
+#[cfg(not(target_os = "windows"))]
 use std::convert::TryInto;
 use std::fs::{remove_file, File};
 use std::io::Read;
@@ -222,7 +226,7 @@ pub fn get_clipboard_content() -> Option<String> {
     }
 }
 
-#[cfg(target_os = "linux")]
+#[cfg(not(any(target_os = "macos", target_os = "ios")))]
 pub fn get_clipboard_content() -> Option<String> {
     None
 }
@@ -456,7 +460,7 @@ pub fn get_window_id() -> usize {
     panic!("\nUnable to determine window id.\n");
 }
 
-#[cfg(target_os = "linux")]
+#[cfg(not(any(target_os = "macos", target_os = "ios")))]
 pub fn get_window_id() -> usize {
     panic!("Unimplemented!");
 }
@@ -589,6 +593,7 @@ pub fn _truncate(s: &str) -> String {
 
 // Cleanup code to make sure processes are killed.
 
+#[cfg(not(target_os = "windows"))]
 pub fn cleanup() {
     if !CLEANED_UP.load(SeqCst) {
         CLEANED_UP.store(true, SeqCst);
@@ -622,6 +627,7 @@ pub fn cleanup() {
 // Redirect SIGINT interrupts to the function "handler".  There may be issues with reliablity,
 // since a CTRL-C could happen at any point, including in the memory manager.
 
+#[cfg(not(target_os = "windows"))]
 pub fn install_signal_handler() -> Result<(), Error> {
     let handler = SigHandler::Handler(handler);
     let action = SigAction::new(handler, SaFlags::SA_RESTART, SigSet::empty());

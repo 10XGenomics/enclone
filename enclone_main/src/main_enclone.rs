@@ -3,6 +3,7 @@
 // See README for documentation.
 
 use self::refx::{make_vdj_ref_data_core, RefData};
+#[cfg(not(target_os = "windows"))]
 use crate::blacklist::profiling_blacklist;
 use crate::determine_ref::determine_ref;
 use crate::sec_mem::test_sec_mem;

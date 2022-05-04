@@ -178,11 +178,14 @@ pub fn do_computation_done(slf: &mut EncloneVisual) -> Command<Message> {
         "total time to run command = {:.1} seconds",
         elapsed(&slf.start_command.unwrap())
     );
-    let peak_mem_mb = peak_mem_usage_bytes() as f64 / ((1024 * 1024) as f64);
-    xprintln!(
-        "all time peak mem of this process is {:.1} MB\n",
-        peak_mem_mb
-    );
+    #[cfg(not(target_os = "windows"))]
+    {
+        let peak_mem_mb = peak_mem_usage_bytes() as f64 / ((1024 * 1024) as f64);
+        xprintln!(
+            "all time peak mem of this process is {:.1} MB\n",
+            peak_mem_mb
+        );
+    }
     if VERBOSE.load(SeqCst) {
         let mb = (1024 * 1024) as f64;
         let mut total_svg = 0;
