@@ -408,10 +408,13 @@ pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<EncloneState
 
     // Report profiling.
 
-    if ctl.gen_opt.profile {
-        let t = Instant::now();
-        stop_profiling();
-        ctl.perf_stats(&t, "summarizing profiling");
+    #[cfg(not(target_os = "windows"))]
+    {
+        if ctl.gen_opt.profile {
+            let t = Instant::now();
+            stop_profiling();
+            ctl.perf_stats(&t, "summarizing profiling");
+        }
     }
 
     // Report computational performance.
