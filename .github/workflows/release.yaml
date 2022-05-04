@@ -22,7 +22,7 @@ jobs:
           cargo build --release
           target/release/enclone --help | grep -q enclone
           mkdir artifacts
-          cp -a target/release/enclone artifacts/enclone-windows
+          cp target/release/enclone.exe artifacts/enclone-windows.exe
       - name: Upload build artifact
         uses: actions/upload-artifact@v1
         with:
