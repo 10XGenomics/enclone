@@ -3,6 +3,7 @@
 use crate::copy_image_to_clipboard::*;
 use crate::dimensions::*;
 use crate::gui_structures::EncloneVisual;
+#[cfg(not(target_os = "windows"))]
 use anyhow::Error;
 use enclone_tail::convert_svg_to_png::*;
 use iced::{Application, Font, Settings};
@@ -21,6 +22,7 @@ use std::collections::HashMap;
 use std::convert::TryInto;
 use std::fs::{remove_file, File};
 use std::io::Read;
+#[cfg(not(target_os = "windows"))]
 use std::process::{Command, Stdio};
 use std::sync::atomic::Ordering::SeqCst;
 use std::sync::atomic::{AtomicBool, AtomicUsize};
@@ -621,6 +623,9 @@ pub fn cleanup() {
         }
     }
 }
+
+#[cfg(target_os = "windows")]
+pub fn cleanup() {}
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 

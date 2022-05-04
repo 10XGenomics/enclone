@@ -374,7 +374,6 @@ impl Analyzer for EncloneAnalyzer {
                 bytes[i] = bytes[i].wrapping_add(rbytes[i % rbytes.len()]);
             }
             let rdir = format!("{}/{}", req.share_dir, recip);
-            let perms = std::fs::Permissions::from_mode(0o777);
 
             // Create directory if needed.
 
@@ -394,12 +393,16 @@ impl Analyzer for EncloneAnalyzer {
             // should already be enabled, because some other user will have executed this same
             // code to create the directory.
 
-            let res = std::fs::set_permissions(&rdir, perms.clone());
-            if !dir_exists && res.is_err() {
-                return Err(Status::new(
-                    Code::Internal,
-                    format!("unable to set permissions on share directory {}", rdir),
-                ));
+            #[cfg(not(target_os = "windows"))]
+            {
+                let perms = std::fs::Permissions::from_mode(0o777);
+                let res = std::fs::set_permissions(&rdir, perms.clone());
+                if !dir_exists && res.is_err() {
+                    return Err(Status::new(
+                        Code::Internal,
+                        format!("unable to set permissions on share directory {}", rdir),
+                    ));
+                }
             }
 
             // Now write the file.
@@ -412,12 +415,16 @@ impl Analyzer for EncloneAnalyzer {
             if res.is_err() {
                 return Err(Status::new(Code::Internal, "unable to write share file"));
             }
-            let res = std::fs::set_permissions(&filename, perms);
-            if res.is_err() {
-                return Err(Status::new(
-                    Code::Internal,
-                    format!("unable to set permissions on share file {}", filename),
-                ));
+            #[cfg(not(target_os = "windows"))]
+            {
+                let perms = std::fs::Permissions::from_mode(0o777);
+                let res = std::fs::set_permissions(&filename, perms);
+                if res.is_err() {
+                    return Err(Status::new(
+                        Code::Internal,
+                        format!("unable to set permissions on share file {}", filename),
+                    ));
+                }
             }
         }
         Ok(Response::new(SendShareResponse { ok: true }))
