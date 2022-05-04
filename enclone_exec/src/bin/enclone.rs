@@ -11,8 +11,11 @@ use enclone_visual::enclone_client::enclone_client;
 #[cfg(feature = "enclone_visual")]
 use enclone_visual::enclone_server::enclone_server;
 use io_utils::*;
+#[cfg(not(target_os = "windows"))]
 use nix::sys::signal::{kill, SIGINT};
+#[cfg(not(target_os = "windows"))]
 use nix::unistd::getppid;
+#[cfg(not(target_os = "windows"))]
 use nix::unistd::Pid;
 use pretty_trace::*;
 use std::env;
@@ -110,7 +113,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             // process, which is less.  That's a little surprising, but that's how it works:
             // it is the parent that is less.
             //
-            // The little big of sleep seems to prevent printing of an extra newline, but this
+            // The little bit of sleep seems to prevent printing of an extra newline, but this
             // is flaky.
             //
             // The kill makes the screen flash.  This is pretty horrible.
@@ -118,8 +121,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             eprintln!("{}", res.err().unwrap());
             if !no_kill && USING_PAGER.load(SeqCst) && 0 == 1 {
                 thread::sleep(Duration::from_millis(10));
-                let ppid = getppid();
-                kill(Pid::from_raw(i32::from(ppid)), SIGINT).unwrap();
+                #[cfg(not(target_os = "windows"))]
+                {
+                    let ppid = getppid();
+                    kill(Pid::from_raw(i32::from(ppid)), SIGINT).unwrap();
+                }
                 thread::sleep(Duration::from_millis(10));
             } else {
                 std::process::exit(1);

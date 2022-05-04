@@ -250,7 +250,7 @@ pub fn is_user_name_valid(name: &str) -> bool {
 }
 
 #[cfg(target_os = "windows")]
-pub fn is_user_name_valid(name: &str) -> bool {
+pub fn is_user_name_valid(_name: &str) -> bool {
     true
 }
 
@@ -642,6 +642,7 @@ pub fn install_signal_handler() -> Result<(), Error> {
     Ok(())
 }
 
+#[cfg(not(target_os = "windows"))]
 extern "C" fn handler(sig: i32) {
     if sig == SIGINT {
         cleanup();

@@ -61,6 +61,7 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
 
     #[cfg(not(any(target_os = "macos", target_os = "ios", target_os = "linux")))]
     {
+        let _t = &t;
         xprintln!(
             "\nenclone visual only runs on a Mac at present.  Please let us know if you\n\
             are interested in running it under Linux or Windows.\n"
@@ -130,12 +131,10 @@ pub async fn enclone_client(t: &Instant) -> Result<(), Box<dyn std::error::Error
             std::process::exit(1);
         }
     }
-    #[cfg(not(target_os = "windows"))]
-    {
-        if !ctrlc {
-            let _ = install_signal_handler();
-            CTRLC.store(true, SeqCst);
-        }
+    if !ctrlc {
+        #[cfg(not(target_os = "windows"))]
+        let _ = install_signal_handler();
+        CTRLC.store(true, SeqCst);
     }
     for (key, _value) in env::vars() {
         if key == "ENCLONE_VERBOSE" {
