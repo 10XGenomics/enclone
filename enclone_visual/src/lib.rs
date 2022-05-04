@@ -9,6 +9,7 @@ use enclone_tail::convert_svg_to_png::*;
 use iced::{Application, Font, Settings};
 use itertools::Itertools;
 use lazy_static::lazy_static;
+#[cfg(not(target_os = "windows"))]
 use libc::SIGINT;
 #[cfg(not(target_os = "windows"))]
 use nix::sys::signal::{kill, Signal, SIGINT as SIGINT_nix};

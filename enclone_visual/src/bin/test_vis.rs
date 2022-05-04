@@ -579,30 +579,33 @@ fn main() {
 
         // Get peak memory.  This is sensitive to changes of a few percent or so.
 
-        let maxrss_children;
-        unsafe {
-            let mut rusage: libc::rusage = std::mem::zeroed();
-            let retval = libc::getrusage(libc::RUSAGE_CHILDREN, &mut rusage as *mut _);
-            assert_eq!(retval, 0);
-            maxrss_children = rusage.ru_maxrss;
-        }
-        let peak_mem_mb = maxrss_children as f64 / ((1024 * 1024) as f64);
-        const MAX_PEAK_MEM: f64 = 168.2; // this is supposed to be the lowest observed value
-        const MAX_PERCENT_OVER_MEM: f64 = 17.6;
-        let percent_over = 100.0 * (peak_mem_mb - MAX_PEAK_MEM) / MAX_PEAK_MEM;
+        #[cfg(not(target_os = "windows"))]
+        {
+            let maxrss_children;
+            unsafe {
+                let mut rusage: libc::rusage = std::mem::zeroed();
+                let retval = libc::getrusage(libc::RUSAGE_CHILDREN, &mut rusage as *mut _);
+                assert_eq!(retval, 0);
+                maxrss_children = rusage.ru_maxrss;
+            }
+            let peak_mem_mb = maxrss_children as f64 / ((1024 * 1024) as f64);
+            const MAX_PEAK_MEM: f64 = 168.2; // this is supposed to be the lowest observed value
+            const MAX_PERCENT_OVER_MEM: f64 = 17.6;
+            let percent_over = 100.0 * (peak_mem_mb - MAX_PEAK_MEM) / MAX_PEAK_MEM;
 
-        eprintln!(
-            "\nPeak mem {:.1} MB, exceeded expected peak mem of {:.1} MB by {:.1}%, \
-                versus max allowed = {}%.",
-            peak_mem_mb, MAX_PEAK_MEM, percent_over, MAX_PERCENT_OVER_MEM,
-        );
-        if percent_over > MAX_PERCENT_OVER_MEM {
-            eprintln!("That's too high.  This happens occasionally, so please retry.\n");
             eprintln!(
-                "Also the value is probably different if you're using a Mac with an \
-                Apple chip.\n"
+                "\nPeak mem {:.1} MB, exceeded expected peak mem of {:.1} MB by {:.1}%, \
+                    versus max allowed = {}%.",
+                peak_mem_mb, MAX_PEAK_MEM, percent_over, MAX_PERCENT_OVER_MEM,
             );
-            std::process::exit(1);
+            if percent_over > MAX_PERCENT_OVER_MEM {
+                eprintln!("That's too high.  This happens occasionally, so please retry.\n");
+                eprintln!(
+                    "Also the value is probably different if you're using a Mac with an \
+                    Apple chip.\n"
+                );
+                std::process::exit(1);
+            }
         }
     }
 
