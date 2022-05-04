@@ -95,8 +95,11 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
             ctl.gen_opt.profile = true;
         }
     }
-    if ctl.gen_opt.profile {
-        start_profiling(&profiling_blacklist());
+    #[cfg(not(target_os = "windows"))]
+    {
+        if ctl.gen_opt.profile {
+            start_profiling(&profiling_blacklist());
+        }
     }
     let (mut comp, mut comp2) = (false, false);
     for i in 1..args.len() {
