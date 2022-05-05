@@ -18,10 +18,10 @@ use tables::print_tabular;
 use vdj_ann::refx::RefData;
 use vector_utils::bin_position;
 
-#[cfg(not(target_os = "windows"))]
-use hdf5x::Reader;
 #[cfg(target_os = "windows")]
 use hdf5::Reader;
+#[cfg(not(target_os = "windows"))]
+use hdf5x::Reader;
 
 pub fn tail_code(
     tall: &Instant,

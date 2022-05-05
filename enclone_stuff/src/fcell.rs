@@ -15,10 +15,10 @@ use std::time::Instant;
 use string_utils::TextUtils;
 use vector_utils::{bin_position, erase_if};
 
-#[cfg(not(target_os = "windows"))]
-use hdf5x::Reader;
 #[cfg(target_os = "windows")]
 use hdf5::Reader;
+#[cfg(not(target_os = "windows"))]
+use hdf5x::Reader;
 
 pub fn filter_by_fcell(
     ctl: &EncloneControl,

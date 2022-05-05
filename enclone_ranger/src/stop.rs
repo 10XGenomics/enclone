@@ -6,10 +6,10 @@ use enclone_print::print_clonotypes::print_clonotypes;
 use rayon::prelude::*;
 use std::collections::HashMap;
 
-#[cfg(not(target_os = "windows"))]
-use hdf5x::Reader;
 #[cfg(target_os = "windows")]
 use hdf5::Reader;
+#[cfg(not(target_os = "windows"))]
+use hdf5x::Reader;
 
 pub fn main_enclone_stop_ranger(mut inter: EncloneIntermediates) -> Result<(), String> {
     // Unpack inputs.

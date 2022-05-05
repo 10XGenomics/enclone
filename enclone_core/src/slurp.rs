@@ -2,10 +2,10 @@
 //
 // Slurp in needed data from an h5 file.
 
-#[cfg(not(target_os = "windows"))]
-use hdf5x::types::FixedAscii;
 #[cfg(target_os = "windows")]
 use hdf5::types::FixedAscii;
+#[cfg(not(target_os = "windows"))]
+use hdf5x::types::FixedAscii;
 
 pub fn slurp_h5(
     h5_path: &str,
