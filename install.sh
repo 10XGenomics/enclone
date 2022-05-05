@@ -259,7 +259,7 @@ main() {
                         printf "the install command on bit.ly/enclone directly.\n\n"
                         exit 1
                     fi
-                    println "\nok that seems to have succeeded\n\n"
+                    printf "\nok that seems to have succeeded\n\n"
                     rm -f enclone.aside
                 fi
             else
