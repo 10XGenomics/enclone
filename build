@@ -40,9 +40,15 @@ foreach pkg (sweep fmt license depgraph)
         exit 1
     endif
 end
-foreach prog (dot samtools)
+foreach prog (samtools)
     if (`where $prog` == "") then
         echo "Please run brew install $prog or equivalent."
+        exit 1
+    endif
+end
+foreach prog (dot)
+    if (`where $prog` == "") then
+        echo "Please run brew install graphviz or equivalent."
         exit 1
     endif
 end
