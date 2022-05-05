@@ -46,7 +46,7 @@ use core_graphics::window::{create_description_from_array, create_window_list};
 #[cfg(any(target_os = "macos", target_os = "ios"))]
 use std::ops::Deref;
 
-#[cfg(any(target_os = "macos", target_os = "ios"))]
+#[cfg(not(target_os = "windows"))]
 use clipboard::{ClipboardContext, ClipboardProvider};
 
 pub mod apocalypse;
@@ -212,7 +212,7 @@ pub fn compressed_message_history() -> Vec<String> {
 // get_clipboard_content: this should work under Linux, but we don't need it for that now, and
 // there are compilation issues when compiled for Linux via GitHub Actions.
 
-#[cfg(any(target_os = "macos", target_os = "ios"))]
+#[cfg(not(target_os = "windows"))]
 pub fn get_clipboard_content() -> Option<String> {
     let ctx: Result<ClipboardContext, _> = ClipboardProvider::new();
     if ctx.is_err() {
@@ -229,7 +229,7 @@ pub fn get_clipboard_content() -> Option<String> {
     }
 }
 
-#[cfg(not(any(target_os = "macos", target_os = "ios")))]
+#[cfg(target_os = "windows")]
 pub fn get_clipboard_content() -> Option<String> {
     None
 }
