@@ -119,6 +119,12 @@ need to follow the download process to get test data, unless you are at 10x Geno
 case the data will be accessible to you in a shared location.
 </li>
 
+<li>If you are using a Mac, you may need to install the xcode tools.  The standard way to do 
+this is to type <code>xcode-select --install</code>, however this can be very slow.  An alternative
+method is to get the package from the Apple developer site at 
+<a href="https://developer.apple.com/download/all/?q=xcode">https://developer.apple.com/download/all/?q=xcode</a>.  Downloading and installing from there still takes some time, but at a minimum,
+it is more transparent in what it's doing.</li>
+
 <li>There are a couple of minor prerequisites.  If you're using <code>homebrew</code>, you can 
 install these as follows:
 <br><code>brew install graphviz</code>
