@@ -23,6 +23,11 @@ use vdj_ann::refx::RefData;
 use vector_utils::next_diff12_4;
 use vector_utils::{bin_member, bin_position, unique_sort};
 
+#[cfg(not(target_os = "windows"))]
+use hdf5x::Reader;
+#[cfg(target_os = "windows")]
+use hdf5::Reader;
+
 // The following code creates a row in the enclone output table for a clonotype.  Simultaneously
 // it generates a row of parseable output.  And it does some other things that are not described
 // here.
@@ -54,8 +59,8 @@ pub fn row_fill(
     rsi: &ColInfo,
     dref: &Vec<DonorReferenceItem>,
     groups: &HashMap<usize, Vec<usize>>,
-    d_readers: &Vec<Option<hdf5::Reader>>,
-    ind_readers: &Vec<Option<hdf5::Reader>>,
+    d_readers: &Vec<Option<Reader>>,
+    ind_readers: &Vec<Option<Reader>>,
     h5_data: &Vec<(usize, Vec<u32>, Vec<u32>)>,
     stats: &mut Vec<(String, Vec<String>)>,
     stats_pass1: &Vec<Vec<(String, Vec<String>)>>,

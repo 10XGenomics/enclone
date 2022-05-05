@@ -15,6 +15,11 @@ use std::time::Instant;
 use string_utils::TextUtils;
 use vector_utils::{bin_position, erase_if};
 
+#[cfg(not(target_os = "windows"))]
+use hdf5x::Reader;
+#[cfg(target_os = "windows")]
+use hdf5::Reader;
+
 pub fn filter_by_fcell(
     ctl: &EncloneControl,
     orbits: &mut Vec<Vec<i32>>,
@@ -27,8 +32,8 @@ pub fn filter_by_fcell(
         // duplicated verbatim in stop.rs.
 
         let tdi = Instant::now();
-        let mut d_readers = Vec::<Option<hdf5::Reader>>::new();
-        let mut ind_readers = Vec::<Option<hdf5::Reader>>::new();
+        let mut d_readers = Vec::<Option<Reader>>::new();
+        let mut ind_readers = Vec::<Option<Reader>>::new();
         for li in 0..ctl.origin_info.n() {
             if !ctl.origin_info.gex_path[li].is_empty() && !gex_info.gex_matrices[li].initialized()
             {

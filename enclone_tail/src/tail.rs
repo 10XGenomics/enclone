@@ -18,6 +18,11 @@ use tables::print_tabular;
 use vdj_ann::refx::RefData;
 use vector_utils::bin_position;
 
+#[cfg(not(target_os = "windows"))]
+use hdf5x::Reader;
+#[cfg(target_os = "windows")]
+use hdf5::Reader;
+
 pub fn tail_code(
     tall: &Instant,
     refdata: &RefData,
@@ -36,8 +41,8 @@ pub fn tail_code(
     tests: &Vec<usize>,
     controls: &Vec<usize>,
     h5_data: &Vec<(usize, Vec<u32>, Vec<u32>)>,
-    d_readers: &Vec<Option<hdf5::Reader>>,
-    ind_readers: &Vec<Option<hdf5::Reader>>,
+    d_readers: &Vec<Option<Reader>>,
+    ind_readers: &Vec<Option<Reader>>,
     dref: &Vec<DonorReferenceItem>,
     groups: &Vec<Vec<(i32, String)>>,
     opt_d_val: &Vec<(usize, Vec<Vec<Vec<usize>>>)>,

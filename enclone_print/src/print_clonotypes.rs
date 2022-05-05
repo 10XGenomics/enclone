@@ -30,6 +30,11 @@ use string_utils::TextUtils;
 use vdj_ann::refx::RefData;
 use vector_utils::{bin_member, bin_position, erase_if, next_diff12_3, unique_sort};
 
+#[cfg(not(target_os = "windows"))]
+use hdf5x::Reader;
+#[cfg(target_os = "windows")]
+use hdf5::Reader;
+
 // Print clonotypes.  A key challenge here is to define the columns that represent shared
 // chains.  This is given below by the code that forms an equivalence relation on the CDR3_AAs.
 //
@@ -56,8 +61,8 @@ pub fn print_clonotypes(
     raw_joins: &Vec<Vec<usize>>,
     gex_info: &GexInfo,
     vdj_cells: &Vec<Vec<String>>,
-    d_readers: &Vec<Option<hdf5::Reader>>,
-    ind_readers: &Vec<Option<hdf5::Reader>>,
+    d_readers: &Vec<Option<Reader>>,
+    ind_readers: &Vec<Option<Reader>>,
     h5_data: &Vec<(usize, Vec<u32>, Vec<u32>)>,
     pics: &mut Vec<String>,
     exacts: &mut Vec<Vec<usize>>,

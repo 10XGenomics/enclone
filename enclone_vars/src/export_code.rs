@@ -724,6 +724,10 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
         use string_utils::*;
         use vdj_ann::refx::RefData;
         use vector_utils::*;
+        #[cfg(not(target_os = "windows"))]
+        use hdf5x::Reader;
+        #[cfg(target_os = "windows")]
+        use hdf5::Reader;
 
         pub fn proc_lvar_auto(
             i: usize,
@@ -753,8 +757,8 @@ pub fn export_code(level: usize) -> Vec<(String, String)> {
             gex_counts_unsorted: &Vec<usize>,
             gex_fcounts_unsorted: &Vec<f64>,
             n_gexs: &Vec<usize>,
-            d_readers: &Vec<Option<hdf5::Reader>>,
-            ind_readers: &Vec<Option<hdf5::Reader>>,
+            d_readers: &Vec<Option<Reader>>,
+            ind_readers: &Vec<Option<Reader>>,
             h5_data: &Vec<(usize, Vec<u32>, Vec<u32>)>,
             alt_bcs: &Vec<String>,
         ) -> Result<bool, String> {
