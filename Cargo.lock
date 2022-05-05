@@ -1267,6 +1267,7 @@ dependencies = [
  "graph_simple",
  "hdf5",
  "hdf5-sys",
+ "hdf5x",
  "io_utils",
  "itertools",
  "mirror_sparse_matrix",
@@ -1298,6 +1299,7 @@ dependencies = [
  "expr_tools",
  "hdf5",
  "hdf5-sys",
+ "hdf5x",
  "io_utils",
  "itertools",
  "mirror_sparse_matrix",
@@ -1325,6 +1327,7 @@ dependencies = [
  "evalexpr",
  "hdf5",
  "hdf5-sys",
+ "hdf5x",
  "io_utils",
  "itertools",
  "lazy_static",
@@ -1436,6 +1439,7 @@ dependencies = [
  "expr_tools",
  "hdf5",
  "hdf5-sys",
+ "hdf5x",
  "io_utils",
  "itertools",
  "perf_stats",
@@ -1492,6 +1496,7 @@ dependencies = [
  "expr_tools",
  "hdf5",
  "hdf5-sys",
+ "hdf5x",
  "io_utils",
  "itertools",
  "mirror_sparse_matrix",
@@ -1539,6 +1544,7 @@ dependencies = [
  "enclone_stuff",
  "hdf5",
  "hdf5-sys",
+ "hdf5x",
  "io_utils",
  "itertools",
  "rayon",
@@ -1562,6 +1568,7 @@ dependencies = [
  "evalexpr",
  "hdf5",
  "hdf5-sys",
+ "hdf5x",
  "io_utils",
  "itertools",
  "ndarray",
@@ -1592,6 +1599,7 @@ dependencies = [
  "fontdb",
  "hdf5",
  "hdf5-sys",
+ "hdf5x",
  "io_utils",
  "itertools",
  "lazy_static",
@@ -1642,6 +1650,7 @@ dependencies = [
  "fs_extra",
  "hdf5",
  "hdf5-sys",
+ "hdf5x",
  "io_utils",
  "itertools",
  "lz4",
@@ -2357,8 +2366,6 @@ name = "hdf5-sys"
 version = "0.8.1"
 source = "git+https://github.com/10xGenomics/hdf5-rust.git?branch=conda_may2022#476eb4d4f56e51ff8714cf6ddb6b1e0411c515b2"
 dependencies = [
- "attohttpc 0.17.0",
- "bzip2",
  "hdf5-src",
  "libc",
  "libloading",
@@ -2367,8 +2374,6 @@ dependencies = [
  "regex",
  "serde",
  "serde_derive",
- "sha2 0.9.9",
- "tar",
  "winreg",
 ]
 
@@ -2380,6 +2385,62 @@ dependencies = [
  "ascii",
  "cfg-if 1.0.0",
  "hdf5-sys",
+ "libc",
+]
+
+[[package]]
+name = "hdf5x"
+version = "0.8.0"
+source = "git+https://github.com/DavidBJaffe/hdf5-rust-as-hdf5x?branch=conda_nov2021_as_hdf5x#6254e3eca3c8f9bd32be42610988664e81f3e5a1"
+dependencies = [
+ "bitflags",
+ "cfg-if 1.0.0",
+ "hdf5x-derive",
+ "hdf5x-sys",
+ "hdf5x-types",
+ "lazy_static",
+ "libc",
+ "ndarray",
+ "parking_lot 0.11.2",
+ "paste",
+]
+
+[[package]]
+name = "hdf5x-derive"
+version = "0.8.0"
+source = "git+https://github.com/DavidBJaffe/hdf5-rust-as-hdf5x?branch=conda_nov2021_as_hdf5x#6254e3eca3c8f9bd32be42610988664e81f3e5a1"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
+]
+
+[[package]]
+name = "hdf5x-sys"
+version = "0.8.0"
+source = "git+https://github.com/DavidBJaffe/hdf5-rust-as-hdf5x?branch=conda_nov2021_as_hdf5x#6254e3eca3c8f9bd32be42610988664e81f3e5a1"
+dependencies = [
+ "attohttpc 0.17.0",
+ "bzip2",
+ "libc",
+ "libloading",
+ "pkg-config",
+ "regex",
+ "serde",
+ "serde_derive",
+ "sha2 0.9.9",
+ "tar",
+ "winreg",
+]
+
+[[package]]
+name = "hdf5x-types"
+version = "0.8.0"
+source = "git+https://github.com/DavidBJaffe/hdf5-rust-as-hdf5x?branch=conda_nov2021_as_hdf5x#6254e3eca3c8f9bd32be42610988664e81f3e5a1"
+dependencies = [
+ "ascii",
+ "cfg-if 1.0.0",
+ "hdf5x-sys",
  "libc",
 ]
 

@@ -6,6 +6,11 @@ use enclone_print::print_clonotypes::print_clonotypes;
 use rayon::prelude::*;
 use std::collections::HashMap;
 
+#[cfg(not(target_os = "windows"))]
+use hdf5x::Reader;
+#[cfg(target_os = "windows")]
+use hdf5::Reader;
+
 pub fn main_enclone_stop_ranger(mut inter: EncloneIntermediates) -> Result<(), String> {
     // Unpack inputs.
 
@@ -27,8 +32,8 @@ pub fn main_enclone_stop_ranger(mut inter: EncloneIntermediates) -> Result<(), S
     // Load the GEX and FB data.  This is quite horrible: the code and computation are duplicated
     // verbatim in fcell.rs.
 
-    let mut d_readers = Vec::<Option<hdf5::Reader>>::new();
-    let mut ind_readers = Vec::<Option<hdf5::Reader>>::new();
+    let mut d_readers = Vec::<Option<Reader>>::new();
+    let mut ind_readers = Vec::<Option<Reader>>::new();
     for li in 0..ctl.origin_info.n() {
         if !ctl.origin_info.gex_path[li].is_empty() && !gex_info.gex_matrices[li].initialized() {
             let x = gex_info.h5_data[li].as_ref();
