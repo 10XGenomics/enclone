@@ -30,10 +30,10 @@ use string_utils::TextUtils;
 use vdj_ann::refx::RefData;
 use vector_utils::{bin_member, bin_position, erase_if, next_diff12_3, unique_sort};
 
-#[cfg(not(target_os = "windows"))]
-use hdf5x::Reader;
 #[cfg(target_os = "windows")]
 use hdf5::Reader;
+#[cfg(not(target_os = "windows"))]
+use hdf5x::Reader;
 
 // Print clonotypes.  A key challenge here is to define the columns that represent shared
 // chains.  This is given below by the code that forms an equivalence relation on the CDR3_AAs.

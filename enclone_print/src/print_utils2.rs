@@ -23,10 +23,10 @@ use vdj_ann::refx::RefData;
 use vector_utils::next_diff12_4;
 use vector_utils::{bin_member, bin_position, unique_sort};
 
-#[cfg(not(target_os = "windows"))]
-use hdf5x::Reader;
 #[cfg(target_os = "windows")]
 use hdf5::Reader;
+#[cfg(not(target_os = "windows"))]
+use hdf5x::Reader;
 
 // The following code creates a row in the enclone output table for a clonotype.  Simultaneously
 // it generates a row of parseable output.  And it does some other things that are not described
