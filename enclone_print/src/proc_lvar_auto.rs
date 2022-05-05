@@ -5,6 +5,10 @@ use amino::*;
 use enclone_core::defs::*;
 use enclone_core::median::*;
 use enclone_proto::types::*;
+#[cfg(target_os = "windows")]
+use hdf5::Reader;
+#[cfg(not(target_os = "windows"))]
+use hdf5x::Reader;
 use itertools::Itertools;
 use ndarray::s;
 use regex::Regex;
@@ -42,8 +46,8 @@ pub fn proc_lvar_auto(
     gex_counts_unsorted: &Vec<usize>,
     gex_fcounts_unsorted: &Vec<f64>,
     n_gexs: &Vec<usize>,
-    d_readers: &Vec<Option<hdf5::Reader>>,
-    ind_readers: &Vec<Option<hdf5::Reader>>,
+    d_readers: &Vec<Option<Reader>>,
+    ind_readers: &Vec<Option<Reader>>,
     h5_data: &Vec<(usize, Vec<u32>, Vec<u32>)>,
     alt_bcs: &Vec<String>,
 ) -> Result<bool, String> {

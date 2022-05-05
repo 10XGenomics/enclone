@@ -7,11 +7,6 @@ use hdf5x::types::FixedAscii;
 #[cfg(target_os = "windows")]
 use hdf5::types::FixedAscii;
 
-#[cfg(not(target_os = "windows"))]
-use hdf5x::File::open;
-#[cfg(target_os = "windows")]
-use hdf5::File::open;
-
 pub fn slurp_h5(
     h5_path: &str,
     take_matrix: bool,
@@ -21,7 +16,10 @@ pub fn slurp_h5(
 ) {
     // Read barcodes from the h5 file.
 
-    let h = open(&h5_path).unwrap();
+    #[cfg(not(target_os = "windows"))]
+    let h = hdf5x::File::open(&h5_path).unwrap();
+    #[cfg(target_os = "windows")]
+    let h = hdf5::File::open(&h5_path).unwrap();
     let barcode_loc = h.dataset("matrix/barcodes").unwrap();
     let barcodes0: Vec<FixedAscii<18>> = barcode_loc.as_reader().read_raw().unwrap();
     for i in 0..barcodes0.len() {

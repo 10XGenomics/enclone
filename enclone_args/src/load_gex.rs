@@ -109,7 +109,12 @@ pub fn get_gex_info(ctl: &mut EncloneControl) -> Result<GexInfo, String> {
             /* && !(path_exists(&bin_file) && !ctl.gen_opt.force_h5) */
             {
                 let f = &h5_paths[i];
+
+                #[cfg(not(target_os = "windows"))]
+                let h = hdf5x::File::open(&f).unwrap();
+                #[cfg(target_os = "windows")]
                 let h = hdf5::File::open(&f).unwrap();
+
                 h5_data.push(Some(h.dataset("matrix/data").unwrap()));
                 h5_indices.push(Some(h.dataset("matrix/indices").unwrap()));
                 let indptr = h.dataset("matrix/indptr").unwrap();
