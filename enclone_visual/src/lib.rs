@@ -643,6 +643,9 @@ pub fn cleanup() {}
 
 // Redirect SIGINT interrupts to the function "handler".  There may be issues with reliablity,
 // since a CTRL-C could happen at any point, including in the memory manager.
+//
+// When we tested this, we observed that under Linux, the signal handler is called, but on CTRL-C,
+// the handler is not called, and instead one gets a traceback.  This is a bug.
 
 #[cfg(not(target_os = "windows"))]
 pub fn install_signal_handler() -> Result<(), Error> {
