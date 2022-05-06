@@ -49,7 +49,7 @@ use std::ops::Deref;
 #[cfg(any(target_os = "macos", target_os = "ios"))]
 use clipboard::{ClipboardContext, ClipboardProvider};
 
-#[cfg(target_os = "linux")]
+#[cfg(any(target_os = "linux", target_os = "windows"))]
 use arboard::Clipboard;
 
 pub mod apocalypse;
@@ -229,7 +229,7 @@ pub fn get_clipboard_content() -> Option<String> {
     }
 }
 
-#[cfg(target_os = "linux")]
+#[cfg(any(target_os = "linux", target_os = "windows"))]
 pub fn get_clipboard_content() -> Option<String> {
     let clipboard = Clipboard::new();
     if clipboard.is_err() {

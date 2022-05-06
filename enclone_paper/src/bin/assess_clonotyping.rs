@@ -18,6 +18,8 @@
 // to get cross = number of cross-donor comparisons.
 //
 // 6. assess_clonotyping clones.tsv post_filter.csv cross
+//
+// Optional argument: VERBOSE.  Print the mixed clonotypes and exit.
 
 use io_utils::*;
 use itertools::Itertools;
@@ -35,10 +37,11 @@ pub fn main() {
     // Parse arguments.
 
     let args: Vec<String> = env::args().collect();
-    if args.len() != 4
+    if (args.len() != 4 && args.len() != 5)
         || (!args[1].ends_with(".csv") && !args[1].ends_with(".tsv"))
         || !args[2].ends_with(".csv")
         || !args[3].parse::<usize>().is_ok()
+        || (args.len() == 5 && args[4] != "VERBOSE")
     {
         eprintln!("\nPlease read the usage in the source file.\n");
         std::process::exit(1);
@@ -46,6 +49,7 @@ pub fn main() {
     let clone_file = &args[1];
     let filter_file = &args[2];
     let cross = args[3].force_usize();
+    let verbose = args.len() == 5;
 
     // Get dataset classification by sample.
 
@@ -97,7 +101,8 @@ pub fn main() {
 
     // Parse the clonotyping output file.
 
-    let mut assignments = Vec::<(usize, String, String)>::new();
+    let mut assignments = Vec::<(String, String, String)>::new();
+    let mut clone_ids = Vec::<String>::new();
     let mut datasets = Vec::<String>::new();
     let mut unassigned = 0;
     {
@@ -122,26 +127,31 @@ pub fn main() {
                 }
             } else {
                 let seq_id = &fields[n_seq.unwrap()];
-                let clone_id = &fields[n_clone.unwrap()];
+                let clone_id = fields[n_clone.unwrap()].clone();
                 if clone_id == "" || clone_id == "NA" {
                     unassigned += 1;
                     continue;
                 }
-                if !clone_id.parse::<usize>().is_ok() {
-                    eprintln!("\nProblem parsing line {}, clone_id = {}.", i + 1, clone_id);
-                }
-                let clone_id = clone_id.force_usize();
                 let dataset = seq_id.between("-", "_").to_string();
                 datasets.push(dataset.clone());
                 let barcode = format!("{}-1", seq_id.before("-"));
                 if bin_member(&post_filter, &(dataset.clone(), barcode.clone())) {
-                    assignments.push((clone_id, dataset, barcode));
+                    assignments.push((clone_id.clone(), dataset, barcode));
+                    clone_ids.push(clone_id);
                 }
             }
         }
         unique_sort(&mut datasets);
         unique_sort(&mut assignments);
     }
+    unique_sort(&mut clone_ids);
+    let mut assignments2 = Vec::<(usize, String, String)>::new();
+    for i in 0..assignments.len() {
+        let id = bin_position(&clone_ids, &assignments[i].0) as usize;
+        assignments2.push((id, assignments[i].1.clone(), assignments[i].2.clone()));
+    }
+    unique_sort(&mut assignments2);
+    let assignments = assignments2;
 
     // Create clonotypes.  Note that we allow a cell to be assigned to more than one clonotype.
 
@@ -162,6 +172,30 @@ pub fn main() {
     for i in 0..clono.len() {
         clono[i].sort();
     }
+
+    // Print mixed clonotypes.
+
+    if verbose {
+        let mut mixes = 0;
+        for i in 0..clono.len() {
+            let c = &clono[i];
+            let mut donors = Vec::<usize>::new();
+            for j in 0..c.len() {
+                donors.push(c[j].0);
+            }
+            unique_sort(&mut donors);
+            if donors.len() > 1 {
+                mixes += 1;
+                println!("\nMIXED CLONOTYPE {mixes}");
+                for j in 0..c.len() {
+                    println!("[{}] {} {} {}", j + 1, c[j].0, c[j].1, c[j].2,);
+                }
+            }
+        }
+        std::process::exit(0);
+    }
+
+    // Print barcodes in top clonotype.
 
     let mut mc = 0;
     let mut mci = 0;
