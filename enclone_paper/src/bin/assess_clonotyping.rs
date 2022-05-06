@@ -97,7 +97,8 @@ pub fn main() {
 
     // Parse the clonotyping output file.
 
-    let mut assignments = Vec::<(usize, String, String)>::new();
+    let mut assignments = Vec::<(String, String, String)>::new();
+    let mut clone_ids = Vec::<String>::new();
     let mut datasets = Vec::<String>::new();
     let mut unassigned = 0;
     {
@@ -122,26 +123,31 @@ pub fn main() {
                 }
             } else {
                 let seq_id = &fields[n_seq.unwrap()];
-                let clone_id = &fields[n_clone.unwrap()];
+                let clone_id = fields[n_clone.unwrap()].clone();
                 if clone_id == "" || clone_id == "NA" {
                     unassigned += 1;
                     continue;
                 }
-                if !clone_id.parse::<usize>().is_ok() {
-                    eprintln!("\nProblem parsing line {}, clone_id = {}.", i + 1, clone_id);
-                }
-                let clone_id = clone_id.force_usize();
                 let dataset = seq_id.between("-", "_").to_string();
                 datasets.push(dataset.clone());
                 let barcode = format!("{}-1", seq_id.before("-"));
                 if bin_member(&post_filter, &(dataset.clone(), barcode.clone())) {
-                    assignments.push((clone_id, dataset, barcode));
+                    assignments.push((clone_id.clone(), dataset, barcode));
+                    clone_ids.push(clone_id);
                 }
             }
         }
         unique_sort(&mut datasets);
         unique_sort(&mut assignments);
     }
+    unique_sort(&mut clone_ids);
+    let mut assignments2 = Vec::<(usize, String, String)>::new();
+    for i in 0..assignments.len() {
+        let id = bin_position(&clone_ids, &assignments[i].0) as usize;
+        assignments2.push((id, assignments[i].1.clone(), assignments[i].2.clone()));
+    }
+    unique_sort(&mut assignments2);
+    let assignments = assignments2;
 
     // Create clonotypes.  Note that we allow a cell to be assigned to more than one clonotype.
 
