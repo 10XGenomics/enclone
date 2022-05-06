@@ -21,7 +21,6 @@ use iced::{
 use iced_native::{event, subscription, window, Event};
 use io_utils::*;
 use messages::Message;
-use std::env;
 use std::fs::{create_dir, create_dir_all, metadata, remove_file, File};
 use std::io::{Read, Write};
 use std::sync::atomic::Ordering::SeqCst;
@@ -80,20 +79,15 @@ impl Application for EncloneVisual {
         if EHOME.lock().unwrap().len() > 0 {
             enclone = EHOME.lock().unwrap()[0].clone();
         } else {
-            let mut home = String::new();
-            for (key, value) in env::vars() {
-                if key == "HOME" {
-                    home = value.clone();
-                }
-            }
-            if home.len() == 0 {
+            let home = home::home_dir();
+            if home.is_none() {
                 eprintln!(
                     "Unable to determine home directory.  This is unexpected and \
                     pathological.\nPlease report this problem!\n"
                 );
                 std::process::exit(1);
             }
-            enclone = format!("{}/enclone", home);
+            enclone = format!("{}/enclone", home.unwrap().display());
         }
         if !path_exists(&enclone) {
             eprintln!(
