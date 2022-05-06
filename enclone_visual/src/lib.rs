@@ -49,6 +49,9 @@ use std::ops::Deref;
 #[cfg(any(target_os = "macos", target_os = "ios"))]
 use clipboard::{ClipboardContext, ClipboardProvider};
 
+#[cfg(target_os = "linux")]
+use arboard::Clipboard;
+
 pub mod apocalypse;
 pub mod archive;
 pub mod canvas_view;
@@ -209,9 +212,6 @@ pub fn compressed_message_history() -> Vec<String> {
     messages2
 }
 
-// get_clipboard_content: this should work under Linux, but we don't need it for that now, and
-// there are compilation issues when compiled for Linux via GitHub Actions.
-
 #[cfg(any(target_os = "macos", target_os = "ios"))]
 pub fn get_clipboard_content() -> Option<String> {
     let ctx: Result<ClipboardContext, _> = ClipboardProvider::new();
@@ -229,7 +229,18 @@ pub fn get_clipboard_content() -> Option<String> {
     }
 }
 
-#[cfg(not(any(target_os = "macos", target_os = "ios")))]
+#[cfg(target_os = "linux")]
+pub fn get_clipboard_content() -> Option<String> {
+    let clipboard = Clipboard::new();
+    if clipboard.is_err() {
+        xprintln!("\nSomething went wrong accessing clipboard.");
+        xprintln!("This is weird so please ask for help.");
+        std::process::exit(1);
+    }
+    Some(clipboard.unwrap().get_text().unwrap())
+}
+
+#[cfg(target_os = "windows")]
 pub fn get_clipboard_content() -> Option<String> {
     None
 }
@@ -632,6 +643,9 @@ pub fn cleanup() {}
 
 // Redirect SIGINT interrupts to the function "handler".  There may be issues with reliablity,
 // since a CTRL-C could happen at any point, including in the memory manager.
+//
+// When we tested this, we observed that under Linux, the signal handler is called, but on CTRL-C,
+// the handler is not called, and instead one gets a traceback.  This is a bug.
 
 #[cfg(not(target_os = "windows"))]
 pub fn install_signal_handler() -> Result<(), Error> {
