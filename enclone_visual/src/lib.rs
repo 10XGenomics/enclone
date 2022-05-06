@@ -240,11 +240,6 @@ pub fn get_clipboard_content() -> Option<String> {
     Some(clipboard.unwrap().get_text().unwrap())
 }
 
-#[cfg(target_os = "windows")]
-pub fn get_clipboard_content() -> Option<String> {
-    None
-}
-
 pub fn prepend_to_vec<T: Clone>(x: &mut Vec<T>, y: &Vec<T>) {
     let mut x_copy = x.clone();
     *x = y.to_vec();
