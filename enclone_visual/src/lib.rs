@@ -212,9 +212,6 @@ pub fn compressed_message_history() -> Vec<String> {
     messages2
 }
 
-// get_clipboard_content: this should work under Linux, but we don't need it for that now, and
-// there are compilation issues when compiled for Linux via GitHub Actions.
-
 #[cfg(any(target_os = "macos", target_os = "ios"))]
 pub fn get_clipboard_content() -> Option<String> {
     let ctx: Result<ClipboardContext, _> = ClipboardProvider::new();
