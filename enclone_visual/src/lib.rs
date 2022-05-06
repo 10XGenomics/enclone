@@ -49,6 +49,9 @@ use std::ops::Deref;
 #[cfg(any(target_os = "macos", target_os = "ios"))]
 use clipboard::{ClipboardContext, ClipboardProvider};
 
+#[cfg(target_os = "linux")]
+use arboard::Clipboard;
+
 pub mod apocalypse;
 pub mod archive;
 pub mod canvas_view;
@@ -229,7 +232,18 @@ pub fn get_clipboard_content() -> Option<String> {
     }
 }
 
-#[cfg(not(any(target_os = "macos", target_os = "ios")))]
+#[cfg(target_os = "linux")]
+pub fn get_clipboard_content() -> Option<String> {
+    let clipboard = Clipboard::new();
+    if clipboard.is_err() {
+        xprintln!("\nSomething went wrong accessing clipboard.");
+        xprintln!("This is weird so please ask for help.");
+        std::process::exit(1);
+    }
+    Some(clipboard.unwrap().get_text().unwrap())
+}
+
+#[cfg(target_os = "windows")]
 pub fn get_clipboard_content() -> Option<String> {
     None
 }
