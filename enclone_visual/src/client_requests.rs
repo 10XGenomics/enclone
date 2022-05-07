@@ -202,7 +202,26 @@ pub async fn process_requests(
                         );
                     } else {
                         let msg = format!("\nThe enclone server is unhappy.  It says:\n\n{}", err);
-                        output = fold(&msg, 100).join("\n");
+                        let mut msg = fold(&msg, 100).join("\n");
+                        if msg.contains("transport error") {
+                            msg += &mut format!(
+                                "\n\nThe most likely explanation for this particular \
+                                message \
+                                is that the server crashed.\nThe stack trace from the crash may be \
+                                visible in the terminal window from which\n\
+                                you launched enclone visual.\n"
+                            );
+                        } else if msg.contains("error trying to connect") {
+                            msg += &mut format!(
+                                "\n\nThe most likely explanation for this particular \
+                                message \
+                                is that the server had crashed before you entered\n\
+                                your last command.  The stack trace from the crash may be \
+                                visible in the terminal window from which\n\
+                                you launched enclone visual.\n"
+                            );
+                        }
+                        output = msg.clone();
                         xprintln!("{}", msg);
                     }
                     let mut ebuffer = [0; 10000];
