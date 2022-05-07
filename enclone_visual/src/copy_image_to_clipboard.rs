@@ -19,7 +19,7 @@ pub type Id = *mut Object;
 #[cfg(any(target_os = "macos", target_os = "ios"))]
 use libc::c_void;
 
-#[cfg(target_os = "linux")]
+#[cfg(any(target_os = "linux", target_os = "windows"))]
 use arboard::{Clipboard, ImageData};
 
 #[cfg(target_os = "linux")]
@@ -53,7 +53,7 @@ pub fn copy_png_bytes_to_clipboard(bytes: &[u8]) {
     }
 }
 
-#[cfg(target_os = "linux")]
+#[cfg(any(target_os = "linux", target_os = "windows"))]
 pub fn copy_png_bytes_to_clipboard(bytes: &[u8]) {
     let (header, image_data) = png_decoder::decode(&bytes).unwrap();
     let (width, height) = (header.width as usize, header.height as usize);
@@ -65,9 +65,6 @@ pub fn copy_png_bytes_to_clipboard(bytes: &[u8]) {
     };
     clipboard.set_image(img_data).unwrap();
 }
-
-#[cfg(not(any(target_os = "macos", target_os = "ios", target_os = "linux")))]
-pub fn copy_png_bytes_to_clipboard(_bytes: &[u8]) {}
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
