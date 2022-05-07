@@ -22,7 +22,10 @@ pub fn slurp_h5(
     let h = hdf5::File::open(&h5_path).unwrap();
     let barcode_loc = h.dataset("matrix/barcodes").unwrap();
 
+    #[cfg(not(target_os = "windows"))]
     let barcodes0: Result<Vec<FixedAscii<18>>, hdf5x::Error> = barcode_loc.as_reader().read_raw();
+    #[cfg(target_os = "windows")]
+    let barcodes0: Result<Vec<FixedAscii<18>>, hdf5::Error> = barcode_loc.as_reader().read_raw();
     if barcodes0.is_err() {
         return Err(format!(
             "\nencountered error reading HDF5 file\n{h5_path}\nas follows\n{}\n",
