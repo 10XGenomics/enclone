@@ -201,7 +201,7 @@ see.  #enclone is fast, typically responding in seconds (if run on a single data
 <tr>
 <th align=left style="padding: 3px; font-weight: normal; border: 3px solid #9B59B6">
 There is also a graphical (GUI) version of #enclone, called #enclone_visual, that is 
-<b>alpha</b> software, and is available at present for Macs only.  To use it, one installs
+<b>alpha</b> software.  To use it, one installs
 #enclone as described below and then types <code>enclone VIS</code> from a terminal window 
 to launch the GUI.  Documentation is <a href="pages/auto/visual.html">here</a>.
 </th>
