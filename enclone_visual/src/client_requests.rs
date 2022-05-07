@@ -202,7 +202,7 @@ pub async fn process_requests(
                         );
                     } else {
                         let msg = format!("\nThe enclone server is unhappy.  It says:\n\n{}", err);
-                        output = msg.clone();
+                        output = fold(&msg, 100).join("\n");
                         xprintln!("{}", msg);
                     }
                     let mut ebuffer = [0; 10000];
