@@ -776,13 +776,23 @@ pub fn load_gex(
             // Otherwise we have to get stuff from the h5 file.
             } else {
                 let mut matrix = Vec::<Vec<(i32, i32)>>::new();
-                slurp_h5(
+                let s = slurp_h5(
                     &h5_path,
                     bin_file_state == 3,
                     &mut r.2,
                     &mut r.1,
                     &mut matrix,
                 );
+                if s.is_err() {
+                    let err;
+                    if s.as_ref().err().is_some() {
+                        err = s.err().unwrap();
+                    } else {
+                        err = "[NO ERROR MESSAGE]".to_string();
+                    }
+                    r.11 = err;
+                    return;
+                }
                 if bin_file_state == 3 {
                     r.3 = MirrorSparseMatrix::build_from_vec(&matrix, &r.2, &r.1);
                     write_to_file(&r.3, &bin_file);

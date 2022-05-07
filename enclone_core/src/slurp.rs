@@ -13,7 +13,7 @@ pub fn slurp_h5(
     barcodes: &mut Vec<String>,
     features: &mut Vec<String>,
     matrix: &mut Vec<Vec<(i32, i32)>>,
-) {
+) -> Result<(), String> {
     // Read barcodes from the h5 file.
 
     #[cfg(not(target_os = "windows"))]
@@ -21,7 +21,16 @@ pub fn slurp_h5(
     #[cfg(target_os = "windows")]
     let h = hdf5::File::open(&h5_path).unwrap();
     let barcode_loc = h.dataset("matrix/barcodes").unwrap();
-    let barcodes0: Vec<FixedAscii<18>> = barcode_loc.as_reader().read_raw().unwrap();
+
+    let barcodes0: Result<Vec<FixedAscii<18>>, hdf5x::Error> = barcode_loc.as_reader().read_raw();
+    if barcodes0.is_err() {
+        return Err(format!(
+            "\nencountered error reading HDF5 file\n{h5_path}\nas follows\n{}\n",
+            barcodes0.as_ref().err().unwrap()
+        ));
+    }
+    let barcodes0 = barcodes0.unwrap();
+
     for i in 0..barcodes0.len() {
         barcodes.push(barcodes0[i].to_string());
     }
@@ -57,4 +66,5 @@ pub fn slurp_h5(
             }
         }
     }
+    Ok(())
 }

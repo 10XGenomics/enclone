@@ -142,7 +142,7 @@ pub fn copy_for_enclone(source: &str, target: &str) {
         let mut barcodes = Vec::<String>::new();
         let mut features = Vec::<String>::new();
         let mut matrix = Vec::<Vec<(i32, i32)>>::new();
-        slurp_h5(&h5_target, true, &mut barcodes, &mut features, &mut matrix);
+        slurp_h5(&h5_target, true, &mut barcodes, &mut features, &mut matrix).unwrap();
         let msm = MirrorSparseMatrix::build_from_vec(&matrix, &barcodes, &features);
         let bin_file = format!("{}/outs/feature_barcode_matrix.bin", target);
         write_to_file(&msm, &bin_file);
@@ -241,7 +241,7 @@ pub fn copy_for_enclone(source: &str, target: &str) {
         let mut barcodes = Vec::<String>::new();
         let mut features = Vec::<String>::new();
         let mut matrix = Vec::<Vec<(i32, i32)>>::new();
-        slurp_h5(&h5_target, true, &mut barcodes, &mut features, &mut matrix);
+        slurp_h5(&h5_target, true, &mut barcodes, &mut features, &mut matrix).unwrap();
         let msm = MirrorSparseMatrix::build_from_vec(&matrix, &barcodes, &features);
         let bin_file = format!("{}/feature_barcode_matrix.bin", count_pd_to);
         write_to_file(&msm, &bin_file);
@@ -355,7 +355,7 @@ pub fn copy_for_enclone(source: &str, target: &str) {
         let mut barcodes = Vec::<String>::new();
         let mut features = Vec::<String>::new();
         let mut matrix = Vec::<Vec<(i32, i32)>>::new();
-        slurp_h5(&h5_target, true, &mut barcodes, &mut features, &mut matrix);
+        slurp_h5(&h5_target, true, &mut barcodes, &mut features, &mut matrix).unwrap();
         let msm = MirrorSparseMatrix::build_from_vec(&matrix, &barcodes, &features);
         let bin_file = format!("{}/feature_barcode_matrix.bin", count_pd_to);
         write_to_file(&msm, &bin_file);
