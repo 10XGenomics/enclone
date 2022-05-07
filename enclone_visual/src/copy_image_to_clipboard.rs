@@ -23,7 +23,7 @@ use libc::c_void;
 #[cfg(any(target_os = "linux", target_os = "windows"))]
 use arboard::{Clipboard, ImageData};
 
-#[cfg(target_os = "linux")]
+#[cfg(any(target_os = "linux", target_os = "windows"))]
 use string_utils::*;
 
 #[cfg(any(target_os = "macos", target_os = "ios"))]
