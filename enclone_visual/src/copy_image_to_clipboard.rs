@@ -1,5 +1,6 @@
-// This code is copied with small changes from the pasteboard crate.  As implemented, it only
-// works on a Mac.
+// Copyright (c) 2021 10x Genomics, Inc. All rights reserved.
+//
+// This includes code copied with small changes from the pasteboard crate.
 //
 // The same code presumably works for image types other than PNG, but has only been tested on PNG.
 
@@ -94,7 +95,7 @@ pub fn copy_bytes_to_clipboard(bytes: &[u8]) {
     }
 }
 
-#[cfg(target_os = "linux")]
+#[cfg(any(target_os = "linux", target_os = "windows"))]
 pub fn copy_bytes_to_clipboard(bytes: &[u8]) {
     if bytes.len() > 0 {
         let mut clipboard = Clipboard::new().unwrap();
@@ -102,6 +103,3 @@ pub fn copy_bytes_to_clipboard(bytes: &[u8]) {
         clipboard.set_text(the_string.into()).unwrap();
     }
 }
-
-#[cfg(not(any(target_os = "macos", target_os = "ios", target_os = "linux")))]
-pub fn copy_bytes_to_clipboard(_bytes: &[u8]) {}
