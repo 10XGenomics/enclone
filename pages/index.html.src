@@ -183,8 +183,8 @@ sgRNA, and other cellular features. You can see a list of publications that use 
 <h2>The #enclone software</h2>
 
 <p>#enclone is beta software<sup>††</sup> released under <a href="LICENSE.txt">this license</a>.  
-Binary executables for Linux and Mac can be directly downloaded from this page, as can sample 10x 
-Genomics datasets.
+Binary executables for Linux and Mac and Windows can be directly downloaded from this page, as can 
+sample 10x Genomics datasets.
 #enclone can be run on a laptop, desktop, or server.
 </p>
 <p>
@@ -233,7 +233,7 @@ and on rare occasions may involve breaking syntax that previously worked. See
 
 <p>
 You can run #enclone directly from a <b>Linux</b> or <b>Mac</b> terminal window; see 
-<a href="pages/auto/windows.html">here</a> for <b>Windows</b> options.
+<a href="pages/auto/windows.html">here</a> for <b>Windows</b> instructions.
 </p>
 
 <table>

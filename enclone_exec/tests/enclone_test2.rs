@@ -557,7 +557,7 @@ fn test_for_broken_links_and_spellcheck() {
         bioinf biorxiv cdiff cellranger chmod clen clono clonotype clonotypes \
         clonotyping codebase colorn contig contigs cqvwdsssdhpyvf cred crispr cshlp \
         csv ctrlc cvar cvars datalayer dejavusansmono dotplot \
-        dref dyiid enclone executables false fcell \
+        dref dyiid enclone exe executables false fcell \
         fixedtextbox foursie foursies frameshifted frameshifts frontiersin fwr fwyh ganesh \
         genomics germline ggctttgactactgg gggctttgactactgg github githubusercontent google \
         googletagmanager grok gz hcomp html \
@@ -568,7 +568,7 @@ fn test_for_broken_links_and_spellcheck() {
         moresies multiomic nall ncbi nchains ncross ndoublet newick nimproper \
         nopager noprint nospaces nqual nseg nsegn nsig nwhitef oligos onesie onesies osx parseable \
         pbmc pcell pcols pdb pgas phad phylip png \
-        plasmablast preinstalled prepends pwm pwms recombinants redownloads \
+        plasmablast powershell preinstalled prepends pwm pwms recombinants redownloads \
         researchsquare rustup samtools screenshot segn \
         sloooooooow spacebar stackexchange standalone stcrdab stdout sthnqedkr subclonotype \
         subclonotypes sudo svg tattgtagtggtggtagct tctgtgcgagata tctgtgcgagat tctgtgcgagata \

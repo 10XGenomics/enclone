@@ -81,7 +81,8 @@ sync each <code>Cargo.toml</code> to <code>master.toml</code>.
 
 <hr><h2>Prerequisites</h2>
 
-<p>#enclone can be built and run on an x86-64 Linux server or a Mac.</p>
+<p>#enclone can be built and run on an x86-64 Linux server or a Mac.  It can also be built 
+under Windows, but we do not provide instructions for this.</p>
 
 <p>The following software are needed to build and test #enclone:
 

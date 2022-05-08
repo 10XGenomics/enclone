@@ -13,9 +13,9 @@
 
 <p>
 #enclone_visual is a graphical user
-interface (GUI) for #enclone that can be run on a Mac or Linux box.  It allows for simultaneous 
-viewing of clonotype tables and graphical objects such as honeycomb plots that #enclone can 
-create, and has several other features that you may find convenient.
+interface (GUI) for #enclone that can be run on a Mac or Linux or Windows computer.  It allows for 
+simultaneous viewing of clonotype tables and graphical objects such as honeycomb plots that 
+#enclone can create, and has several other features that you may find convenient.
 </p>
 
 <p style="border: 2px; border-style: solid; border-color: black; background-color: #EBF4FC;
@@ -34,10 +34,9 @@ problems.
 tables are in black and white rather than color.  To fix this, we are waiting on code changes
 from developers outside 10x, and do not have a timeline for those changes.
 
-<br>• At present we only support the Mac and Linux platforms.  However, because of considerable
+<br>• Because of considerable
 variability between Linux configurations, we anticipate that there may be problems with Linux.
-Please see the debugging under Linux section, below.  We think it likely that the code could be 
-generalized to the Windows platforms, but have not yet done so.
+Please see the debugging under Linux section, below.  
 </p>
 
 <! --- ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ --->

@@ -43,27 +43,59 @@ gtag('config', 'UA-58278925-3');
 
 <h1>Using <span style="color:rgb(120,123,175);font-weight:900">enclone</span> on Windows computers</h1>
 
-We are attempting to build <span style="color:rgb(120,123,175);font-weight:900">enclone</span> for Windows.  This may take some time.
-In the meantime, we can suggest two workarounds:
+We provide a build of <span style="color:rgb(120,123,175);font-weight:900">enclone</span> for computers running Windows, which can be launched from
+PowerShell.  There is some limitations.
 
-<br><br>
-1. Use Windows Subsystem for Linux (WSL) on your Windows computer.  You can get Ubuntu Linux for
-free <a href="https://ubuntu.com/wsl">here</a>, and we're told that current PCs come with
-this preinstalled.
+<ul>
 
-<br><br>
-2. Set up your Windows computer for Linux dual boot.  This is similar but generally much less
-satisfactory, since the computer has to be rebooted between uses of Windows and Linux.
+<li>
+    There is no installation script.  Here are the approximate steps that are needed to install,
+    equivalent to the <code>medium</code> option:
 
-<br><br>
-<b>Importantly, we have not tested either solution ourselves, but are relaying what has been
-suggested to us by others.</b>
+    <table>
+    <tr>
+    <th align=left style="padding: 5px; font-weight: normal; border: 2px solid black">
 
-<br><br>
-In either case, while you are using Linux on your Windows computer, you will have access to
-both the files on the Linux side and the files on the Windows side.  The files on the 
-Windows side may be found in the directory <code>/mnt/c</code>, and you can explore what is 
-there by typing <code>ls /mnt/c</code> and then enlarging the path.
+    <ol>
+    <li><code>mkdir bin</code></li>
+    <li><code>cd bin</code></li>
+    <li><code>Invoke-WebRequest 
+        https://github.com/10XGenomics/enclone/releases/latest/download/enclone_windows.exe 
+        -OutFile enclone.exe</code></li>
+    <li>Add the full path of <code>bin</code> to your path.</li>
+    <li><code>cd ..</code></li>
+    <li><code>mkdir enclone</code></li>
+    <li><code>cd enclone</code></li>
+    <li>Download data by clicking here and waiting:
+        <a href="https://github.com/10XGenomics/enclone-data/archive/refs/heads/master.zip">
+        https://github.com/10XGenomics/enclone-data/archive/refs/heads/master.zip</a>.</li>
+    <li><code>cd ../Downloads</code>
+    <li><code>Expand-Archive -Path enclone-data-master.zip</code></li>
+    <li><code>mv enclone-data-master/enclone-data-master/big_inputs/version15 
+        ~/enclone/datasets</code></li>
+    </ol>
+
+    </th>
+    </tr>
+    </table>
+
+    After these steps, you should be able to run <span style="color:rgb(120,123,175);font-weight:900">enclone</span> commands.
+</li>
+
+<li>If you run an <span style="color:rgb(120,123,175);font-weight:900">enclone</span> command (other than <code>enclone VIS</code>, see below), add the 
+    argument <code>PLAIN</code> to your command.  Without that, incomprehensible, untranslated
+    escape sequences for coloring and bolding will appear in your terminal.  Moreover, commands
+    do not page their output, so the entire output of an <span style="color:rgb(120,123,175);font-weight:900">enclone</span> command will scroll past on your
+    screen for each command typed.  You may want to redirect output to a file.
+</li>
+
+<li>The command <code>enclone VIS</code> should work verbatim.</li>
+
+<li>Use of <span style="color:rgb(120,123,175);font-weight:900">enclone</span> under Windows has been minimally tested, so there may be problems.  Please
+    let us know!
+</li>
+
+</ul>
 
 </body>
 </html>
