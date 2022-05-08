@@ -59,3 +59,4 @@ hdf5-sys = { git = "https://github.com/aldanor/hdf5-rust", branch = "master", de
 [build-dependencies]
 chrono = { version = "0.4", default-features = false, features = ["std", "clock"] }
 string_utils = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
+libz-sys = { version = "1", features = ["zlib-ng"], default-features = false }
