@@ -1230,7 +1230,6 @@ dependencies = [
  "hdf5x",
  "io_utils",
  "itertools",
- "libz-sys",
  "mirror_sparse_matrix",
  "pager",
  "perf_stats",
@@ -1263,7 +1262,6 @@ dependencies = [
  "hdf5x",
  "io_utils",
  "itertools",
- "libz-sys",
  "mirror_sparse_matrix",
  "rand",
  "rayon",
@@ -1293,7 +1291,6 @@ dependencies = [
  "io_utils",
  "itertools",
  "lazy_static",
- "libz-sys",
  "mirror_sparse_matrix",
  "perf_stats",
  "pretty_trace",
@@ -1405,7 +1402,6 @@ dependencies = [
  "hdf5x",
  "io_utils",
  "itertools",
- "libz-sys",
  "perf_stats",
  "pretty_trace",
  "rayon",
@@ -1463,7 +1459,6 @@ dependencies = [
  "hdf5x",
  "io_utils",
  "itertools",
- "libz-sys",
  "mirror_sparse_matrix",
  "ndarray",
  "permutation",
@@ -1512,7 +1507,6 @@ dependencies = [
  "hdf5x",
  "io_utils",
  "itertools",
- "libz-sys",
  "rayon",
  "string_utils",
  "vdj_ann",
@@ -1537,7 +1531,6 @@ dependencies = [
  "hdf5x",
  "io_utils",
  "itertools",
- "libz-sys",
  "ndarray",
  "qd",
  "rayon",
@@ -1570,7 +1563,6 @@ dependencies = [
  "io_utils",
  "itertools",
  "lazy_static",
- "libz-sys",
  "mirror_sparse_matrix",
  "ndarray",
  "palette",
@@ -1621,7 +1613,6 @@ dependencies = [
  "hdf5x",
  "io_utils",
  "itertools",
- "libz-sys",
  "lz4",
  "mirror_sparse_matrix",
  "pager",
@@ -2297,7 +2288,7 @@ dependencies = [
 [[package]]
 name = "hdf5"
 version = "0.8.1"
-source = "git+https://github.com/aldanor/hdf5-rust?branch=master#d71b03e1f3235a2a714fea5233231cc04f2c7d07"
+source = "git+https://github.com/CompRD/hdf5-rust?branch=master#528bc89007f6795f367d780cabdf4dfbba2507c1"
 dependencies = [
  "bitflags",
  "cfg-if 1.0.0",
@@ -2314,7 +2305,7 @@ dependencies = [
 [[package]]
 name = "hdf5-derive"
 version = "0.8.1"
-source = "git+https://github.com/aldanor/hdf5-rust?branch=master#d71b03e1f3235a2a714fea5233231cc04f2c7d07"
+source = "git+https://github.com/CompRD/hdf5-rust?branch=master#528bc89007f6795f367d780cabdf4dfbba2507c1"
 dependencies = [
  "proc-macro-error",
  "proc-macro2",
@@ -2325,7 +2316,7 @@ dependencies = [
 [[package]]
 name = "hdf5-src"
 version = "0.8.1"
-source = "git+https://github.com/aldanor/hdf5-rust?branch=master#d71b03e1f3235a2a714fea5233231cc04f2c7d07"
+source = "git+https://github.com/CompRD/hdf5-rust?branch=master#528bc89007f6795f367d780cabdf4dfbba2507c1"
 dependencies = [
  "cmake",
  "libz-sys",
@@ -2334,7 +2325,7 @@ dependencies = [
 [[package]]
 name = "hdf5-sys"
 version = "0.8.1"
-source = "git+https://github.com/aldanor/hdf5-rust?branch=master#d71b03e1f3235a2a714fea5233231cc04f2c7d07"
+source = "git+https://github.com/CompRD/hdf5-rust?branch=master#528bc89007f6795f367d780cabdf4dfbba2507c1"
 dependencies = [
  "hdf5-src",
  "libc",
@@ -2350,7 +2341,7 @@ dependencies = [
 [[package]]
 name = "hdf5-types"
 version = "0.8.1"
-source = "git+https://github.com/aldanor/hdf5-rust?branch=master#d71b03e1f3235a2a714fea5233231cc04f2c7d07"
+source = "git+https://github.com/CompRD/hdf5-rust?branch=master#528bc89007f6795f367d780cabdf4dfbba2507c1"
 dependencies = [
  "ascii",
  "cfg-if 1.0.0",
@@ -2895,7 +2886,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "92e7e15d7610cce1d9752e137625f14e61a28cd45929b6e12e47b50fe154ee2e"
 dependencies = [
  "cc",
- "cmake",
  "libc",
  "pkg-config",
  "vcpkg",

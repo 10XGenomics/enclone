@@ -44,6 +44,5 @@ vector_utils = { version = "0.1", git = "https://github.com/10XGenomics/rust-too
 hdf5x = { git = "https://github.com/DavidBJaffe/hdf5-rust-as-hdf5x", branch = "conda_nov2021_as_hdf5x", default-features=false, features = ["conda"] }
 
 [target.'cfg(windows)'.dependencies]
-hdf5 = { git = "https://github.com/aldanor/hdf5-rust", branch = "master", default-features=false }
-hdf5-sys = { git = "https://github.com/aldanor/hdf5-rust", branch = "master", default-features=false, features = ["static","zlib"] }
-libz-sys = { version = "1", features = ["zlib-ng"], default-features = false }
+hdf5 = { git = "https://github.com/CompRD/hdf5-rust", branch = "master", default-features=false }
+hdf5-sys = { git = "https://github.com/CompRD/hdf5-rust", branch = "master", default-features=false, features = ["static","zlib"] }
