@@ -126,13 +126,17 @@ pub fn main() {
                     }
                 }
             } else {
-                let seq_id = &fields[n_seq.unwrap()];
+                let mut seq_id = fields[n_seq.unwrap()].clone();
+                if seq_id.contains("-1-") {
+                    seq_id = seq_id.replace("-1-", "-");
+                }
                 let clone_id = fields[n_clone.unwrap()].clone();
                 if clone_id == "" || clone_id == "NA" {
                     unassigned += 1;
                     continue;
                 }
                 let dataset = seq_id.between("-", "_").to_string();
+
                 datasets.push(dataset.clone());
                 let barcode = format!("{}-1", seq_id.before("-"));
                 if bin_member(&post_filter, &(dataset.clone(), barcode.clone())) {

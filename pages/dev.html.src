@@ -271,6 +271,19 @@ Otherwise you’ll get an error message.</li>
 </ul>
 </p>
 
+<table>
+<tr>
+<th align=left style="padding: 3px; font-weight: normal; border: 2px solid black">
+There are some other major things that are not tested:
+<ul>
+<li>Compilation of #enclone under Windows.</li>
+<li>Functionality of #enclone_visual under Linux and Windows.</li>
+<li>Functionality of <code>hdf5</code> under Windows (which was previously broken).</li>
+</ul>
+</th>
+</tr>
+</table>
+
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
 <hr><h2>Profiling #enclone</h2>
