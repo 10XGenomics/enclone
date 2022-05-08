@@ -2288,7 +2288,7 @@ dependencies = [
 [[package]]
 name = "hdf5"
 version = "0.8.1"
-source = "git+https://github.com/10xGenomics/hdf5-rust.git?branch=conda_may2022#476eb4d4f56e51ff8714cf6ddb6b1e0411c515b2"
+source = "git+https://github.com/aldanor/hdf5-rust?branch=master#d71b03e1f3235a2a714fea5233231cc04f2c7d07"
 dependencies = [
  "bitflags",
  "cfg-if 1.0.0",
@@ -2305,7 +2305,7 @@ dependencies = [
 [[package]]
 name = "hdf5-derive"
 version = "0.8.1"
-source = "git+https://github.com/10xGenomics/hdf5-rust.git?branch=conda_may2022#476eb4d4f56e51ff8714cf6ddb6b1e0411c515b2"
+source = "git+https://github.com/aldanor/hdf5-rust?branch=master#d71b03e1f3235a2a714fea5233231cc04f2c7d07"
 dependencies = [
  "proc-macro-error",
  "proc-macro2",
@@ -2316,7 +2316,7 @@ dependencies = [
 [[package]]
 name = "hdf5-src"
 version = "0.8.1"
-source = "git+https://github.com/10xGenomics/hdf5-rust.git?branch=conda_may2022#476eb4d4f56e51ff8714cf6ddb6b1e0411c515b2"
+source = "git+https://github.com/aldanor/hdf5-rust?branch=master#d71b03e1f3235a2a714fea5233231cc04f2c7d07"
 dependencies = [
  "cmake",
  "libz-sys",
@@ -2325,7 +2325,7 @@ dependencies = [
 [[package]]
 name = "hdf5-sys"
 version = "0.8.1"
-source = "git+https://github.com/10xGenomics/hdf5-rust.git?branch=conda_may2022#476eb4d4f56e51ff8714cf6ddb6b1e0411c515b2"
+source = "git+https://github.com/aldanor/hdf5-rust?branch=master#d71b03e1f3235a2a714fea5233231cc04f2c7d07"
 dependencies = [
  "hdf5-src",
  "libc",
@@ -2341,7 +2341,7 @@ dependencies = [
 [[package]]
 name = "hdf5-types"
 version = "0.8.1"
-source = "git+https://github.com/10xGenomics/hdf5-rust.git?branch=conda_may2022#476eb4d4f56e51ff8714cf6ddb6b1e0411c515b2"
+source = "git+https://github.com/aldanor/hdf5-rust?branch=master#d71b03e1f3235a2a714fea5233231cc04f2c7d07"
 dependencies = [
  "ascii",
  "cfg-if 1.0.0",
