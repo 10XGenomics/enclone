@@ -240,7 +240,18 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                     std::process::exit(1);
                 }
                 let enclone = format!("{}/enclone", home.unwrap().display());
-                let filename = format!("{}/visual/history/{}", enclone, now);
+                let history = format!("{}/visual/history", enclone);
+                if !path_exists(&history) {
+                    let res = std::fs::create_dir_all(&history);
+                    if res.is_err() {
+                        eprintln!(
+                            "Unable to create the directory ~/enclone/visual/history.  \
+                            This is odd and unexpected.\nPlease report this problem!\n"
+                        );
+                        std::process::exit(1);
+                    }
+                }
+                let filename = format!("{}/{}", history, now);
                 let res = write_enclone_visual_history(&evh, &filename);
                 if res.is_err() {
                     eprintln!("\nWas unable to write history to the file {}.\n", filename);
