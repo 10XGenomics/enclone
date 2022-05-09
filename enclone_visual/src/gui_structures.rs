@@ -395,7 +395,7 @@ impl EncloneVisual {
         let res = write_enclone_visual_history(&self.h, &path);
         if res.is_err() {
             xprintln!(
-                "Was Unable to write history to the file {}, \
+                "Was unable to write history to the file {}, \
                 so Save failed.\n",
                 path
             );
@@ -430,6 +430,7 @@ impl EncloneVisual {
         let mut now = format!("{:?}", Local::now());
         now = now.replace("T", "___");
         now = now.before(".").to_string();
+        now = now.replace(":", "-");
         self.save_as(&now, narrative);
     }
 }

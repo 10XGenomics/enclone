@@ -35,7 +35,7 @@ pub fn update_shares(slf: &mut gui_structures::EncloneVisual) {
         let res = write_enclone_visual_history(&evh, &path);
         if res.is_err() {
             xprintln!(
-                "Was Unable to write history to the file {}, \
+                "Was unable to write history to the file {}, \
                 so Save on Exit failed.\n",
                 path
             );

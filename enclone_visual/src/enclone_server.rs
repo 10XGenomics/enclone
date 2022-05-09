@@ -410,6 +410,7 @@ impl Analyzer for EncloneAnalyzer {
             let mut now = format!("{:?}", Local::now());
             now = now.replace("T", "___");
             now = now.before(".").to_string();
+            now = now.replace(":", "-");
             let filename = format!("{}/{}_{}", rdir, now, req.sender);
             let res = std::fs::write(&filename, &bytes);
             if res.is_err() {
