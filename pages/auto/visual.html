@@ -180,6 +180,19 @@ These saved sessions can also have names and narratives associated to them.</p>
 
 <! --- ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ --->
 
+<h2>Creating a session from the command line</h2>
+
+<p>It is possible to create a session outside <span style="color:rgb(120,123,175);font-weight:900">enclone visual</span>, from the <span style="color:rgb(120,123,175);font-weight:900">enclone</span> command
+line.  For example, this command
+<pre><code>enclone BCR=123085 PLOT=gui VIS_DUMP SESSION_NAME="123085 test"</code></pre>
+will create a session in <code>~/enclone/visual/history</code> which has a single state
+corresponding to the given command.  The <code>SESSION_NAME</code> argument is optional.
+One may also specify e.g. <code>STATE_NARRATIVE="...narrative..."</code> or indirectly
+as <code>STATE_NARRATIVE=@filename</code>, and likewise there are versions for
+<code>SESSION_NARRATIVE</code>.</p>
+
+<! --- ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ --->
+
 <h2>Remote computation (unreleased)</h2>
 
 <p>There is unreleased code in <span style="color:rgb(120,123,175);font-weight:900">enclone visual</span>
