@@ -88,7 +88,6 @@ pub fn process_special_arg1(
             ctl.gen_opt.all_bc_fields.push(parts[i].to_string());
         }
         ctl.gen_opt.all_bc_fields_orig = ctl.gen_opt.all_bc_fields.clone();
-
     } else if arg.starts_with("STATE_NARRATIVE=") {
         let mut narrative = arg.after("STATE_NARRATIVE=").to_string();
         if narrative.starts_with("@") {
@@ -96,7 +95,7 @@ pub fn process_special_arg1(
             if !path_exists(&filename) {
                 return Err(
                     "\nThe file referenced by your STATE_NARRATIVE argument could not be found.\n"
-                    .to_string()
+                        .to_string(),
                 );
             }
             narrative = read_to_string(&filename).unwrap();

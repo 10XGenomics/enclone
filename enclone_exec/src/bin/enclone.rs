@@ -13,11 +13,11 @@ use enclone_visual::enclone_client::enclone_client;
 #[cfg(feature = "enclone_visual")]
 use enclone_visual::enclone_server::enclone_server;
 #[cfg(feature = "enclone_visual")]
-use enclone_visual::history::EncloneVisualHistory;
-#[cfg(feature = "enclone_visual")]
 use enclone_visual::history::write_enclone_visual_history;
-use flate2::Compression;
+#[cfg(feature = "enclone_visual")]
+use enclone_visual::history::EncloneVisualHistory;
 use flate2::write::GzEncoder;
+use flate2::Compression;
 use io_utils::*;
 use itertools::Itertools;
 #[cfg(not(target_os = "windows"))]
@@ -213,8 +213,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                             clonotypes to see."
                             .to_string();
                     } else {
-                        reply_text = 
-                        "There are no clonotypes.  Please have a look at the summary.".to_string();
+                        reply_text = "There are no clonotypes.  Please have a look at the summary."
+                            .to_string();
                     }
                 }
                 let mut reply_text_clean = String::new();
@@ -253,7 +253,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 evh.table_comp_history.push(0);
                 evh.name_value = ctl.gen_opt.session_name.clone();
                 evh.orig_name_value = ctl.gen_opt.session_name.clone();
-                evh.narrative_hist_uniq.push(ctl.gen_opt.state_narrative.clone());
+                evh.narrative_hist_uniq
+                    .push(ctl.gen_opt.state_narrative.clone());
                 evh.narrative_history.push(0);
                 evh.descrip_hist_uniq.push(String::new());
                 evh.descrip_history.push(0);
