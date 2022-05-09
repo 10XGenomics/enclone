@@ -17,7 +17,7 @@ use tables::print_tabular_vbox;
 use vector_utils::{bin_member, unique_sort};
 
 pub fn description_table(ctl: &EncloneControl, logx: &mut Vec<u8>) {
-    if ctl.visual_mode {
+    if ctl.visual_mode || ctl.gen_opt.vis_dump {
         let mut need = false;
         let n = ctl.origin_info.n();
         for i in 0..n {
@@ -355,7 +355,7 @@ pub fn alluvial_fb_reads(
                 false,
                 false,
             );
-            if !ctl.visual_mode {
+            if !ctl.visual_mode && !ctl.gen_opt.vis_dump {
                 fwrite!(
                     res.3,
                     "\nfeature barcode read distribution for {}\n{}",
@@ -386,7 +386,7 @@ pub fn alluvial_fb_reads(
         fs.push(results[i].2.clone());
         logx.append(&mut results[i].3.clone());
     }
-    if ctl.visual_mode && have_some {
+    if (ctl.visual_mode || ctl.gen_opt.vis_dump) && have_some {
         let tables = FeatureBarcodeAlluvialReadsTableSet { s: fs };
         logx.append(&mut tables.to_string().as_bytes().to_vec());
     }
@@ -624,7 +624,7 @@ pub fn alluvial_fb(
                 false,
                 false,
             );
-            if !ctl.visual_mode {
+            if !ctl.visual_mode && !ctl.gen_opt.vis_dump {
                 fwrite!(
                     res.3,
                     "\nfeature barcode UMI distribution for {}\n{}",
@@ -655,7 +655,7 @@ pub fn alluvial_fb(
         fs.push(results[i].2.clone());
         logx.append(&mut results[i].3.clone());
     }
-    if ctl.visual_mode && have_some {
+    if (ctl.visual_mode || ctl.gen_opt.vis_dump) && have_some {
         let tables = FeatureBarcodeAlluvialTableSet { s: fs };
         logx.append(&mut tables.to_string().as_bytes().to_vec());
     }

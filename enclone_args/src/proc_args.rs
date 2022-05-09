@@ -503,6 +503,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
         ("UNACCOUNTED", &mut ctl.perf_opt.unaccounted),
         ("UTR_CON", &mut ctl.gen_opt.utr_con),
         ("VDUP", &mut ctl.clono_filt_opt.vdup),
+        ("VIS_DUMP", &mut ctl.gen_opt.vis_dump),
         ("VISUAL", &mut ctl.visual_mode),
         ("WEAK", &mut ctl.gen_opt.weak),
         ("WHITEF", &mut ctl.clono_filt_opt_def.whitef),
@@ -596,6 +597,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
         ("EXT", &mut ctl.gen_opt.ext),
         ("GROUP_CDR3", &mut ctl.clono_group_opt.cdr3),
         ("PCHAINS", &mut ctl.parseable_opt.pchains),
+        ("SESSION_NAME", &mut ctl.gen_opt.session_name),
         ("TRACE_BARCODE", &mut ctl.gen_opt.trace_barcode),
     ];
 
@@ -937,10 +939,12 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
         }
     }
 
-    // Force visual mode if plot file is gui.
+    // Force visual mode if plot file is gui or if VIS_DUMP was invoked.
 
     if ctl.plot_opt.plot_file == "gui" || ctl.plot_opt.plot_file == "gui_stdout" {
-        ctl.visual_mode = true;
+        if !ctl.gen_opt.vis_dump {
+            ctl.visual_mode = true;
+        }
     }
 
     // Record time.

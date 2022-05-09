@@ -24,14 +24,20 @@ name = "enclone"
 path = "src/bin/enclone.rs"
 
 [dependencies]
+chrono = { version = "0.4", default-features = false, features = ["std", "clock"] }
 enclone_core = { path = "../enclone_core" }
 enclone_main = { path = "../enclone_main" }
 enclone_visual = { path = "../enclone_visual", optional=true }
+flate2 = "1"
+home = "0.5"
 io_utils = { version = "0.3", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
+itertools = "0.10"
 nix = "0.23"
 pretty_trace = { version = "0.5", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
+serde_json = "1"
 string_utils = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 tokio = { version = "1", default-features = false, features = ["io-util", "macros", "rt-multi-thread"] }
+vector_utils = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 
 [dev-dependencies]
 ansi_escape = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
@@ -49,7 +55,6 @@ rayon = "1"
 serde_json = "1"
 sha2 = "0.10"
 stats_utils = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
-vector_utils = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 yaml-rust = "0.4"
 
 [features]
