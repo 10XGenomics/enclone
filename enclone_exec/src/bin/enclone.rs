@@ -217,6 +217,25 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                         "There are no clonotypes.  Please have a look at the summary.".to_string();
                     }
                 }
+                let mut reply_text_clean = String::new();
+                let mut chars = Vec::<char>::new();
+                for c in reply_text.chars() {
+                    chars.push(c);
+                }
+                let mut escaped = false;
+                for l in 0..chars.len() {
+                    if chars[l] == '' {
+                        escaped = true;
+                    }
+                    if escaped {
+                        if chars[l] == 'm' {
+                            escaped = false;
+                        }
+                        continue;
+                    }
+                    reply_text_clean.push(chars[l]);
+                }
+                reply_text = reply_text_clean;
                 reply_text += "\n \n \n"; // papering over truncation bug in display
                 evh.displayed_tables_hist_uniq.push(reply_text);
                 evh.displayed_tables_history.push(0);
