@@ -24,9 +24,11 @@ name = "enclone"
 path = "src/bin/enclone.rs"
 
 [dependencies]
+chrono = { version = "0.4", default-features = false, features = ["std", "clock"] }
 enclone_core = { path = "../enclone_core" }
 enclone_main = { path = "../enclone_main" }
 enclone_visual = { path = "../enclone_visual", optional=true }
+home = "0.5"
 io_utils = { version = "0.3", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 nix = "0.23"
 pretty_trace = { version = "0.5", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }

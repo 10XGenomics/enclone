@@ -126,7 +126,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             //
             // The kill makes the screen flash.  This is pretty horrible.
 
-            eprintln!("{}", res.err().unwrap());
+            eprintln!("{}", res.as_ref().err().unwrap());
             if !no_kill && USING_PAGER.load(SeqCst) && 0 == 1 {
                 thread::sleep(Duration::from_millis(10));
                 #[cfg(not(target_os = "windows"))]
@@ -155,17 +155,23 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 evh.svg_hist_uniq.push(svg);
                 evh.svg_history.push(0);
         
-                // [fill in the rest]
+                // [fill in the rest of the evh fields]
 
                 let mut now = format!("{:?}", Local::now());
                 now = now.replace("T", "___");
                 now = now.before(".").to_string();
                 now = now.replace(":", "-");
-
-                // working here
-
-                let filename = format!("{}/{}", self.archive_dir.as_ref().unwrap(), now);
-                let res = write_enclone_visual_history(&self.h, &filename);
+                let home = home::home_dir();
+                if home.is_none() {
+                    eprintln!(
+                        "Unable to determine home directory.  This is unexpected and \
+                        pathological.\nPlease report this problem!\n"
+                    );
+                    std::process::exit(1);
+                }
+                let enclone = format!("{}/enclone", home.unwrap().display());
+                let filename = format!("{}/visual/history/{}", enclone, now);
+                let res = write_enclone_visual_history(&evh, &filename);
                 if res.is_err() {
                     eprintln!("\nWas unable to write history to the file {}.\n", filename);
                     std::process::exit(1);
