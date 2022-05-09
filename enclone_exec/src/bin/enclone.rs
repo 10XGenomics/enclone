@@ -16,6 +16,8 @@ use enclone_visual::enclone_server::enclone_server;
 use enclone_visual::history::EncloneVisualHistory;
 #[cfg(feature = "enclone_visual")]
 use enclone_visual::history::write_enclone_visual_history;
+use flate2::Compression;
+use flate2::write::GzEncoder;
 use io_utils::*;
 use itertools::Itertools;
 #[cfg(not(target_os = "windows"))]
@@ -26,6 +28,7 @@ use nix::unistd::getppid;
 use nix::unistd::Pid;
 use pretty_trace::*;
 use std::env;
+use std::io::Write;
 use std::process::Command;
 use std::sync::atomic::Ordering::SeqCst;
 use std::thread;
@@ -207,29 +210,37 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 reply_text += "\n \n \n"; // papering over truncation bug in display
                 evh.displayed_tables_hist_uniq.push(reply_text);
                 evh.displayed_tables_history.push(0);
+                evh.last_widths_hist_uniq.push(widths);
+                evh.last_widths_history.push(0);
+                let full_table = res.outs.pics.clone();
+                let serialized = serde_json::to_string(&full_table)
+                    .unwrap()
+                    .as_bytes()
+                    .to_vec();
+                let mut e = GzEncoder::new(Vec::new(), Compression::default());
+                let _ = e.write_all(&serialized);
+                let gzipped = e.finish().unwrap();
+                evh.table_comp_hist_uniq.push(gzipped);
+                evh.table_comp_history.push(0);
 
                 /*
-    pub narrative_hist_uniq: Vec<String>,   // each entry is the narrative
-    pub table_comp_hist_uniq: Vec<Vec<u8>>, // each entry is the compressed list of all tables
-    pub last_widths_hist_uniq: Vec<Vec<u32>>,
-    pub descrip_hist_uniq: Vec<String>, // descriptions (not used yet)
-    //
-    // parallel vectors, with one entry for each command entered in the text box:
-    //
-    pub narrative_history: Vec<u32>,        // each entry is the narrative
-    pub table_comp_history: Vec<u32>,       // each entry is the compressed list of all tables
-    pub last_widths_history: Vec<u32>,      // last widths for clonotype pictures
-    pub descrip_history: Vec<u32>,          // each entry is the description (not used yet)
-    //
-    // name of this session and narrative
-    //
-    pub name_value: String,
-    pub orig_name_value: String,
-    pub narrative: String, // not used yet
-    //
-    // origin of this session (if shared)
-    //
-    pub origin: String,
+            pub narrative_hist_uniq: Vec<String>,   // each entry is the narrative
+            pub descrip_hist_uniq: Vec<String>, // descriptions (not used yet)
+            //
+            // parallel vectors, with one entry for each command entered in the text box:
+            //
+            pub narrative_history: Vec<u32>,        // each entry is the narrative
+            pub descrip_history: Vec<u32>,          // each entry is the description (not used yet)
+            //
+            // name of this session and narrative
+            //
+            pub name_value: String,
+            pub orig_name_value: String,
+            pub narrative: String, // not used yet
+            //
+            // origin of this session (if shared)
+            //
+            pub origin: String,
                 */
         
                 let mut now = format!("{:?}", Local::now());
