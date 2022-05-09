@@ -222,27 +222,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 let gzipped = e.finish().unwrap();
                 evh.table_comp_hist_uniq.push(gzipped);
                 evh.table_comp_history.push(0);
-
-                /*
-            pub narrative_hist_uniq: Vec<String>,   // each entry is the narrative
-            pub descrip_hist_uniq: Vec<String>, // descriptions (not used yet)
-            //
-            // parallel vectors, with one entry for each command entered in the text box:
-            //
-            pub narrative_history: Vec<u32>,        // each entry is the narrative
-            pub descrip_history: Vec<u32>,          // each entry is the description (not used yet)
-            //
-            // name of this session and narrative
-            //
-            pub name_value: String,
-            pub orig_name_value: String,
-            pub narrative: String, // not used yet
-            //
-            // origin of this session (if shared)
-            //
-            pub origin: String,
-                */
-        
+                evh.name_value = ctl.gen_opt.session_name.clone();
+                evh.orig_name_value = ctl.gen_opt.session_name.clone();
+                evh.narrative_hist_uniq.push(ctl.gen_opt.state_narrative.clone());
+                evh.narrative_history.push(0);
+                evh.narrative = ctl.gen_opt.session_narrative.clone();
                 let mut now = format!("{:?}", Local::now());
                 now = now.replace("T", "___");
                 now = now.before(".").to_string();

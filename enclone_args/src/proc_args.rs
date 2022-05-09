@@ -597,6 +597,7 @@ pub fn proc_args(mut ctl: &mut EncloneControl, args: &Vec<String>) -> Result<(),
         ("EXT", &mut ctl.gen_opt.ext),
         ("GROUP_CDR3", &mut ctl.clono_group_opt.cdr3),
         ("PCHAINS", &mut ctl.parseable_opt.pchains),
+        ("SESSION_NAME", &mut ctl.gen_opt.session_name),
         ("TRACE_BARCODE", &mut ctl.gen_opt.trace_barcode),
     ];
 
