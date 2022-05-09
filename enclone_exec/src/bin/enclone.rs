@@ -4,12 +4,17 @@
 // zero.  As far as we know, in all other cases where it is not run from the command line, it
 // returns exit status zero.
 
+use chrono::prelude::*;
 use enclone_main::main_enclone::main_enclone;
 use enclone_main::USING_PAGER;
 #[cfg(feature = "enclone_visual")]
 use enclone_visual::enclone_client::enclone_client;
 #[cfg(feature = "enclone_visual")]
 use enclone_visual::enclone_server::enclone_server;
+#[cfg(feature = "enclone_visual")]
+use enclone_visual::history::EncloneVisualHistory;
+#[cfg(feature = "enclone_visual")]
+use enclone_visual::history::write_enclone_visual_history;
 use io_utils::*;
 #[cfg(not(target_os = "windows"))]
 use nix::sys::signal::{kill, SIGINT};
@@ -104,6 +109,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     if args.len() < 2 || args[1] != "SERVER" {
         let res = main_enclone(&mut args);
+
+        // Test for error.
+
         if res.is_err() {
             // TURNED OFF BECAUSE WE GOT EXIT STATUS ZERO SOMETIMES WHEN WE USED THROUGH COMMAND.
             //
@@ -131,6 +139,42 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 std::process::exit(1);
             }
         }
+
+        // Process VIS_DUMP.
+
+        #[cfg(feature = "enclone_visual")]
+        {
+            let res = res.unwrap();
+            let ctl = &res.inter.setup.ctl;
+            if ctl.gen_opt.vis_dump {
+                let mut evh = EncloneVisualHistory::default();
+                let mut svg = String::new();
+                if !res.outs.svgs.is_empty() {
+                    svg = res.outs.svgs.last().unwrap().clone();
+                }
+                evh.svg_hist_uniq.push(svg);
+                evh.svg_history.push(0);
+        
+                // [fill in the rest]
+
+                let mut now = format!("{:?}", Local::now());
+                now = now.replace("T", "___");
+                now = now.before(".").to_string();
+                now = now.replace(":", "-");
+
+                // working here
+
+                let filename = format!("{}/{}", self.archive_dir.as_ref().unwrap(), now);
+                let res = write_enclone_visual_history(&self.h, &filename);
+                if res.is_err() {
+                    eprintln!("\nWas unable to write history to the file {}.\n", filename);
+                    std::process::exit(1);
+                }
+            }
+        }
+
+        // Done.
+
         std::process::exit(0);
     }
 
