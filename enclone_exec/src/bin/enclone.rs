@@ -5,6 +5,7 @@
 // returns exit status zero.
 
 use chrono::prelude::*;
+use enclone_core::combine_group_pics::combine_group_pics;
 use enclone_main::main_enclone::main_enclone;
 use enclone_main::USING_PAGER;
 #[cfg(feature = "enclone_visual")]
@@ -16,6 +17,7 @@ use enclone_visual::history::EncloneVisualHistory;
 #[cfg(feature = "enclone_visual")]
 use enclone_visual::history::write_enclone_visual_history;
 use io_utils::*;
+use itertools::Itertools;
 #[cfg(not(target_os = "windows"))]
 use nix::sys::signal::{kill, SIGINT};
 #[cfg(not(target_os = "windows"))]
@@ -152,11 +154,84 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 if !res.outs.svgs.is_empty() {
                     svg = res.outs.svgs.last().unwrap().clone();
                 }
-                evh.svg_hist_uniq.push(svg);
+                evh.svg_hist_uniq.push(svg.clone());
                 evh.svg_history.push(0);
-        
-                // [fill in the rest of the evh fields]
+                evh.summary_hist_uniq.push(res.outs.summary.clone());
+                evh.summary_history.push(0);
+                let mut args2 = Vec::<String>::new();
+                for i in 0..args.len() {
+                    if args[i] != "VIS_DUMP" {
+                        args2.push(args[i].clone());
+                    }
+                }
+                let command = format!("{}", args2.iter().format(" "));
+                evh.input1_hist_uniq.push(command.clone());
+                evh.input1_history.push(0);
+                evh.input2_hist_uniq.push(String::new());
+                evh.input2_history.push(0);
+                evh.inputn_hist_uniq.push(vec![String::new(); 8]);
+                evh.inputn_history.push(0);
+                evh.translated_input_hist_uniq.push(command.clone());
+                evh.translated_input_history.push(0);
+                evh.history_index = 1;
+                evh.is_blank.push(svg.is_empty());
+                let mut table = res.outs.pics.clone();
+                let widths = res.outs.last_widths.clone();
+                const MAX_TABLE: usize = 50;
+                if table.len() > MAX_TABLE {
+                    table.truncate(MAX_TABLE);
+                }
+                let mut reply_text = combine_group_pics(
+                    &table,
+                    &widths,
+                    res.outs.parseable_stdouth,
+                    res.outs.noprint,
+                    res.outs.noprintx,
+                    res.outs.html,
+                    res.outs.ngroup,
+                    res.outs.pretty,
+                );
+                if reply_text.contains("enclone failed") {
+                    reply_text = format!("enclone failed{}", reply_text.after("enclone failed"));
+                }
+                if reply_text.len() == 0 {
+                    if command.contains(" NOPRINT") {
+                        reply_text = "You used the NOPRINT option, so there are no \
+                            clonotypes to see."
+                            .to_string();
+                    } else {
+                        reply_text = 
+                        "There are no clonotypes.  Please have a look at the summary.".to_string();
+                    }
+                }
+                reply_text += "\n \n \n"; // papering over truncation bug in display
+                evh.displayed_tables_hist_uniq.push(reply_text);
+                evh.displayed_tables_history.push(0);
 
+                /*
+    pub narrative_hist_uniq: Vec<String>,   // each entry is the narrative
+    pub table_comp_hist_uniq: Vec<Vec<u8>>, // each entry is the compressed list of all tables
+    pub last_widths_hist_uniq: Vec<Vec<u32>>,
+    pub descrip_hist_uniq: Vec<String>, // descriptions (not used yet)
+    //
+    // parallel vectors, with one entry for each command entered in the text box:
+    //
+    pub narrative_history: Vec<u32>,        // each entry is the narrative
+    pub table_comp_history: Vec<u32>,       // each entry is the compressed list of all tables
+    pub last_widths_history: Vec<u32>,      // last widths for clonotype pictures
+    pub descrip_history: Vec<u32>,          // each entry is the description (not used yet)
+    //
+    // name of this session and narrative
+    //
+    pub name_value: String,
+    pub orig_name_value: String,
+    pub narrative: String, // not used yet
+    //
+    // origin of this session (if shared)
+    //
+    pub origin: String,
+                */
+        
                 let mut now = format!("{:?}", Local::now());
                 now = now.replace("T", "___");
                 now = now.before(".").to_string();

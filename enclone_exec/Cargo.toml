@@ -30,6 +30,7 @@ enclone_main = { path = "../enclone_main" }
 enclone_visual = { path = "../enclone_visual", optional=true }
 home = "0.5"
 io_utils = { version = "0.3", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
+itertools = "0.10"
 nix = "0.23"
 pretty_trace = { version = "0.5", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 string_utils = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
