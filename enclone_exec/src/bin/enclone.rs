@@ -163,9 +163,19 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 evh.summary_history.push(0);
                 let mut args2 = Vec::<String>::new();
                 for i in 0..args.len() {
-                    if args[i] != "VIS_DUMP" {
-                        args2.push(args[i].clone());
+                    if args[i] == "VIS_DUMP" {
+                        continue;
                     }
+                    if args[i].starts_with("SESSION_NAME=") {
+                        continue;
+                    }
+                    if args[i].starts_with("SESSION_NARRATIVE=") {
+                        continue;
+                    }
+                    if args[i].starts_with("STATE_NARRATIVE=") {
+                        continue;
+                    }
+                    args2.push(args[i].clone());
                 }
                 let command = format!("{}", args2.iter().format(" "));
                 evh.input1_hist_uniq.push(command.clone());
@@ -226,6 +236,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 evh.orig_name_value = ctl.gen_opt.session_name.clone();
                 evh.narrative_hist_uniq.push(ctl.gen_opt.state_narrative.clone());
                 evh.narrative_history.push(0);
+                evh.descrip_hist_uniq.push(String::new());
+                evh.descrip_history.push(0);
                 evh.narrative = ctl.gen_opt.session_narrative.clone();
                 let mut now = format!("{:?}", Local::now());
                 now = now.replace("T", "___");
