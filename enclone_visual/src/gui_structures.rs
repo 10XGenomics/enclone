@@ -430,6 +430,7 @@ impl EncloneVisual {
         let mut now = format!("{:?}", Local::now());
         now = now.replace("T", "___");
         now = now.before(".").to_string();
+        now = now.replace(":", "-");
         self.save_as(&now, narrative);
     }
 }
