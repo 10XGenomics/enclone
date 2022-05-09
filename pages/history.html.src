@@ -30,6 +30,9 @@ command-line help that comes with your copy of #enclone will always match its be
 
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
+<p><b>5/9/22</b>: Add ability to create #enclone_visual sessions from the command line.  Please
+see <a href="../../pages/auto/visual.html">#enclone_visual</a>.</p>
+
 <p><b>5/8/22</b>: #enclone now runs under Windows, with some limitations, see
 <a href="../../pages/auto/windows.html">here</a>.</p>
 

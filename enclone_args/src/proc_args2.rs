@@ -213,7 +213,7 @@ pub fn proc_args_tail(ctl: &mut EncloneControl, args: &Vec<String>) -> Result<()
     // Get origin descriptions.  Flaky and particularly flaky when internal origin args are paths,
     // since it will look in outs for the file.
 
-    if ctl.gen_opt.internal_run || ctl.gen_opt.descrip || ctl.visual_mode {
+    if ctl.gen_opt.internal_run || ctl.gen_opt.descrip || ctl.visual_mode || ctl.gen_opt.vis_dump {
         ctl.origin_info.descrips.clear();
         let mut results = vec![(0, "".to_string()); ctl.origin_info.n()];
         for i in 0..ctl.origin_info.n() {
