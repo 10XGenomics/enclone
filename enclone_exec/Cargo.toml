@@ -37,6 +37,7 @@ pretty_trace = { version = "0.5", git = "https://github.com/10XGenomics/rust-too
 serde_json = "1"
 string_utils = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 tokio = { version = "1", default-features = false, features = ["io-util", "macros", "rt-multi-thread"] }
+vector_utils = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 
 [dev-dependencies]
 ansi_escape = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
@@ -54,7 +55,6 @@ rayon = "1"
 serde_json = "1"
 sha2 = "0.10"
 stats_utils = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
-vector_utils = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 yaml-rust = "0.4"
 
 [features]

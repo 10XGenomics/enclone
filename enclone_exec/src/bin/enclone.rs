@@ -13,6 +13,8 @@ use enclone_visual::enclone_client::enclone_client;
 #[cfg(feature = "enclone_visual")]
 use enclone_visual::enclone_server::enclone_server;
 #[cfg(feature = "enclone_visual")]
+use enclone_visual::gui_structures::Summary;
+#[cfg(feature = "enclone_visual")]
 use enclone_visual::history::write_enclone_visual_history;
 #[cfg(feature = "enclone_visual")]
 use enclone_visual::history::EncloneVisualHistory;
@@ -34,6 +36,7 @@ use std::sync::atomic::Ordering::SeqCst;
 use std::thread;
 use std::time::Duration;
 use string_utils::*;
+use vector_utils::unique_sort;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -159,7 +162,41 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 }
                 evh.svg_hist_uniq.push(svg.clone());
                 evh.svg_history.push(0);
-                evh.summary_hist_uniq.push(res.outs.summary.clone());
+
+
+                let dataset_names = &res.outs.dataset_names;
+                let metrics0 = &res.outs.metrics;
+                let mut metrics = Vec::<Vec<String>>::new();
+                let n = metrics0.len();
+                for i in 0..n {
+                    let m = &metrics0[i];
+                    let mut lines = Vec::<String>::new();
+                    for line in m.lines() {
+                        lines.push(line.to_string());
+                    }
+                    metrics.push(lines);
+                }
+                let mut all_metric_names = Vec::<String>::new();
+                for i in 0..metrics.len() {
+                    for j in 0..metrics[i].len() {
+                        let s = parse_csv(&metrics[i][j]);
+                        let m = format!("{},{}", s[0], s[1]);
+                        all_metric_names.push(m);
+                    }
+                }
+                unique_sort(&mut all_metric_names);
+                let nm = all_metric_names.len();
+                let s = Summary {
+                    summary: res.outs.summary.clone(),
+                    dataset_names: dataset_names.to_vec(),
+                    metrics: metrics,
+                    metric_selected: vec![false; nm],
+                    metrics_condensed: false,
+                };
+                let summary = s.pack();
+
+
+                evh.summary_hist_uniq.push(summary);
                 evh.summary_history.push(0);
                 let mut args2 = Vec::<String>::new();
                 for i in 0..args.len() {
