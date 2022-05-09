@@ -328,7 +328,7 @@ pub fn summary(slf: &mut gui_structures::EncloneVisual) -> Element<Message> {
     // Determine initial font size.
 
     let mut sum = "The summary is empty.  Usually this happens if the command failed,\n\
-            or if you use the VIS_DUMP argument without the SUMMARY argument"
+            or if you used the VIS_DUMP argument without the SUMMARY argument."
         .to_string();
     if !hets.is_empty() {
         sum = hets[0].content.clone();
