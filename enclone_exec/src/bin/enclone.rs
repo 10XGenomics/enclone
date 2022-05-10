@@ -156,13 +156,12 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             let ctl = &res.inter.setup.ctl;
             if ctl.gen_opt.vis_dump {
                 let mut evh = EncloneVisualHistory::default();
-                let mut svg = String::new();
+                let mut svg = enclone_visual::blank_svg();
                 if !res.outs.svgs.is_empty() {
                     svg = res.outs.svgs.last().unwrap().clone();
                 }
                 evh.svg_hist_uniq.push(svg.clone());
                 evh.svg_history.push(0);
-
                 let dataset_names = &res.outs.dataset_names;
                 let metrics0 = &res.outs.metrics;
                 let mut metrics = Vec::<Vec<String>>::new();
@@ -193,7 +192,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                     metrics_condensed: false,
                 };
                 let summary = s.pack();
-
                 evh.summary_hist_uniq.push(summary);
                 evh.summary_history.push(0);
                 let mut args2 = Vec::<String>::new();
