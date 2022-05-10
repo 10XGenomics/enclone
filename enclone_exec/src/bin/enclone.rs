@@ -162,7 +162,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 }
                 evh.svg_hist_uniq.push(svg.clone());
                 evh.svg_history.push(0);
-
                 let dataset_names = &res.outs.dataset_names;
                 let metrics0 = &res.outs.metrics;
                 let mut metrics = Vec::<Vec<String>>::new();
@@ -193,7 +192,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                     metrics_condensed: false,
                 };
                 let summary = s.pack();
-
                 evh.summary_hist_uniq.push(summary);
                 evh.summary_history.push(0);
                 let mut args2 = Vec::<String>::new();
