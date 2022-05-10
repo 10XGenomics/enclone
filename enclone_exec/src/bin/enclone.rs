@@ -156,7 +156,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             let ctl = &res.inter.setup.ctl;
             if ctl.gen_opt.vis_dump {
                 let mut evh = EncloneVisualHistory::default();
-                let mut svg = String::new();
+                let mut svg = enclone_visual::blank_svg();
                 if !res.outs.svgs.is_empty() {
                     svg = res.outs.svgs.last().unwrap().clone();
                 }
