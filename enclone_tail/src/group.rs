@@ -768,7 +768,9 @@ pub fn group_and_print_clonotypes(
         &refdata,
     );
     *summary = stringme(&slog);
-    logx.append(&mut slog);
+    if ctl.gen_opt.summary {
+        logx.append(&mut slog);
+    }
 
     // Print to stdout.
 

@@ -220,7 +220,7 @@ pub fn print_stats(
         sdx.push((sd[i].0, sd[i].1, j - i));
         i = j;
     }
-    if ctl.gen_opt.summary {
+    if ctl.gen_opt.summary || ctl.gen_opt.vis_dump {
         fwriteln!(logx, "\nSUMMARY STATISTICS");
         fwriteln!(logx, "1. overall");
         fwriteln!(logx, "   • number of datasets = {}", ctl.origin_info.n());
