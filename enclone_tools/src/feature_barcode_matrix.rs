@@ -359,7 +359,7 @@ pub fn feature_barcode_matrix(
                         umi = s[16..28].to_vec();
                         read1 = s.to_vec();
                     } else {
-                        fb = s[10..25].to_vec();
+                        fb = s[0..16].to_vec();
                         let mut degenerate = true;
                         for i in 0..10 {
                             if s[i] != b'G' {
