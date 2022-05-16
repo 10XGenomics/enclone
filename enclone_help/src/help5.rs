@@ -750,10 +750,10 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) -> Resu
         emit_end_escape(&mut log);
         h.print(&strme(&log).to_string())?;
         h.print(
-            "At some point in the future, there will be a white paper to which you can refer, \
-            in addition to a DOI minted at Zenodo.  In the spirit of reproducibility, you should \
-            provide the arguments that you used when you ran enclone and indicate the version of \
-            Cell Ranger that you used to generate the input data.\n\n",
+            "You can cite the enclone preprint, which can be found on bioRxiv in the link below \
+            or by using the DOI 10.1101/2022.04.21.489084. The latest version of the preprint \
+            can be found at: \
+            https://www.biorxiv.org/content/10.1101/2022.04.21.489084v1.\n\n",
         )?;
 
         h.print("\\boldblue{17. Can I print the enclone version?}\n\n")?;
