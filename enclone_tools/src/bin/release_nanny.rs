@@ -134,8 +134,15 @@ fn main() {
             );
             mail(&address, &msg);
             let bin = &config["enclone_linux_bin"];
-            let mut f = open_for_write_new![&remote_version_file];
-            fwrite!(f, "{}\n", github_version);
+            {
+                let mut f = open_for_write_new![&remote_version_file];
+                fwrite!(f, "{}\n", github_version);
+            }
+            #[cfg(not(target_os = "windows"))]
+            {
+                let perms = std::fs::Permissions::from_mode(0o775);
+                std::fs::set_permissions(&remote_version_file, perms).unwrap();
+            }
             let current = format!("{}/enclone", bin);
             let last = format!("{}/enclone_last", bin);
             if path_exists(&last) {
