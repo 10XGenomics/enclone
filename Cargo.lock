@@ -62,7 +62,7 @@ dependencies = [
 [[package]]
 name = "align_tools"
 version = "0.1.12"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#75e8c7ec2fa09e1e8a3a7f452498a3a7ec28ee54"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#5f821fffa9074c5517c43a708bf16b6de57eef02"
 dependencies = [
  "bio_edit",
  "debruijn",
@@ -74,7 +74,7 @@ dependencies = [
 [[package]]
 name = "amino"
 version = "0.1.7"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#75e8c7ec2fa09e1e8a3a7f452498a3a7ec28ee54"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#5f821fffa9074c5517c43a708bf16b6de57eef02"
 dependencies = [
  "debruijn",
  "string_utils",
@@ -83,7 +83,7 @@ dependencies = [
 [[package]]
 name = "ansi_escape"
 version = "0.1.3"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#75e8c7ec2fa09e1e8a3a7f452498a3a7ec28ee54"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#5f821fffa9074c5517c43a708bf16b6de57eef02"
 dependencies = [
  "string_utils",
  "vector_utils",
@@ -121,7 +121,7 @@ dependencies = [
  "parking_lot 0.12.0",
  "thiserror",
  "winapi",
- "x11rb 0.9.0",
+ "x11rb",
 ]
 
 [[package]]
@@ -384,7 +384,7 @@ checksum = "904dfeac50f3cdaba28fc6f57fdcddb75f49ed61346676a78c4ffe55877802fd"
 [[package]]
 name = "binary_vec_io"
 version = "0.1.12"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#75e8c7ec2fa09e1e8a3a7f452498a3a7ec28ee54"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#5f821fffa9074c5517c43a708bf16b6de57eef02"
 dependencies = [
  "itertools",
 ]
@@ -453,7 +453,7 @@ dependencies = [
 [[package]]
 name = "bio_edit"
 version = "0.1.1"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#75e8c7ec2fa09e1e8a3a7f452498a3a7ec28ee54"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#5f821fffa9074c5517c43a708bf16b6de57eef02"
 dependencies = [
  "bio-types",
  "bit-set",
@@ -719,12 +719,12 @@ dependencies = [
 
 [[package]]
 name = "clipboard_x11"
-version = "0.3.1"
+version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "64240d63f1883d87e5637bfcaf9d77e5c8bd24e30fd440ea2dff5c48c0bf0b7a"
+checksum = "983a7010836ecd04dde2c6d27a0cb56ec5d21572177e782bdcb24a600124e921"
 dependencies = [
  "thiserror",
- "x11rb 0.8.1",
+ "x11rb",
 ]
 
 [[package]]
@@ -1186,7 +1186,7 @@ dependencies = [
 [[package]]
 name = "dna"
 version = "0.1.3"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#75e8c7ec2fa09e1e8a3a7f452498a3a7ec28ee54"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#5f821fffa9074c5517c43a708bf16b6de57eef02"
 
 [[package]]
 name = "doc-comment"
@@ -1729,7 +1729,7 @@ dependencies = [
 [[package]]
 name = "equiv"
 version = "0.1.3"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#75e8c7ec2fa09e1e8a3a7f452498a3a7ec28ee54"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#5f821fffa9074c5517c43a708bf16b6de57eef02"
 
 [[package]]
 name = "errno"
@@ -1786,7 +1786,7 @@ checksum = "77f3309417938f28bf8228fcff79a4a37103981e3e186d2ccd19c74b38f4eb71"
 [[package]]
 name = "exons"
 version = "0.1.5"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#75e8c7ec2fa09e1e8a3a7f452498a3a7ec28ee54"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#5f821fffa9074c5517c43a708bf16b6de57eef02"
 dependencies = [
  "io_utils",
  "string_utils",
@@ -1796,7 +1796,7 @@ dependencies = [
 [[package]]
 name = "expr_tools"
 version = "0.1.3"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#75e8c7ec2fa09e1e8a3a7f452498a3a7ec28ee54"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#5f821fffa9074c5517c43a708bf16b6de57eef02"
 dependencies = [
  "evalexpr",
  "statrs",
@@ -1807,7 +1807,7 @@ dependencies = [
 [[package]]
 name = "fasta_tools"
 version = "0.1.8"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#75e8c7ec2fa09e1e8a3a7f452498a3a7ec28ee54"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#5f821fffa9074c5517c43a708bf16b6de57eef02"
 dependencies = [
  "debruijn",
  "flate2",
@@ -2243,7 +2243,7 @@ dependencies = [
 [[package]]
 name = "graph_simple"
 version = "0.1.5"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#75e8c7ec2fa09e1e8a3a7f452498a3a7ec28ee54"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#5f821fffa9074c5517c43a708bf16b6de57eef02"
 dependencies = [
  "petgraph",
  "vector_utils",
@@ -2519,7 +2519,7 @@ dependencies = [
 [[package]]
 name = "hyperbase"
 version = "0.1.8"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#75e8c7ec2fa09e1e8a3a7f452498a3a7ec28ee54"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#5f821fffa9074c5517c43a708bf16b6de57eef02"
 dependencies = [
  "debruijn",
  "equiv",
@@ -2725,7 +2725,7 @@ dependencies = [
 [[package]]
 name = "io_utils"
 version = "0.3.2"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#75e8c7ec2fa09e1e8a3a7f452498a3a7ec28ee54"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#5f821fffa9074c5517c43a708bf16b6de57eef02"
 dependencies = [
  "bincode",
  "flate2",
@@ -2828,7 +2828,7 @@ dependencies = [
 [[package]]
 name = "kmer_lookup"
 version = "0.1.5"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#75e8c7ec2fa09e1e8a3a7f452498a3a7ec28ee54"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#5f821fffa9074c5517c43a708bf16b6de57eef02"
 dependencies = [
  "debruijn",
  "rayon",
@@ -3129,7 +3129,7 @@ dependencies = [
 [[package]]
 name = "mirror_sparse_matrix"
 version = "0.1.17"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#75e8c7ec2fa09e1e8a3a7f452498a3a7ec28ee54"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#5f821fffa9074c5517c43a708bf16b6de57eef02"
 dependencies = [
  "binary_vec_io",
 ]
@@ -3269,18 +3269,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ac8cd24d9f185bb7223958d8c1ff7a961b74b1953fd05dba7cc568a63b3861ec"
 dependencies = [
  "rustc_version",
-]
-
-[[package]]
-name = "nix"
-version = "0.20.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fa9b4819da1bc61c0ea48b63b7bc8604064dd43013e7cc325df098d49cd7c18a"
-dependencies = [
- "bitflags",
- "cc",
- "cfg-if 1.0.0",
- "libc",
 ]
 
 [[package]]
@@ -3605,7 +3593,7 @@ checksum = "d4fd5641d01c8f18a23da7b6fe29298ff4b55afcccdf78973b24cf3175fee32e"
 [[package]]
 name = "perf_stats"
 version = "0.1.8"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#75e8c7ec2fa09e1e8a3a7f452498a3a7ec28ee54"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#5f821fffa9074c5517c43a708bf16b6de57eef02"
 dependencies = [
  "io_utils",
  "libc",
@@ -3794,18 +3782,18 @@ dependencies = [
 
 [[package]]
 name = "pprof"
-version = "0.6.2"
+version = "0.7.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "55f35f865aa964be21fcde114cbd1cfbd9bf8a471460ed965b0f84f96c711401"
+checksum = "c090facb9ab04a4fb15fe27f8861059f195dd0847e6f1042016244e129eddeb2"
 dependencies = [
  "backtrace",
  "cfg-if 1.0.0",
  "findshlibs",
- "lazy_static",
  "libc",
  "log",
  "nix 0.23.1",
- "parking_lot 0.11.2",
+ "once_cell",
+ "parking_lot 0.12.0",
  "prost",
  "prost-build",
  "prost-derive",
@@ -3851,7 +3839,7 @@ dependencies = [
 [[package]]
 name = "pretty_trace"
 version = "0.5.23"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#75e8c7ec2fa09e1e8a3a7f452498a3a7ec28ee54"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#5f821fffa9074c5517c43a708bf16b6de57eef02"
 dependencies = [
  "backtrace",
  "io_utils",
@@ -4506,12 +4494,12 @@ dependencies = [
 [[package]]
 name = "stats_utils"
 version = "0.1.3"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#75e8c7ec2fa09e1e8a3a7f452498a3a7ec28ee54"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#5f821fffa9074c5517c43a708bf16b6de57eef02"
 
 [[package]]
 name = "stirling_numbers"
 version = "0.1.7"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#75e8c7ec2fa09e1e8a3a7f452498a3a7ec28ee54"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#5f821fffa9074c5517c43a708bf16b6de57eef02"
 dependencies = [
  "num-traits",
 ]
@@ -4525,7 +4513,7 @@ checksum = "d44a3643b4ff9caf57abcee9c2c621d6c03d9135e0d8b589bd9afb5992cb176a"
 [[package]]
 name = "string_utils"
 version = "0.1.4"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#75e8c7ec2fa09e1e8a3a7f452498a3a7ec28ee54"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#5f821fffa9074c5517c43a708bf16b6de57eef02"
 dependencies = [
  "vector_utils",
 ]
@@ -4613,7 +4601,7 @@ dependencies = [
 [[package]]
 name = "tables"
 version = "0.1.5"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#75e8c7ec2fa09e1e8a3a7f452498a3a7ec28ee54"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#5f821fffa9074c5517c43a708bf16b6de57eef02"
 dependencies = [
  "io_utils",
  "itertools",
@@ -5118,7 +5106,7 @@ checksum = "accd4ea62f7bb7a82fe23066fb0957d48ef677f6eeb8215f372f52e48bb32426"
 [[package]]
 name = "vdj_ann"
 version = "0.4.4"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#75e8c7ec2fa09e1e8a3a7f452498a3a7ec28ee54"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#5f821fffa9074c5517c43a708bf16b6de57eef02"
 dependencies = [
  "align_tools",
  "amino",
@@ -5140,7 +5128,7 @@ dependencies = [
 [[package]]
 name = "vdj_ann_ref"
 version = "0.2.1"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#75e8c7ec2fa09e1e8a3a7f452498a3a7ec28ee54"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#5f821fffa9074c5517c43a708bf16b6de57eef02"
 dependencies = [
  "debruijn",
  "exons",
@@ -5159,7 +5147,7 @@ dependencies = [
 [[package]]
 name = "vdj_types"
 version = "0.2.0"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#75e8c7ec2fa09e1e8a3a7f452498a3a7ec28ee54"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#5f821fffa9074c5517c43a708bf16b6de57eef02"
 dependencies = [
  "serde",
 ]
@@ -5176,7 +5164,7 @@ dependencies = [
 [[package]]
 name = "vector_utils"
 version = "0.1.5"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#75e8c7ec2fa09e1e8a3a7f452498a3a7ec28ee54"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#5f821fffa9074c5517c43a708bf16b6de57eef02"
 dependencies = [
  "permutation",
  "superslice",
@@ -5595,9 +5583,9 @@ checksum = "712e227841d057c1ee1cd2fb22fa7e5a5461ae8e48fa2ca79ec42cfc1931183f"
 
 [[package]]
 name = "window_clipboard"
-version = "0.2.2"
+version = "0.2.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "086ed826cc4468377b6b995300d5f7f852a2fe1eb02e6cd1ccd4a574deb9d310"
+checksum = "b47d7fb4df5cd1fea61e5ee3841380f54359bac814e227d8f72709f4f193f8cf"
 dependencies = [
  "clipboard-win 4.4.1",
  "clipboard_macos",
@@ -5719,18 +5707,6 @@ dependencies = [
  "lazy_static",
  "libc",
  "pkg-config",
-]
-
-[[package]]
-name = "x11rb"
-version = "0.8.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6ffb080b3f2f616242a4eb8e7d325035312127901025b0052bc3154a282d0f19"
-dependencies = [
- "gethostname",
- "nix 0.20.0",
- "winapi",
- "winapi-wsapoll",
 ]
 
 [[package]]
