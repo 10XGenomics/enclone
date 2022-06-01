@@ -141,6 +141,8 @@ pub fn get_gex_info(ctl: &mut EncloneControl) -> Result<GexInfo, String> {
                     x.insert(format!("{}_cu", ff[z]), j);
                 } else if ff[2].starts_with(&"Gene") {
                     x.insert(format!("{}_g", ff[z]), j);
+                } else if ff[2].starts_with(&"Antigen") {
+                    x.insert(format!("{}_ag", ff[z]), j);
                 }
             }
         }

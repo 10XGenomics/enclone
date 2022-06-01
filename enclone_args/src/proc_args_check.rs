@@ -52,6 +52,10 @@ pub fn get_known_features(gex_info: &GexInfo) -> Result<Vec<String>, String> {
                     for s in suffixes.iter() {
                         res.1.push(format!("{}_cu{}", ff[z], s));
                     }
+                } else if ff[2].starts_with("Antigen") {
+                    for s in suffixes.iter() {
+                        res.1.push(format!("{}_ag{}", ff[z], s));
+                    }
                 } else {
                     for s in suffixes_g.iter() {
                         res.1.push(format!("{}_g{}", ff[z], s));

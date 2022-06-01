@@ -144,7 +144,7 @@ pub fn feature_barcode_matrix_seq_def(id: usize) -> Option<SequencingDef> {
         let v = v.unwrap();
         let sample_defx = &v.as_array().unwrap();
         for x in sample_defx.iter() {
-            if x["library_type"] == "Antibody Capture" {
+            if x["library_type"] == "Antibody Capture" || x["library_type"] == "Antigen Capture" {
                 read_path = x["read_path"].to_string().between("\"", "\"").to_string();
                 let y = x["sample_indices"].as_array().unwrap().to_vec();
                 for i in 0..y.len() {

@@ -85,6 +85,10 @@ pub fn match_vars(ctl: &mut EncloneControl, gex_info: &GexInfo) -> Result<(), St
                                     if y.contains("_cu") {
                                         ok = true;
                                     }
+                                } else if ff[2].starts_with("Antigen") {
+                                    if y.contains("_ag") {
+                                        ok = true;
+                                    }
                                 } else if y.contains("_g") {
                                     ok = true;
                                 }
