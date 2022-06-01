@@ -548,7 +548,7 @@ pub fn load_gex(
                         rpc = Some(rpcx.force_usize() as isize);
                     // Note that where we have "Antibody Capture"/"Antigen Capture", we could hypothetically have
                     // "CRISPR Guide Capture" or "Custom Feature".
-                    } else if fields[lib_field] == "Antibody Capture" || fields[lib_field] == "Antigen Capture"
+                    } else if (fields[lib_field] == "Antibody Capture" || fields[lib_field] == "Antigen Capture")
                         && fields[name_field] == "Mean reads per cell"
                     {
                         let mut fbrpcx = fields[value_field].to_string();

@@ -194,8 +194,8 @@ fn main() {
                 }
                 for i in 0..lines.len() {
                     let fields = parse_csv(&lines[i]);
-                    if fields.len() >= 5 && fields[4] == "Antibody Capture"
-                        || fields[4] == "Antigen Capture"
+                    if fields.len() >= 5
+                        && (fields[4] == "Antibody Capture" || fields[4] == "Antigen Capture")
                     {
                         antibody_seq_id = Some(fields[3].force_usize());
                         break;
