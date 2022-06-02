@@ -2,13 +2,49 @@
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// Usage:
+// Example of usage:
 //
-// denovo species region <optional args>
+// denovo rabbit ~/genomes ~/v_segments VDJC fasta 10x
+// - Create a 10x-style rabbit VDJC BCR reference file for rabbit as standard output.
+//
+// General usage:
+//
+// denovo species genomes-dir v_segments-dir region <optional args>
 //
 // species: may be human or mouse or dog or any string having a unique match to a record
 // in a directory having genomes, see genomes_list.
 // or all to do everything
+//
+// genomes-dir: location of genome sequences
+//
+// v_segments-dir: location of a directory containing 10x-style V segment fasta files as follows:
+//
+// Bos_taurus-mkvdjref-input.fasta
+// Camelus_dromedarius-mkvdjref-input.fasta
+// Canis_lupus_familiaris-mkvdjref-input.fasta
+// Capra_hircus-mkvdjref-input.fasta
+// Cercocebus_atys-mkvdjref-input.fasta
+// Equus_caballus-mkvdjref-input.fasta
+// Felis_catus-mkvdjref-input.fasta
+// Homo_sapiens-mkvdjref-input.fasta
+// Macaca_fascicularis-mkvdjref-input.fasta
+// Macaca_mulatta-mkvdjref-input.fasta
+// Macaca_nemestrina-mkvdjref-input.fasta
+// Mus_cookii-mkvdjref-input.fasta
+// Mus_minutoides-mkvdjref-input.fasta
+// Mus_musculus-mkvdjref-input.fasta
+// Mus_pahari-mkvdjref-input.fasta
+// Mus_saxicola-mkvdjref-input.fasta
+// Mus_spretus-mkvdjref-input.fasta
+// Ornithorhynchus_antinus-mkvdjref-input.fasta
+// Oryctolagus_cuniculus-mkvdjref-input.fasta
+// Ovis_aries-mkvdjref-input.fasta
+// Papio_anubis_anubis-mkvdjref-input.fasta
+// Rattus_norvegicus-mkvdjref-input.fasta
+// Rattus_rattus-mkvdjref-input.fasta
+// Sus_scrofa-mkvdjref-input.fasta
+// Tursiops_truncatus-mkvdjref-input.fasta
+// Vicugna_pacos-mkvdjref-input.fasta
 //
 // region is V or D or J or C, or any combination of those, e.g. VDJC
 // For V, the 5'-UTR TAG is included as a separate record.
@@ -153,6 +189,7 @@ use enclone_denovo::vdj_features::{
     cdr1, cdr2, cdr3_start, fr1_start, fwr1, fwr2, fwr3, score_fwr3_at_end,
 };
 use fasta_tools::read_fasta_contents_into_vec_dna_string_plus_headers;
+use flate2::read::MultiGzDecoder;
 use io_utils::{fwrite, fwriteln, open_for_write_new};
 use itertools::Itertools;
 use pretty_trace::PrettyTrace;
@@ -160,8 +197,8 @@ use rayon::prelude::*;
 use std::cmp::{max, min};
 use std::collections::HashMap;
 use std::env;
-
-use std::io::Write;
+use std::fs::File;
+use std::io::{BufReader, Read, Write};
 use std::process::Command;
 use string_utils::{add_commas, stringme, strme, TextUtils};
 use superslice::Ext;
@@ -335,12 +372,14 @@ fn main() {
     // correctly handled in subsequent code.
 
     let args: Vec<String> = env::args().collect();
-    if args.len() < 3 {
-        eprintln!("\nusage = denovo genome region (with additional optional args)\n");
+    if args.len() < 5 {
+        eprintln!("\nusage = denovo genome genomes-dir v_segments-dir region (with additional optional args)\n");
         std::process::exit(1);
     }
     let species = &args[1];
-    let region_type = &args[2];
+    let dir = &args[2];
+    let v_seg_dir = &args[3];
+    let region_type = &args[4];
     let mut use_v = false;
     let mut use_d = false;
     let mut use_j = false;
@@ -359,7 +398,7 @@ fn main() {
             std::process::exit(1);
         }
     }
-    let genomes0 = std::fs::read_dir("somewhere/genomes").unwrap();
+    let genomes0 = std::fs::read_dir(&dir).unwrap();
     let mut genomes = Vec::<String>::new();
     for f in genomes0 {
         let f = f.unwrap().path();
@@ -464,9 +503,26 @@ fn main() {
         let mut f = std::fs::File::open(&fasta_file).unwrap();
         binary_read_vec_vec(&mut f, &mut refx).unwrap();
     } else {
-        let mut f = std::fs::File::open(&fasta_file).unwrap();
-        binary_read_vec_vec(&mut f, &mut refx).unwrap();
+        if !fasta_file.ends_with(".gz") {
+            let mut f = std::fs::File::open(&fasta_file).unwrap();
+            binary_read_vec_vec(&mut f, &mut refx).unwrap();
+        } else {
+            // Read gzipped file.  This makes horrible use of a temp file.
+            let gz = MultiGzDecoder::new(File::open(&fasta_file).unwrap());
+            let mut b = BufReader::new(gz);
+            let mut buf = Vec::<u8>::new();
+            b.read_to_end(&mut buf).unwrap();
+            let froot = format!("{}.tmp", fasta_file.rev_before(".gz"));
+            {
+                let mut f = open_for_write_new![&froot];
+                f.write_all(&buf).unwrap();
+            }
+            let mut f = std::fs::File::open(&froot).unwrap();
+            binary_read_vec_vec(&mut f, &mut refx).unwrap();
+            std::fs::remove_file(&froot).unwrap();
+        }
     }
+
     // println!("used {:.2} seconds loading genome", elapsed(&t));
 
     // Parse other arguments.
@@ -480,7 +536,7 @@ fn main() {
     let mut store_fasta = false;
     let mut print_aa = false;
     let mut tenx = false;
-    for i in 3..args.len() {
+    for i in 5..args.len() {
         if args[i] == "trans" {
             show_transition = true;
         } else if args[i] == "dna" {
@@ -1135,7 +1191,7 @@ fn main() {
 
     // Make freqs.
 
-    let freqs = make_fwr3_freqs();
+    let freqs = make_fwr3_freqs(&v_seg_dir);
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 

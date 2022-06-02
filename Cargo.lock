@@ -1318,6 +1318,7 @@ dependencies = [
  "debruijn",
  "equiv",
  "fasta_tools",
+ "flate2",
  "graph_simple",
  "hyperbase",
  "io_utils",

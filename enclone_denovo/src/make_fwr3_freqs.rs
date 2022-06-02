@@ -12,7 +12,7 @@ use string_utils::TextUtils;
 // use vdj_ann::refx::*;
 use vector_utils::make_freq;
 
-pub fn make_fwr3_freqs() -> Vec<Vec<Vec<(u32, u8)>>> {
+pub fn make_fwr3_freqs(v_seg_dir: &str) -> Vec<Vec<Vec<(u32, u8)>>> {
     // Define constants.
 
     const MOTIF: usize = 30;
@@ -29,7 +29,7 @@ pub fn make_fwr3_freqs() -> Vec<Vec<Vec<(u32, u8)>>> {
 
     // Gather the reference sequences.
 
-    let all = read_dir(&"v_segments").unwrap();
+    let all = read_dir(&v_seg_dir).unwrap();
     for f in all {
         let f = f.unwrap().path();
         let f = f.to_str().unwrap();

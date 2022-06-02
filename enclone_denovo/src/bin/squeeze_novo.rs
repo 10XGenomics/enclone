@@ -1,9 +1,9 @@
 // Copyright (c) 2020 10X Genomics, Inc. All rights reserved.
 
-// Read V gene predictions, extract features, and line things up.
+// Read V gene predictions from the given directory, extract features, and line things up.
 //
-// usage: squeeze_novo feature length
-// e.g. squeeze_novo FWR3 39
+// usage: squeeze_novo dir feature length
+// e.g. squeeze_novo denovo_ref FWR3 39
 // optional extra arg: a string that full reference names should match
 
 use amino::aa_seq;
@@ -16,13 +16,13 @@ use string_utils::{strme, TextUtils};
 fn main() {
     PrettyTrace::new().on();
     let args: Vec<String> = env::args().collect();
-    let feature = &args[1];
-    let len = args[2].force_usize();
+    let dir = &args[1];
+    let feature = &args[2];
+    let len = args[3].force_usize();
     let mut required = String::new();
-    if args.len() == 4 {
-        required = args[3].to_string();
+    if args.len() == 5 {
+        required = args[4].to_string();
     }
-    let dir = "/mnt/deck5/david.jaffe/denovo_ref";
     let refs = std::fs::read_dir(&dir).unwrap();
     for f in refs {
         let f = f.unwrap().path();
