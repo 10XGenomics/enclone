@@ -18,14 +18,14 @@ publish = false
 # in the root of the enclone repo.
 
 [dependencies]
-bio_edit = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
+bio_edit = { version = "0.1", git = "https://github.com/DavidBJaffe/rust-toolbox.git", branch = "master" }
 bytes = "1"
 byteorder = "1"
 prost = { version = "0.9", default_features = false, features = ["std", "prost-derive"] }
 serde = "1"
 serde_derive = "1"
 thiserror = "1"
-vdj_ann = { version = "0.4", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
+vdj_ann = { version = "0.4", git = "https://github.com/DavidBJaffe/rust-toolbox.git", branch = "master" }
 
 [build-dependencies]
 prost-build = "0.9"

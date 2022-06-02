@@ -20,26 +20,26 @@ publish = false
 # in the root of the enclone repo.
 
 [dependencies]
-amino = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
+amino = { version = "0.1", git = "https://github.com/DavidBJaffe/rust-toolbox.git", branch = "master" }
 debruijn = "0.3"
 enclone_core = { path = "../enclone_core" }
 enclone_print = { path = "../enclone_print" }
 enclone_proto = { path = "../enclone_proto" }
 enclone = { path = "../enclone" }
 enclone_args = { path = "../enclone_args" }
-equiv = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
+equiv = { version = "0.1", git = "https://github.com/DavidBJaffe/rust-toolbox.git", branch = "master" }
 evalexpr = "7"
-io_utils = { version = "0.3", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
+io_utils = { version = "0.3", git = "https://github.com/DavidBJaffe/rust-toolbox.git", branch = "master" }
 itertools = "0.10"
 ndarray = "0.15"
 qd = { git = "https://github.com/Barandis/qd" }
 rayon = "1"
 regex = { version = "1", default-features = false, features = ["std", "perf"] }
-stats_utils = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
-string_utils = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
-tables = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
-vdj_ann = { version = "0.4", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
-vector_utils = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
+stats_utils = { version = "0.1", git = "https://github.com/DavidBJaffe/rust-toolbox.git", branch = "master" }
+string_utils = { version = "0.1", git = "https://github.com/DavidBJaffe/rust-toolbox.git", branch = "master" }
+tables = { version = "0.1", git = "https://github.com/DavidBJaffe/rust-toolbox.git", branch = "master" }
+vdj_ann = { version = "0.4", git = "https://github.com/DavidBJaffe/rust-toolbox.git", branch = "master" }
+vector_utils = { version = "0.1", git = "https://github.com/DavidBJaffe/rust-toolbox.git", branch = "master" }
 
 [target.'cfg(not(windows))'.dependencies]
 hdf5x = { git = "https://github.com/DavidBJaffe/hdf5-rust-as-hdf5x", branch = "conda_nov2021_as_hdf5x", default-features=false, features = ["conda"] }

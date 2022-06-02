@@ -22,41 +22,41 @@ publish = false
 # To keep compile time down, this file should *not* access the enclone crate.
 
 [dependencies]
-align_tools = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
-amino = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
-ansi_escape = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
-bio_edit = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
+align_tools = { version = "0.1", git = "https://github.com/DavidBJaffe/rust-toolbox.git", branch = "master" }
+amino = { version = "0.1", git = "https://github.com/DavidBJaffe/rust-toolbox.git", branch = "master" }
+ansi_escape = { version = "0.1", git = "https://github.com/DavidBJaffe/rust-toolbox.git", branch = "master" }
+bio_edit = { version = "0.1", git = "https://github.com/DavidBJaffe/rust-toolbox.git", branch = "master" }
 crc = "2"
 debruijn = "0.3"
 enclone_core = { path = "../enclone_core" }
 enclone_proto = { path = "../enclone_proto" }
-equiv = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
+equiv = { version = "0.1", git = "https://github.com/DavidBJaffe/rust-toolbox.git", branch = "master" }
 float-ord = "0.3"
 fontdb = "0.7"
-io_utils = { version = "0.3", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
+io_utils = { version = "0.3", git = "https://github.com/DavidBJaffe/rust-toolbox.git", branch = "master" }
 itertools = "0.10"
 lazy_static = "1"
-mirror_sparse_matrix = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
+mirror_sparse_matrix = { version = "0.1", git = "https://github.com/DavidBJaffe/rust-toolbox.git", branch = "master" }
 ndarray = "0.15"
 palette = "0.6"
-perf_stats = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
+perf_stats = { version = "0.1", git = "https://github.com/DavidBJaffe/rust-toolbox.git", branch = "master" }
 plotters = { version = "0.3", default_features = false, features = ["svg_backend", "point_series"] }
-pretty_trace = { version = "0.5", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
+pretty_trace = { version = "0.5", git = "https://github.com/DavidBJaffe/rust-toolbox.git", branch = "master" }
 rayon = "1"
 resvg = { version = "0.19", default-features = false }
 serde = "1"
 serde_derive = "1"
 serde_json = "1"
-stats_utils = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
-string_utils = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
+stats_utils = { version = "0.1", git = "https://github.com/DavidBJaffe/rust-toolbox.git", branch = "master" }
+string_utils = { version = "0.1", git = "https://github.com/DavidBJaffe/rust-toolbox.git", branch = "master" }
 superslice = "1"
-tables = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
+tables = { version = "0.1", git = "https://github.com/DavidBJaffe/rust-toolbox.git", branch = "master" }
 tar = "0.4"
 tiny-skia = "0.6"
 triple_accel = "0.4"
 usvg = { version = "0.19", features = ["text"] }
-vdj_ann = { version = "0.4", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
-vector_utils = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
+vdj_ann = { version = "0.4", git = "https://github.com/DavidBJaffe/rust-toolbox.git", branch = "master" }
+vector_utils = { version = "0.1", git = "https://github.com/DavidBJaffe/rust-toolbox.git", branch = "master" }
 # to replace by this after bumping version
 # vector_utils = "0.1.0"
 

@@ -4,18 +4,18 @@
 # of the Cargo.toml files in the crates within this repo.  Then use sync_to_master (which
 # is in the enclone crate) to propagate the change.  When you run "cargo t", this is enforced.
 
-align_tools = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
-amino = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
+align_tools = { version = "0.1", git = "https://github.com/DavidBJaffe/rust-toolbox.git", branch = "master" }
+amino = { version = "0.1", git = "https://github.com/DavidBJaffe/rust-toolbox.git", branch = "master" }
 anyhow = "1"
-ansi_escape = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
+ansi_escape = { version = "0.1", git = "https://github.com/DavidBJaffe/rust-toolbox.git", branch = "master" }
 arboard = "2"
 assert_cmd = "2"
 async-trait = "0.1"
 attohttpc = { version = "0.18", default-features = false, features = ["compress", "tls-rustls"] }
 base64 = "0.13"
-binary_vec_io = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
+binary_vec_io = { version = "0.1", git = "https://github.com/DavidBJaffe/rust-toolbox.git", branch = "master" }
 bio = "0.39"
-bio_edit = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
+bio_edit = { version = "0.1", git = "https://github.com/DavidBJaffe/rust-toolbox.git", branch = "master" }
 byteorder = "1"
 bytes = "1"
 chrono = { version = "0.4", default-features = false, features = ["std", "clock"] }
@@ -26,7 +26,7 @@ core-graphics = "0.22"
 crc = "2"
 debruijn = "0.3"
 dirs = "4"
-dna = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
+dna = { version = "0.1", git = "https://github.com/DavidBJaffe/rust-toolbox.git", branch = "master" }
 edit-distance = "2"
 enclone_core = { path = "../enclone_core" }
 enclone_denovo = { path = "../enclone_denovo" }
@@ -40,45 +40,45 @@ enclone_stuff = { path = "../enclone_stuff" }
 enclone_tail = { path = "../enclone_tail" }
 enclone_vars = { path = "../enclone_vars" }
 enclone_version = { path = "../enclone_version" }
-equiv = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
+equiv = { version = "0.1", git = "https://github.com/DavidBJaffe/rust-toolbox.git", branch = "master" }
 evalexpr = "7"
-expr_tools = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
-fasta_tools = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
+expr_tools = { version = "0.1", git = "https://github.com/DavidBJaffe/rust-toolbox.git", branch = "master" }
+fasta_tools = { version = "0.1", git = "https://github.com/DavidBJaffe/rust-toolbox.git", branch = "master" }
 file-lock = "2"
 flate2 = "1"
 float-ord = "0.3"
 fontdb = "0.7"
 fs_extra = "1"
 git = "https://github.com/10xGenomics/hdf5-rust.git"
-graph_simple = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
+graph_simple = { version = "0.1", git = "https://github.com/DavidBJaffe/rust-toolbox.git", branch = "master" }
 home = "0.5"
-hyperbase = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
+hyperbase = { version = "0.1", git = "https://github.com/DavidBJaffe/rust-toolbox.git", branch = "master" }
 iced = { git = "https://github.com/hecrj/iced", rev = "3042fa2cb63c651ebed2abe6f4054e61f70b0331", features = ["canvas", "image", "async-std"] }
 iced_native = { git = "https://github.com/hecrj/iced", rev = "3042fa2cb63c651ebed2abe6f4054e61f70b0331" }
 image = { version = "0.23", features = ["jpeg", "png", "jpeg_rayon"], default-features = false }
 include_dir = { version = "0.6", features = ["search"] }
-io_utils = { version = "0.3", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
+io_utils = { version = "0.3", git = "https://github.com/DavidBJaffe/rust-toolbox.git", branch = "master" }
 itertools = "0.10"
 jpeg-decoder = "0.2"
-kmer_lookup = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
+kmer_lookup = { version = "0.1", git = "https://github.com/DavidBJaffe/rust-toolbox.git", branch = "master" }
 lazy_static = "1"
 libc = "0.2"
 log = "0.4"
 lz4 = "1"
 mach = "0.3"
-mirror_sparse_matrix = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
+mirror_sparse_matrix = { version = "0.1", git = "https://github.com/DavidBJaffe/rust-toolbox.git", branch = "master" }
 ndarray = "0.15"
 nix = "0.23"
 num-traits = "0.2"
 objc = "0.2"
 pager = "0.16"
 palette = "0.6"
-perf_stats = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
+perf_stats = { version = "0.1", git = "https://github.com/DavidBJaffe/rust-toolbox.git", branch = "master" }
 permutation = "0.4"
 petgraph = "0.6"
 plotters = { version = "0.3", default_features = false, features = ["svg_backend", "point_series"] }
 png-decoder = "0.1"
-pretty_trace = { version = "0.5", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
+pretty_trace = { version = "0.5", git = "https://github.com/DavidBJaffe/rust-toolbox.git", branch = "master" }
 procfs = { version = "0.12", default_features = false }
 # prost: enclone will compile without the std and prost-derive features, but other things
 #        (such as enclone_proto) break.
@@ -94,12 +94,12 @@ serde = "1"
 serde_derive = "1"
 serde_json = "1"
 sha2 = "0.10"
-stats_utils = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
+stats_utils = { version = "0.1", git = "https://github.com/DavidBJaffe/rust-toolbox.git", branch = "master" }
 statrs = "0.15"
-stirling_numbers = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
-string_utils = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
+stirling_numbers = { version = "0.1", git = "https://github.com/DavidBJaffe/rust-toolbox.git", branch = "master" }
+string_utils = { version = "0.1", git = "https://github.com/DavidBJaffe/rust-toolbox.git", branch = "master" }
 superslice = "1"
-tables = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
+tables = { version = "0.1", git = "https://github.com/DavidBJaffe/rust-toolbox.git", branch = "master" }
 tar = "0.4"
 thiserror = "1"
 tilde-expand = "0.1"
@@ -112,8 +112,8 @@ triple_accel = "0.4"
 users = "0.11"
 usvg = { version = "0.19", features = ["text"] }
 # vdj_ann = "0.4"
-vdj_ann = { version = "0.4", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
-vdj_ann_ref = { version = "0.2", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
-vector_utils = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
+vdj_ann = { version = "0.4", git = "https://github.com/DavidBJaffe/rust-toolbox.git", branch = "master" }
+vdj_ann_ref = { version = "0.2", git = "https://github.com/DavidBJaffe/rust-toolbox.git", branch = "master" }
+vector_utils = { version = "0.1", git = "https://github.com/DavidBJaffe/rust-toolbox.git", branch = "master" }
 whoami = "1"
 yaml-rust = "0.4"

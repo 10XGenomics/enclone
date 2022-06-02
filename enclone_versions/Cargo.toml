@@ -22,23 +22,23 @@ byteorder = "1"
 bytes = "1"
 dirs = "4"
 flate2 = "1"
-io_utils = { version = "0.3", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
+io_utils = { version = "0.3", git = "https://github.com/DavidBJaffe/rust-toolbox.git", branch = "master" }
 itertools = "0.10"
 ndarray = "0.15"
 permutation = "0.4"
 petgraph = "0.6"
-pretty_trace = { version = "0.5", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
+pretty_trace = { version = "0.5", git = "https://github.com/DavidBJaffe/rust-toolbox.git", branch = "master" }
 prost = { version = "0.9", default_features = false, features = ["std", "prost-derive"] }
 prost-build = "0.9"
 rayon = "1"
 regex = { version = "1", default-features = false, features = ["std", "perf"] }
 serde = "1"
 serde_derive = "1"
-stats_utils = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
-stirling_numbers = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
-string_utils = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
+stats_utils = { version = "0.1", git = "https://github.com/DavidBJaffe/rust-toolbox.git", branch = "master" }
+stirling_numbers = { version = "0.1", git = "https://github.com/DavidBJaffe/rust-toolbox.git", branch = "master" }
+string_utils = { version = "0.1", git = "https://github.com/DavidBJaffe/rust-toolbox.git", branch = "master" }
 tar = "0.4"
-vector_utils = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
+vector_utils = { version = "0.1", git = "https://github.com/DavidBJaffe/rust-toolbox.git", branch = "master" }
 
 [target.'cfg(not(windows))'.dependencies]
 pager = "0.16"

@@ -63,7 +63,7 @@ end
 
 set begin = `date +%s`
 if ( !(-d enclone-data) ) then
-    git clone --depth=1 https://github.com/10XGenomics/enclone-data.git
+    git clone --depth=1 https://github.com/DavidBJaffe/enclone-data.git
     if ( $status != 0 ) then
         exit 1
     endif
