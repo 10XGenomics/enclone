@@ -62,7 +62,7 @@ fn test_enclone() {
     for i in 0..TESTS.len() {
         results.push((i, false, String::new()));
     }
-    let this = include_str!("../../enclone_core/src/main_testlist.rs");
+    let this = include_str!("main_testlist.rs");
     let mut tracking = false;
     let mut comments = Vec::<String>::new();
     let mut lines = Vec::<String>::new();
@@ -220,7 +220,7 @@ fn test_enclone_d() {
     for i in 0..DTESTS.len() {
         results.push((i, false, String::new()));
     }
-    let this = include_str!("../../enclone_core/src/testlist.rs");
+    let this = include_str!("testlist.rs");
     let mut tracking = false;
     let mut comments = Vec::<String>::new();
     let mut lines = Vec::<String>::new();
@@ -295,7 +295,7 @@ fn test_grouping() {
     for i in 0..GTESTS.len() {
         results.push((i, false, String::new()));
     }
-    let this = include_str!("../../enclone_core/src/testlist.rs");
+    let this = include_str!("testlist.rs");
     let mut tracking = false;
     let mut comments = Vec::<String>::new();
     let mut lines = Vec::<String>::new();

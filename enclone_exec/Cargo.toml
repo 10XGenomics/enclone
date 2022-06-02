@@ -25,7 +25,7 @@ path = "src/bin/enclone.rs"
 
 [dependencies]
 chrono = { version = "0.4", default-features = false, features = ["std", "clock"] }
-enclone_core = { path = "../enclone_core" }
+enclone_core = { git = "https://github.com/10XGenomics/enclone_ranger.git", branch = "main" }
 enclone_main = { path = "../enclone_main" }
 enclone_visual = { path = "../enclone_visual", optional=true }
 flate2 = "1"
@@ -43,9 +43,9 @@ vector_utils = { version = "0.1", git = "https://github.com/10XGenomics/rust-too
 ansi_escape = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 anyhow = "1"
 attohttpc = { version = "0.18", default-features = false, features = ["compress", "tls-rustls"] }
-enclone_vars = { path = "../enclone_vars" }
-enclone_proto = { path = "../enclone_proto" }
-enclone_ranger = { path = "../enclone_ranger" }
+enclone_vars = { git = "https://github.com/10XGenomics/enclone_ranger.git", branch = "main" }
+enclone_proto = { git = "https://github.com/10XGenomics/enclone_ranger.git", branch = "main" }
+enclone_ranger = { git = "https://github.com/10XGenomics/enclone_ranger.git", branch = "main" }
 enclone_tools = { path = "../enclone_tools" }
 flate2 = "1"
 fs_extra = "1"

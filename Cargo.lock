@@ -158,20 +158,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "assert_cmd"
-version = "2.0.4"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "93ae1ddd39efd67689deb1979d80bad3bf7f2b09c6e6117c8d1f2443b5e2f83e"
-dependencies = [
- "bstr",
- "doc-comment",
- "predicates",
- "predicates-core",
- "predicates-tree",
- "wait-timeout",
-]
-
-[[package]]
 name = "async-channel"
 version = "1.6.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1133,12 +1119,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "difflib"
-version = "0.4.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6184e33543162437515c2e2b48714794e37845ec9851711914eec9d308f6ebe8"
-
-[[package]]
 name = "digest"
 version = "0.10.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1189,12 +1169,6 @@ version = "0.1.3"
 source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#75e8c7ec2fa09e1e8a3a7f452498a3a7ec28ee54"
 
 [[package]]
-name = "doc-comment"
-version = "0.3.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fea41bba32d969b513997752735605054bc0dfa92b4c56bf1189f2e174be7a10"
-
-[[package]]
 name = "downcast-rs"
 version = "1.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1215,10 +1189,10 @@ checksum = "e78d4f1cc4ae33bbfc157ed5d5a5ef3bc29227303d595861deb238fcec4e9457"
 [[package]]
 name = "enclone"
 version = "0.5.219"
+source = "git+https://github.com/10XGenomics/enclone_ranger.git?branch=main#bf133addaed756bbe60e5c43319e53d07f0e4f37"
 dependencies = [
  "amino",
  "ansi_escape",
- "assert_cmd",
  "debruijn",
  "enclone_core",
  "enclone_proto",
@@ -1250,6 +1224,7 @@ dependencies = [
 [[package]]
 name = "enclone_args"
 version = "0.5.219"
+source = "git+https://github.com/10XGenomics/enclone_ranger.git?branch=main#bf133addaed756bbe60e5c43319e53d07f0e4f37"
 dependencies = [
  "attohttpc",
  "debruijn",
@@ -1275,6 +1250,7 @@ dependencies = [
 [[package]]
 name = "enclone_core"
 version = "0.5.219"
+source = "git+https://github.com/10XGenomics/enclone_ranger.git?branch=main#bf133addaed756bbe60e5c43319e53d07f0e4f37"
 dependencies = [
  "align_tools",
  "amino",
@@ -1443,6 +1419,7 @@ dependencies = [
 [[package]]
 name = "enclone_print"
 version = "0.5.219"
+source = "git+https://github.com/10XGenomics/enclone_ranger.git?branch=main#bf133addaed756bbe60e5c43319e53d07f0e4f37"
 dependencies = [
  "amino",
  "ansi_escape",
@@ -1482,6 +1459,7 @@ dependencies = [
 [[package]]
 name = "enclone_proto"
 version = "0.5.219"
+source = "git+https://github.com/10XGenomics/enclone_ranger.git?branch=main#bf133addaed756bbe60e5c43319e53d07f0e4f37"
 dependencies = [
  "bio_edit",
  "byteorder",
@@ -1497,6 +1475,7 @@ dependencies = [
 [[package]]
 name = "enclone_ranger"
 version = "0.5.219"
+source = "git+https://github.com/10XGenomics/enclone_ranger.git?branch=main#bf133addaed756bbe60e5c43319e53d07f0e4f37"
 dependencies = [
  "enclone",
  "enclone_args",
@@ -1518,6 +1497,7 @@ dependencies = [
 [[package]]
 name = "enclone_stuff"
 version = "0.5.219"
+source = "git+https://github.com/10XGenomics/enclone_ranger.git?branch=main#bf133addaed756bbe60e5c43319e53d07f0e4f37"
 dependencies = [
  "amino",
  "debruijn",
@@ -1636,6 +1616,7 @@ dependencies = [
 [[package]]
 name = "enclone_vars"
 version = "0.5.219"
+source = "git+https://github.com/10XGenomics/enclone_ranger.git?branch=main#bf133addaed756bbe60e5c43319e53d07f0e4f37"
 dependencies = [
  "io_utils",
  "itertools",
@@ -2883,9 +2864,9 @@ checksum = "33a33a362ce288760ec6a508b94caaec573ae7d3bbbd91b87aa0bad4456839db"
 
 [[package]]
 name = "libz-sys"
-version = "1.1.6"
+version = "1.1.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "92e7e15d7610cce1d9752e137625f14e61a28cd45929b6e12e47b50fe154ee2e"
+checksum = "9702761c3935f8cc2f101793272e202c72b99da8f4224a19ddcf1279a6450bbf"
 dependencies = [
  "cc",
  "libc",
@@ -3822,33 +3803,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "eb9f9e6e233e5c4a35559a617bf40a4ec447db2e84c20b55a6f83167b7e57872"
 
 [[package]]
-name = "predicates"
-version = "2.1.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a5aab5be6e4732b473071984b3164dbbfb7a3674d30ea5ff44410b6bcd960c3c"
-dependencies = [
- "difflib",
- "itertools",
- "predicates-core",
-]
-
-[[package]]
-name = "predicates-core"
-version = "1.0.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "da1c2388b1513e1b605fcec39a95e0a9e8ef088f71443ef37099fa9ae6673fcb"
-
-[[package]]
-name = "predicates-tree"
-version = "1.0.5"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4d86de6de25020a36c6d3643a86d9a6a9f552107c0559c60ea03551b5e16c032"
-dependencies = [
- "predicates-core",
- "termtree",
-]
-
-[[package]]
 name = "pretty_trace"
 version = "0.5.23"
 source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#75e8c7ec2fa09e1e8a3a7f452498a3a7ec28ee54"
@@ -4511,7 +4465,7 @@ source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#75e8
 [[package]]
 name = "stirling_numbers"
 version = "0.1.7"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#75e8c7ec2fa09e1e8a3a7f452498a3a7ec28ee54"
+source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#2d723ca2ed5b8de359774b7d9cac8dfe8c0c8574"
 dependencies = [
  "num-traits",
 ]
@@ -4653,12 +4607,6 @@ checksum = "bab24d30b911b2376f3a13cc2cd443142f0c81dda04c118693e35b3835757755"
 dependencies = [
  "winapi-util",
 ]
-
-[[package]]
-name = "termtree"
-version = "0.2.4"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "507e9898683b6c43a9aa55b64259b721b52ba226e0f3779137e50ad114a4c90b"
 
 [[package]]
 name = "thiserror"
@@ -5187,15 +5135,6 @@ name = "version_check"
 version = "0.9.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "49874b5167b65d7193b8aba1567f5c7d93d001cafc34600cee003eda787e483f"
-
-[[package]]
-name = "wait-timeout"
-version = "0.2.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9f200f5b12eb75f8c1ed65abd4b2db8a6e1b138a20de009dacee265a2498f3f6"
-dependencies = [
- "libc",
-]
 
 [[package]]
 name = "waker-fn"
