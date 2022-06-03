@@ -35,7 +35,7 @@
 use amino::*;
 use debruijn::dna_string::*;
 use edit_distance::*;
-use enclone_tools::pdb::*;
+use enclone_base::pdb::*;
 use equiv::*;
 use fasta_tools::*;
 use io_utils::*;

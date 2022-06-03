@@ -1,0 +1,29 @@
+[package]
+name = "enclone_base"
+version = "0.5.216"
+authors = ["""David Jaffe <david.jaffe@10xgenomics.com>,
+              Nigel Delaney <nigel.delaney@10xgenomics.com>,
+              Keri Dockter <keri.dockter@10xgenomics.com>,
+              Jessica Hamel <jessica.hamel@10xgenomics.com>,
+              Lance Hepler <lance.hepler@10xgenomics.com>,
+              Shaun Jackman <shaun.jackman@10xgenomics.com>,
+              Sreenath Krishnan <sreenath.krishnan@10xgenomics.com>,
+              Meryl Lewis <meryl.lewis@10xgenomics.com>,
+              Alvin Liang <alvin.liang@10xgenomics.com>,
+              Patrick Marks <patrick.marks@10xgenomics.com>,
+              Wyatt McDonnell <wyatt.mcdonnell@10xgenomics.com>"""]
+edition = "2018"
+license-file = "LICENSE.txt"
+publish = false
+
+# THIS CRATE DOES NOT DEPEND ON ANY ENCLONE CRATE OR ON HDF5!  THAT IS THE PURPOSE OF THIS CRATE.
+
+# Please do not edit crate versions within this file.  Instead edit the file master.toml
+# in the root of the enclone repo.
+
+[dependencies]
+amino = { version = "0.1", git = "https://github.com/DavidBJaffe/rust-toolbox.git", branch = "master" }
+flate2 = "1"
+io_utils = { version = "0.3", git = "https://github.com/DavidBJaffe/rust-toolbox.git", branch = "master" }
+string_utils = { version = "0.1", git = "https://github.com/DavidBJaffe/rust-toolbox.git", branch = "master" }
+vector_utils = { version = "0.1", git = "https://github.com/DavidBJaffe/rust-toolbox.git", branch = "master" }

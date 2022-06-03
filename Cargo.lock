@@ -1273,6 +1273,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "enclone_base"
+version = "0.5.216"
+dependencies = [
+ "amino",
+ "flate2",
+ "io_utils",
+ "string_utils",
+ "vector_utils",
+]
+
+[[package]]
 name = "enclone_core"
 version = "0.5.216"
 dependencies = [
@@ -1392,6 +1403,7 @@ dependencies = [
  "dirs",
  "enclone",
  "enclone_args",
+ "enclone_base",
  "enclone_core",
  "enclone_help",
  "enclone_print",
@@ -1603,6 +1615,7 @@ dependencies = [
  "dna",
  "edit-distance",
  "enclone",
+ "enclone_base",
  "enclone_core",
  "enclone_denovo",
  "equiv",

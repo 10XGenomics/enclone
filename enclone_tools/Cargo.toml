@@ -30,6 +30,7 @@ debruijn = "0.3"
 dna = { version = "0.1", git = "https://github.com/DavidBJaffe/rust-toolbox.git", branch = "master" }
 edit-distance = "2"
 enclone = { path = "../enclone" }
+enclone_base = { path = "../enclone_base" }
 enclone_core = { path = "../enclone_core" }
 enclone_denovo = { path = "../enclone_denovo" }
 equiv = { version = "0.1", git = "https://github.com/DavidBJaffe/rust-toolbox.git", branch = "master" }

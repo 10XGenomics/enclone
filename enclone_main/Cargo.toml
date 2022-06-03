@@ -21,6 +21,7 @@ publish = false
 
 [dependencies]
 dirs = "4"
+enclone_base = { path = "../enclone_base" }
 enclone_core = { path = "../enclone_core" }
 enclone_help = { path = "../enclone_help" }
 enclone_print = { path = "../enclone_print" }

@@ -3,6 +3,7 @@
 members = [
     "enclone",
     "enclone_args",
+    "enclone_base",
     "enclone_core",
     "enclone_denovo",
     "enclone_exec",

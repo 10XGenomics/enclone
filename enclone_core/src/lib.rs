@@ -2,7 +2,6 @@
 
 pub mod align_to_vdj_ref;
 pub mod allowed_vars;
-pub mod blacklist;
 pub mod cell_color;
 pub mod combine_group_pics;
 pub mod defs;
