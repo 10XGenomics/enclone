@@ -4,7 +4,6 @@
 
 use self::refx::{make_vdj_ref_data_core, RefData};
 #[cfg(not(target_os = "windows"))]
-use crate::blacklist::profiling_blacklist;
 use crate::determine_ref::determine_ref;
 use crate::sec_mem::test_sec_mem;
 use crate::setup::{critical_args, setup};
@@ -16,6 +15,7 @@ use enclone_args::proc_args2::is_simple_arg;
 use enclone_args::proc_args_check::{
     check_gvars, check_lvars, check_one_lvar, check_pcols, get_known_features,
 };
+use enclone_core::blacklist::profiling_blacklist;
 use enclone_core::cell_color::CellColor;
 use enclone_core::defs::EncloneControl;
 use enclone_core::enclone_structs::*;
