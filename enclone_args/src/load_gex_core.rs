@@ -427,6 +427,8 @@ pub fn load_gex(
                                 feature += "_cu";
                             } else if feature_type.starts_with(&"Gene") {
                                 feature += "_g";
+                            } else if feature_type.starts_with(&"Antigen") {
+                                feature += "_ag";
                             }
                             for j in 0..fields.len() {
                                 if xfields[j] == "num_umis"
@@ -544,9 +546,9 @@ pub fn load_gex(
                             return;
                         }
                         rpc = Some(rpcx.force_usize() as isize);
-                    // Note that where we have "Antibody Capture", we could hypothetically have
+                    // Note that where we have "Antibody Capture"/"Antigen Capture", we could hypothetically have
                     // "CRISPR Guide Capture" or "Custom Feature".
-                    } else if fields[lib_field] == "Antibody Capture"
+                    } else if (fields[lib_field] == "Antibody Capture" || fields[lib_field] == "Antigen Capture")
                         && fields[name_field] == "Mean reads per cell"
                     {
                         let mut fbrpcx = fields[value_field].to_string();
@@ -555,7 +557,7 @@ pub fn load_gex(
                         if fbrpcx.parse::<usize>().is_err() {
                             r.11 = format!(
                                 "\nSomething appears to be wrong with the file\n{}:\n\
-                                the Antibody Capture Mean Reads per Cell value isn't an integer.\n",
+                                the Antibody/Antigen Capture Mean Reads per Cell value isn't an integer.\n",
                                 csv
                             );
                             return;
@@ -568,7 +570,7 @@ pub fn load_gex(
                         "\nGene expression or feature barcode data was expected, however the \
                         CSV file\n{}\n\
                         does not have values for Gene Expression Mean Reads per Cell or
-                        Antibody Capture Mean Reads per Cell.\n\
+                        Antibody/Antigen Capture Mean Reads per Cell.\n\
                         This is puzzling.\n",
                         csv,
                     );
@@ -583,7 +585,7 @@ pub fn load_gex(
                         for i in 0..fields.len() {
                             if fields[i] == "Mean Reads per Cell" {
                                 rpc_field = Some(i);
-                            } else if fields[i] == "Antibody: Mean Reads per Cell" {
+                            } else if fields[i] == "Antibody: Mean Reads per Cell" || fields[i] == "Antigen: Mean Reads per Cell"{
                                 fbrpc_field = Some(i);
                             }
                         }
@@ -623,7 +625,7 @@ pub fn load_gex(
                             if fbrpcx.parse::<usize>().is_err() {
                                 r.11 = format!(
                                     "\nSomething appears to be wrong with the file\n{}:\n\
-                                    the Antibody: Mean Reads per Cell field isn't an integer.\n",
+                                    the Antibody/Antigen: Mean Reads per Cell field isn't an integer.\n",
                                     csv
                                 );
                                 return;

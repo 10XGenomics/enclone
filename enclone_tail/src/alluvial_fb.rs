@@ -120,11 +120,14 @@ pub fn alluvial_fb_reads(
                                 type_pos = j;
                             }
                         }
-                    } else if fields[type_pos] == "Antibody Capture" {
+                    } else if fields[type_pos] == "Antibody Capture"
+                        || fields[type_pos] == "Antigen Capture"
+                    {
                         seq_to_id.insert(fields[seq_pos].to_string(), fields[id_pos].to_string());
                     }
                 }
             }
+            println!("{:?}", seq_to_id);
             let (mut cellular_ref, mut cellular_nref) = (0, 0);
             let (mut ncellular_ref, mut ncellular_nref) = (0, 0);
             let (mut cellular_degen, mut ncellular_degen) = (0, 0);
@@ -453,7 +456,9 @@ pub fn alluvial_fb(
                                 type_pos = j;
                             }
                         }
-                    } else if fields[type_pos] == "Antibody Capture" {
+                    } else if fields[type_pos] == "Antibody Capture"
+                        || fields[type_pos] == "Antigen Capture"
+                    {
                         seq_to_id.insert(fields[seq_pos].to_string(), fields[id_pos].to_string());
                     }
                 }
