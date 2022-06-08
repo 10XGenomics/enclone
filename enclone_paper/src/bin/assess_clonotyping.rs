@@ -55,7 +55,7 @@ pub fn main() {
 
     let mut to_donor = HashMap::<String, usize>::new();
     {
-        let f = include_str!["../../../enclone/src/enclone.testdata.bcr.gex"];
+        let f = include_str!["../enclone.testdata.bcr.gex"];
         let mut donor = 0;
         for s in f.lines() {
             if s.starts_with("DONOR=") {
