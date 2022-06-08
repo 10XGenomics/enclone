@@ -332,16 +332,7 @@ fn test_rust_version() {
 #[test]
 fn test_exit() {
     PrettyTrace::new().on();
-    let exit_free_crates = [
-        "enclone",
-        "enclone_args",
-        "enclone_core",
-        "enclone_help",
-        "enclone_main",
-        "enclone_print",
-        "enclone_proto",
-        "enclone_tail",
-    ];
+    let exit_free_crates = ["enclone_help", "enclone_main", "enclone_tail"];
     for cname in exit_free_crates.iter() {
         let files = dir_list(&format!("../{}/src", cname));
         for f in files.iter() {
@@ -488,22 +479,6 @@ fn test_yaml() {
         eprintln!("\ntest.yaml is not valid YAML.\n");
         std::process::exit(1);
     }
-}
-
-// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
-// 37. Test to see if vars file is sorted and formatted correctly.
-
-#[cfg(not(feature = "cpu"))]
-#[test]
-fn test_vars() {
-    let old = std::fs::read_to_string("../enclone_vars/src/vars").unwrap();
-    let new = sort_vars(&old);
-    if new != old {
-        eprintln!("\nPlease run var_sort to sort the variables file.\n");
-        std::process::exit(1);
-    }
-    let _ = parse_variables(&old);
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
