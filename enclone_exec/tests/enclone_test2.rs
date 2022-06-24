@@ -145,7 +145,7 @@ fn test_accounting() {
     for i in 0..UNAC_TESTS.len() {
         results.push((i, false, String::new()));
     }
-    let this = include_str!("../../enclone_core/src/testlist.rs");
+    let this = include_str!("../../enclone_core_res/src/testlist.rs");
     let mut tracking = false;
     let mut comments = Vec::<String>::new();
     let mut lines = Vec::<String>::new();
