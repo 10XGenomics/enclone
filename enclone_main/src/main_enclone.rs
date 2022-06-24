@@ -437,7 +437,7 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
 
     // Determine if the species is human or mouse or unknown.
 
-    ctl.gen_opt.species = species(&refdata);
+    ctl.gen_opt.species = species(&refdata).to_string();
 
     // Process for sec (secreted) or mem (membrane) if specified.
 
