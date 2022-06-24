@@ -1337,6 +1337,7 @@ dependencies = [
  "attohttpc 0.18.0",
  "chrono",
  "enclone_core",
+ "enclone_core_res",
  "enclone_main",
  "enclone_proto",
  "enclone_ranger",
