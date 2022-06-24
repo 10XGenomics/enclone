@@ -594,21 +594,21 @@ fn test_unpushed() {
 
 // NOT BASIC
 
-#[cfg(not(feature = "basic"))]
-#[cfg(not(feature = "cpu"))]
-#[test]
-fn test_export_code() {
-    PrettyTrace::new().on();
-    let outs = export_code(1);
-    for i in 0..outs.len() {
-        let f = format!("../{}", outs[i].0);
-        let current = std::fs::read_to_string(&f).unwrap();
-        if outs[i].1 != current {
-            eprintln!("\nexport_code output {} has changed.\n", outs[i].0);
-            std::process::exit(1);
-        }
-    }
-}
+// #[cfg(not(feature = "basic"))]
+// #[cfg(not(feature = "cpu"))]
+// #[test]
+// fn test_export_code() {
+//     PrettyTrace::new().on();
+//     let outs = export_code(1);
+//     for i in 0..outs.len() {
+//         let f = format!("../{}", outs[i].0);
+//         let current = std::fs::read_to_string(&f).unwrap();
+//         if outs[i].1 != current {
+//             eprintln!("\nexport_code output {} has changed.\n", outs[i].0);
+//             std::process::exit(1);
+//         }
+//     }
+// }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
