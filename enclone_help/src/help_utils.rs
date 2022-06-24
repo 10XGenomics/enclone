@@ -5,7 +5,8 @@ use ansi_escape::{
     emit_blue_escape, emit_bold_escape, emit_end_escape, emit_green_escape, emit_red_escape,
     print_color,
 };
-use enclone_core::print_tools::{emit_codon_color_escape, font_face_in_css};
+use enclone_core::print_tools::emit_codon_color_escape;
+use enclone_core_res::print_tools::font_face_in_css;
 use io_utils::fwrite;
 use std::io::Write;
 use string_utils::{stringme, strme};

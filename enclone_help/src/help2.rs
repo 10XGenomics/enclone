@@ -4,7 +4,7 @@
 
 use crate::help_utils::{explain_alt_versions, HelpDesk};
 use enclone_core::defs::EncloneControl;
-use enclone_core::testlist::EXAMPLES;
+use enclone_core_res::testlist::EXAMPLES;
 use itertools::Itertools;
 use string_utils::strme;
 

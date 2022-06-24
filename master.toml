@@ -29,6 +29,7 @@ dirs = "4"
 dna = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 edit-distance = "2"
 enclone_core = { git = "https://github.com/10XGenomics/enclone_ranger.git", branch = "main" }
+enclone_core_res = { path = "../enclone_core_res" }
 enclone_denovo = { path = "../enclone_denovo" }
 enclone_help = { path = "../enclone_help" }
 enclone = { git = "https://github.com/10XGenomics/enclone_ranger.git", branch = "main" }

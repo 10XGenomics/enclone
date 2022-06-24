@@ -1,6 +1,7 @@
 [workspace]
 
 members = [
+    "enclone_core_res",
     "enclone_denovo",
     "enclone_exec",
     "enclone_help",

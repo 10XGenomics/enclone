@@ -27,10 +27,7 @@ use string_utils::{strme, TextUtils};
 use tables::print_tabular;
 use vector_utils::*;
 
-#[cfg(target_os = "windows")]
 use hdf5::Reader;
-#[cfg(not(target_os = "windows"))]
-use hdf5x::Reader;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
