@@ -29,6 +29,7 @@ bio_edit = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox
 crc = "2"
 debruijn = "0.3"
 enclone_core = { git = "https://github.com/10XGenomics/enclone_ranger.git", branch = "main" }
+enclone_core_res = { path = "../enclone_core_res" }
 enclone_proto = { git = "https://github.com/10XGenomics/enclone_ranger.git", branch = "main" }
 equiv = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 float-ord = "0.3"

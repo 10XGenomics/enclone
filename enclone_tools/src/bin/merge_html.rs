@@ -5,7 +5,7 @@
 // If supplied the single argument BUILD, also rebuild from source.
 
 use enclone_core::parse_bsv;
-use enclone_core::testlist::SITE_EXAMPLES;
+use enclone_core_res::testlist::SITE_EXAMPLES;
 use enclone_tools::html::{edit_html, insert_html};
 use io_utils::{fwrite, open_for_read, open_for_write_new};
 use itertools::Itertools;

@@ -19,7 +19,7 @@
 // For use at 10x Genomics.
 
 use enclone_core::defs::get_config;
-use enclone_core::testlist::TEST_FILES_VERSION;
+use enclone_core_res::testlist::TEST_FILES_VERSION;
 use enclone_tools::copy_for_enclone::copy_for_enclone;
 use enclone_tools::feature_barcode_matrix::{
     feature_barcode_matrix, feature_barcode_matrix_seq_def, SequencingDef,
