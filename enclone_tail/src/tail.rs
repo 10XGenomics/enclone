@@ -18,10 +18,7 @@ use tables::print_tabular;
 use vdj_ann::refx::RefData;
 use vector_utils::bin_position;
 
-#[cfg(target_os = "windows")]
 use hdf5::Reader;
-#[cfg(not(target_os = "windows"))]
-use hdf5x::Reader;
 
 pub fn tail_code(
     tall: &Instant,
@@ -37,7 +34,7 @@ pub fn tail_code(
     join_info: &Vec<(usize, usize, bool, Vec<u8>)>,
     gex_info: &GexInfo,
     vdj_cells: &Vec<Vec<String>>,
-    fate: &Vec<HashMap<String, String>>,
+    fate: &Vec<HashMap<String, &'static str>>,
     tests: &Vec<usize>,
     controls: &Vec<usize>,
     h5_data: &Vec<(usize, Vec<u32>, Vec<u32>)>,

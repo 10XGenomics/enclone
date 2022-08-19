@@ -2,7 +2,6 @@
 
 use ansi_escape::{emit_bold_escape, emit_end_escape};
 use enclone_core::parse_bsv;
-use enclone_core::testlist::TEST_FILES_VERSION;
 use io_utils::{fwrite, fwriteln, path_exists};
 use itertools::Itertools;
 use std::cmp::min;
@@ -10,6 +9,8 @@ use std::fs::read_to_string;
 use std::io::Write;
 use std::process::Command;
 use string_utils::{stringme, strme};
+
+pub const TEST_FILES_VERSION: u8 = 15;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 

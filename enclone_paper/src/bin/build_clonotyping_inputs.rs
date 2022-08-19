@@ -11,7 +11,6 @@
 
 use enclone_core::defs::get_config;
 use enclone_core::test_def::replace_at_test;
-use enclone_core::testlist::*;
 use io_utils::*;
 use pretty_trace::*;
 use std::collections::HashMap;
@@ -20,6 +19,7 @@ use std::io::{BufRead, Write};
 use string_utils::*;
 use vector_utils::VecUtils;
 
+pub const TEST_FILES_VERSION: u8 = 15;
 pub fn main() {
     PrettyTrace::new().on();
 

@@ -6,9 +6,8 @@ use crate::USING_PAGER;
 use enclone::misc1::setup_pager;
 use enclone_args::proc_args::proc_args;
 use enclone_args::proc_args2::is_simple_arg;
+use enclone_build::prepare_for_apocalypse::prepare_for_apocalypse;
 use enclone_core::defs::{get_config, EncloneControl};
-use enclone_core::prepare_for_apocalypse::prepare_for_apocalypse;
-use enclone_core::testlist::TEST_FILES_VERSION;
 use enclone_core::{require_readable_file, tilde_expand_me, REMOTE_HOST};
 use enclone_help::help1::help1;
 use enclone_help::help2::help2;
@@ -25,6 +24,8 @@ use std::sync::atomic::Ordering::SeqCst;
 use std::time::Instant;
 use string_utils::TextUtils;
 use vector_utils::erase_if;
+
+pub const TEST_FILES_VERSION: u8 = 15;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 

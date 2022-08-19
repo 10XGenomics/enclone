@@ -19,7 +19,6 @@ use enclone_args::proc_args_check::{
 use enclone_core::cell_color::CellColor;
 use enclone_core::defs::EncloneControl;
 use enclone_core::enclone_structs::*;
-use enclone_core::version_string;
 use enclone_stuff::start::*;
 use enclone_stuff::vars::match_vars;
 use enclone_vars::decode_arith;
@@ -80,7 +79,7 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
         }
         println!("\nCheck complete: it appears that your install of enclone was successful!\n");
         print!("Your version is: ");
-        println!("{} : {}.\n", env!("CARGO_PKG_VERSION"), version_string());
+        println!("{}\n", env!("CARGO_PKG_VERSION"));
         return Ok(EncloneSetup::default());
     }
 
@@ -143,7 +142,7 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
         }
     }
     if args_orig.len() == 2 && (args_orig[1] == "version" || args_orig[1] == "--version") {
-        println!("{} : {}", env!("CARGO_PKG_VERSION"), version_string());
+        println!("{}", env!("CARGO_PKG_VERSION"));
         return Ok(EncloneSetup::default());
     }
     if ctl.gen_opt.evil_eye {
@@ -437,7 +436,7 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
 
     // Determine if the species is human or mouse or unknown.
 
-    ctl.gen_opt.species = species(&refdata);
+    ctl.gen_opt.species = species(&refdata).to_string();
 
     // Process for sec (secreted) or mem (membrane) if specified.
 

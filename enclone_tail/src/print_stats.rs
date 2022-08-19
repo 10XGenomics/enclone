@@ -33,7 +33,7 @@ pub fn print_stats(
     ctl: &EncloneControl,
     gex_info: &GexInfo,
     vdj_cells: &Vec<Vec<String>>,
-    fate: &Vec<HashMap<String, String>>,
+    fate: &Vec<HashMap<String, &'static str>>,
     logx: &mut Vec<u8>,
     nclono2: &mut usize,
     two_chain: &mut usize,
@@ -362,7 +362,7 @@ pub fn print_stats(
 
         // Print barcode fate.
 
-        print_fate(&ctl, &fate, logx);
+        print_fate(&ctl, fate, logx);
 
         // Print other stats.
 

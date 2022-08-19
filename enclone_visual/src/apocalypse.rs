@@ -2,7 +2,7 @@
 
 use crate::*;
 use chrono::{TimeZone, Utc};
-use enclone_core::version_string;
+use enclone_build::version_string;
 use enclone_core::{BUG_REPORT_ADDRESS, REMOTE_HOST};
 use itertools::Itertools;
 use pretty_trace::*;

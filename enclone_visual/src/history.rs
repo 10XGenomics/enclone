@@ -181,7 +181,7 @@ impl EncloneVisualHistory {
         bytes.append(&mut save_vec_u32(&self.last_widths_history));
         bytes.append(&mut save_vec_bool(&self.is_blank));
         bytes.append(&mut save_vec_u32(&self.descrip_history));
-        bytes.append(&mut save_u32(self.history_index));
+        bytes.extend(save_u32(self.history_index));
         bytes.append(&mut self.narrative.as_bytes().to_vec());
         let b = u32_bytes(bytes.len());
         for i in 0..4 {

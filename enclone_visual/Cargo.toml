@@ -34,6 +34,8 @@ enclone_main = { path = "../enclone_main" }
 enclone_stuff = { git = "https://github.com/10XGenomics/enclone_ranger.git", branch = "main" }
 enclone_tail = { path = "../enclone_tail" }
 enclone_version = { path = "../enclone_version" }
+enclone_build = { path = "../enclone_build" }
+
 flate2 = "1"
 fs_extra = "1"
 home = "0.5"

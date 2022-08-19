@@ -4,9 +4,18 @@
 
 use crate::help_utils::{explain_alt_versions, HelpDesk};
 use enclone_core::defs::EncloneControl;
-use enclone_core::testlist::EXAMPLES;
 use itertools::Itertools;
 use string_utils::strme;
+
+// List of examples in documentation.
+
+pub const EXAMPLES: [&str; 2] = [
+    // 1.
+    r###"BCR=123089 CDR3=CARRYFGVVADAFDIW"###,
+    // 2.
+    // Do not use NH5 because the bin file is too big for git.
+    r###"BCR=123085 GEX=123217 H5 LVARSP=gex,IGHV2-5_g_μ CDR3=CALMGTYCSGDNCYSWFDPW"###,
+];
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 

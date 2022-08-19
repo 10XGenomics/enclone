@@ -7,7 +7,11 @@ use std::io::Write;
 use tables::*;
 use vector_utils::*;
 
-pub fn print_fate(ctl: &EncloneControl, fate: &Vec<HashMap<String, String>>, logx: &mut Vec<u8>) {
+pub fn print_fate(
+    ctl: &EncloneControl,
+    fate: &Vec<HashMap<String, &'static str>>,
+    logx: &mut Vec<u8>,
+) {
     // Print barcode fate.
 
     fwriteln!(logx, "2. barcode fate");
@@ -47,7 +51,7 @@ pub fn print_fate(ctl: &EncloneControl, fate: &Vec<HashMap<String, String>>, log
             if f.1.contains(" IMPROPER ") && ctl.merge_all_impropers {
                 continue;
             }
-            fates.push(f.1.clone());
+            fates.push(f.1.to_string());
         }
     }
     fates.sort();

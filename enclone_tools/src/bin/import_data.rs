@@ -19,11 +19,11 @@
 // For use at 10x Genomics.
 
 use enclone_core::defs::get_config;
-use enclone_core::testlist::TEST_FILES_VERSION;
 use enclone_tools::copy_for_enclone::copy_for_enclone;
 use enclone_tools::feature_barcode_matrix::{
     feature_barcode_matrix, feature_barcode_matrix_seq_def, SequencingDef,
 };
+use enclone_tools::run_test::TEST_FILES_VERSION;
 use io_utils::{fwriteln, open_for_read, open_for_write_new, path_exists};
 use itertools::Itertools;
 use mirror_sparse_matrix::write_to_file;

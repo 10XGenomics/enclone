@@ -48,7 +48,7 @@ impl Summary {
         bytes.append(&mut save_vec_string(&self.dataset_names));
         bytes.append(&mut save_vec_vec_string(&self.metrics));
         bytes.append(&mut save_vec_bool(&self.metric_selected));
-        bytes.append(&mut save_bool(self.metrics_condensed));
+        bytes.extend(save_bool(self.metrics_condensed));
         convert_bytes_to_string(&bytes)
     }
 

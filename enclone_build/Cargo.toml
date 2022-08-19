@@ -1,0 +1,17 @@
+[package]
+name = "enclone_build"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+chrono = { version = "0.4", default-features = false, features = ["std", "clock"] }
+itertools = "0.10"
+pretty_trace = { version = "0.5", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
+string_utils = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
+enclone_core = { git = "https://github.com/10XGenomics/enclone_ranger.git", branch = "main" }
+
+[build-dependencies]
+chrono = { version = "0.4", default-features = false, features = ["std", "clock"] }
+string_utils = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
