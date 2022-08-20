@@ -11,6 +11,7 @@ members = [
     "enclone_version",
     "enclone_visual",
     "enclone_build",
+    "enclone_testlist",
 ]
 
 exclude = [

@@ -15,6 +15,7 @@ use enclone_help::help3::help3;
 use enclone_help::help4::help4;
 use enclone_help::help5::help5;
 use enclone_help::help_utils::{HelpDesk, HELP_ALL, PLAIN};
+use enclone_testlist::TEST_FILES_VERSION;
 use io_utils::{open_for_read, path_exists};
 use itertools::Itertools;
 use pretty_trace::{new_thread_message, PrettyTrace};
@@ -24,8 +25,6 @@ use std::sync::atomic::Ordering::SeqCst;
 use std::time::Instant;
 use string_utils::TextUtils;
 use vector_utils::erase_if;
-
-pub const TEST_FILES_VERSION: u8 = 15;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 

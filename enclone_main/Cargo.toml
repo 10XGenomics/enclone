@@ -31,6 +31,7 @@ enclone_build = { path = "../enclone_build" }
 enclone_vars = { git = "https://github.com/10XGenomics/enclone_ranger.git", branch = "main" }
 enclone = { git = "https://github.com/10XGenomics/enclone_ranger.git", branch = "main" }
 enclone_args = { git = "https://github.com/10XGenomics/enclone_ranger.git", branch = "main" }
+enclone_testlist = { path = "../enclone_testlist" }
 expr_tools = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 io_utils = { version = "0.3", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 itertools = "0.10"

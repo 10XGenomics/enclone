@@ -1,4 +1,5 @@
 // Copyright (c) 2021 10x Genomics, Inc. All rights reserved.
+#![allow(clippy::if_same_then_else)]
 
 pub mod align_n;
 pub mod alluvial_fb;

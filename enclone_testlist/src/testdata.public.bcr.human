@@ -1,0 +1,84 @@
+# These are human BCR data that are consented for public release.
+#
+# There is probably still some combining to be done, either within this list or with the other one.
+
+40935,40936,40937,40938,40943,40944,40945,40946,40951,40952,40953,40954,40959,40960,40961,40962,47203,47204,47215,47216,46032
+
+# above includes preexisting
+
+# 46032
+
+# above matches preexisting
+
+# 40939,40940,42817
+
+44979,44980,44981,44982,44987,44988,43892,43893,43894,43895,43896,43897,43898,43899
+
+# PBMCs (and these have matching gex = 127798,127801, respectively, for first two)
+# also TCR 128024 matches BCR 128040
+# not checked for overlap with any of the lists
+
+128037,128040,124483,124484,124487,124488,128045,128048,124481,124482,124485,124486,124489,124490 
+
+# above matches preexisting
+
+# 91295-91302,91312,91314,91316,91318,91320,91322,91324,92751,92758,92763,95455,106060,106062,116087-116112,117703,117704,117707,118175-118192,123137,123138,123141,123142,123176,123178,123179,123182,123183,123186,123187,123190,123191,140331-140364,140366-140369
+
+# 124547 is essentially identical to 123086
+
+123085,123089,124547
+
+# above matches preexisting
+
+# 123085,123086,123090
+
+# and 124547 is a duplicate with preexisting 123086
+
+47199,47200,47211,47212,47213,47214 
+
+47201 
+
+47202 
+
+42787,42788,42789 
+
+# (commented out because probably cell line)
+
+# 43886,43887 
+
+# (commented out because probably cell line)
+
+# 43888,43889 
+
+# commented out because probably cell line)
+
+# 43890,43891 
+
+# empty directories and presumably on jo's list as a different number:
+# 40933 40934 40941 40949 40950 40957 40958 42786 
+
+# part of preexisting
+
+45977
+
+# part of preexisting
+
+52177
+
+# part of preexisting
+
+86231
+
+# All of the remaining datasets still need to be sorted out.  Some may duplicate barcodes
+# with datasets above, and some may be from the same donors.
+
+165807
+
+# MALT
+
+83808,86233
+
+85333
+86237
+
+1017974,1017975,1017976,1017977,1018095,1018096,1018097,1018098,1029474,1029475,1029476,1029477,165808,1018288,1018289,1018291,1018293,1018296,1018297,1018298,1018301,1021358,1021360,1021361,1021362,1031844,1031845,1031846,1031847,1031848,1031850,1031851,1031853,1031854,1031856,1031857,1031858

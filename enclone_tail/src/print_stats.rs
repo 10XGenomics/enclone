@@ -6,6 +6,7 @@ use crate::alluvial_fb::*;
 use crate::fate::print_fate;
 use crate::print_dataset_vars::print_dataset_vars;
 // use crate::sens_spec::*;
+use enclone_core::barcode_fate::BarcodeFate;
 use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype, GexInfo};
 use enclone_core::median::median;
 use io_utils::{fwrite, fwriteln};
@@ -33,7 +34,7 @@ pub fn print_stats(
     ctl: &EncloneControl,
     gex_info: &GexInfo,
     vdj_cells: &Vec<Vec<String>>,
-    fate: &Vec<HashMap<String, &'static str>>,
+    fate: &Vec<HashMap<String, BarcodeFate>>,
     logx: &mut Vec<u8>,
     nclono2: &mut usize,
     two_chain: &mut usize,
