@@ -81,7 +81,7 @@ pub fn print_fate(
                 BarcodeFate::NonProductive => {}
             }
 
-            fates.push(f.1.label().to_string());
+            fates.push(format!("failed {} filter", f.1.label()));
         }
     }
     fates.sort();
