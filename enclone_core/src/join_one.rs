@@ -94,6 +94,19 @@ pub fn join_one(
         return false;
     }
 
+    // Require that CDR3s have the same length.  Ugly.
+    // First part should be a tautology.
+
+    let (x1, x2) = (&info[k1].cdr3s, &info[k2].cdr3s);
+    if x1.len() != x2.len() {
+        return false;
+    }
+    for i in 0..x1.len() {
+        if x1[i].len() != x2[i].len() {
+            return false;
+        }
+    }
+
     // Test for JOIN_BASIC and JOIN_BASIC_H.
 
     if ctl.join_alg_opt.basic.is_some() || ctl.join_alg_opt.basic_h.is_some() {
