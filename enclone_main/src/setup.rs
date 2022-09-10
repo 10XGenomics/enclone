@@ -384,12 +384,7 @@ pub fn setup(
         if ctrlc {
             PrettyTrace::new().message(thread_message).ctrlc().on();
         } else {
-            prepare_for_apocalypse(
-                args_orig,
-                (ctl.gen_opt.internal_run || REMOTE_HOST.lock().unwrap().len() > 0)
-                    && !bug_reports.is_empty(),
-                &bug_reports,
-            );
+            prepare_for_apocalypse(args_orig, false, &bug_reports);
             let mut nopager = false;
             for i in 1..args_orig.len() {
                 if args_orig[i] == "NOPAGER" || args_orig[i] == "TOY_COM" {

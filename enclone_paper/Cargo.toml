@@ -24,7 +24,7 @@ publish = false
 [dependencies]
 bio_edit = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 debruijn = "0.3"
-enclone_core = { git = "https://github.com/10XGenomics/enclone_ranger.git", branch = "main" }
+enclone_core = { git = "https://github.com/10XGenomics/enclone_ranger.git", branch = "ksree/mixes" }
 enclone_tail = { path = "../enclone_tail" }
 enclone_testlist = { path = "../enclone_testlist" }
 flate2 = "1"

@@ -21,16 +21,16 @@ publish = false
 
 [dependencies]
 dirs = "4"
-enclone_core = { git = "https://github.com/10XGenomics/enclone_ranger.git", branch = "main" }
+enclone_core = { git = "https://github.com/10XGenomics/enclone_ranger.git", branch = "ksree/mixes" }
 enclone_help = { path = "../enclone_help" }
-enclone_print = { git = "https://github.com/10XGenomics/enclone_ranger.git", branch = "main" }
-enclone_proto = { git = "https://github.com/10XGenomics/enclone_ranger.git", branch = "main" }
-enclone_stuff = { git = "https://github.com/10XGenomics/enclone_ranger.git", branch = "main" }
+enclone_print = { git = "https://github.com/10XGenomics/enclone_ranger.git", branch = "ksree/mixes" }
+enclone_proto = { git = "https://github.com/10XGenomics/enclone_ranger.git", branch = "ksree/mixes" }
+enclone_stuff = { git = "https://github.com/10XGenomics/enclone_ranger.git", branch = "ksree/mixes" }
 enclone_tail = { path = "../enclone_tail" }
 enclone_build = { path = "../enclone_build" }
-enclone_vars = { git = "https://github.com/10XGenomics/enclone_ranger.git", branch = "main" }
-enclone = { git = "https://github.com/10XGenomics/enclone_ranger.git", branch = "main" }
-enclone_args = { git = "https://github.com/10XGenomics/enclone_ranger.git", branch = "main" }
+enclone_vars = { git = "https://github.com/10XGenomics/enclone_ranger.git", branch = "ksree/mixes" }
+enclone = { git = "https://github.com/10XGenomics/enclone_ranger.git", branch = "ksree/mixes" }
+enclone_args = { git = "https://github.com/10XGenomics/enclone_ranger.git", branch = "ksree/mixes" }
 enclone_testlist = { path = "../enclone_testlist" }
 expr_tools = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 io_utils = { version = "0.3", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
