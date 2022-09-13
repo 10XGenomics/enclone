@@ -165,7 +165,7 @@ fn test_help_page_list() {
     help1.sort();
     help2.sort();
     for x in help2.iter() {
-        if !bin_member(&help1, &x) {
+        if !bin_member(&help1, x) {
             eprintln!(
                 "\nHelp page for {} is in HELP_PAGES but not in enclone/pages/auto.\n",
                 x
@@ -174,7 +174,7 @@ fn test_help_page_list() {
         }
     }
     for x in help1.iter() {
-        if !bin_member(&help2, &x) {
+        if !bin_member(&help2, x) {
             eprintln!(
                 "\nHelp page for {} is in enclone/pages/auto but not in HELP_PAGES.\n",
                 x

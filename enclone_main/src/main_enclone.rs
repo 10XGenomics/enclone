@@ -295,7 +295,7 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
         for i in 0..ctl.gen_opt.all_bc_fields.len() {
             let var = &ctl.gen_opt.all_bc_fields[i];
             let mut ok = false;
-            if bin_member(&known_features, &var) {
+            if bin_member(&known_features, var) {
                 ok = true;
             }
             let mut nd_var = false;

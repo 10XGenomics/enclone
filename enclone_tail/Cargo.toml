@@ -41,7 +41,7 @@ ndarray = "0.15"
 palette = "0.6"
 perf_stats = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 plotters = { version = "0.3", default_features = false, features = ["svg_backend", "point_series"] }
-pretty_trace = { version = "0.5", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
+pretty_trace = { version = "0.5", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master", features = ["pprof"]}
 rayon = "1"
 resvg = { version = "0.19", default-features = false }
 serde = "1"

@@ -181,7 +181,7 @@ pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<EncloneState
                         }
                     } else if var == "gex" {
                         let mut count = 0;
-                        let p = bin_position(&gex_info.gex_barcodes[li], &bc);
+                        let p = bin_position(&gex_info.gex_barcodes[li], bc.as_str());
                         if p >= 0 {
                             let row = gex_info.gex_matrices[li].row(p as usize);
                             for j in 0..row.len() {
@@ -194,7 +194,7 @@ pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<EncloneState
                         }
                         fields.push(format!("{}", count));
                     } else {
-                        let p = bin_position(&gex_info.gex_barcodes[li], &bc);
+                        let p = bin_position(&gex_info.gex_barcodes[li], bc.as_str());
                         let mut count = 0;
                         if p >= 0 {
                             if gex_info.feature_id[li].contains_key(&var.clone()) {

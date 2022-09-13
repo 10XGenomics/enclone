@@ -34,7 +34,7 @@ perf_stats = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolb
 plotters = { version = "0.3", default_features = false, features = ["svg_backend", "point_series"] }
 rand_chacha = "0.3"
 rayon = "1"
-pretty_trace = { version = "0.5", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
+pretty_trace = { version = "0.5", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master", features = ["pprof"]}
 string_utils = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 tables = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 triple_accel = "0.4"
