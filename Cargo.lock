@@ -1205,7 +1205,7 @@ checksum = "e78d4f1cc4ae33bbfc157ed5d5a5ef3bc29227303d595861deb238fcec4e9457"
 [[package]]
 name = "enclone"
 version = "0.5.219"
-source = "git+https://github.com/10XGenomics/enclone_ranger.git?branch=main#e72f3bd5d6c2f813562e3aca96348326a562374b"
+source = "git+https://github.com/10XGenomics/enclone_ranger.git?branch=main#65b71bdc5e290f2ed3282738cac2489607789107"
 dependencies = [
  "amino",
  "ansi_escape",
@@ -1238,9 +1238,9 @@ dependencies = [
 [[package]]
 name = "enclone_args"
 version = "0.5.219"
-source = "git+https://github.com/10XGenomics/enclone_ranger.git?branch=main#e72f3bd5d6c2f813562e3aca96348326a562374b"
+source = "git+https://github.com/10XGenomics/enclone_ranger.git?branch=main#65b71bdc5e290f2ed3282738cac2489607789107"
 dependencies = [
- "attohttpc 0.18.0",
+ "attohttpc 0.19.1",
  "debruijn",
  "enclone_core",
  "enclone_vars",
@@ -1273,7 +1273,7 @@ dependencies = [
 [[package]]
 name = "enclone_core"
 version = "0.5.219"
-source = "git+https://github.com/10XGenomics/enclone_ranger.git?branch=main#e72f3bd5d6c2f813562e3aca96348326a562374b"
+source = "git+https://github.com/10XGenomics/enclone_ranger.git?branch=main#65b71bdc5e290f2ed3282738cac2489607789107"
 dependencies = [
  "align_tools",
  "amino",
@@ -1442,7 +1442,7 @@ dependencies = [
 [[package]]
 name = "enclone_print"
 version = "0.5.219"
-source = "git+https://github.com/10XGenomics/enclone_ranger.git?branch=main#e72f3bd5d6c2f813562e3aca96348326a562374b"
+source = "git+https://github.com/10XGenomics/enclone_ranger.git?branch=main#65b71bdc5e290f2ed3282738cac2489607789107"
 dependencies = [
  "amino",
  "ansi_escape",
@@ -1480,13 +1480,13 @@ dependencies = [
 [[package]]
 name = "enclone_proto"
 version = "0.5.219"
-source = "git+https://github.com/10XGenomics/enclone_ranger.git?branch=main#e72f3bd5d6c2f813562e3aca96348326a562374b"
+source = "git+https://github.com/10XGenomics/enclone_ranger.git?branch=main#65b71bdc5e290f2ed3282738cac2489607789107"
 dependencies = [
  "bio_edit",
  "byteorder",
  "bytes",
- "prost 0.10.4",
- "prost-build 0.10.4",
+ "prost 0.9.0",
+ "prost-build 0.9.0",
  "serde",
  "serde_derive",
  "thiserror",
@@ -1496,7 +1496,7 @@ dependencies = [
 [[package]]
 name = "enclone_ranger"
 version = "0.5.219"
-source = "git+https://github.com/10XGenomics/enclone_ranger.git?branch=main#e72f3bd5d6c2f813562e3aca96348326a562374b"
+source = "git+https://github.com/10XGenomics/enclone_ranger.git?branch=main#65b71bdc5e290f2ed3282738cac2489607789107"
 dependencies = [
  "enclone",
  "enclone_args",
@@ -1516,7 +1516,7 @@ dependencies = [
 [[package]]
 name = "enclone_stuff"
 version = "0.5.219"
-source = "git+https://github.com/10XGenomics/enclone_ranger.git?branch=main#e72f3bd5d6c2f813562e3aca96348326a562374b"
+source = "git+https://github.com/10XGenomics/enclone_ranger.git?branch=main#65b71bdc5e290f2ed3282738cac2489607789107"
 dependencies = [
  "amino",
  "debruijn",
@@ -1635,7 +1635,7 @@ dependencies = [
 [[package]]
 name = "enclone_vars"
 version = "0.5.219"
-source = "git+https://github.com/10XGenomics/enclone_ranger.git?branch=main#e72f3bd5d6c2f813562e3aca96348326a562374b"
+source = "git+https://github.com/10XGenomics/enclone_ranger.git?branch=main#65b71bdc5e290f2ed3282738cac2489607789107"
 dependencies = [
  "io_utils",
  "itertools",
@@ -2301,7 +2301,7 @@ dependencies = [
  "lazy_static",
  "libc",
  "ndarray",
- "parking_lot 0.11.2",
+ "parking_lot 0.12.0",
  "paste",
 ]
 
@@ -2320,7 +2320,7 @@ name = "hdf5-sys"
 version = "0.8.0"
 source = "git+https://github.com/10XGenomics/hdf5-rust.git?branch=conda_nov2021#d39d449f3314a6f53249de97f8a014ccfcf23203"
 dependencies = [
- "attohttpc 0.18.0",
+ "attohttpc 0.19.1",
  "bzip2",
  "libc",
  "libloading",
@@ -3772,7 +3772,7 @@ dependencies = [
  "io_utils",
  "lazy_static",
  "libc",
- "nix 0.20.0",
+ "nix 0.22.3",
  "pprof",
  "stats_utils",
  "string_utils",
