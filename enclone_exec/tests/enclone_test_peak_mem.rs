@@ -5,7 +5,6 @@
 use ansi_escape::*;
 use anyhow::Error;
 use enclone_core::defs::*;
-use enclone_core::testlist::*;
 use enclone_core::*;
 use enclone_proto::proto_io::{read_proto, ClonotypeIter};
 use enclone_proto::types::EncloneOutputs;

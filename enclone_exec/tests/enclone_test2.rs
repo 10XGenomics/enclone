@@ -10,10 +10,10 @@
 use ansi_escape::*;
 use anyhow::Error;
 use enclone_core::main_testlist::*;
-use enclone_core::testlist::*;
 use enclone_core::*;
 use enclone_proto::proto_io::{read_proto, ClonotypeIter};
 use enclone_proto::types::EncloneOutputs;
+use enclone_testlist::*;
 use enclone_tools::html::*;
 use enclone_tools::run_test::*;
 use flate2::read::GzDecoder;
@@ -38,6 +38,19 @@ use std::time;
 use std::time::{Duration, Instant};
 use string_utils::*;
 use vector_utils::*;
+
+// Tests of internal features.
+
+pub const INTERNAL_TESTS: [&str; 3] = [
+    // 1. gave wrong result
+    r###"123085 CDR3=CARDRIAGRFGYGMDVW NFORCE"###,
+    // 2. test human + IMGT; note that specifying by number forces BCR+TCR reference checks
+    r###"123085 REQUIRE_UNBROKEN_OK IMGT ACCEPT_BROKEN EXPECT_NULL"###,
+    // 3. this crashed; it is not exactly an internal feature test but uses an internal feature
+    // (IMGT) to exhibit the phenomenon
+    r###"BCR=123085 IMGT RE ACCEPT_BROKEN POUT=stdout PCELL BARCODE=AGCAGCCCATTAGGCT-1
+         EXPECT_OK"###,
+];
 
 const LOUPE_OUT_FILENAME: &str = "testx/__test_proto";
 

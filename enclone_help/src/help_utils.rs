@@ -5,11 +5,32 @@ use ansi_escape::{
     emit_blue_escape, emit_bold_escape, emit_end_escape, emit_green_escape, emit_red_escape,
     print_color,
 };
-use enclone_core::print_tools::{emit_codon_color_escape, font_face_in_css};
+use enclone_core::print_tools::emit_codon_color_escape;
 use io_utils::fwrite;
 use std::io::Write;
 use string_utils::{stringme, strme};
 use tables::print_tabular_vbox;
+
+pub fn font_face_in_css() -> String {
+    let f = include_str!["enclone_css_v2.css"];
+    let mut x = String::new();
+    let mut in_font_face = false;
+    let mut count = 0;
+    for line in f.lines() {
+        if line.starts_with("@font-face") {
+            in_font_face = true;
+            count += 1;
+        }
+        if in_font_face {
+            x += &format!("{}\n", line);
+        }
+        if line == "}" {
+            in_font_face = false;
+        }
+    }
+    assert_eq!(count, 2); // because there are two fonts: regular and bold
+    x
+}
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 

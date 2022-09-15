@@ -6,10 +6,10 @@ use ansi_escape::*;
 use anyhow::Error;
 use enclone_core::defs::*;
 use enclone_core::main_testlist::*;
-use enclone_core::testlist::*;
 use enclone_core::*;
 use enclone_proto::proto_io::{read_proto, ClonotypeIter};
 use enclone_proto::types::EncloneOutputs;
+use enclone_testlist::*;
 use enclone_tools::html::*;
 use enclone_tools::run_test::*;
 use io_utils::*;
@@ -54,8 +54,8 @@ fn test_site_examples() {
         let mut in_stuff = Vec::<u8>::new();
         f.read_to_end(&mut in_stuff).unwrap();
         let mut args = parse_bsv(&test);
-        args.push("NO_KILL".to_string());
-        if args.contains(&"GEX=123217".to_string()) && !args.contains(&"H5".to_string()) {
+        args.push("NO_KILL");
+        if args.contains(&"GEX=123217") && !args.contains(&"H5") {
             panic!("Oops please fix this, to prevent sporadic failures.");
         }
         let new = Command::new(env!("CARGO_BIN_EXE_enclone"))

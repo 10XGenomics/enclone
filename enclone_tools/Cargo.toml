@@ -32,6 +32,7 @@ edit-distance = "2"
 enclone = { git = "https://github.com/10XGenomics/enclone_ranger.git", branch = "main" }
 enclone_core = { git = "https://github.com/10XGenomics/enclone_ranger.git", branch = "main" }
 enclone_denovo = { path = "../enclone_denovo" }
+enclone_testlist = { path = "../enclone_testlist" }
 equiv = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 evalexpr = "7"
 expr_tools = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
@@ -43,7 +44,7 @@ itertools = "0.10"
 lz4 = "1"
 mirror_sparse_matrix = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 perf_stats = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
-pretty_trace = { version = "0.5", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
+pretty_trace = { version = "0.5", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master", features = ["pprof"]}
 rand_chacha = "0.3"
 rayon = "1"
 regex = { version = "1", default-features = false, features = ["std", "perf"] }
@@ -58,8 +59,6 @@ vector_utils = { version = "0.1", git = "https://github.com/10XGenomics/rust-too
 
 [target.'cfg(not(windows))'.dependencies]
 pager = "0.16"
-hdf5x = { git = "https://github.com/DavidBJaffe/hdf5-rust-as-hdf5x", branch = "conda_nov2021_as_hdf5x", default-features=false, features = ["conda"] }
 
-[target.'cfg(windows)'.dependencies]
-hdf5 = { git = "https://github.com/CompRD/hdf5-rust", branch = "master", default-features=false }
-hdf5-sys = { git = "https://github.com/CompRD/hdf5-rust", branch = "master", default-features=false, features = ["static","zlib"] }
+# hdf5 = {git = "https://github.com/10XGenomics/hdf5-rust.git", branch = "conda_nov2021", features = ["conda"], default-features = false }
+# hdf5-sys = {git = "https://github.com/10XGenomics/hdf5-rust.git", branch = "conda_nov2021"}

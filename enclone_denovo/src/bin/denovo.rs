@@ -316,11 +316,7 @@ pub fn lscore2(x: &[u8]) -> usize {
         3
     } else if n == 28 {
         2
-    } else if n == 25 {
-        1
-    } else if n == 14 {
-        1
-    } else if n == 13 {
+    } else if (n == 25) || (n == 14) || (n == 13) {
         1
     } else {
         0

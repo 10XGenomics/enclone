@@ -28,6 +28,7 @@ debruijn = "0.3"
 dirs = "4"
 dna = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
 edit-distance = "2"
+enclone_args = { git = "https://github.com/10XGenomics/enclone_ranger.git", branch = "main" }
 enclone_core = { git = "https://github.com/10XGenomics/enclone_ranger.git", branch = "main" }
 enclone_denovo = { path = "../enclone_denovo" }
 enclone_help = { path = "../enclone_help" }
@@ -78,7 +79,7 @@ permutation = "0.4"
 petgraph = "0.6"
 plotters = { version = "0.3", default_features = false, features = ["svg_backend", "point_series"] }
 png-decoder = "0.1"
-pretty_trace = { version = "0.5", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
+pretty_trace = { version = "0.5", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master", features = ["pprof"]}
 procfs = { version = "0.12", default_features = false }
 # prost: enclone will compile without the std and prost-derive features, but other things
 #        (such as enclone_proto) break.

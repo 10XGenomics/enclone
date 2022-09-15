@@ -7,11 +7,11 @@ use crate::proto::{
 };
 use crate::*;
 use chrono::prelude::*;
+use enclone_build::version_string;
 use enclone_core::combine_group_pics::*;
 use enclone_core::enclone_structs::*;
 use enclone_core::logging::*;
 use enclone_core::parse_bsv;
-use enclone_core::version_string;
 use enclone_main::main_enclone::*;
 use enclone_main::stop::*;
 use enclone_stuff::start::main_enclone_start;
@@ -55,10 +55,11 @@ impl Analyzer for EncloneAnalyzer {
 
         // Override the output file
 
-        let mut fields = parse_bsv(&req.args);
-        for j in 0..fields.len() {
-            fields[j] = fields[j].replace("\"", "");
-        }
+        let fields: Vec<_> = parse_bsv(&req.args)
+            .into_iter()
+            .map(|f| f.replace("\"", ""))
+            .collect();
+
         let mut args = Vec::<String>::new();
         let mut server_debug = false;
         for j in 0..fields.len() {

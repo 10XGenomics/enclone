@@ -2,7 +2,7 @@
 
 use ansi_escape::{emit_bold_escape, emit_end_escape};
 use enclone_core::parse_bsv;
-use enclone_core::testlist::TEST_FILES_VERSION;
+use enclone_testlist::TEST_FILES_VERSION;
 use io_utils::{fwrite, fwriteln, path_exists};
 use itertools::Itertools;
 use std::cmp::min;

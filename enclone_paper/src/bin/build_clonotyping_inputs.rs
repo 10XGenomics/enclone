@@ -11,7 +11,7 @@
 
 use enclone_core::defs::get_config;
 use enclone_core::test_def::replace_at_test;
-use enclone_core::testlist::*;
+use enclone_testlist::TEST_FILES_VERSION;
 use io_utils::*;
 use pretty_trace::*;
 use std::collections::HashMap;

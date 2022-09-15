@@ -9,10 +9,10 @@
 
 use ansi_escape::*;
 use anyhow::Error;
-use enclone_core::testlist::*;
 use enclone_core::*;
 use enclone_proto::proto_io::{read_proto, ClonotypeIter};
 use enclone_proto::types::EncloneOutputs;
+use enclone_testlist::TEST_FILES_VERSION;
 use enclone_tools::html::*;
 use enclone_tools::run_test::*;
 use flate2::read::GzDecoder;
@@ -66,6 +66,8 @@ fn valid_link(link: &str) -> bool {
 #[cfg(not(feature = "cpu"))]
 #[test]
 fn test_for_parseable_redundancy() {
+    use enclone_testlist::TEST_FILES_VERSION;
+
     let test = r###"BCR=123085 GEX=123217 LVARSP="IG%:IG.*_g_%" MIN_CHAINS_EXACT=2 CDR3=CAREGGVGVVTATDWYFDLW POUT=testx/outputs/redundancy_out"###;
     let pre_arg = format!(
         "PRE=../enclone-data/big_inputs/version{}",

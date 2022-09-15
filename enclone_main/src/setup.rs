@@ -6,9 +6,8 @@ use crate::USING_PAGER;
 use enclone::misc1::setup_pager;
 use enclone_args::proc_args::proc_args;
 use enclone_args::proc_args2::is_simple_arg;
+use enclone_build::prepare_for_apocalypse::prepare_for_apocalypse;
 use enclone_core::defs::{get_config, EncloneControl};
-use enclone_core::prepare_for_apocalypse::prepare_for_apocalypse;
-use enclone_core::testlist::TEST_FILES_VERSION;
 use enclone_core::{require_readable_file, tilde_expand_me, REMOTE_HOST};
 use enclone_help::help1::help1;
 use enclone_help::help2::help2;
@@ -16,6 +15,7 @@ use enclone_help::help3::help3;
 use enclone_help::help4::help4;
 use enclone_help::help5::help5;
 use enclone_help::help_utils::{HelpDesk, HELP_ALL, PLAIN};
+use enclone_testlist::TEST_FILES_VERSION;
 use io_utils::{open_for_read, path_exists};
 use itertools::Itertools;
 use pretty_trace::{new_thread_message, PrettyTrace};
@@ -384,12 +384,7 @@ pub fn setup(
         if ctrlc {
             PrettyTrace::new().message(thread_message).ctrlc().on();
         } else {
-            prepare_for_apocalypse(
-                args_orig,
-                (ctl.gen_opt.internal_run || REMOTE_HOST.lock().unwrap().len() > 0)
-                    && !bug_reports.is_empty(),
-                &bug_reports,
-            );
+            prepare_for_apocalypse(args_orig, false, &bug_reports);
             let mut nopager = false;
             for i in 1..args_orig.len() {
                 if args_orig[i] == "NOPAGER" || args_orig[i] == "TOY_COM" {

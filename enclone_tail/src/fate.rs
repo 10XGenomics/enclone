@@ -1,5 +1,6 @@
 // Copyright (c) 2021 10x Genomics, Inc. All rights reserved.
 
+use enclone_core::barcode_fate::BarcodeFate;
 use enclone_core::defs::EncloneControl;
 use io_utils::*;
 use std::collections::HashMap;
@@ -7,47 +8,80 @@ use std::io::Write;
 use tables::*;
 use vector_utils::*;
 
-pub fn print_fate(ctl: &EncloneControl, fate: &Vec<HashMap<String, String>>, logx: &mut Vec<u8>) {
+pub fn print_fate(
+    ctl: &EncloneControl,
+    fate: &Vec<HashMap<String, BarcodeFate>>,
+    logx: &mut Vec<u8>,
+) {
     // Print barcode fate.
 
     fwriteln!(logx, "2. barcode fate");
     let mut fates = Vec::<String>::new();
     for i in 0..fate.len() {
         for f in fate[i].iter() {
-            if f.1.contains(" GEX ") && ctl.clono_filt_opt_def.ngex {
-                continue;
+            match f.1 {
+                BarcodeFate::WeakChains => {
+                    if !ctl.clono_filt_opt_def.weak_chains {
+                        continue;
+                    }
+                }
+                BarcodeFate::FoursieKill => {
+                    if !ctl.clono_filt_opt_def.weak_foursies {
+                        continue;
+                    }
+                }
+                BarcodeFate::NotGexCell => {
+                    if ctl.clono_filt_opt_def.ngex {
+                        continue;
+                    }
+                }
+                BarcodeFate::Qual => {
+                    if !ctl.clono_filt_opt.qual_filter {
+                        continue;
+                    }
+                }
+                BarcodeFate::Umi => {
+                    if !ctl.clono_filt_opt_def.umi_filt {
+                        continue;
+                    }
+                }
+                BarcodeFate::UmiRatio => {
+                    if !ctl.clono_filt_opt_def.umi_ratio_filt {
+                        continue;
+                    }
+                }
+                BarcodeFate::GelBeadContamination => {
+                    if ctl.gen_opt.nwhitef {
+                        continue;
+                    }
+                }
+                BarcodeFate::DuplicatedBarcode => {
+                    if !ctl.clono_filt_opt_def.bc_dup {
+                        continue;
+                    }
+                }
+                BarcodeFate::Cross => {
+                    if ctl.clono_filt_opt_def.ncross {
+                        continue;
+                    }
+                }
+                BarcodeFate::Improper => {
+                    if ctl.merge_all_impropers {
+                        continue;
+                    }
+                }
+                BarcodeFate::GraphFilter => {
+                    if ctl.gen_opt.ngraph_filter {
+                        continue;
+                    }
+                }
+                BarcodeFate::Doublet => {}
+                BarcodeFate::Signature => {}
+                BarcodeFate::NotAsmCell => {}
+                BarcodeFate::NonProductive => {}
             }
-            if f.1.contains(" CROSS ") && ctl.clono_filt_opt_def.ncross {
-                continue;
-            }
-            if f.1.contains(" UMI ") && !ctl.clono_filt_opt_def.umi_filt {
-                continue;
-            }
-            if f.1.contains(" UMI_RATIO ") && !ctl.clono_filt_opt_def.umi_ratio_filt {
-                continue;
-            }
-            if f.1.contains(" GRAPH_FILTER ") && ctl.gen_opt.ngraph_filter {
-                continue;
-            }
-            if f.1.contains(" QUAL") && !ctl.clono_filt_opt.qual_filter {
-                continue;
-            }
-            if f.1.contains(" WEAK_CHAINS ") && !ctl.clono_filt_opt_def.weak_chains {
-                continue;
-            }
-            if f.1.contains(" FOURSIE_KILL ") && !ctl.clono_filt_opt_def.weak_foursies {
-                continue;
-            }
-            if f.1.contains(" WHITEF ") && ctl.gen_opt.nwhitef {
-                continue;
-            }
-            if f.1.contains(" BC_DUP ") && !ctl.clono_filt_opt_def.bc_dup {
-                continue;
-            }
-            if f.1.contains(" IMPROPER ") && ctl.merge_all_impropers {
-                continue;
-            }
-            fates.push(f.1.clone());
+
+            fates.push(format!("failed {} filter", f.1.label()));
         }
     }
     fates.sort();

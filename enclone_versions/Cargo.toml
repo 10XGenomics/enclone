@@ -27,7 +27,7 @@ itertools = "0.10"
 ndarray = "0.15"
 permutation = "0.4"
 petgraph = "0.6"
-pretty_trace = { version = "0.5", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
+pretty_trace = { version = "0.5", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master", features = ["pprof"]}
 prost = { version = "0.9", default_features = false, features = ["std", "prost-derive"] }
 prost-build = "0.9"
 rayon = "1"
