@@ -75,9 +75,21 @@ pub fn print_fate(
                         continue;
                     }
                 }
-                BarcodeFate::Doublet => {}
-                BarcodeFate::Signature => {}
-                BarcodeFate::NotAsmCell => {}
+                BarcodeFate::Doublet => {
+                    if !ctl.clono_filt_opt_def.doublet {
+                        continue;
+                    }
+                }
+                BarcodeFate::Signature => {
+                    if !ctl.clono_filt_opt_def.signature {
+                        continue;
+                    }
+                }
+                BarcodeFate::NotAsmCell => {
+                    if ctl.gen_opt.ncell {
+                        continue;
+                    }
+                }
                 BarcodeFate::NonProductive => {}
             }
 
