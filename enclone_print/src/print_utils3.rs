@@ -615,6 +615,7 @@ pub fn insert_reference_rows(
                 let mut gap = rsi.seq_del_lens[cz] as isize - vlen as isize - jlen as isize;
 
                 if gap < -2 * (trim as isize) {
+                    rows.push(row);
                     continue;
                     // let mut bcs = Vec::<String>::new();
                     // for u in 0..exacts.len() {
