@@ -50,7 +50,9 @@ if ( $status != 0 ) then
     echo "compilation failed 1"
     exit 1
 endif
-cargo test --bin traceback1 --test enclone_test1 --test enclone_test2 --test enclone_test3 \
+## NIMANOTE: removed cargo test --bin traceback1 as this binary is under enclone_ranger now
+## TODO: make binary visiable here
+cargo test --test enclone_test1 --test enclone_test2 --test enclone_test3 \
     --test enclone_test4 --test enclone_test_peak_mem --no-run >& /dev/null
 if ( $status != 0 ) then
     echo "compilation failed 2"
