@@ -36,134 +36,134 @@ const LOUPE_OUT_FILENAME: &str = "testx/__test_proto";
 
 // Test site examples to make sure they are what they claim to be, and that the
 // merged html files are correct.
-
-#[cfg(not(feature = "basic"))]
-#[cfg(not(feature = "cpu"))]
-#[test]
-fn test_site_examples() {
-    let mut results = Vec::<(usize, bool, String)>::new();
-    for i in 0..SITE_EXAMPLES.len() {
-        results.push((i, false, String::new()));
-    }
-    results.par_iter_mut().for_each(|res| {
-        let i = res.0;
-        let example_name = SITE_EXAMPLES[i].0;
-        let test = SITE_EXAMPLES[i].1;
-        let in_file = format!("../{}", example_name);
-        let mut f = File::open(&in_file).expect(&format!("couldn't find {}", in_file));
-        let mut in_stuff = Vec::<u8>::new();
-        f.read_to_end(&mut in_stuff).unwrap();
-        let mut args = parse_bsv(&test);
-        args.push("NO_KILL");
-        if args.contains(&"GEX=123217") && !args.contains(&"H5") {
-            panic!("Oops please fix this, to prevent sporadic failures.");
-        }
-        let new = Command::new(env!("CARGO_BIN_EXE_enclone"))
-            .args(&args)
-            .output()
-            .expect(&format!("failed to execute test_site_examples"));
-        if new.status.code() != Some(0) {
-            res.2 = format!(
-                "\nenclone_site_examples: example {} failed to execute, stderr =\n{}",
-                i + 1,
-                strme(&new.stderr),
-            );
-            res.1 = true;
-        }
-        let out_stuff = new.stdout.to_vec();
-        if in_stuff != out_stuff {
-            res.1 = true;
-            res.2 += &mut format!("\nThe output for site example {} has changed.\n\n", i + 1);
-            res.2 += &mut format!("stderr:\n{}\n", strme(&new.stderr));
-            if String::from_utf8(in_stuff.clone()).is_err()
-                && String::from_utf8(out_stuff.clone()).is_err()
-            {
-                res.2 += &mut format!("Both the old and new files are binary.\n\n");
-            } else if String::from_utf8(in_stuff.clone()).is_err() {
-                res.2 += &mut format!("The new file is binary but the old is not.\n\n");
-            } else if String::from_utf8(out_stuff.clone()).is_err() {
-                res.2 += &mut format!("The old file is binary but the new is not.\n\n");
-            } else {
-                let old_lines = strme(&in_stuff).split('\n').collect::<Vec<&str>>();
-                let new_lines = strme(&out_stuff).split('\n').collect::<Vec<&str>>();
-                res.2 += &mut format!(
-                    "old stdout has {} lines; new stdout has {} lines\n",
-                    old_lines.len(),
-                    new_lines.len(),
-                );
-                for i in 0..min(old_lines.len(), new_lines.len()) {
-                    if old_lines[i] != new_lines[i] {
-                        res.2 += &mut format!(
-                            "first different stdout line is line {}\nold = {}\nnew = {}\n",
-                            i + 1,
-                            old_lines[i],
-                            new_lines[i],
-                        );
-                        break;
-                    }
-                }
-                let save = format!("testx/outputs/{}", example_name.rev_after("/"));
-                {
-                    let mut f = open_for_write_new![&save];
-                    fwrite!(f, "{}", strme(&out_stuff));
-                }
-                let mut in_filex = in_file.clone();
-                if in_filex.starts_with("../") {
-                    in_filex = in_filex.after("../").to_string();
-                }
-                res.2 += &mut format!("\nPlease diff {} enclone_exec/{}.\n", in_filex, save);
-                res.2 += &mut format!(
-                    "\nPossibly this could be because you're running \"cargo t\" in an \
-                    environment without the\n\
-                    extended dataset collection.  Possibly you should run \
-                    \"cd enclone; cargo test basic -- --nocapture\" instead.\n\n\
-                    Otherwise, if you're satisfied with the new output, you can update using\n\n\
-                    enclone {} > {}.\n\n",
-                    args.iter().format(" "),
-                    example_name
-                );
-            }
-        }
-    });
-    for i in 0..results.len() {
-        print!("{}", results[i].2);
-        if results[i].1 {
-            std::process::exit(1);
-        }
-    }
-    insert_html(
-        "../pages/index.html.src",
-        "testx/outputs/index.html",
-        true,
-        0,
-    );
-    insert_html(
-        "../pages/expanded.html.src",
-        "testx/outputs/expanded.html",
-        true,
-        2,
-    );
-    let new_index = read_to_string("testx/outputs/index.html").unwrap();
-    if read_to_string("../index.html").unwrap() != new_index {
-        eprintln!("\nContent of index.html has changed.");
-        {
-            let mut f = open_for_write_new!["testx/outputs/index.html.new"];
-            fwrite!(f, "{}", new_index);
-        }
-        eprintln!("Please diff index.html enclone_exec/testx/outputs/index.html.new.\n");
-        std::process::exit(1);
-    }
-    /*
-    if read_to_string("../pages/auto/expanded.html").unwrap()
-        != edit_html(&read_to_string("testx/outputs/expanded.html").unwrap())
-    */
-    if read_to_string("../pages/auto/expanded.html").unwrap()
-        != read_to_string("testx/outputs/expanded.html").unwrap()
-    {
-        eprintln!("\nContent of expanded.html has changed.\n");
-        std::process::exit(1);
-    }
-}
+// NIMANOTE: Disabled site examples test
+// #[cfg(not(feature = "basic"))]
+// #[cfg(not(feature = "cpu"))]
+// #[test]
+// fn test_site_examples() {
+//     let mut results = Vec::<(usize, bool, String)>::new();
+//     for i in 0..SITE_EXAMPLES.len() {
+//         results.push((i, false, String::new()));
+//     }
+//     results.par_iter_mut().for_each(|res| {
+//         let i = res.0;
+//         let example_name = SITE_EXAMPLES[i].0;
+//         let test = SITE_EXAMPLES[i].1;
+//         let in_file = format!("../{}", example_name);
+//         let mut f = File::open(&in_file).expect(&format!("couldn't find {}", in_file));
+//         let mut in_stuff = Vec::<u8>::new();
+//         f.read_to_end(&mut in_stuff).unwrap();
+//         let mut args = parse_bsv(&test);
+//         args.push("NO_KILL");
+//         if args.contains(&"GEX=123217") && !args.contains(&"H5") {
+//             panic!("Oops please fix this, to prevent sporadic failures.");
+//         }
+//         let new = Command::new(env!("CARGO_BIN_EXE_enclone"))
+//             .args(&args)
+//             .output()
+//             .expect(&format!("failed to execute test_site_examples"));
+//         if new.status.code() != Some(0) {
+//             res.2 = format!(
+//                 "\nenclone_site_examples: example {} failed to execute, stderr =\n{}",
+//                 i + 1,
+//                 strme(&new.stderr),
+//             );
+//             res.1 = true;
+//         }
+//         let out_stuff = new.stdout.to_vec();
+//         if in_stuff != out_stuff {
+//             res.1 = true;
+//             res.2 += &mut format!("\nThe output for site example {} has changed.\n\n", i + 1);
+//             res.2 += &mut format!("stderr:\n{}\n", strme(&new.stderr));
+//             if String::from_utf8(in_stuff.clone()).is_err()
+//                 && String::from_utf8(out_stuff.clone()).is_err()
+//             {
+//                 res.2 += &mut format!("Both the old and new files are binary.\n\n");
+//             } else if String::from_utf8(in_stuff.clone()).is_err() {
+//                 res.2 += &mut format!("The new file is binary but the old is not.\n\n");
+//             } else if String::from_utf8(out_stuff.clone()).is_err() {
+//                 res.2 += &mut format!("The old file is binary but the new is not.\n\n");
+//             } else {
+//                 let old_lines = strme(&in_stuff).split('\n').collect::<Vec<&str>>();
+//                 let new_lines = strme(&out_stuff).split('\n').collect::<Vec<&str>>();
+//                 res.2 += &mut format!(
+//                     "old stdout has {} lines; new stdout has {} lines\n",
+//                     old_lines.len(),
+//                     new_lines.len(),
+//                 );
+//                 for i in 0..min(old_lines.len(), new_lines.len()) {
+//                     if old_lines[i] != new_lines[i] {
+//                         res.2 += &mut format!(
+//                             "first different stdout line is line {}\nold = {}\nnew = {}\n",
+//                             i + 1,
+//                             old_lines[i],
+//                             new_lines[i],
+//                         );
+//                         break;
+//                     }
+//                 }
+//                 let save = format!("testx/outputs/{}", example_name.rev_after("/"));
+//                 {
+//                     let mut f = open_for_write_new![&save];
+//                     fwrite!(f, "{}", strme(&out_stuff));
+//                 }
+//                 let mut in_filex = in_file.clone();
+//                 if in_filex.starts_with("../") {
+//                     in_filex = in_filex.after("../").to_string();
+//                 }
+//                 res.2 += &mut format!("\nPlease diff {} enclone_exec/{}.\n", in_filex, save);
+//                 res.2 += &mut format!(
+//                     "\nPossibly this could be because you're running \"cargo t\" in an \
+//                     environment without the\n\
+//                     extended dataset collection.  Possibly you should run \
+//                     \"cd enclone; cargo test basic -- --nocapture\" instead.\n\n\
+//                     Otherwise, if you're satisfied with the new output, you can update using\n\n\
+//                     enclone {} > {}.\n\n",
+//                     args.iter().format(" "),
+//                     example_name
+//                 );
+//             }
+//         }
+//     });
+//     for i in 0..results.len() {
+//         print!("{}", results[i].2);
+//         if results[i].1 {
+//             std::process::exit(1);
+//         }
+//     }
+//     insert_html(
+//         "../pages/index.html.src",
+//         "testx/outputs/index.html",
+//         true,
+//         0,
+//     );
+//     insert_html(
+//         "../pages/expanded.html.src",
+//         "testx/outputs/expanded.html",
+//         true,
+//         2,
+//     );
+//     let new_index = read_to_string("testx/outputs/index.html").unwrap();
+//     if read_to_string("../index.html").unwrap() != new_index {
+//         eprintln!("\nContent of index.html has changed.");
+//         {
+//             let mut f = open_for_write_new!["testx/outputs/index.html.new"];
+//             fwrite!(f, "{}", new_index);
+//         }
+//         eprintln!("Please diff index.html enclone_exec/testx/outputs/index.html.new.\n");
+//         std::process::exit(1);
+//     }
+//     /*
+//     if read_to_string("../pages/auto/expanded.html").unwrap()
+//         != edit_html(&read_to_string("testx/outputs/expanded.html").unwrap())
+//     */
+//     if read_to_string("../pages/auto/expanded.html").unwrap()
+//         != read_to_string("testx/outputs/expanded.html").unwrap()
+//     {
+//         eprintln!("\nContent of expanded.html has changed.\n");
+//         std::process::exit(1);
+//     }
+// }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
