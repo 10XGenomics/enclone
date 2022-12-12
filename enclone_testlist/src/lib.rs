@@ -218,15 +218,15 @@ pub const EXAMPLES: [&str; 2] = [
 ];
 
 // List of examples on site.
-
-pub const SITE_EXAMPLES: [(&str, &str); 28] = [
+// NIMANOTE: Disabled some site examples test (evaporated data)
+pub const SITE_EXAMPLES: [(&str, &str); 24] = [
     // 1.
     // Do not use NH5 because the bin file is too big for git.
-    (
-        "pages/auto/clonotype_with_gex.html",
-        "BCR=123085 CDR3=CTRDRDLRGATDAFDIW GEX=123217 H5 LVARSP=gex,IGHV3-49_g NUMI \
-         HTML=\"enclone example with gex\"",
-    ),
+    // (
+    //     "pages/auto/clonotype_with_gex.html",
+    //     "BCR=123085 CDR3=CTRDRDLRGATDAFDIW GEX=123217 H5 LVARSP=gex,IGHV3-49_g NUMI \
+    //      HTML=\"enclone example with gex\"",
+    // ),
     // 2.
     (
         "pages/auto/illusory1.html",
@@ -295,10 +295,10 @@ pub const SITE_EXAMPLES: [(&str, &str); 28] = [
         "BCR=123085:123089 PLOT=\"stdout,s1->blue,s2->red\" QUAD_HIVE NOPRINT",
     ),
     // 14.
-    (
-        "img/two_genes.svg",
-        "BCR=123085 GEX=123217 NOPRINT PLOTXY_EXACT=HLA-A_g,CD74_g,stdout H5",
-    ),
+    // (
+    //     "img/two_genes.svg",
+    //     "BCR=123085 GEX=123217 NOPRINT PLOTXY_EXACT=HLA-A_g,CD74_g,stdout H5",
+    // ),
     // 15.
     (
         "pages/auto/variable_demo.html",
@@ -348,11 +348,11 @@ pub const SITE_EXAMPLES: [(&str, &str); 28] = [
          HTML=\"VDDJ example\"",
     ),
     // 23.
-    (
-        "img/sim_mat_plot.svg",
-        "BCR=123085 GEX=123217 SIM_MAT_PLOT=stdout,CDKN1A_g,CDKN1B_g,RBX1_g,IGLC1_g,IGLV3-21_g \
-         NOPRINT H5",
-    ),
+    // (
+    //     "img/sim_mat_plot.svg",
+    //     "BCR=123085 GEX=123217 SIM_MAT_PLOT=stdout,CDKN1A_g,CDKN1B_g,RBX1_g,IGLC1_g,IGLV3-21_g \
+    //      NOPRINT H5",
+    // ),
     // 24.
     (
         "img/twin_plot.svg",
@@ -369,10 +369,10 @@ pub const SITE_EXAMPLES: [(&str, &str); 28] = [
         "BCR=123085,123089,124547 MIN_CELLS=5 HONEY=out=stdout,color=dataset NOPRINT",
     ),
     // 27.
-    (
-        "pages/auto/var_def.html",
-        r###"BCR=86237 GEX=85679 VAR_DEF="sum:CD19_ab + CD25_ab" LVARSP=CD19_ab,CD25_ab,sum CDR3=CARSFFGDTAMVMFQAFDPW PER_CELL FOLD_HEADERS HTML"###,
-    ),
+    // (
+    //     "pages/auto/var_def.html",
+    //     r###"BCR=86237 GEX=85679 VAR_DEF="sum:CD19_ab + CD25_ab" LVARSP=CD19_ab,CD25_ab,sum CDR3=CARSFFGDTAMVMFQAFDPW PER_CELL FOLD_HEADERS HTML"###,
+    // ),
     // 28.
     (
         "img/cat_var.svg",
