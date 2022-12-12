@@ -83,9 +83,9 @@ pub fn group_and_print_clonotypes(
     set_speakers(ctl, &mut parseable_fields, max_chains);
     #[allow(bare_trait_objects)]
     let mut pout = match ctl.parseable_opt.pout.as_str() {
-        "" => (Box::new(stdout()) as Box<Write>),
-        "stdout" => (Box::new(stdout()) as Box<Write>),
-        "stdouth" => (Box::new(stdout()) as Box<Write>),
+        "" => Box::new(stdout()) as Box<Write>,
+        "stdout" => Box::new(stdout()) as Box<Write>,
+        "stdouth" => Box::new(stdout()) as Box<Write>,
         _ => {
             let path = Path::new(&ctl.parseable_opt.pout);
             Box::new(File::create(&path).unwrap()) as Box<Write>
@@ -124,8 +124,8 @@ pub fn group_and_print_clonotypes(
 
     #[allow(bare_trait_objects)]
     let mut fout = match ctl.gen_opt.fasta_filename.as_str() {
-        "" => (Box::new(stdout()) as Box<Write>),
-        "stdout" => (Box::new(stdout()) as Box<Write>),
+        "" => Box::new(stdout()) as Box<Write>,
+        "stdout" => Box::new(stdout()) as Box<Write>,
         _ => {
             let path = Path::new(&ctl.gen_opt.fasta_filename);
             Box::new(File::create(&path).unwrap()) as Box<Write>
@@ -133,8 +133,8 @@ pub fn group_and_print_clonotypes(
     };
     #[allow(bare_trait_objects)]
     let mut faaout = match ctl.gen_opt.fasta_aa_filename.as_str() {
-        "" => (Box::new(stdout()) as Box<Write>),
-        "stdout" => (Box::new(stdout()) as Box<Write>),
+        "" => Box::new(stdout()) as Box<Write>,
+        "stdout" => Box::new(stdout()) as Box<Write>,
         _ => {
             let path = Path::new(&ctl.gen_opt.fasta_aa_filename);
             Box::new(File::create(&path).unwrap()) as Box<Write>
@@ -169,8 +169,8 @@ pub fn group_and_print_clonotypes(
 
     #[allow(bare_trait_objects)]
     let mut pgout = match ctl.gen_opt.peer_group_filename.as_str() {
-        "" => (Box::new(stdout()) as Box<Write>),
-        "stdout" => (Box::new(stdout()) as Box<Write>),
+        "" => Box::new(stdout()) as Box<Write>,
+        "stdout" => Box::new(stdout()) as Box<Write>,
         _ => {
             let path = Path::new(&ctl.gen_opt.peer_group_filename);
             Box::new(File::create(&path).unwrap()) as Box<Write>
