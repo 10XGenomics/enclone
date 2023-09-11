@@ -7,6 +7,7 @@ on:
       - master
 
 env:
+  RUST_VERSION: "1.71.0"
   CARGO_INCREMENTAL: 0
 
 jobs:
@@ -15,22 +16,12 @@ jobs:
     runs-on: macos-latest
     steps:
 
-      # get prerequisite code in place (duplicated verbatim below)
-
-      - name: rust version
-        # note that rust version appears in two places in this file
-        run: rustup default 1.63.0
-      - name: add rustfmt
-        run: rustup component add rustfmt
-      - name: install cargo-license
-        run: cargo install cargo-license
-
       # check out master
 
       - name: Checkout enclone master
         uses: actions/checkout@master
 
-      - uses: Swatinem/rust-cache@v1
+      - uses: Swatinem/rust-cache@v2
         with:
           key: ${{ matrix.style }}v1 # increment this to bust the cache if needed
 
@@ -47,9 +38,7 @@ jobs:
       #
       # THIS IS A NEW VERSION.  MAYBE IT WILL WORK.
 
-      - uses: Swatinem/rust-cache@v1
-        with:
-          key: ${{ matrix.style }}v1 # increment this to bust the cache if needed
+      - uses: Swatinem/rust-cache@v2
 
       # start the real work
 
@@ -68,15 +57,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-      # get prerequisite code in place (duplicated verbatim above)
-
-      - name: rust version
-        run: rustup default 1.63.0
-      - name: add rustfmt
-        run: rustup component add rustfmt
-      - name: install cargo-license
-        run: cargo install cargo-license
-
       # check out master
 
       - name: Checkout enclone master
@@ -86,9 +66,7 @@ jobs:
 
       # set up caching (duplicated verbatim below)
 
-      - uses: Swatinem/rust-cache@v1
-        with:
-          key: ${{ matrix.style }}v1 # increment this to bust the cache if needed
+      - uses: Swatinem/rust-cache@v2
 
       # start the real work
 
