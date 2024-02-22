@@ -1,14 +1,12 @@
 // Copyright (c) 2022 10x Genomics, Inc. All rights reserved.
 
-use crate::capture_as_file;
 use crate::copy_image_to_clipboard::*;
-use crate::get_window_id;
+use crate::{capture_as_file, get_window_id};
 use perf_stats::*;
-use std::env;
 use std::fs::{remove_file, File};
 use std::io::Read;
-use std::thread;
 use std::time::{Duration, Instant};
+use std::{env, thread};
 
 // Copy window image to clipboard.  If the environment variable ENCLONE_VIS_SNAPSHOT is defined,
 // also save to that file.  This only works on a Mac.
@@ -230,12 +228,12 @@ println!("{:<8} {:<3} {:<6} {:<5} {:<5} {:<4} {:<4} {:<8} {:<7} {:<18} {:<18} {}
 /*
 
 [dependencies]
-string_utils = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
+string_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/merge-rust-toolbox" }
 getopts = "0.2"
 libc = "0.2"
 num-traits = "0.2"
 libwmctl = "0.0"
-pretty_trace = { version = "0.5", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
+pretty_trace = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/merge-rust-toolbox" }
 png-decoder = "0.1"
 
 [dependencies.image]
