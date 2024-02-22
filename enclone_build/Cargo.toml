@@ -10,7 +10,7 @@ chrono = { version = "0.4", default-features = false, features = ["std", "clock"
 itertools = "0.10"
 pretty_trace = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/merge-rust-toolbox", features = ["pprof"]}
 string_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/merge-rust-toolbox" }
-enclone_core = { git = "https://github.com/10XGenomics/enclone_ranger.git", branch = "main" }
+enclone_core = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/merge-rust-toolbox" }
 
 [build-dependencies]
 chrono = { version = "0.4", default-features = false, features = ["std", "clock"] }

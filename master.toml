@@ -28,18 +28,18 @@ debruijn = "0.3"
 dirs = "4"
 dna = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/merge-rust-toolbox" }
 edit-distance = "2"
-enclone_args = { git = "https://github.com/10XGenomics/enclone_ranger.git", branch = "main" }
-enclone_core = { git = "https://github.com/10XGenomics/enclone_ranger.git", branch = "main" }
+enclone_args = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/merge-rust-toolbox" }
+enclone_core = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/merge-rust-toolbox" }
 enclone_denovo = { path = "../enclone_denovo" }
 enclone_help = { path = "../enclone_help" }
-enclone = { git = "https://github.com/10XGenomics/enclone_ranger.git", branch = "main" }
-enclone_print = { git = "https://github.com/10XGenomics/enclone_ranger.git", branch = "main" }
-enclone_proto = { git = "https://github.com/10XGenomics/enclone_ranger.git", branch = "main" }
-enclone_ranger = { git = "https://github.com/10XGenomics/enclone_ranger.git", branch = "main" }
+enclone = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/merge-rust-toolbox" }
+enclone_print = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/merge-rust-toolbox" }
+enclone_proto = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/merge-rust-toolbox" }
+enclone_ranger = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/merge-rust-toolbox" }
 enclone_server_proto = { path = "../enclone_server_proto" }
-enclone_stuff = { git = "https://github.com/10XGenomics/enclone_ranger.git", branch = "main" }
+enclone_stuff = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/merge-rust-toolbox" }
 enclone_tail = { path = "../enclone_tail" }
-enclone_vars = { git = "https://github.com/10XGenomics/enclone_ranger.git", branch = "main" }
+enclone_vars = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/merge-rust-toolbox" }
 enclone_version = { path = "../enclone_version" }
 equiv = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/merge-rust-toolbox" }
 evalexpr = "7"

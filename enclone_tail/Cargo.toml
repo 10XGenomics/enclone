@@ -28,8 +28,8 @@ ansi_escape = { git = "https://github.com/10XGenomics/enclone_ranger", branch = 
 bio_edit = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/merge-rust-toolbox" }
 crc = "2"
 debruijn = "0.3"
-enclone_core = { git = "https://github.com/10XGenomics/enclone_ranger.git", branch = "main" }
-enclone_proto = { git = "https://github.com/10XGenomics/enclone_ranger.git", branch = "main" }
+enclone_core = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/merge-rust-toolbox" }
+enclone_proto = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/merge-rust-toolbox" }
 equiv = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/merge-rust-toolbox" }
 float-ord = "0.3"
 fontdb = "0.7"
