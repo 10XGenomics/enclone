@@ -21,11 +21,11 @@ publish = false
 
 [dependencies]
 bytes = "1"
-enclone_core = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/merge-rust-toolbox" }
-io_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/merge-rust-toolbox" }
+enclone_core = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
+io_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
 lazy_static = "1"
-pretty_trace = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/merge-rust-toolbox", features = ["pprof"]}
-string_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/merge-rust-toolbox" }
+pretty_trace = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main", features = ["pprof"]}
+string_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
 tokio = { version = "1", default-features = false, features = ["io-util", "macros", "rt-multi-thread"] }
-vdj_ann = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/merge-rust-toolbox" }
+vdj_ann = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
 

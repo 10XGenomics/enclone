@@ -29,9 +29,9 @@ base64 = "0.13"
 chrono = { version = "0.4", default-features = false, features = ["std", "clock"] }
 crc = "2"
 dirs = "4"
-enclone_core = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/merge-rust-toolbox" }
+enclone_core = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
 enclone_main = { path = "../enclone_main" }
-enclone_stuff = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/merge-rust-toolbox" }
+enclone_stuff = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
 enclone_tail = { path = "../enclone_tail" }
 enclone_version = { path = "../enclone_version" }
 enclone_build = { path = "../enclone_build" }
@@ -43,26 +43,26 @@ iced = { git = "https://github.com/hecrj/iced", rev = "3042fa2cb63c651ebed2abe6f
 iced_native = { git = "https://github.com/hecrj/iced", rev = "3042fa2cb63c651ebed2abe6f4054e61f70b0331" }
 image = { version = "0.23", features = ["jpeg", "png", "jpeg_rayon"], default-features = false }
 include_dir = { version = "0.6", features = ["search"] }
-io_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/merge-rust-toolbox" }
+io_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
 itertools = "0.10"
 jpeg-decoder = "0.2"
 lazy_static = "1"
 libc = "0.2"
 log = "0.4"
-nix = "0.23"
+nix = "0.27"
 num-traits = "0.2"
-perf_stats = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/merge-rust-toolbox" }
+perf_stats = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
 png-decoder = "0.1"
-pretty_trace = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/merge-rust-toolbox", features = ["pprof"]}
+pretty_trace = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main", features = ["pprof"]}
 prost = { version = "0.9", default_features = false, features = ["std", "prost-derive"] }
 rayon = "1"
 serde_json = "1"
-string_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/merge-rust-toolbox" }
-tables = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/merge-rust-toolbox" }
+string_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
+tables = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
 tokio = { version = "1", default-features = false, features = ["io-util", "macros", "rt-multi-thread"] }
 tokio-stream = { version = "0.1", default-features = false, features = ["net"] }
 tonic = { version = "0.6", default-features = false, features = ["transport", "codegen", "prost"] }
-vector_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/merge-rust-toolbox" }
+vector_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
 whoami = "1"
 
 [target.'cfg(target_os = "linux")'.dependencies]

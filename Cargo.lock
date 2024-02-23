@@ -62,7 +62,7 @@ dependencies = [
 [[package]]
 name = "align_tools"
 version = "0.1.12"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#7b9f2518f0614df1fa66afa8356c4f3e87b7e25e"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/merge-rust-toolbox#97c8677fbe7b1ee9da149969599a673fa7db4bbe"
 dependencies = [
  "bio_edit",
  "debruijn",
@@ -74,7 +74,7 @@ dependencies = [
 [[package]]
 name = "amino"
 version = "0.1.7"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#7b9f2518f0614df1fa66afa8356c4f3e87b7e25e"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/merge-rust-toolbox#97c8677fbe7b1ee9da149969599a673fa7db4bbe"
 dependencies = [
  "debruijn",
  "string_utils",
@@ -83,7 +83,7 @@ dependencies = [
 [[package]]
 name = "ansi_escape"
 version = "0.1.3"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#7b9f2518f0614df1fa66afa8356c4f3e87b7e25e"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/merge-rust-toolbox#97c8677fbe7b1ee9da149969599a673fa7db4bbe"
 dependencies = [
  "string_utils",
  "vector_utils",
@@ -386,7 +386,7 @@ checksum = "904dfeac50f3cdaba28fc6f57fdcddb75f49ed61346676a78c4ffe55877802fd"
 [[package]]
 name = "binary_vec_io"
 version = "0.1.12"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#7b9f2518f0614df1fa66afa8356c4f3e87b7e25e"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/merge-rust-toolbox#97c8677fbe7b1ee9da149969599a673fa7db4bbe"
 dependencies = [
  "itertools",
 ]
@@ -455,7 +455,7 @@ dependencies = [
 [[package]]
 name = "bio_edit"
 version = "0.1.1"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#7b9f2518f0614df1fa66afa8356c4f3e87b7e25e"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/merge-rust-toolbox#97c8677fbe7b1ee9da149969599a673fa7db4bbe"
 dependencies = [
  "bio-types",
  "bit-set",
@@ -481,6 +481,12 @@ name = "bitflags"
 version = "1.3.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "bef38d45163c2f1dde094a7dfd33ccf595c92905c8f8f4fdc18d06fb1037718a"
+
+[[package]]
+name = "bitflags"
+version = "2.4.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ed570934406eb16438a4e976b1b4500774099c13b8cb96eec99f620f05090ddf"
 
 [[package]]
 name = "block"
@@ -744,7 +750,7 @@ version = "0.24.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "6f63902e9223530efb4e26ccd0cf55ec30d592d3b42e21a28defc42a9586e832"
 dependencies = [
- "bitflags",
+ "bitflags 1.3.2",
  "block",
  "cocoa-foundation",
  "core-foundation 0.9.3",
@@ -760,7 +766,7 @@ version = "0.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7ade49b65d560ca58c403a479bb396592b155c0185eada742ee323d1d68d6318"
 dependencies = [
- "bitflags",
+ "bitflags 1.3.2",
  "block",
  "core-foundation 0.9.3",
  "core-graphics-types",
@@ -838,7 +844,7 @@ version = "0.19.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b3889374e6ea6ab25dba90bb5d96202f61108058361f6dc72e8b03e6f8bbe923"
 dependencies = [
- "bitflags",
+ "bitflags 1.3.2",
  "core-foundation 0.7.0",
  "foreign-types",
  "libc",
@@ -850,7 +856,7 @@ version = "0.22.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2581bbab3b8ffc6fcbd550bf46c355135d16e9ff2a6ea032ad6b9bf1d7efe4fb"
 dependencies = [
- "bitflags",
+ "bitflags 1.3.2",
  "core-foundation 0.9.3",
  "core-graphics-types",
  "foreign-types",
@@ -863,7 +869,7 @@ version = "0.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3a68b68b3446082644c91ac778bf50cd4104bfb002b5a6a7c44cca5a2c70788b"
 dependencies = [
- "bitflags",
+ "bitflags 1.3.2",
  "core-foundation 0.9.3",
  "foreign-types",
  "libc",
@@ -1029,7 +1035,7 @@ version = "0.4.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2daefd788d1e96e0a9d66dee4b828b883509bc3ea9ce30665f04c3246372690c"
 dependencies = [
- "bitflags",
+ "bitflags 1.3.2",
  "libloading",
  "winapi",
 ]
@@ -1182,7 +1188,7 @@ dependencies = [
 [[package]]
 name = "dna"
 version = "0.1.3"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#7b9f2518f0614df1fa66afa8356c4f3e87b7e25e"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/merge-rust-toolbox#97c8677fbe7b1ee9da149969599a673fa7db4bbe"
 
 [[package]]
 name = "downcast-rs"
@@ -1205,7 +1211,7 @@ checksum = "e78d4f1cc4ae33bbfc157ed5d5a5ef3bc29227303d595861deb238fcec4e9457"
 [[package]]
 name = "enclone"
 version = "0.5.219"
-source = "git+https://github.com/10XGenomics/enclone_ranger.git?branch=main#08319b8c0a920f5da658b5b6c3ec274311ad5b43"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/merge-rust-toolbox#97c8677fbe7b1ee9da149969599a673fa7db4bbe"
 dependencies = [
  "amino",
  "ansi_escape",
@@ -1232,7 +1238,7 @@ dependencies = [
 [[package]]
 name = "enclone_args"
 version = "0.5.219"
-source = "git+https://github.com/10XGenomics/enclone_ranger.git?branch=main#08319b8c0a920f5da658b5b6c3ec274311ad5b43"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/merge-rust-toolbox#97c8677fbe7b1ee9da149969599a673fa7db4bbe"
 dependencies = [
  "debruijn",
  "enclone_core",
@@ -1266,7 +1272,7 @@ dependencies = [
 [[package]]
 name = "enclone_core"
 version = "0.5.219"
-source = "git+https://github.com/10XGenomics/enclone_ranger.git?branch=main#08319b8c0a920f5da658b5b6c3ec274311ad5b43"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/merge-rust-toolbox#97c8677fbe7b1ee9da149969599a673fa7db4bbe"
 dependencies = [
  "amino",
  "ansi_escape",
@@ -1347,7 +1353,7 @@ dependencies = [
  "home",
  "io_utils",
  "itertools",
- "nix 0.23.1",
+ "nix 0.27.1",
  "perf_stats",
  "pretty_trace",
  "rayon",
@@ -1433,7 +1439,7 @@ dependencies = [
 [[package]]
 name = "enclone_print"
 version = "0.5.219"
-source = "git+https://github.com/10XGenomics/enclone_ranger.git?branch=main#08319b8c0a920f5da658b5b6c3ec274311ad5b43"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/merge-rust-toolbox#97c8677fbe7b1ee9da149969599a673fa7db4bbe"
 dependencies = [
  "amino",
  "ansi_escape",
@@ -1465,11 +1471,11 @@ dependencies = [
 [[package]]
 name = "enclone_proto"
 version = "0.5.219"
-source = "git+https://github.com/10XGenomics/enclone_ranger.git?branch=main#08319b8c0a920f5da658b5b6c3ec274311ad5b43"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/merge-rust-toolbox#97c8677fbe7b1ee9da149969599a673fa7db4bbe"
 dependencies = [
  "bio_edit",
  "byteorder",
- "prost 0.9.0",
+ "prost 0.10.4",
  "serde",
  "thiserror",
  "vdj_ann",
@@ -1478,7 +1484,7 @@ dependencies = [
 [[package]]
 name = "enclone_ranger"
 version = "0.5.219"
-source = "git+https://github.com/10XGenomics/enclone_ranger.git?branch=main#08319b8c0a920f5da658b5b6c3ec274311ad5b43"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/merge-rust-toolbox#97c8677fbe7b1ee9da149969599a673fa7db4bbe"
 dependencies = [
  "enclone",
  "enclone_args",
@@ -1494,7 +1500,7 @@ dependencies = [
 [[package]]
 name = "enclone_stuff"
 version = "0.5.219"
-source = "git+https://github.com/10XGenomics/enclone_ranger.git?branch=main#08319b8c0a920f5da658b5b6c3ec274311ad5b43"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/merge-rust-toolbox#97c8677fbe7b1ee9da149969599a673fa7db4bbe"
 dependencies = [
  "amino",
  "debruijn",
@@ -1613,7 +1619,7 @@ dependencies = [
 [[package]]
 name = "enclone_vars"
 version = "0.5.219"
-source = "git+https://github.com/10XGenomics/enclone_ranger.git?branch=main#08319b8c0a920f5da658b5b6c3ec274311ad5b43"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/merge-rust-toolbox#97c8677fbe7b1ee9da149969599a673fa7db4bbe"
 dependencies = [
  "io_utils",
  "itertools",
@@ -1664,7 +1670,7 @@ dependencies = [
  "libc",
  "log",
  "mach",
- "nix 0.23.1",
+ "nix 0.27.1",
  "num-traits",
  "objc",
  "perf_stats",
@@ -1708,7 +1714,7 @@ dependencies = [
 [[package]]
 name = "equiv"
 version = "0.1.3"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#7b9f2518f0614df1fa66afa8356c4f3e87b7e25e"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/merge-rust-toolbox#97c8677fbe7b1ee9da149969599a673fa7db4bbe"
 
 [[package]]
 name = "errno"
@@ -1765,7 +1771,7 @@ checksum = "77f3309417938f28bf8228fcff79a4a37103981e3e186d2ccd19c74b38f4eb71"
 [[package]]
 name = "exons"
 version = "0.1.5"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#7b9f2518f0614df1fa66afa8356c4f3e87b7e25e"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/merge-rust-toolbox#97c8677fbe7b1ee9da149969599a673fa7db4bbe"
 dependencies = [
  "io_utils",
  "string_utils",
@@ -1775,7 +1781,7 @@ dependencies = [
 [[package]]
 name = "expr_tools"
 version = "0.1.3"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#7b9f2518f0614df1fa66afa8356c4f3e87b7e25e"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/merge-rust-toolbox#97c8677fbe7b1ee9da149969599a673fa7db4bbe"
 dependencies = [
  "evalexpr",
  "statrs",
@@ -1786,7 +1792,7 @@ dependencies = [
 [[package]]
 name = "fasta_tools"
 version = "0.1.8"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#7b9f2518f0614df1fa66afa8356c4f3e87b7e25e"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/merge-rust-toolbox#97c8677fbe7b1ee9da149969599a673fa7db4bbe"
 dependencies = [
  "debruijn",
  "flate2",
@@ -2186,7 +2192,7 @@ version = "0.5.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7fc59e5f710e310e76e6707f86c561dd646f69a8876da9131703b2f717de818d"
 dependencies = [
- "bitflags",
+ "bitflags 1.3.2",
  "gpu-alloc-types",
 ]
 
@@ -2196,7 +2202,7 @@ version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "54804d0d6bc9d7f26db4eaec1ad10def69b599315f487d32c334a80d1efe67a5"
 dependencies = [
- "bitflags",
+ "bitflags 1.3.2",
 ]
 
 [[package]]
@@ -2205,7 +2211,7 @@ version = "0.2.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a538f217be4d405ff4719a283ca68323cc2384003eca5baaa87501e821c81dda"
 dependencies = [
- "bitflags",
+ "bitflags 1.3.2",
  "gpu-descriptor-types",
  "hashbrown",
 ]
@@ -2216,13 +2222,13 @@ version = "0.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "363e3677e55ad168fef68cf9de3a4a310b53124c5e784c53a1d70e92d23f2126"
 dependencies = [
- "bitflags",
+ "bitflags 1.3.2",
 ]
 
 [[package]]
 name = "graph_simple"
 version = "0.1.5"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#7b9f2518f0614df1fa66afa8356c4f3e87b7e25e"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/merge-rust-toolbox#97c8677fbe7b1ee9da149969599a673fa7db4bbe"
 dependencies = [
  "petgraph",
  "vector_utils",
@@ -2271,7 +2277,7 @@ name = "hdf5"
 version = "0.8.1"
 source = "git+https://github.com/10XGenomics/hdf5-rust.git?branch=conda_nov2021#2d4a40b7ef75de530bc53fd2eb0fe75047e083ad"
 dependencies = [
- "bitflags",
+ "bitflags 1.3.2",
  "cfg-if 1.0.0",
  "hdf5-derive",
  "hdf5-sys",
@@ -2279,7 +2285,7 @@ dependencies = [
  "lazy_static",
  "libc",
  "ndarray",
- "parking_lot 0.11.2",
+ "parking_lot 0.12.0",
  "paste",
 ]
 
@@ -2299,7 +2305,7 @@ name = "hdf5-sys"
 version = "0.8.1"
 source = "git+https://github.com/10XGenomics/hdf5-rust.git?branch=conda_nov2021#2d4a40b7ef75de530bc53fd2eb0fe75047e083ad"
 dependencies = [
- "attohttpc 0.18.0",
+ "attohttpc 0.19.1",
  "bzip2",
  "libc",
  "libloading",
@@ -2441,7 +2447,7 @@ dependencies = [
 [[package]]
 name = "hyperbase"
 version = "0.1.8"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#7b9f2518f0614df1fa66afa8356c4f3e87b7e25e"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/merge-rust-toolbox#97c8677fbe7b1ee9da149969599a673fa7db4bbe"
 dependencies = [
  "debruijn",
  "equiv",
@@ -2470,7 +2476,7 @@ name = "iced_core"
 version = "0.4.0"
 source = "git+https://github.com/hecrj/iced?rev=3042fa2cb63c651ebed2abe6f4054e61f70b0331#3042fa2cb63c651ebed2abe6f4054e61f70b0331"
 dependencies = [
- "bitflags",
+ "bitflags 1.3.2",
  "wasm-timer",
 ]
 
@@ -2526,7 +2532,7 @@ name = "iced_wgpu"
 version = "0.4.0"
 source = "git+https://github.com/hecrj/iced?rev=3042fa2cb63c651ebed2abe6f4054e61f70b0331#3042fa2cb63c651ebed2abe6f4054e61f70b0331"
 dependencies = [
- "bitflags",
+ "bitflags 1.3.2",
  "bytemuck",
  "futures",
  "glyph_brush",
@@ -2647,7 +2653,7 @@ dependencies = [
 [[package]]
 name = "io_utils"
 version = "0.3.2"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#7b9f2518f0614df1fa66afa8356c4f3e87b7e25e"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/merge-rust-toolbox#97c8677fbe7b1ee9da149969599a673fa7db4bbe"
 dependencies = [
  "bincode",
  "flate2",
@@ -2750,7 +2756,7 @@ dependencies = [
 [[package]]
 name = "kmer_lookup"
 version = "0.1.5"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#7b9f2518f0614df1fa66afa8356c4f3e87b7e25e"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/merge-rust-toolbox#97c8677fbe7b1ee9da149969599a673fa7db4bbe"
 dependencies = [
  "debruijn",
  "rayon",
@@ -2971,7 +2977,7 @@ version = "0.23.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e0514f491f4cc03632ab399ee01e2c1c1b12d3e1cf2d667c1ff5f87d6dcd2084"
 dependencies = [
- "bitflags",
+ "bitflags 1.3.2",
  "block",
  "core-graphics-types",
  "foreign-types",
@@ -3048,7 +3054,7 @@ dependencies = [
 [[package]]
 name = "mirror_sparse_matrix"
 version = "0.1.17"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#7b9f2518f0614df1fa66afa8356c4f3e87b7e25e"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/merge-rust-toolbox#97c8677fbe7b1ee9da149969599a673fa7db4bbe"
 dependencies = [
  "binary_vec_io",
 ]
@@ -3075,7 +3081,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3012f2dbcc79e8e0b5825a4836a7106a75dd9b2fe42c528163be0f572538c705"
 dependencies = [
  "bit-set",
- "bitflags",
+ "bitflags 1.3.2",
  "codespan-reporting",
  "hexf-parse",
  "indexmap",
@@ -3134,7 +3140,7 @@ version = "0.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "96d868f654c72e75f8687572699cdabe755f03effbb62542768e995d5b8d699d"
 dependencies = [
- "bitflags",
+ "bitflags 1.3.2",
  "jni-sys",
  "ndk-sys",
  "num_enum",
@@ -3196,7 +3202,7 @@ version = "0.20.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "fa9b4819da1bc61c0ea48b63b7bc8604064dd43013e7cc325df098d49cd7c18a"
 dependencies = [
- "bitflags",
+ "bitflags 1.3.2",
  "cc",
  "cfg-if 1.0.0",
  "libc",
@@ -3208,20 +3214,7 @@ version = "0.22.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e4916f159ed8e5de0082076562152a76b7a1f64a01fd9d1e0fea002c37624faf"
 dependencies = [
- "bitflags",
- "cc",
- "cfg-if 1.0.0",
- "libc",
- "memoffset",
-]
-
-[[package]]
-name = "nix"
-version = "0.23.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9f866317acbd3a240710c63f065ffb1e4fd466259045ccb504130b7f668f35c6"
-dependencies = [
- "bitflags",
+ "bitflags 1.3.2",
  "cc",
  "cfg-if 1.0.0",
  "libc",
@@ -3234,7 +3227,19 @@ version = "0.24.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "195cdbc1741b8134346d515b3a56a1c94b0912758009cfd53f99ea0f57b065fc"
 dependencies = [
- "bitflags",
+ "bitflags 1.3.2",
+ "cfg-if 1.0.0",
+ "libc",
+ "memoffset",
+]
+
+[[package]]
+name = "nix"
+version = "0.27.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2eb04e9c688eff1c89d72b407f168cf79bb9e867a9d3323ed6c01519eb9cc053"
+dependencies = [
+ "bitflags 2.4.2",
  "cfg-if 1.0.0",
  "libc",
 ]
@@ -3535,7 +3540,7 @@ checksum = "d4fd5641d01c8f18a23da7b6fe29298ff4b55afcccdf78973b24cf3175fee32e"
 [[package]]
 name = "perf_stats"
 version = "0.1.8"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#7b9f2518f0614df1fa66afa8356c4f3e87b7e25e"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/merge-rust-toolbox#97c8677fbe7b1ee9da149969599a673fa7db4bbe"
 dependencies = [
  "io_utils",
  "libc",
@@ -3680,7 +3685,7 @@ version = "0.16.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3c3287920cb847dee3de33d301c463fba14dda99db24214ddf93f83d3021f4c6"
 dependencies = [
- "bitflags",
+ "bitflags 1.3.2",
  "crc32fast",
  "deflate 0.8.6",
  "miniz_oxide 0.3.7",
@@ -3692,7 +3697,7 @@ version = "0.17.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "dc38c0ad57efb786dd57b9864e5b18bae478c00c824dc55a38bbc9da95dde3ba"
 dependencies = [
- "bitflags",
+ "bitflags 1.3.2",
  "crc32fast",
  "deflate 1.0.0",
  "miniz_oxide 0.5.1",
@@ -3754,13 +3759,13 @@ checksum = "eb9f9e6e233e5c4a35559a617bf40a4ec447db2e84c20b55a6f83167b7e57872"
 [[package]]
 name = "pretty_trace"
 version = "0.5.24"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#7b9f2518f0614df1fa66afa8356c4f3e87b7e25e"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/merge-rust-toolbox#97c8677fbe7b1ee9da149969599a673fa7db4bbe"
 dependencies = [
  "backtrace",
  "io_utils",
  "lazy_static",
  "libc",
- "nix 0.22.3",
+ "nix 0.24.2",
  "pprof",
  "stats_utils",
  "string_utils",
@@ -3823,7 +3828,7 @@ version = "0.12.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0941606b9934e2d98a3677759a971756eb821f75764d0e0d26946d08e74d9104"
 dependencies = [
- "bitflags",
+ "bitflags 1.3.2",
  "byteorder",
  "hex",
  "lazy_static",
@@ -4065,7 +4070,7 @@ version = "0.2.13"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "62f25bc4c7e55e0b0b7a1d43fb893f4fa1361d0abe38b9ce4f323c2adfe6ef42"
 dependencies = [
- "bitflags",
+ "bitflags 1.3.2",
 ]
 
 [[package]]
@@ -4210,7 +4215,7 @@ version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "44561062e583c4873162861261f16fd1d85fe927c4904d71329a4fe43dc355ef"
 dependencies = [
- "bitflags",
+ "bitflags 1.3.2",
  "bytemuck",
  "smallvec",
  "ttf-parser 0.12.3",
@@ -4387,7 +4392,7 @@ version = "0.15.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8a28f16a97fa0e8ce563b2774d1e732dd5d4025d2772c5dba0a41a0f90a29da3"
 dependencies = [
- "bitflags",
+ "bitflags 1.3.2",
  "calloop",
  "dlib",
  "lazy_static",
@@ -4432,7 +4437,7 @@ version = "0.2.0+1.5.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "246bfa38fe3db3f1dfc8ca5a2cdeb7348c78be2112740cc0ec8ef18b6d94f830"
 dependencies = [
- "bitflags",
+ "bitflags 1.3.2",
  "num-traits",
 ]
 
@@ -4464,7 +4469,7 @@ dependencies = [
 [[package]]
 name = "stats_utils"
 version = "0.1.3"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#7b9f2518f0614df1fa66afa8356c4f3e87b7e25e"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/merge-rust-toolbox#97c8677fbe7b1ee9da149969599a673fa7db4bbe"
 
 [[package]]
 name = "str-buf"
@@ -4475,7 +4480,7 @@ checksum = "d44a3643b4ff9caf57abcee9c2c621d6c03d9135e0d8b589bd9afb5992cb176a"
 [[package]]
 name = "string_utils"
 version = "0.1.4"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#7b9f2518f0614df1fa66afa8356c4f3e87b7e25e"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/merge-rust-toolbox#97c8677fbe7b1ee9da149969599a673fa7db4bbe"
 dependencies = [
  "vector_utils",
 ]
@@ -4563,7 +4568,7 @@ dependencies = [
 [[package]]
 name = "tables"
 version = "0.1.5"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#7b9f2518f0614df1fa66afa8356c4f3e87b7e25e"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/merge-rust-toolbox#97c8677fbe7b1ee9da149969599a673fa7db4bbe"
 dependencies = [
  "io_utils",
  "itertools",
@@ -4907,7 +4912,7 @@ version = "1.6.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "97fee6b57c6a41524a810daee9286c02d7752c4253064d0b05472833a438f675"
 dependencies = [
- "cfg-if 0.1.10",
+ "cfg-if 1.0.0",
  "rand",
  "static_assertions",
 ]
@@ -5055,7 +5060,7 @@ dependencies = [
 [[package]]
 name = "vdj_ann"
 version = "0.4.4"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#7b9f2518f0614df1fa66afa8356c4f3e87b7e25e"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/merge-rust-toolbox#97c8677fbe7b1ee9da149969599a673fa7db4bbe"
 dependencies = [
  "align_tools",
  "amino",
@@ -5077,7 +5082,7 @@ dependencies = [
 [[package]]
 name = "vdj_ann_ref"
 version = "0.2.1"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#7b9f2518f0614df1fa66afa8356c4f3e87b7e25e"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/merge-rust-toolbox#97c8677fbe7b1ee9da149969599a673fa7db4bbe"
 dependencies = [
  "debruijn",
  "exons",
@@ -5095,7 +5100,7 @@ dependencies = [
 [[package]]
 name = "vdj_types"
 version = "0.2.0"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#7b9f2518f0614df1fa66afa8356c4f3e87b7e25e"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/merge-rust-toolbox#97c8677fbe7b1ee9da149969599a673fa7db4bbe"
 dependencies = [
  "serde",
 ]
@@ -5112,7 +5117,7 @@ dependencies = [
 [[package]]
 name = "vector_utils"
 version = "0.1.5"
-source = "git+https://github.com/10XGenomics/rust-toolbox.git?branch=master#7b9f2518f0614df1fa66afa8356c4f3e87b7e25e"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/merge-rust-toolbox#97c8677fbe7b1ee9da149969599a673fa7db4bbe"
 dependencies = [
  "permutation",
  "superslice",
@@ -5239,7 +5244,7 @@ version = "0.29.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "91223460e73257f697d9e23d401279123d36039a3f7a449e983f123292d4458f"
 dependencies = [
- "bitflags",
+ "bitflags 1.3.2",
  "downcast-rs",
  "libc",
  "nix 0.22.3",
@@ -5278,7 +5283,7 @@ version = "0.29.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "60147ae23303402e41fe034f74fb2c35ad0780ee88a1c40ac09a3be1e7465741"
 dependencies = [
- "bitflags",
+ "bitflags 1.3.2",
  "wayland-client",
  "wayland-commons",
  "wayland-scanner",
@@ -5378,7 +5383,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c4688c000eb841ca55f7b35db659b78d6e1cd77d7caf8fb929f4e181f754047d"
 dependencies = [
  "arrayvec 0.7.2",
- "bitflags",
+ "bitflags 1.3.2",
  "cfg_aliases",
  "codespan-reporting",
  "copyless",
@@ -5403,7 +5408,7 @@ dependencies = [
  "arrayvec 0.7.2",
  "ash",
  "bit-set",
- "bitflags",
+ "bitflags 1.3.2",
  "block",
  "core-graphics-types",
  "d3d12",
@@ -5438,7 +5443,7 @@ version = "0.12.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "549533d9e1cdd4b4cda7718d33ff500fc4c34b5467b71d76b547ae0324f3b2a2"
 dependencies = [
- "bitflags",
+ "bitflags 1.3.2",
 ]
 
 [[package]]
@@ -5582,7 +5587,7 @@ name = "winit"
 version = "0.26.0"
 source = "git+https://github.com/iced-rs/winit?rev=02a12380960cec2f351c09a33d6a7cc2789d96a6#02a12380960cec2f351c09a33d6a7cc2789d96a6"
 dependencies = [
- "bitflags",
+ "bitflags 1.3.2",
  "cocoa",
  "core-foundation 0.9.3",
  "core-graphics 0.22.3",

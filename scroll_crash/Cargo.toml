@@ -29,11 +29,11 @@ itertools = "0.10"
 lazy_static = "1"
 libc = "0.2"
 log = "0.4"
-nix = "0.23"
-perf_stats = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/merge-rust-toolbox" }
-pretty_trace = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/merge-rust-toolbox", features = ["pprof"]}
+nix = "0.27"
+perf_stats = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
+pretty_trace = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main", features = ["pprof"]}
 prost = { version = "0.9", default_features = false, features = ["std", "prost-derive"] }
-string_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/merge-rust-toolbox" }
+string_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
 tokio = { version = "1", default-features = false, features = ["io-util", "macros", "rt-multi-thread"] }
 tokio-stream = { version = "0.1", default-features = false, features = ["net"] }
 tonic = { version = "0.6", default-features = false, features = ["transport", "codegen", "prost"] }
