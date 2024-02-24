@@ -228,12 +228,12 @@ println!("{:<8} {:<3} {:<6} {:<5} {:<5} {:<4} {:<4} {:<8} {:<7} {:<18} {:<18} {}
 /*
 
 [dependencies]
-string_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/merge-rust-toolbox" }
+string_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
 getopts = "0.2"
 libc = "0.2"
 num-traits = "0.2"
 libwmctl = "0.0"
-pretty_trace = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/merge-rust-toolbox" }
+pretty_trace = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
 png-decoder = "0.1"
 
 [dependencies.image]
