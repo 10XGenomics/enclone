@@ -49,7 +49,7 @@ jpeg-decoder = "0.2"
 lazy_static = "1"
 libc = "0.2"
 log = "0.4"
-nix = "0.27"
+nix = { version = "0.27", features = ["signal"] }
 num-traits = "0.2"
 perf_stats = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
 png-decoder = "0.1"

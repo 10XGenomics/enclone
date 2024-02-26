@@ -25,23 +25,30 @@ extern crate pretty_trace;
 extern crate string_utils;
 
 extern crate vdj_ann;
-use vdj_ann::*;
-
 use annotate::*;
 use bio_edit::alignment::pairwise::*;
 use bio_edit::alignment::AlignmentOperation::*;
-use debruijn::{dna_string::*, *};
+use debruijn::dna_string::*;
+use debruijn::*;
 use fasta_tools::*;
+use flate2::read::GzDecoder;
 use itertools::Itertools;
 use pretty_trace::*;
 use refx::*;
-use std::{cmp::min, env, io::Write};
+use std::cmp::min;
+use std::env;
+use std::io::Read;
+use std::io::Write;
 use string_utils::*;
 use vdj_ann::transcript::*;
+use vdj_ann::*;
 use vdj_ann_ref::make_vdj_ref_data;
 use vector_utils::*;
 
 fn main() {
+    println!("{}", human_supp_regions());
+    println!("{}", mouse_supp_regions());
+    return;
     // Set up and parse args.
 
     PrettyTrace::new().on();
@@ -107,7 +114,17 @@ fn main() {
         let ext_ref = String::new();
         make_vdj_ref_data_core(&mut refdata, &refx, &ext_ref, true, true, None);
     } else {
-        make_vdj_ref_data(&mut refdata, imgt, &species, false, is_tcr, is_bcr);
+        println!("doin' it");
+        make_vdj_ref_data(
+            &mut refdata,
+            imgt,
+            &species,
+            false,
+            is_tcr,
+            is_bcr,
+            &human_supp_regions(),
+            &mouse_supp_regions(),
+        );
     }
 
     // Traverse the sequences.
@@ -260,7 +277,16 @@ fn main() {
             // Annotate using the extended reference.
 
             let mut refdatax = RefData::new();
-            make_vdj_ref_data(&mut refdatax, imgt, &species, true, is_tcr, is_bcr);
+            make_vdj_ref_data(
+                &mut refdatax,
+                imgt,
+                &species,
+                true,
+                is_tcr,
+                is_bcr,
+                &human_supp_regions(),
+                &mouse_supp_regions(),
+            );
             fwriteln!(log, "\nFW ANNOTATION VERSUS EXTENDED REFERENCE\n");
             print_annotations(&seq, &refdatax, &mut log, false, false, verbose);
             fwriteln!(log, "\nRC ANNOTATION VERSUS EXTENDED REFERENCE\n");
@@ -271,4 +297,25 @@ fn main() {
 
         print!("{}\n", stringme(&log));
     }
+}
+
+fn human_supp_regions() -> String {
+    decompress(include_bytes!(
+        "../../../supp_refs/human/supp_regions.fa.gz"
+    ))
+    .unwrap()
+}
+
+fn mouse_supp_regions() -> String {
+    decompress(include_bytes!(
+        "../../../supp_refs/mouse/supp_regions.fa.gz"
+    ))
+    .unwrap()
+}
+
+fn decompress(data: &[u8]) -> std::io::Result<String> {
+    let mut reader = GzDecoder::new(data);
+    let mut contents = String::new();
+    reader.read_to_string(&mut contents)?;
+    Ok(contents)
 }
