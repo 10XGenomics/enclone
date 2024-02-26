@@ -299,6 +299,7 @@ fn main() {
     }
 }
 
+/// Return the decompressed supp regions data for human.
 fn human_supp_regions() -> String {
     decompress(include_bytes!(
         "../../../supp_refs/human/supp_regions.fa.gz"
@@ -306,6 +307,7 @@ fn human_supp_regions() -> String {
     .unwrap()
 }
 
+/// Return the decompressed supp regions data for mouse.
 fn mouse_supp_regions() -> String {
     decompress(include_bytes!(
         "../../../supp_refs/mouse/supp_regions.fa.gz"
