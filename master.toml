@@ -69,7 +69,7 @@ lz4 = "1"
 mach = "0.3"
 mirror_sparse_matrix = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
 ndarray = "0.15"
-nix = "0.27"
+nix = { version = "0.27", features = ["signal"] }
 num-traits = "0.2"
 objc = "0.2"
 pager = "0.16"
