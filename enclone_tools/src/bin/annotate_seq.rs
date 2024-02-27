@@ -114,7 +114,6 @@ fn main() {
         let ext_ref = String::new();
         make_vdj_ref_data_core(&mut refdata, &refx, &ext_ref, true, true, None);
     } else {
-        println!("doin' it");
         make_vdj_ref_data(
             &mut refdata,
             imgt,
