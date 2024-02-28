@@ -22,22 +22,22 @@ publish = false
 # To keep compile time down, this file should *not* access the enclone crate.
 
 [dependencies]
-bio_edit = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
+bio_edit = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
 debruijn = "0.3"
-enclone_core = { git = "https://github.com/10XGenomics/enclone_ranger.git", branch = "main" }
+enclone_core = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
 enclone_tail = { path = "../enclone_tail" }
 enclone_testlist = { path = "../enclone_testlist" }
 flate2 = "1"
-io_utils = { version = "0.3", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
+io_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
 itertools = "0.10"
-perf_stats = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
+perf_stats = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
 plotters = { version = "0.3", default_features = false, features = ["svg_backend", "point_series"] }
 rand_chacha = "0.3"
 rayon = "1"
-pretty_trace = { version = "0.5", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master", features = ["pprof"]}
-string_utils = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
-tables = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
+pretty_trace = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main", features = ["pprof"]}
+string_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
+tables = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
 triple_accel = "0.4"
-vdj_ann = { version = "0.4", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
-vdj_ann_ref = { version = "0.2", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
-vector_utils = { version = "0.1", git = "https://github.com/10XGenomics/rust-toolbox.git", branch = "master" }
+vdj_ann = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
+vdj_ann_ref = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
+vector_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
