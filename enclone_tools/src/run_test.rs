@@ -118,25 +118,6 @@ pub fn run_test(
         }
         let args = parse_bsv(&test);
 
-        // Try to prevent a sporadic failure mode.
-
-        let (mut p1, mut p2) = (false, false);
-        for i in 0..args.len() {
-            if args[i] == "GEX=123217" {
-                p1 = true;
-            } else if args[i] == "H5" {
-                p2 = true;
-            }
-        }
-        if p1 && !p2 {
-            eprintln!(
-                "\nFound GEX=123217 without H5.  Because of the PREBUILD test, this \
-                can cause sporadic failures.\nHere is the test:\n{}\n",
-                orig_test
-            );
-            std::process::exit(1);
-        }
-
         // Form the command and execute it.
 
         let mut new = Command::new(&enclone);

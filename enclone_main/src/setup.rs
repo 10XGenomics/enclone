@@ -340,7 +340,6 @@ pub fn setup(
 
     ctl.pretty = true;
     let mut nopretty = false;
-    ctl.gen_opt.h5 = true;
     let mut visual = false;
     for i in 1..args.len() {
         if is_simple_arg(&args[i], "PLAIN")? {
@@ -355,9 +354,6 @@ pub fn setup(
         if is_simple_arg(&args[i], "COMP2")? {
             ctl.perf_opt.comp = true;
             ctl.perf_opt.comp2 = true;
-        }
-        if is_simple_arg(&args[i], "NH5")? {
-            ctl.gen_opt.h5 = false;
         }
         if is_simple_arg(&args[i], "VISUAL")? {
             visual = true;

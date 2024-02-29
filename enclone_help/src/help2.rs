@@ -13,8 +13,7 @@ pub const EXAMPLES: [&str; 2] = [
     // 1.
     r###"BCR=123089 CDR3=CARRYFGVVADAFDIW"###,
     // 2.
-    // Do not use NH5 because the bin file is too big for git.
-    r###"BCR=123085 GEX=123217 H5 LVARSP=gex,IGHV2-5_g_μ CDR3=CALMGTYCSGDNCYSWFDPW"###,
+    r###"BCR=123085 GEX=123217 LVARSP=gex,IGHV2-5_g_μ CDR3=CALMGTYCSGDNCYSWFDPW"###,
 ];
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -96,21 +95,13 @@ pub fn help2(args: &Vec<String>, _ctl: &EncloneControl, h: &mut HelpDesk) -> Res
         h.begin_doc("example2")?;
         h.print("\nShown below is the output of the command:\n")?;
 
-        // Remove H5.
-
         let ex2_args = EXAMPLES[1].split(' ').collect::<Vec<&str>>();
-        let mut ex2_args2 = Vec::<&str>::new();
-        for i in 0..ex2_args.len() {
-            if ex2_args[i] != "H5" {
-                ex2_args2.push(ex2_args[i]);
-            }
-        }
 
         // Proceed.
 
         h.print(&format!(
             "\n\\bold{{enclone {}}}\n",
-            ex2_args2.iter().format(" ")
+            ex2_args.iter().format(" ")
         ))?;
         if !h.plain {
             h.print_plain_unchecked(include_str!("example2"));
@@ -175,23 +166,6 @@ pub fn help2(args: &Vec<String>, _ctl: &EncloneControl, h: &mut HelpDesk) -> Res
             "Both input forms involve abbreviated names (discussed below), which should be as \
              short as possible, as longer abbreviations will increase the width of the clonotype \
              displays.\n\n",
-        )?;
-        h.print_with_box(
-            "enclone can use gene expression and feature barcode data, as represented by a feature \
-             matrix.  Cell Ranger stores this matrix in an hdf5 file, which while generally very \
-             efficient, is not optimized for interactive use.  Therefore enclone provides an \
-             alternate file structure, which speeds up enclone overall by up to \\boldred{50%}.  \
-             To use this, add the argument \\bold{NH5} to the enclone command line.  This will \
-             work so long as you have write permission on input directories.  The first time you \
-             run enclone (using given inputs), an alternate file feature_barcode_matrix.bin will \
-             be written; then subsequent invocations will be faster.  Once the file has been \
-             created, it will always be used, regardless of whether \\bold{NH5} is used.  \
-             However, we may occasionally change the format of the alternate file.  If do that, \
-             then if you have previously generated the file, then it will be rewritten when \
-             you invoke enclone for that dataset.  \
-             Like with other enclone command-line options, if you want \\bold{NH5} on all the \
-             time, you can set the environment variable \\bold{ENCLONE_NH5}.",
-            true
         )?;
         h.print(
             "\\boldred{█ 1 █} To point directly at input files on the command line, use e.g.\n\

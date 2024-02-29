@@ -55,9 +55,6 @@ fn test_site_examples() {
         f.read_to_end(&mut in_stuff).unwrap();
         let mut args = parse_bsv(&test);
         args.push("NO_KILL");
-        if args.contains(&"GEX=123217") && !args.contains(&"H5") {
-            panic!("Oops please fix this, to prevent sporadic failures.");
-        }
         let new = Command::new(env!("CARGO_BIN_EXE_enclone"))
             .args(&args)
             .output()
@@ -178,9 +175,6 @@ fn test_enclone_examples() {
         let out_file = format!("../enclone_help/src/example{}", t + 1);
         let old = read_to_string(&out_file).unwrap();
         let args = testn.split(' ').collect::<Vec<&str>>();
-        if args.contains(&"GEX=123217") && !args.contains(&"H5") {
-            panic!("Oops please fix this, to prevent sporadic failures.");
-        }
         let mut new = Command::new(env!("CARGO_BIN_EXE_enclone"));
         let mut new = new.arg(format!(
             "PRE=../enclone-data/big_inputs/version{}",
@@ -740,7 +734,6 @@ fn test_cell_exact() {
                     .arg(&pre_arg)
                     .arg("BCR=86237")
                     .arg("GEX=85679")
-                    .arg("NH5")
                     .arg("POUT=stdout")
                     .arg(&format!("PCOLS={}", varp))
                     .arg("PCELL")
