@@ -84,7 +84,7 @@ fn test_for_parseable_redundancy() {
             "\neparseable redundancy test: failed to execute, stderr =\n{}",
             strme(&new.stderr),
         );
-        std::process::exit(1);
+        panic!("failed");
     }
     let f = open_for_read!["testx/outputs/redundancy_out"];
     let mut found = false;
@@ -101,7 +101,7 @@ fn test_for_parseable_redundancy() {
                 "\nParseable output field {} appears more than once.\n",
                 fields[i]
             );
-            std::process::exit(1);
+            panic!("failed");
         }
         i = j;
     }
@@ -149,7 +149,7 @@ fn test_help_pages_edited() {
                     "\nThe page {} has not been edited.  Please run ./build.\n",
                     f
                 );
-                std::process::exit(1);
+                panic!("failed");
             }
         }
         let h = open_for_read![&format!("{}", f)];
@@ -162,7 +162,7 @@ fn test_help_pages_edited() {
         }
     }
     if fail {
-        std::process::exit(1);
+        panic!("failed");
     }
 }
 
@@ -217,7 +217,7 @@ fn test_sync_master() {
                         if t != s {
                             eprintln!("\nFound change in {}.\nold: {}\nnew: {}", toml, s, t);
                             eprintln!("You probably need to run sync_to_master\n");
-                            std::process::exit(1);
+                            panic!("failed");
                         }
                     }
                 }
@@ -253,7 +253,7 @@ fn test_curl_command() {
                 You need to create the directory enclone_exec/testx/outputs.\n\
                 If you run \"./build\" this will be done for you.\n"
             );
-            std::process::exit(1);
+            panic!("failed");
         }
         for pass in 1..=3 {
             for f in ["enclone", "bin", ".profile", ".subversion"].iter() {
@@ -287,7 +287,7 @@ fn test_curl_command() {
                 );
                 eprint!("stdout:\n{}", strme(&o.stdout));
                 eprint!("stderr:\n{}", strme(&o.stderr));
-                std::process::exit(1);
+                panic!("failed");
             }
             // The following test is there because a bash script can fail without setting
             // a nonzero exit code.
@@ -299,7 +299,7 @@ fn test_curl_command() {
                     pass,
                     strme(&o.stderr)
                 );
-                std::process::exit(1);
+                panic!("failed");
             }
             let req = [
                 "bin/enclone",
@@ -318,7 +318,7 @@ fn test_curl_command() {
                     eprintln!("results of install command:");
                     eprint!("stdout:\n{}", strme(&o.stdout));
                     eprint!("stderr:\n{}", strme(&o.stderr));
-                    std::process::exit(1);
+                    panic!("failed");
                 }
 
                 // Make sure that the version looks OK.  It was broken at one point.
@@ -343,7 +343,7 @@ fn test_curl_command() {
                             is gotten by parsing an\nhttp response and this problem could arise \
                             from changes to formatting of the response.\n"
                         );
-                        std::process::exit(1);
+                        panic!("failed");
                     }
                 }
 
@@ -368,7 +368,7 @@ fn test_curl_command() {
                             }
                             eprintln!("");
                         }
-                        std::process::exit(1);
+                        panic!("failed");
                     }
                 }
             }
@@ -378,7 +378,7 @@ fn test_curl_command() {
                     install.sh created .subversion.\n",
                     version
                 );
-                std::process::exit(1);
+                panic!("failed");
             }
             for f in ["enclone", "bin", ".profile", ".subversion"].iter() {
                 let g = format!("testx/outputs/{}", f);
@@ -422,7 +422,7 @@ fn test_datasets_sha256() {
             "\nsha_command1 = {}\nfailed for datasets_medium_checksum\n",
             sha_command1
         );
-        std::process::exit(1);
+        panic!("failed");
     }
     let sha1 = sha1.stdout;
     let sha2 = Command::new("sh")
@@ -438,7 +438,7 @@ fn test_datasets_sha256() {
             strme(&sha2),
             strme(&sha1),
         );
-        std::process::exit(1);
+        panic!("failed");
     }
     let sha_command1 = format!(
         "git -C ../enclone-data write-tree --prefix=big_inputs/version{}/123085",
@@ -464,7 +464,7 @@ fn test_datasets_sha256() {
             strme(&sha2),
             strme(&sha1),
         );
-        std::process::exit(1);
+        panic!("failed");
     }
 }
 
@@ -565,7 +565,7 @@ fn test_cpu() {
     );
     if dev.abs() > percent_dev {
         eprintln!("cpu deviation exceeded max of {}%\n", percent_dev);
-        std::process::exit(1);
+        panic!("failed");
     }
 
     // Speed test 2.
@@ -605,7 +605,7 @@ fn test_cpu() {
     );
     if dev.abs() > percent_dev {
         eprintln!("cpu deviation exceeded max of {}%\n", percent_dev);
-        std::process::exit(1);
+        panic!("failed");
     }
 }
 
@@ -687,7 +687,7 @@ fn test_licenses() {
             You can also avoid this test entirely by running instead \
             \"cd enclone; cargo test basic -- --nocapture\".\n"
         );
-        std::process::exit(1);
+        panic!("failed");
     }
     let lic = &new.unwrap().stdout;
     let mut f = &lic[..];
@@ -782,7 +782,7 @@ fn test_licenses() {
             at a low rate.\n",
             msg
         );
-        std::process::exit(1);
+        panic!("failed");
     }
 }
 
@@ -820,7 +820,7 @@ fn test_formatting() {
             .unwrap_or_else(|_| panic!("{}", "failed to execute rustfmt"));
         if new.status.code() != Some(0) {
             eprintln!("\nrustfmt of {} failed", path);
-            std::process::exit(1);
+            panic!("failed");
         }
     });
 }

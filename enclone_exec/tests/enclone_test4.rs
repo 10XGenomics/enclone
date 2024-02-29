@@ -55,7 +55,7 @@ fn test_cpu_usage() {
             "\netest_cpu_usage: failed to execute, stderr =\n{}",
             strme(&new.stderr),
         );
-        std::process::exit(1);
+        panic!("failed");
     }
     let mut gi = 0.0;
     let out = strme(&new.stderr);
@@ -89,7 +89,7 @@ fn test_cpu_usage() {
             4. You got very unlucky."
         );
         eprintln!("\nIf it makes sense, you can change REQUIRED_GI.\n");
-        std::process::exit(1);
+        panic!("failed");
     } else {
         println!("{}", report);
     }
@@ -141,7 +141,7 @@ fn test_source_code_file_length() {
         }
     }
     if fail {
-        std::process::exit(1);
+        panic!("failed");
     }
 }
 
@@ -170,7 +170,7 @@ fn test_help_page_list() {
                 "\nHelp page for {} is in HELP_PAGES but not in enclone/pages/auto.\n",
                 x
             );
-            std::process::exit(1);
+            panic!("failed");
         }
     }
     for x in help1.iter() {
@@ -179,7 +179,7 @@ fn test_help_page_list() {
                 "\nHelp page for {} is in enclone/pages/auto but not in HELP_PAGES.\n",
                 x
             );
-            std::process::exit(1);
+            panic!("failed");
         }
     }
 }
@@ -215,7 +215,7 @@ fn test_dependency_structure() {
                             crates.\n",
                             d
                         );
-                        std::process::exit(1);
+                        panic!("failed");
                     }
                 }
             }
@@ -239,7 +239,7 @@ fn test_dependency_structure() {
                             crates.\n",
                             d
                         );
-                        std::process::exit(1);
+                        panic!("failed");
                     }
                 }
             }
@@ -263,7 +263,7 @@ fn test_dependency_structure() {
                             crates.\n",
                             d
                         );
-                        std::process::exit(1);
+                        panic!("failed");
                     }
                 }
             }
@@ -292,7 +292,7 @@ fn test_rust_version() {
             "\netest_rust_version: failed to execute, stderr =\n{}",
             strme(&new.stderr),
         );
-        std::process::exit(1);
+        panic!("failed");
     }
     let version = strme(&new.stdout).between(" ", " ");
     let test_yaml = format!("../.github/workflows/test.yaml");
@@ -310,13 +310,13 @@ fn test_rust_version() {
                     Please update the file .github/workflows/test.yaml.\n",
                     version, ga_version,
                 );
-                std::process::exit(1);
+                panic!("failed");
             }
         }
     }
     if !version_found {
         eprintln!("\nFailed to find Rust version in .github/workflows/test.yaml.  Weird.\n");
-        std::process::exit(1);
+        panic!("failed");
     }
 }
 
@@ -352,7 +352,7 @@ fn test_exit() {
                         }
                         if !comment {
                             eprintln!("exit not allowed in crate {}, but is in file {}", cname, f);
-                            std::process::exit(1);
+                            panic!("failed");
                         }
                     }
                 }
@@ -401,7 +401,7 @@ fn test_authors() {
                 They are required to be the same.\n",
                 aud[0].0, aud[i].0,
             );
-            std::process::exit(1);
+            panic!("failed");
         }
     }
 }
@@ -434,7 +434,7 @@ fn test_honey() {
             "\ntest_honey 1: failed to execute, stderr =\n{}",
             strme(&new1.stderr),
         );
-        std::process::exit(1);
+        panic!("failed");
     }
     let new2 = Command::new(env!("CARGO_BIN_EXE_enclone"))
         .args(&args2)
@@ -445,13 +445,13 @@ fn test_honey() {
             "\ntest_honey 2: failed to execute, stderr =\n{}",
             strme(&new2.stderr),
         );
-        std::process::exit(1);
+        panic!("failed");
     }
     let out = strme(&new2.stdout);
     let expected = include_str!["../testx/inputs/outputs/test_honey.svg"];
     if out != expected {
         eprintln!("\ntest honey yielded changed answer\n");
-        std::process::exit(1);
+        panic!("failed");
     }
 }
 
@@ -467,13 +467,13 @@ fn test_yaml() {
     let yaml = yaml_rust::YamlLoader::load_from_str(&content);
     if yaml.is_err() {
         eprintln!("\nrelease.yaml is not valid YAML.\n");
-        std::process::exit(1);
+        panic!("failed");
     }
     let content = include_str!["../../.github/workflows/test.yaml"];
     let yaml = yaml_rust::YamlLoader::load_from_str(&content);
     if yaml.is_err() {
         eprintln!("\ntest.yaml is not valid YAML.\n");
-        std::process::exit(1);
+        panic!("failed");
     }
 }
 
@@ -535,11 +535,11 @@ fn test_ranger() {
         }
         if !path_exists(&proto_out) {
             eprintln!("pass = {}, can't find proto_out", pass);
-            std::process::exit(1);
+            panic!("failed");
         }
         if !path_exists(&donor_ref_out) {
             eprintln!("pass = {}, can't find donor_ref_out", pass);
-            std::process::exit(1);
+            panic!("failed");
         }
         let mut f = File::open(&proto_out).unwrap();
         f.read_to_end(&mut files[0][pass - 1]).unwrap();
@@ -549,7 +549,7 @@ fn test_ranger() {
     for i in 0..2 {
         if files[i][0] != files[i][1] {
             eprintln!("files are different");
-            std::process::exit(1);
+            panic!("failed");
         }
     }
 }
@@ -574,12 +574,12 @@ fn test_unpushed() {
             "\netest_unpushed: failed to execute, stderr =\n{}",
             strme(&new.stderr),
         );
-        std::process::exit(1);
+        panic!("failed");
     }
     let out = strme(&new.stdout);
     if out.contains("Your branch is ahead of") {
         eprintln!("\nYour branch has unpushed commits.  Please push them.\n");
-        std::process::exit(1);
+        panic!("failed");
     }
 }
 
@@ -601,7 +601,7 @@ fn test_export_code() {
         let current = std::fs::read_to_string(&f).unwrap();
         if outs[i].1 != current {
             eprintln!("\nexport_code output {} has changed.\n", outs[i].0);
-            std::process::exit(1);
+            panic!("failed");
         }
     }
 }
@@ -624,6 +624,6 @@ fn test_newline_bad() {
     if new.status.code() != Some(0) {
         eprintln!("\ntest_newline_bad: failed\n");
         eprintln!("stderr = {}\n", strme(&new.stderr));
-        std::process::exit(1);
+        panic!("failed");
     }
 }

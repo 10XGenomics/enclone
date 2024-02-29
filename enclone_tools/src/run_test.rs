@@ -308,7 +308,7 @@ pub fn run_test(
             //         version, args[0].after("=") );
             // if !path_exists(&f) {
             //     println!( "Perhaps you forgot to lz4 compress the json file.\n" );
-            //     std::process::exit(1);
+            //     panic!("failed");
             // }
             // println!( "The size of {} is {} bytes.", f, fs::metadata(&f).unwrap().len() );
 

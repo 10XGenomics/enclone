@@ -114,7 +114,7 @@ fn test_enclone() {
                 "\nOn main tests, NFORCE is not allowed, because it can cause \
                 failure in the GitHub Actions tests.\n"
             );
-            std::process::exit(1);
+            panic!("failed");
         }
         let mut out = String::new();
         run_test(
@@ -132,7 +132,7 @@ fn test_enclone() {
     for i in 0..results.len() {
         print!("{}", results[i].2);
         if !results[i].1 {
-            std::process::exit(1);
+            panic!("failed");
         }
     }
     println!(
@@ -208,7 +208,7 @@ fn test_accounting() {
     for i in 0..results.len() {
         print!("{}", results[i].2);
         if !results[i].1 {
-            std::process::exit(1);
+            panic!("failed");
         }
     }
     println!(
@@ -283,7 +283,7 @@ fn test_enclone_d() {
     for i in 0..results.len() {
         print!("{}", results[i].2);
         if !results[i].1 {
-            std::process::exit(1);
+            panic!("failed");
         }
     }
     println!(
@@ -358,7 +358,7 @@ fn test_grouping() {
     for i in 0..results.len() {
         print!("{}", results[i].2);
         if !results[i].1 {
-            std::process::exit(1);
+            panic!("failed");
         }
     }
     println!(
@@ -406,7 +406,7 @@ fn test_extended() {
     for i in 0..results.len() {
         print!("{}", results[i].2);
         if !results[i].1 {
-            std::process::exit(1);
+            panic!("failed");
         }
     }
     println!(
@@ -457,7 +457,7 @@ fn test_crash() {
     for i in 0..results.len() {
         print!("{}", results[i].2);
         if !results[i].1 {
-            std::process::exit(1);
+            panic!("failed");
         }
     }
     println!(
@@ -505,7 +505,7 @@ fn test_internal() {
     for i in 0..results.len() {
         print!("{}", results[i].2);
         if !results[i].1 {
-            std::process::exit(1);
+            panic!("failed");
         }
     }
     println!(
@@ -747,14 +747,14 @@ fn test_for_broken_links_and_spellcheck() {
                     for _ in 0..depth - 1 {
                         if !z.starts_with("../") {
                             eprintln!("something wrong with file {} on page {}", link, x);
-                            std::process::exit(1);
+                            panic!("failed");
                         }
                         z = z.after("../").to_string();
                     }
                     z = format!("../{}", z);
                     if !path_exists(&z) {
                         eprintln!("failed to find file {} on page {}", link, x);
-                        std::process::exit(1);
+                        panic!("failed");
                     }
                     s = s.after("<a href=\"").to_string();
                     continue;
@@ -778,14 +778,14 @@ fn test_for_broken_links_and_spellcheck() {
                 for _ in 0..depth - 1 {
                     if !path.starts_with("../") {
                         eprintln!("something wrong with file {} on page {}", path, x);
-                        std::process::exit(1);
+                        panic!("failed");
                     }
                     z = z.after("../").to_string();
                 }
                 z = format!("../{}", z);
                 if !path_exists(&z) {
                     eprintln!("failed to find file {} on page {}", path, x);
-                    std::process::exit(1);
+                    panic!("failed");
                 }
                 s = s.after("<img src=\"").to_string();
             }
@@ -845,7 +845,7 @@ fn test_for_broken_links_and_spellcheck() {
                             link, x, line_no
                         );
                         if i == LINK_RETRIES - 1 {
-                            std::process::exit(1);
+                            panic!("failed");
                         }
                     } else {
                         let response = response.unwrap();
@@ -857,7 +857,7 @@ fn test_for_broken_links_and_spellcheck() {
                             link, x, line_no
                         );
                         if i == LINK_RETRIES - 1 {
-                            std::process::exit(1);
+                            panic!("failed");
                         }
                     }
                 }
@@ -870,11 +870,11 @@ fn test_for_broken_links_and_spellcheck() {
                 let req = reqwest::blocking::get(link);
                 if req.is_err() {
                     eprintln!("\ncould not read link {} on page {}\n", link, x);
-                    std::process::exit(1);
+                    panic!("failed");
                 }
                 if req.unwrap().status() == StatusCode::NOT_FOUND {
                     eprintln!("\ncould not read link {} on page {}\n", link, x);
-                    std::process::exit(1);
+                    panic!("failed");
                 }
                 */
             }
@@ -882,6 +882,6 @@ fn test_for_broken_links_and_spellcheck() {
     }
     if dict_fail {
         eprintln!("");
-        std::process::exit(1);
+        panic!("failed");
     }
 }

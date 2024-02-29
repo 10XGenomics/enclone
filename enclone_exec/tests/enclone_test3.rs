@@ -125,7 +125,7 @@ fn test_site_examples() {
     for i in 0..results.len() {
         print!("{}", results[i].2);
         if results[i].1 {
-            std::process::exit(1);
+            panic!("failed");
         }
     }
     insert_html(
@@ -148,7 +148,7 @@ fn test_site_examples() {
             fwrite!(f, "{}", new_index);
         }
         eprintln!("Please diff index.html enclone_exec/testx/outputs/index.html.new.\n");
-        std::process::exit(1);
+        panic!("failed");
     }
     /*
     if read_to_string("../pages/auto/expanded.html").unwrap()
@@ -158,7 +158,7 @@ fn test_site_examples() {
         != read_to_string("testx/outputs/expanded.html").unwrap()
     {
         eprintln!("\nContent of expanded.html has changed.\n");
-        std::process::exit(1);
+        panic!("failed");
     }
 }
 
@@ -196,7 +196,7 @@ fn test_enclone_examples() {
                 strme(&new.stderr),
             );
             eprintln!("If it's not clear what is happening, make sure you've run ./build.\n");
-            std::process::exit(1);
+            panic!("failed");
         }
         if old != new2 {
             eprintln!(
@@ -205,7 +205,7 @@ fn test_enclone_examples() {
             );
             eprintln!("old output =\n{}", old);
             eprintln!("new output =\n{}\n", new2);
-            std::process::exit(1);
+            panic!("failed");
         }
     }
 }
@@ -312,7 +312,7 @@ fn test_help_output() {
         if new.status.code() != Some(0) {
             eprintln!("Attempt to run {} failed.\n", command);
             eprintln!("stderr = {}", strme(&new.stderr));
-            std::process::exit(1);
+            panic!("failed");
         }
         let new2 = edit_html(&stringme(&new.stdout));
         if old != new2 {
@@ -323,7 +323,7 @@ fn test_help_output() {
                     assuming that the change is expected.\n",
                 p
             );
-            std::process::exit(1);
+            panic!("failed");
         }
     }
 }
@@ -348,7 +348,7 @@ fn test_help_no_stable() {
         .expect(&format!("failed to execute test_help_output"));
     if new.status.code() != Some(0) {
         eprintln!("Attempt to run enclone help all without STABLE_DOC failed.\n");
-        std::process::exit(1);
+        panic!("failed");
     }
 }
 
@@ -403,7 +403,7 @@ fn test_enclone_prebuild() {
         eprintln!("old output =\n{}\n", old);
         eprintln!("new output =\n{}\n", new2);
         eprintln!("new stderr = \n{}\n", strme(&new.stderr));
-        std::process::exit(1);
+        panic!("failed");
     }
 
     // Second pass: run without PREBUILD
@@ -433,7 +433,7 @@ fn test_enclone_prebuild() {
              And don't forget to remove feature_barcode_matrix.bin.\n"
         );
         eprintln!("new output =\n{}\n", new2);
-        std::process::exit(1);
+        panic!("failed");
     }
 
     println!("\nused {:.2} seconds in enclone_test_prebuild", elapsed(&t));
@@ -504,7 +504,7 @@ fn test_proto_write() -> Result<(), Error> {
         let outputs_bin: EncloneOutputs = io_utils::read_obj(&bin_file);
         if outputs_proto != outputs_bin {
             eprintln!("\noutputs_proto is not equal to outputs_bin\n");
-            std::process::exit(1);
+            panic!("failed");
         }
 
         // Test to make sure that the clonotype iterator works
@@ -549,7 +549,7 @@ fn test_proto_write() -> Result<(), Error> {
                 point where the two files differ (or conceivably before)\n\
                 7. analyze what is happening with that barcode\n"
             );
-            std::process::exit(1);
+            panic!("failed");
         }
     }
     Ok(())
@@ -596,7 +596,7 @@ fn test_annotated_example() {
         );
         emit_end_escape(&mut log);
         eprintln!("{}", strme(&log));
-        std::process::exit(1);
+        panic!("failed");
     }
 }
 
@@ -643,7 +643,7 @@ fn test_subset_json() {
                 pass,
                 strme(&new.stderr),
             );
-            std::process::exit(1);
+            panic!("failed");
         }
         let o1 = new.stdout;
         let mut args = vec!["BCR=testx/outputs/woof".to_string()];
@@ -667,7 +667,7 @@ fn test_subset_json() {
                 pass,
                 strme(&new.stderr),
             );
-            std::process::exit(1);
+            panic!("failed");
         }
         let o2 = new.stdout;
         if o1 != o2 {
@@ -677,7 +677,7 @@ fn test_subset_json() {
             );
             eprintln!("output 1:\n{}\n", strme(&o1));
             eprintln!("output 2:\n{}\n", strme(&o2));
-            std::process::exit(1);
+            panic!("failed");
         }
         let _ = remove_dir_all("testx/outputs/woof");
     }
@@ -739,7 +739,7 @@ fn test_cell_exact() {
             );
         }
         eprintln!("\n{}", msg);
-        std::process::exit(1);
+        panic!("failed");
     }
 }
 
@@ -760,10 +760,10 @@ fn test_ref_only() {
         .expect(&format!("failed to execute test_subset_json 1"));
     if new.status.code() == Some(0) {
         eprint!("\ntest_ref_only: enclone command should not have succeeded.\n");
-        std::process::exit(1);
+        panic!("failed");
     }
     if !strme(&new.stderr).contains("No TCR or BCR data have been specified.") {
         eprintln!("\ntest_ref_only: unexpected error message\n");
-        std::process::exit(1);
+        panic!("failed");
     }
 }
