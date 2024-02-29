@@ -412,8 +412,7 @@ fn test_enclone_prebuild() {
         panic!("\nenclone_test_prebuild: did not create feature_barcode_matrix.bin.");
     }
 
-    // Second pass: run without PREBUILD but using the feature_barcode_matrix.bin that the first
-    // pass created.
+    // Second pass: run without PREBUILD
 
     let testn = TESTS[it];
     let args = testn.split(' ').collect::<Vec<&str>>();
