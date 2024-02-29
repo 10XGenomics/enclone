@@ -354,9 +354,9 @@ fn test_help_no_stable() {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// 21. Test that PREBUILD works.  Because this creates and then deletes the .bin file, it
-// would play havoc with any test that runs with GEX=123217, unless it also has H5, resulting
-// in sporadic (rare) test failures.  So don't do that.
+// 21. Test that PREBUILD works.  This test used to exercise creation of the
+// binary matrix format, since removed.  It's not entirely clear what purpose this
+// test is serving now, beyond yet another regression test.
 
 #[cfg(not(feature = "cpu"))]
 #[test]
@@ -371,11 +371,9 @@ fn test_enclone_prebuild() {
         remove_file(&mb).unwrap();
     }
 
-    // First pass: run with NH5.
-
     let test_id = 48;
     let it = test_id - 1;
-    let testn = format!("{} NH5", TESTS[it]);
+    let testn = TESTS[it];
     let out_file = format!("testx/inputs/outputs/enclone_test{}_output", test_id);
     let old = read_to_string(&out_file).unwrap();
     let args = testn.split(' ').collect::<Vec<&str>>();
