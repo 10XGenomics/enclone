@@ -285,7 +285,6 @@ fn main() {
                     refdata.name[v_ref_id],
                     refdata.name[j_ref_id],
                 );
-                let j_ref_id = j_ref_id;
                 opt_d(
                     v_ref_id,
                     j_ref_id,

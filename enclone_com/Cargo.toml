@@ -21,11 +21,11 @@ publish = false
 
 [dependencies]
 bytes = "1"
-enclone_core = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
-io_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
+enclone_core = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/remove-custom-sparse-matrix" }
+io_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/remove-custom-sparse-matrix" }
 lazy_static = "1"
-pretty_trace = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main", features = ["pprof"]}
-string_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
+pretty_trace = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/remove-custom-sparse-matrix", features = ["pprof"]}
+string_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/remove-custom-sparse-matrix" }
 tokio = { version = "1", default-features = false, features = ["io-util", "macros", "rt-multi-thread"] }
-vdj_ann = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
+vdj_ann = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/remove-custom-sparse-matrix" }
 

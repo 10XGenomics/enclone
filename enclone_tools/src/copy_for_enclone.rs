@@ -6,7 +6,6 @@
 use enclone_core::slurp::slurp_h5;
 use io_utils::{dir_list, path_exists};
 use lz4::EncoderBuilder;
-use mirror_sparse_matrix::{write_to_file, MirrorSparseMatrix};
 use std::fs::{copy, remove_file, File};
 use vector_utils::VecUtils;
 

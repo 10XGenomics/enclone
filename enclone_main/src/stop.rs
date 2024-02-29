@@ -291,12 +291,6 @@ pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<EncloneState
         allele_data,
     )?;
 
-    // Lock data structures so they can't be changed accidentally.
-
-    let ctl = ctl;
-    let refdata = refdata;
-    let exact_clonotypes = exact_clonotypes;
-
     // Process the SUBSET_JSON option.
 
     subset_json(ctl, exact_clonotypes, &exacts, ann)?;

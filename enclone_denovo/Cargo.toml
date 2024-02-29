@@ -16,29 +16,29 @@ edition = "2018"
 publish = false
 
 [dependencies]
-amino = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
-binary_vec_io = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
+amino = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/remove-custom-sparse-matrix" }
+binary_vec_io = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/remove-custom-sparse-matrix" }
 bio = "0.39"
 debruijn = "0.3"
-equiv = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
-fasta_tools = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
-graph_simple = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
-hyperbase = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
-io_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
+equiv = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/remove-custom-sparse-matrix" }
+fasta_tools = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/remove-custom-sparse-matrix" }
+graph_simple = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/remove-custom-sparse-matrix" }
+hyperbase = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/remove-custom-sparse-matrix" }
+io_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/remove-custom-sparse-matrix" }
 itertools = "0.10"
-kmer_lookup = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
+kmer_lookup = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/remove-custom-sparse-matrix" }
 # poa_hmm = { git = "https://github.com/ban-m/partial_order_alignment.git" }
-perf_stats = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
+perf_stats = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/remove-custom-sparse-matrix" }
 permutation = "0.4"
 petgraph = "0.6"
-pretty_trace = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main", features = ["pprof"]}
+pretty_trace = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/remove-custom-sparse-matrix", features = ["pprof"]}
 rayon = "1"
 regex = { version = "1", default-features = false, features = ["std", "perf"] }
 serde_json = "1"
-stats_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
-string_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
+stats_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/remove-custom-sparse-matrix" }
+string_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/remove-custom-sparse-matrix" }
 superslice = "1"
-tables = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
-vdj_ann = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
-vdj_ann_ref = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
-vector_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
+tables = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/remove-custom-sparse-matrix" }
+vdj_ann = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/remove-custom-sparse-matrix" }
+vdj_ann_ref = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/remove-custom-sparse-matrix" }
+vector_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/remove-custom-sparse-matrix" }

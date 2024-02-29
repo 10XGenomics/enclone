@@ -10,7 +10,6 @@ enclone_paper         calculations for enclone paper
 enclone_tail          last part of the code
 enclone_tools         miscellaneous binaries
 enclone_version       determine current version string
-enclone_visual        experimental GUI client
 
 credits               credits
 fonts                 DejaVuSansMono, in case not otherwise available

@@ -259,11 +259,10 @@ pub fn setup(
             } else if args[i] == "LONG_HELP" {
                 long_help = true;
                 to_delete[i] = true;
-            } else if args[i].starts_with("MAX_CORES=") {
-                to_delete[i] = true;
-            } else if args[i].starts_with("PRE=") {
-                to_delete[i] = true;
-            } else if args[i].starts_with("PREPOST=") {
+            } else if args[i].starts_with("MAX_CORES=")
+                || args[i].starts_with("PRE=")
+                || args[i].starts_with("PREPOST=")
+            {
                 to_delete[i] = true;
             } else if args[i] == "PLAIN" {
                 to_delete[i] = true;
