@@ -405,12 +405,6 @@ fn test_enclone_prebuild() {
         eprintln!("new stderr = \n{}\n", strme(&new.stderr));
         std::process::exit(1);
     }
-    if !path_exists(&format!(
-        "../enclone-data/big_inputs/version{}/123217/outs/feature_barcode_matrix.bin",
-        TEST_FILES_VERSION
-    )) {
-        panic!("\nenclone_test_prebuild: did not create feature_barcode_matrix.bin.");
-    }
 
     // Second pass: run without PREBUILD
 
@@ -442,13 +436,6 @@ fn test_enclone_prebuild() {
         std::process::exit(1);
     }
 
-    // Clean up: delete feature_barcode_matrix.bin.
-
-    std::fs::remove_file(&format!(
-        "../enclone-data/big_inputs/version{}/123217/outs/feature_barcode_matrix.bin",
-        TEST_FILES_VERSION
-    ))
-    .unwrap();
     println!("\nused {:.2} seconds in enclone_test_prebuild", elapsed(&t));
 }
 
