@@ -914,7 +914,5 @@ pub fn print_stats(
 
     if ctl.gen_opt.summary && !ctl.gen_opt.vis_dump {
         description_table(ctl, logx);
-        alluvial_fb_reads(ctl, gex_info, vdj_cells, logx);
-        alluvial_fb(ctl, gex_info, vdj_cells, logx);
     }
 }
