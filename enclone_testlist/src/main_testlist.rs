@@ -666,7 +666,7 @@ pub const TESTS: [&str; 305] = [
     // 268. a test of VAR_DEF
     r###"BCR=86237 GEX=85679 VAR_DEF="pink:PINK1-AS_g" LVARSP=pink CDR3=CARSFFGDTAMVMFQAFDPW
          FOLD_HEADERS PER_CELL AMINO="###,
-    // 269. test fb variables
+    // 269. test fb variables TODO: can we delete this without destroying something that depends on test numbering?
     r###"BCR=86237 GEX=85679 ALLOW_INCONSISTENT NGEX PER_CELL AMINO=cdr3 CVARS=             FOLD_HEADERS POUT=stdouth PCELL CDR3=CARSFFGDTAMVMFQAFDPW"###,
     // 270. test NOSPACES
     r###"BCR=123085 CDR3=CTRDRDLRGATDAFDIW AMINO=cdr3,fwr4 NOSPACES CONX"###,
