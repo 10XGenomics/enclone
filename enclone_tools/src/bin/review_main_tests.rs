@@ -6,7 +6,7 @@
 // NOTE: you have to run this from the enclone_main directory.  Otherwise it won't work.
 
 use enclone::misc1::setup_pager;
-use enclone_core::main_testlist::TESTS;
+use enclone_testlist::main_testlist::TESTS;
 use enclone_tools::run_test::run_test;
 use pretty_trace::PrettyTrace;
 use rayon::prelude::*;

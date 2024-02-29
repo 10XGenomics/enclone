@@ -88,33 +88,32 @@ fn test_for_parseable_redundancy() {
     }
     let f = open_for_read!["testx/outputs/redundancy_out"];
     let mut found = false;
-    for line in f.lines() {
-        let s = line.unwrap();
-        let mut fields = s.split(',').collect::<Vec<&str>>();
-        fields.sort();
-        assert!(fields.len() > 0);
-        let mut i = 0;
-        while i < fields.len() {
-            let j = next_diff(&fields, i);
-            if j - i > 1 {
-                eprintln!(
-                    "\nParseable output field {} appears more than once.\n",
-                    fields[i]
-                );
-                std::process::exit(1);
-            }
-            i = j;
+
+    let s = f.lines().next().unwrap().unwrap();
+    let mut fields = s.split(',').collect::<Vec<&str>>();
+    fields.sort();
+    assert!(fields.len() > 0);
+    let mut i = 0;
+    while i < fields.len() {
+        let j = next_diff(&fields, i);
+        if j - i > 1 {
+            eprintln!(
+                "\nParseable output field {} appears more than once.\n",
+                fields[i]
+            );
+            std::process::exit(1);
         }
-        for i in 0..fields.len() {
-            if fields[i] == "IG%" {
-                found = true;
-            }
-        }
-        if !found {
-            eprintln!("\nParseable output abbreviated field IG% not found.\n");
-        }
-        break;
+        i = j;
     }
+    for i in 0..fields.len() {
+        if fields[i] == "IG%" {
+            found = true;
+        }
+    }
+    if !found {
+        eprintln!("\nParseable output abbreviated field IG% not found.\n");
+    }
+
     let _ = remove_file("testx/outputs/redundancy_out");
 }
 
@@ -328,18 +327,16 @@ fn test_curl_command() {
                     let p = format!("testx/outputs/{}", f);
                     let mut ok = false;
                     let f = open_for_read![&p];
-                    for line in f.lines() {
-                        let s = line.unwrap();
-                        println!("see version {}", s);
-                        if s.starts_with('v') {
-                            if s.contains('.') {
-                                if s.between("v", ".").parse::<usize>().is_ok() {
-                                    ok = true;
-                                }
+                    let s = f.lines().next().unwrap().unwrap();
+                    println!("see version {}", s);
+                    if s.starts_with('v') {
+                        if s.contains('.') {
+                            if s.between("v", ".").parse::<usize>().is_ok() {
+                                ok = true;
                             }
                         }
-                        break;
                     }
+
                     if !ok {
                         eprintln!(
                             "\nDownload yielded defective version file.  The version \

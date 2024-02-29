@@ -9,10 +9,10 @@
 
 use ansi_escape::*;
 use anyhow::Error;
-use enclone_core::main_testlist::*;
 use enclone_core::*;
 use enclone_proto::proto_io::{read_proto, ClonotypeIter};
 use enclone_proto::types::EncloneOutputs;
+use enclone_testlist::main_testlist::*;
 use enclone_testlist::*;
 use enclone_tools::html::*;
 use enclone_tools::run_test::*;
@@ -75,7 +75,7 @@ fn test_enclone() {
     for i in 0..TESTS.len() {
         results.push((i, false, String::new()));
     }
-    let this = include_str!("main_testlist.rs");
+    let this = include_str!("../../enclone_testlist/src/main_testlist.rs");
     let mut tracking = false;
     let mut comments = Vec::<String>::new();
     let mut lines = Vec::<String>::new();
@@ -233,7 +233,7 @@ fn test_enclone_d() {
     for i in 0..DTESTS.len() {
         results.push((i, false, String::new()));
     }
-    let this = include_str!("testlist.rs");
+    let this = include_str!("../../enclone_testlist/src/lib.rs");
     let mut tracking = false;
     let mut comments = Vec::<String>::new();
     let mut lines = Vec::<String>::new();
@@ -308,7 +308,7 @@ fn test_grouping() {
     for i in 0..GTESTS.len() {
         results.push((i, false, String::new()));
     }
-    let this = include_str!("testlist.rs");
+    let this = include_str!("../../enclone_testlist/src/lib.rs");
     let mut tracking = false;
     let mut comments = Vec::<String>::new();
     let mut lines = Vec::<String>::new();

@@ -7,7 +7,7 @@
 //
 // NOTE: you have to run this from the enclone_main directory.  Otherwise it won't work.
 
-use enclone_core::main_testlist::TESTS;
+use enclone_testlist::main_testlist::TESTS;
 use enclone_tools::run_test::run_test;
 use io_utils::{fwrite, open_for_write_new};
 use pretty_trace::PrettyTrace;

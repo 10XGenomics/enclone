@@ -1,6 +1,7 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
 // Information about enclone tests.
+pub mod main_testlist;
 
 pub fn enclone_testdata() -> String {
     include_str!["enclone.testdata"].to_string()
