@@ -59,7 +59,7 @@ pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<EncloneState
     let mut d_readers = Vec::<Option<Reader>>::new();
     let mut ind_readers = Vec::<Option<Reader>>::new();
     for li in 0..ctl.origin_info.n() {
-        if !ctl.origin_info.gex_path[li].is_empty() && !gex_info.gex_matrices[li].initialized() {
+        if !ctl.origin_info.gex_path[li].is_empty() {
             let x = gex_info.h5_data[li].as_ref();
             if x.is_none() {
                 // THIS FAILS SPORADICALLY, OBSERVED MULTIPLE TIMES,
@@ -123,122 +123,12 @@ pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<EncloneState
     }
     h5_data.par_iter_mut().for_each(|res| {
         let li = res.0;
-        if !ctl.origin_info.gex_path[li].is_empty()
-            && !gex_info.gex_matrices[li].initialized()
-            && ctl.gen_opt.h5_pre
-        {
+        if !ctl.origin_info.gex_path[li].is_empty() && ctl.gen_opt.h5_pre {
             res.1 = d_readers[li].as_ref().unwrap().read_raw().unwrap();
             res.2 = ind_readers[li].as_ref().unwrap().read_raw().unwrap();
         }
     });
     ctl.perf_stats(&tdi, "setting up readers");
-
-    // Execute ALL_BC.
-
-    if ctl.gen_opt.all_bc_filename.len() > 0 {
-        let tallbc = Instant::now();
-        let mut f = open_for_write_new![&ctl.gen_opt.all_bc_filename];
-        let mut rows = Vec::<Vec<String>>::new();
-        let mut header = vec!["dataset".to_string(), "barcode".to_string()];
-        header.append(&mut ctl.gen_opt.all_bc_fields_orig.clone());
-        if !ctl.gen_opt.all_bc_human {
-            fwriteln!(f, "{}", header.iter().format(","));
-        }
-        rows.push(header);
-        for li in 0..ctl.origin_info.n() {
-            for bc in gex_info.gex_barcodes[li].iter() {
-                let mut fields = Vec::<String>::new();
-                fields.push(ctl.origin_info.dataset_id[li].clone());
-                fields.push(bc.to_string());
-                for var in ctl.gen_opt.all_bc_fields.iter() {
-                    let is_gex_cell = bin_member(&gex_info.gex_cell_barcodes[li], bc);
-                    if var == "cell" {
-                        let is_vdj_cell = bin_member(&vdj_cells[li], bc);
-                        if is_gex_cell && is_vdj_cell {
-                            fields.push("gex_vdj".to_string());
-                        } else if is_gex_cell {
-                            fields.push("gex".to_string());
-                        } else if is_vdj_cell {
-                            fields.push("vdj".to_string());
-                        } else {
-                            fields.push("empty".to_string());
-                        }
-                    } else if var == "type" {
-                        if is_gex_cell {
-                            let mut typex = gex_info.cell_type[li][bc].clone();
-                            if typex.contains(",") {
-                                typex = typex.before(",").to_string();
-                            }
-                            fields.push(typex);
-                        } else {
-                            fields.push("unknown".to_string());
-                        }
-                    } else if var == "clust" {
-                        if gex_info.cluster[li].contains_key(&bc.clone()) {
-                            fields.push(format!("{}", gex_info.cluster[li][&bc.clone()]));
-                        } else {
-                            fields.push("none".to_string());
-                        }
-                    } else if var == "gex" {
-                        let mut count = 0;
-                        let p = bin_position(&gex_info.gex_barcodes[li], bc.as_str());
-                        if p >= 0 {
-                            let row = gex_info.gex_matrices[li].row(p as usize);
-                            for j in 0..row.len() {
-                                let f = row[j].0;
-                                let n = row[j].1;
-                                if gex_info.is_gex[li][f] {
-                                    count += n;
-                                }
-                            }
-                        }
-                        fields.push(format!("{}", count));
-                    } else {
-                        let p = bin_position(&gex_info.gex_barcodes[li], bc.as_str());
-                        let mut count = 0;
-                        if p >= 0 {
-                            if gex_info.feature_id[li].contains_key(&var.clone()) {
-                                let fid = gex_info.feature_id[li][&var.clone()];
-                                count = gex_info.gex_matrices[li].value(p as usize, fid);
-                            }
-                        }
-                        fields.push(format!("{}", count));
-                    }
-                }
-                if !ctl.gen_opt.all_bc_human {
-                    fwriteln!(f, "{}", fields.iter().format(","));
-                }
-                rows.push(fields);
-            }
-            for bc in vdj_cells[li].iter() {
-                // We would expect the following code to be executed only rarely.
-                if !bin_member(&gex_info.gex_barcodes[li], bc) {
-                    let mut fields = Vec::<String>::new();
-                    fields.push(ctl.origin_info.dataset_id[li].clone());
-                    fields.push(bc.to_string());
-                    for var in ctl.gen_opt.all_bc_fields.iter() {
-                        if var == "cell" {
-                            fields.push("vdj".to_string());
-                        } else if var == "type" || var == "none" {
-                            fields.push("unknown".to_string());
-                        } else {
-                            fields.push("0".to_string());
-                        }
-                    }
-                    if !ctl.gen_opt.all_bc_human {
-                        fwriteln!(f, "{}", fields.iter().format(","));
-                    }
-                    rows.push(fields);
-                }
-            }
-        }
-        if ctl.gen_opt.all_bc_human {
-            let mut log = Vec::<u8>::new();
-            print_tabular(&mut log, &rows, 2, None);
-            fwrite!(f, "{}", strme(&log));
-        }
-        ctl.perf_stats(&tallbc, "carrying out ALL_BC");
-    }
 
     // Find and print clonotypes.  (But we don't actually print them here.)
 
