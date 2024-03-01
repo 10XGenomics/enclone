@@ -20,11 +20,11 @@ publish = false
 # in the root of the enclone repo.
 
 [dependencies]
-ansi_escape = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/remove-binary-vec-io" }
-enclone_core = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/remove-binary-vec-io" }
-io_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/remove-binary-vec-io" }
+ansi_escape = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/clean-up-json-handling" }
+enclone_core = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/clean-up-json-handling" }
+io_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/clean-up-json-handling" }
 itertools = "0.10"
-string_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/remove-binary-vec-io" }
+string_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/clean-up-json-handling" }
 tables = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/further-bin-format-cleanups" }
 enclone_build = {path = "../enclone_build"}
 

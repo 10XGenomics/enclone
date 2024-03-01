@@ -4,17 +4,17 @@
 # of the Cargo.toml files in the crates within this repo.  Then use sync_to_master (which
 # is in the enclone crate) to propagate the change.  When you run "cargo t", this is enforced.
 
-align_tools = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/remove-binary-vec-io" }
-amino = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/remove-binary-vec-io" }
+align_tools = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/clean-up-json-handling" }
+amino = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/clean-up-json-handling" }
 anyhow = "1"
-ansi_escape = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/remove-binary-vec-io" }
+ansi_escape = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/clean-up-json-handling" }
 arboard = "2"
 assert_cmd = "2"
 async-trait = "0.1"
 attohttpc = { version = "0.18", default-features = false, features = ["compress", "tls-rustls"] }
 base64 = "0.13"
 bio = "0.39"
-bio_edit = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/remove-binary-vec-io" }
+bio_edit = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/clean-up-json-handling" }
 byteorder = "1"
 bytes = "1"
 chrono = { version = "0.4", default-features = false, features = ["std", "clock"] }
@@ -25,40 +25,40 @@ core-graphics = "0.22"
 crc = "2"
 debruijn = "0.3"
 dirs = "4"
-dna = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/remove-binary-vec-io" }
+dna = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/clean-up-json-handling" }
 edit-distance = "2"
-enclone_args = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/remove-binary-vec-io" }
-enclone_core = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/remove-binary-vec-io" }
+enclone_args = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/clean-up-json-handling" }
+enclone_core = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/clean-up-json-handling" }
 enclone_denovo = { path = "../enclone_denovo" }
 enclone_help = { path = "../enclone_help" }
-enclone = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/remove-binary-vec-io" }
-enclone_print = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/remove-binary-vec-io" }
-enclone_proto = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/remove-binary-vec-io" }
-enclone_ranger = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/remove-binary-vec-io" }
+enclone = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/clean-up-json-handling" }
+enclone_print = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/clean-up-json-handling" }
+enclone_proto = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/clean-up-json-handling" }
+enclone_ranger = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/clean-up-json-handling" }
 enclone_server_proto = { path = "../enclone_server_proto" }
-enclone_stuff = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/remove-binary-vec-io" }
+enclone_stuff = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/clean-up-json-handling" }
 enclone_tail = { path = "../enclone_tail" }
-enclone_vars = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/remove-binary-vec-io" }
+enclone_vars = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/clean-up-json-handling" }
 enclone_version = { path = "../enclone_version" }
-equiv = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/remove-binary-vec-io" }
+equiv = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/clean-up-json-handling" }
 evalexpr = "7"
-expr_tools = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/remove-binary-vec-io" }
-fasta_tools = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/remove-binary-vec-io" }
+expr_tools = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/clean-up-json-handling" }
+fasta_tools = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/clean-up-json-handling" }
 file-lock = "2"
 flate2 = "1"
 float-ord = "0.3"
 fontdb = "0.7"
 fs_extra = "1"
 git = "https://github.com/10xGenomics/hdf5-rust.git"
-graph_simple = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/remove-binary-vec-io" }
+graph_simple = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/clean-up-json-handling" }
 home = "0.5"
-hyperbase = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/remove-binary-vec-io" }
+hyperbase = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/clean-up-json-handling" }
 image = { version = "0.23", features = ["jpeg", "png", "jpeg_rayon"], default-features = false }
 include_dir = { version = "0.6", features = ["search"] }
-io_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/remove-binary-vec-io" }
+io_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/clean-up-json-handling" }
 itertools = "0.10"
 jpeg-decoder = "0.2"
-kmer_lookup = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/remove-binary-vec-io" }
+kmer_lookup = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/clean-up-json-handling" }
 lazy_static = "1"
 libc = "0.2"
 log = "0.4"
@@ -70,12 +70,12 @@ num-traits = "0.2"
 objc = "0.2"
 pager = "0.16"
 palette = "0.6"
-perf_stats = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/remove-binary-vec-io" }
+perf_stats = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/clean-up-json-handling" }
 permutation = "0.4"
 petgraph = "0.6"
 plotters = { version = "0.3", default_features = false, features = ["svg_backend", "point_series"] }
 png-decoder = "0.1"
-pretty_trace = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/remove-binary-vec-io", features = ["pprof"]}
+pretty_trace = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/clean-up-json-handling", features = ["pprof"]}
 procfs = { version = "0.12", default_features = false }
 # prost: enclone will compile without the std and prost-derive features, but other things
 #        (such as enclone_proto) break.
@@ -91,12 +91,12 @@ serde = "1"
 serde_derive = "1"
 serde_json = "1"
 sha2 = "0.10"
-stats_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/remove-binary-vec-io" }
+stats_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/clean-up-json-handling" }
 statrs = "0.15"
-stirling_numbers = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/remove-binary-vec-io" }
-string_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/remove-binary-vec-io" }
+stirling_numbers = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/clean-up-json-handling" }
+string_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/clean-up-json-handling" }
 superslice = "1"
-tables = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/remove-binary-vec-io" }
+tables = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/clean-up-json-handling" }
 tar = "0.4"
 thiserror = "1"
 tilde-expand = "0.1"
@@ -109,8 +109,8 @@ triple_accel = "0.4"
 users = "0.11"
 usvg = { version = "0.19", features = ["text"] }
 # vdj_ann = "0.4"
-vdj_ann = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/remove-binary-vec-io" }
-vdj_ann_ref = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/remove-binary-vec-io" }
-vector_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/remove-binary-vec-io" }
+vdj_ann = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/clean-up-json-handling" }
+vdj_ann_ref = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/clean-up-json-handling" }
+vector_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/clean-up-json-handling" }
 whoami = "1"
 yaml-rust = "0.4"
