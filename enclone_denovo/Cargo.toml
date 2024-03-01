@@ -17,7 +17,6 @@ publish = false
 
 [dependencies]
 amino.workspace = true
-binary_vec_io.workspace = true
 bio.workspace = true
 debruijn.workspace = true
 fasta_tools.workspace = true

@@ -20,7 +20,6 @@ publish = false
 [dependencies]
 amino.workspace = true
 ansi_escape.workspace = true
-binary_vec_io.workspace = true
 bio_edit.workspace = true
 chrono.workspace = true
 debruijn.workspace = true

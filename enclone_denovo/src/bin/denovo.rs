@@ -140,7 +140,6 @@ and fails GT|GC test after exon 1; note that the leader that's shown is short to
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 use amino::{aa_seq, codon_to_aa};
-use binary_vec_io::binary_read_vec_vec;
 use bio::alignment::pairwise::banded::Aligner;
 use bio::alignment::AlignmentOperation::Del;
 use bio::alignment::AlignmentOperation::Ins;
@@ -153,6 +152,7 @@ use enclone_denovo::vdj_features::{
     cdr1, cdr2, cdr3_start, fr1_start, fwr1, fwr2, fwr3, score_fwr3_at_end,
 };
 use fasta_tools::read_fasta_contents_into_vec_dna_string_plus_headers;
+use io_utils::read_obj;
 use io_utils::{fwrite, fwriteln, open_for_write_new};
 use itertools::Itertools;
 use pretty_trace::PrettyTrace;
@@ -426,43 +426,36 @@ fn main() {
         fasta_file = fns[0].clone();
         order = fasta_file.after(":").between(":", ":").to_string();
     }
-    let id_name;
-    if fasta_file.is_empty() {
-        id_name = species.clone();
+    let id_name = if fasta_file.is_empty() {
+        species.clone()
     } else {
-        id_name = fasta_file.rev_after("/").rev_before(".").to_string();
-    }
+        fasta_file.rev_after("/").rev_before(".").to_string()
+    };
     let mut fasta_log = Vec::<u8>::new();
     let fasta_out_dir = "somewhere/denovo_ref";
 
     // Get the reference.
 
-    let mut refx = Vec::<Vec<u8>>::new();
-    // let t = Instant::now();
-    if species == "human" || species == "mouse" {
+    let ref_path = if species == "human" || species == "mouse" {
         let root = "ensembl/release-94/fasta";
-        let xref;
         if species == "human" {
-            xref = format!(
+            format!(
                 "{}/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.toplevel.trunc_1000.fa.binary",
                 root
-            );
+            )
         } else {
-            xref = format!(
+            format!(
                 "{}/mus_musculus/dna/Mus_musculus.GRCm38.dna.toplevel.trunc_1000.fa.binary",
                 root
-            );
+            )
         }
-        let mut f = std::fs::File::open(&xref).unwrap();
-        binary_read_vec_vec(&mut f, &mut refx).unwrap();
     } else if species == "dog" {
-        fasta_file = "somewhere/genomes/GCA_000002285.4:some_mam:Carnivora:Canis_lupus_familiaris:Dog.vecvec_u8".to_string();
-        let mut f = std::fs::File::open(&fasta_file).unwrap();
-        binary_read_vec_vec(&mut f, &mut refx).unwrap();
+        "somewhere/genomes/GCA_000002285.4:some_mam:Carnivora:Canis_lupus_familiaris:Dog.vecvec_u8"
+            .to_string()
     } else {
-        let mut f = std::fs::File::open(&fasta_file).unwrap();
-        binary_read_vec_vec(&mut f, &mut refx).unwrap();
-    }
+        fasta_file.clone()
+    };
+    let mut refx: Vec<Vec<u8>> = read_obj(ref_path);
     // println!("used {:.2} seconds loading genome", elapsed(&t));
 
     // Parse other arguments.
