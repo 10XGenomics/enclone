@@ -46,9 +46,6 @@ use vdj_ann_ref::make_vdj_ref_data;
 use vector_utils::*;
 
 fn main() {
-    println!("{}", human_supp_regions());
-    println!("{}", mouse_supp_regions());
-    return;
     // Set up and parse args.
 
     PrettyTrace::new().on();
