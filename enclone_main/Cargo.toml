@@ -21,30 +21,30 @@ publish = false
 
 [dependencies]
 dirs = "4"
-enclone_core = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/further-bin-format-cleanups" }
+enclone_core = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
 enclone_help = { path = "../enclone_help" }
-enclone_print = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/further-bin-format-cleanups" }
-enclone_proto = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/further-bin-format-cleanups" }
-enclone_stuff = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/further-bin-format-cleanups" }
+enclone_print = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
+enclone_proto = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
+enclone_stuff = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
 enclone_tail = { path = "../enclone_tail" }
 enclone_build = { path = "../enclone_build" }
-enclone_vars = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/further-bin-format-cleanups" }
-enclone = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/further-bin-format-cleanups" }
-enclone_args = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/further-bin-format-cleanups" }
+enclone_vars = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
+enclone = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
+enclone_args = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
 enclone_testlist = { path = "../enclone_testlist" }
-expr_tools = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/further-bin-format-cleanups" }
-io_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/further-bin-format-cleanups" }
+expr_tools = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
+io_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
 itertools = "0.10"
-perf_stats = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/further-bin-format-cleanups" }
-pretty_trace = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/further-bin-format-cleanups", features = ["pprof"]}
+perf_stats = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
+pretty_trace = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main", features = ["pprof"]}
 rayon = "1"
 serde_json = "1"
-stats_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/further-bin-format-cleanups" }
-string_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/further-bin-format-cleanups" }
-tables = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/further-bin-format-cleanups" }
-vdj_ann = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/further-bin-format-cleanups" }
-vdj_ann_ref = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/further-bin-format-cleanups" }
-vector_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/further-bin-format-cleanups" }
+stats_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
+string_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
+tables = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
+vdj_ann = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
+vdj_ann_ref = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
+vector_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
 
 
 hdf5 = {git = "https://github.com/10XGenomics/hdf5-rust.git", branch = "conda_nov2021", features = ["conda"], default-features = false }
