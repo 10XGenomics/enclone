@@ -25,36 +25,36 @@ path = "src/bin/enclone.rs"
 
 [dependencies]
 chrono = { version = "0.4", default-features = false, features = ["std", "clock"] }
-enclone_core = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/further-bin-format-cleanups" }
+enclone_core = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/remove-binary-vec-io" }
 enclone_main = { path = "../enclone_main" }
 enclone_testlist = { path = "../enclone_testlist" }
 flate2 = "1"
 home = "0.5"
-io_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/further-bin-format-cleanups" }
+io_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/remove-binary-vec-io" }
 itertools = "0.10"
 nix = { version = "0.27", features = ["signal"] }
-pretty_trace = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/further-bin-format-cleanups", features = ["pprof"]}
+pretty_trace = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/remove-binary-vec-io", features = ["pprof"]}
 serde_json = "1"
-string_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/further-bin-format-cleanups" }
+string_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/remove-binary-vec-io" }
 tokio = { version = "1", default-features = false, features = ["io-util", "macros", "rt-multi-thread"] }
-vector_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/further-bin-format-cleanups" }
+vector_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/remove-binary-vec-io" }
 
 [dev-dependencies]
-ansi_escape = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/further-bin-format-cleanups" }
+ansi_escape = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/remove-binary-vec-io" }
 anyhow = "1"
 attohttpc = { version = "0.18", default-features = false, features = ["compress", "tls-rustls"] }
-enclone_vars = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/further-bin-format-cleanups" }
-enclone_proto = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/further-bin-format-cleanups" }
-enclone_ranger = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/further-bin-format-cleanups" }
+enclone_vars = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/remove-binary-vec-io" }
+enclone_proto = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/remove-binary-vec-io" }
+enclone_ranger = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/remove-binary-vec-io" }
 enclone_tools = { path = "../enclone_tools" }
 flate2 = "1"
 fs_extra = "1"
 itertools = "0.10"
-perf_stats = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/further-bin-format-cleanups" }
+perf_stats = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/remove-binary-vec-io" }
 rayon = "1"
 serde_json = "1"
 sha2 = "0.10"
-stats_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/further-bin-format-cleanups" }
+stats_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/remove-binary-vec-io" }
 yaml-rust = "0.4"
 
 [features]
