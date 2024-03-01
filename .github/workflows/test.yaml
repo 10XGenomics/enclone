@@ -7,7 +7,7 @@ on:
       - master
 
 env:
-  RUST_VERSION: "1.71.0"
+  RUST_VERSION: "1.74.0"
   CARGO_INCREMENTAL: 0
 
 jobs:

@@ -33,9 +33,11 @@ enclone_testlist = { path = "../enclone_testlist" }
 expr_tools.workspace = true
 io_utils.workspace = true
 itertools.workspace = true
+martian-filetypes.workspace = true
 perf_stats.workspace = true
 pretty_trace.workspace = true
 rayon.workspace = true
+serde.workspace = true
 serde_json.workspace = true
 stats_utils.workspace = true
 string_utils.workspace = true
