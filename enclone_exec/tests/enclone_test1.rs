@@ -648,6 +648,7 @@ fn test_cpu() {
 #[cfg(not(feature = "cpu"))]
 #[test]
 fn test_licenses() {
+    use cargo_license::DependencyDetails;
     const ACCEPTABLE_LICENSE_TYPES: [&str; 9] = [
         "MIT", "ISC", "Zlib", "WTFPL", "MPL-2.0", "CC0-1.0", "BSL-1.0", "0BSD", "OFL-1.1",
     ];
@@ -689,93 +690,67 @@ fn test_licenses() {
         );
         panic!("failed");
     }
-    let lic = &new.unwrap().stdout;
-    let mut f = &lic[..];
-    let mut fails = Vec::<String>::new();
-    loop {
-        match read_vector_entry_from_json(&mut f).unwrap() {
-            None => break,
-            Some(x) => {
-                let v: Value = serde_json::from_str(strme(&x)).unwrap();
-                let package = v["name"].to_string().between("\"", "\"").to_string();
-                let version = v["version"].to_string().between("\"", "\"").to_string();
-                let mut license = String::new();
-                if v.get("license").is_some() {
-                    license = v["license"].to_string();
-                    if license.contains('"') {
-                        license = license.between("\"", "\"").to_string();
-                    }
-                }
-                let mut license_file = String::new();
-                if v.get("license_file").is_some() {
-                    license_file = v["license_file"].to_string();
-                    if license_file.contains('"') {
-                        license_file = license_file.between("\"", "\"").to_string();
-                    }
-                }
-                if license == "null" && license_file == "null" {
-                    continue;
-                }
-                let mut repo = String::new();
-                if v.get("repository").is_some() {
-                    repo = v["repository"].to_string();
-                    if repo.contains('"') {
-                        repo = repo.between("\"", "\"").to_string();
-                    }
-                }
-                let mut ok = false;
-                if package.starts_with("enclone") {
-                    ok = true;
-                }
-                for y in ACCEPTABLE_10X_PACKAGES.iter() {
-                    if package == *y {
-                        ok = true;
-                    }
-                }
-                for y in ACCEPTABLE_OTHER_PACKAGES.iter() {
-                    if package == *y {
-                        ok = true;
-                    }
-                }
-                for y in ACCEPTABLE_LICENSE_TYPES.iter() {
-                    if license == *y {
-                        ok = true;
-                    }
-                    if license.ends_with(&format!(" OR {}", y)) {
-                        ok = true;
-                    }
-                    if license.starts_with(&format!("{} OR ", y)) {
-                        ok = true;
-                    }
-                }
-                if !ok {
-                    let (mut x1, mut x2) = (false, false);
-                    if repo.starts_with("https://github.com") {
-                        let f1 = format!("{}/blob/master/Cargo.toml", repo);
-                        if valid_link(&f1) {
-                            x1 = true;
-                        }
-                        let f2 = format!("{}/blob/master/NOTICE", repo);
-                        if valid_link(&f2) {
-                            x2 = true;
-                        }
-                    }
-                    let a2 = license == A2
-                        || license.ends_with(&format!(" OR {}", A2))
-                        || license.starts_with(&format!("{} OR ", A2));
-                    if a2 && x1 && !x2 {
-                        continue;
-                    }
-                    fails.push(format!("{}, {}, {}, {}", package, version, license, repo));
+    let dep_details: Vec<DependencyDetails> = serde_json::from_slice(&new.unwrap().stdout);
+
+    let fails: Vec<_> = dep_details
+        .filter_map(|dep| {
+            let (Some(license), Some(license_file)) = (dep.license, dep.license_file) else {
+                return None;
+            };
+
+            let package = dep.name;
+
+            if package.starts_with("enclone") {
+                return None;
+            }
+            for y in ACCEPTABLE_10X_PACKAGES.iter() {
+                if package == *y {
+                    return None;
                 }
             }
-        }
-    }
+            for y in ACCEPTABLE_OTHER_PACKAGES.iter() {
+                if package == *y {
+                    return None;
+                }
+            }
+            for y in ACCEPTABLE_LICENSE_TYPES.iter() {
+                if license == *y {
+                    return None;
+                }
+                if license.ends_with(&format!(" OR {}", y)) {
+                    return None;
+                }
+                if license.starts_with(&format!("{} OR ", y)) {
+                    return None;
+                }
+            }
+
+            let (mut x1, mut x2) = (false, false);
+            if repo.starts_with("https://github.com") {
+                let f1 = format!("{}/blob/master/Cargo.toml", repo);
+                if valid_link(&f1) {
+                    x1 = true;
+                }
+                let f2 = format!("{}/blob/master/NOTICE", repo);
+                if valid_link(&f2) {
+                    x2 = true;
+                }
+            }
+            let a2 = license == A2
+                || license.ends_with(&format!(" OR {}", A2))
+                || license.starts_with(&format!("{} OR ", A2));
+            if a2 && x1 && !x2 {
+                return None;
+            }
+            Some(dep)
+        })
+        .collect();
+
     if fails.len() > 0 {
         fails.sort();
         let mut msg = format!("\nLicense check failed.  The following packages had problems:\n");
         for i in 0..fails.len() {
-            msg += &format!("{}. {}\n", i + 1, fails[i]);
+            msg += &format!("{}. {:?}\n", i + 1, fails[i]);
         }
         eprintln!(
             "{}\nYou may want to retry the test, since the license checks fails sporadically \
