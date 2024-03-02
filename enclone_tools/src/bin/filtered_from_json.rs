@@ -28,11 +28,11 @@ fn main() {
         let ann = ann.unwrap();
 
         let bc = ann.barcode.before("-");
-        let barcode = format!("{}-{}", bc, ann.dataset);
+        let barcode = format!("{}-", bc);
         let is_cell = ann.is_cell;
         let mut contig_id = ann.contig_name;
         let contig = contig_id.rev_after("_");
-        contig_id = format!("{}-{}_contig_{}", bc, ann.dataset, contig);
+        contig_id = format!("{}-_contig_{}", bc, contig);
 
         let length = ann.sequence.len();
 
@@ -52,9 +52,9 @@ fn main() {
             }
         }
         let high_confidence = ann.high_confidence;
-        let full_length = ann.full_length;
-        let productive = ann.productive;
-        let cdr3 = ann.cdr3.unwrap_or_defaukt();
+        let full_length = ann.full_length.unwrap_or_default();
+        let productive = ann.productive.unwrap_or_default();
+        let cdr3 = ann.cdr3.unwrap_or_default();
         let cdr3_nt = ann.cdr3_seq.unwrap_or_default();
         let reads = ann.read_count;
         let umis = ann.umi_count;

@@ -43,7 +43,6 @@ vector_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch =
 ansi_escape = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/clean-up-json-handling" }
 anyhow = "1"
 attohttpc = { version = "0.18", default-features = false, features = ["compress", "tls-rustls"] }
-cargo-license = "0.6"
 enclone_vars = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/clean-up-json-handling" }
 enclone_proto = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/clean-up-json-handling" }
 enclone_ranger = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/clean-up-json-handling" }

@@ -648,7 +648,17 @@ fn test_cpu() {
 #[cfg(not(feature = "cpu"))]
 #[test]
 fn test_licenses() {
-    use cargo_license::DependencyDetails;
+    #[derive(Deserialize)]
+    pub struct DependencyDetails {
+        pub name: String,
+        pub version: semver::Version,
+        pub authors: Option<String>,
+        pub repository: Option<String>,
+        pub license: Option<String>,
+        pub license_file: Option<String>,
+        pub description: Option<String>,
+    }
+
     const ACCEPTABLE_LICENSE_TYPES: [&str; 9] = [
         "MIT", "ISC", "Zlib", "WTFPL", "MPL-2.0", "CC0-1.0", "BSL-1.0", "0BSD", "OFL-1.1",
     ];
