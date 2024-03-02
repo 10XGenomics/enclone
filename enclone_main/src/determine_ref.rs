@@ -3,12 +3,12 @@
 // Start of code to determine the reference sequence that is to be used.
 
 use enclone_core::defs::EncloneControl;
-use io_utils::{open_for_read, open_maybe_compressed, path_exists, read_vector_entry_from_json};
-use serde_json::Value;
+use io_utils::{open_for_read, open_maybe_compressed, path_exists};
 use std::collections::HashMap;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
-use string_utils::{strme, TextUtils};
+use string_utils::TextUtils;
+use vdj_ann::annotate::ContigAnnotation;
 use vdj_ann_ref::{
     human_ref, human_ref_2_0, human_ref_3_1, human_ref_4_0, human_ref_old, mouse_ref,
     mouse_ref_3_1, mouse_ref_4_0, mouse_ref_old,
@@ -292,28 +292,22 @@ pub fn determine_ref(ctl: &mut EncloneControl, refx: &mut String) -> Result<(), 
             }
         }
         erase_if(&mut refhash, &to_delete);
-        let mut f = BufReader::new(open_maybe_compressed(&jsonx));
-        'json_entry: loop {
-            let x = read_vector_entry_from_json(&mut f)?;
-            if x.is_none() {
-                break;
-            }
-            let v: Value = serde_json::from_str(strme(&x.unwrap())).unwrap();
-            let ann = v["annotations"].as_array();
-            if ann.is_none() {
+        'json_entry: for ann in
+            serde_json::Deserializer::from_reader(BufReader::new(open_maybe_compressed(&jsonx)))
+                .into_iter::<ContigAnnotation>()
+        {
+            let ann = ann.unwrap();
+            if ann.annotations.is_empty() {
                 return Err(format!(
                     "\nThe file\n{jsonx}\ndoes not contain annotations.  To use enclone with it, \
                         please specify the argument BUILT_IN\nto force use of the internal \
                         reference and recompute annotations.\n"
                 ));
             }
-            let ann = ann.unwrap();
-            for i in 0..ann.len() {
-                let a = &ann[i];
-                let id = a["feature"]["feature_id"].as_u64().unwrap() as usize;
-                let gene = a["feature"]["gene_name"].to_string();
-                let gene = gene.between("\"", "\"").to_string();
-                let len = a["annotation_length"].as_u64().unwrap() as usize;
+            for a in ann.annotations {
+                let id = a.feature.feature_id;
+                let gene = a.feature.gene_name;
+                let len = a.annotation_length;
                 let mut matches = Vec::<usize>::new();
                 for j in 0..refhash.len() {
                     if refhash[j].0.contains_key(&id) && refhash[j].0[&id] == (len, gene.clone()) {
