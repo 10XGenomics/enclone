@@ -648,11 +648,11 @@ fn test_cpu() {
 #[cfg(not(feature = "cpu"))]
 #[test]
 fn test_licenses() {
-    #[derive(Deserialize)]
+    use serde::Deserialize;
+
+    #[derive(Clone, Debug, Deserialize)]
     pub struct DependencyDetails {
         pub name: String,
-        pub version: semver::Version,
-        pub authors: Option<String>,
         pub repository: Option<String>,
         pub license: Option<String>,
         pub license_file: Option<String>,
@@ -700,15 +700,16 @@ fn test_licenses() {
         );
         panic!("failed");
     }
-    let dep_details: Vec<DependencyDetails> = serde_json::from_slice(&new.unwrap().stdout);
+    let dep_details: Vec<DependencyDetails> = serde_json::from_slice(&new.unwrap().stdout).unwrap();
 
     let fails: Vec<_> = dep_details
+        .into_iter()
         .filter_map(|dep| {
-            let (Some(license), Some(license_file)) = (dep.license, dep.license_file) else {
+            let Some(license) = dep.license else {
                 return None;
             };
 
-            let package = dep.name;
+            let package = &dep.name;
 
             if package.starts_with("enclone") {
                 return None;
@@ -736,6 +737,7 @@ fn test_licenses() {
             }
 
             let (mut x1, mut x2) = (false, false);
+            let repo = dep.repository.unwrap_or_default();
             if repo.starts_with("https://github.com") {
                 let f1 = format!("{}/blob/master/Cargo.toml", repo);
                 if valid_link(&f1) {
@@ -752,23 +754,18 @@ fn test_licenses() {
             if a2 && x1 && !x2 {
                 return None;
             }
-            Some(dep)
+            Some(dep.name)
         })
+        .sorted()
         .collect();
 
-    if fails.len() > 0 {
-        fails.sort();
-        let mut msg = format!("\nLicense check failed.  The following packages had problems:\n");
-        for i in 0..fails.len() {
-            msg += &format!("{}. {:?}\n", i + 1, fails[i]);
-        }
-        eprintln!(
-            "{}\nYou may want to retry the test, since the license checks fails sporadically \
-            at a low rate.\n",
-            msg
-        );
-        panic!("failed");
-    }
+    assert!(
+        fails.is_empty(),
+        "\nLicense check failed.  The following packages had problems:\n{}\n\
+        You may want to retry the test, since the license checks fails sporadically \
+        at a low rate.\n",
+        fails.join(", "),
+    );
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓

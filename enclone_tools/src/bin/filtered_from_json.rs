@@ -2,10 +2,19 @@
 //
 // Make filtered_contig.fasta and filtered_contig_annotations.csv from all_contig_annotations.json.
 use io_utils::{fwriteln, open_for_write_new, open_maybe_compressed};
+use serde::{Deserialize, Serialize};
 use std::io::Write;
 use string_utils::*;
 use vdj_ann::annotate::ContigAnnotation;
 use vdj_types::VdjRegion;
+
+// FIXME duplicated between here and enclone_main/src/subset.rs
+#[derive(Serialize, Deserialize)]
+struct AnnotationWithDataset {
+    dataset: Option<String>,
+    #[serde(flatten)]
+    data: ContigAnnotation,
+}
 
 fn main() {
     // Read in the json file and break it into entries.
@@ -24,15 +33,17 @@ fn main() {
         "barcode,is_cell,contig_id,high_confidence,length,chain,v_gene,d_gene,j_gene,\
         c_gene,full_length,productive,cdr3,cdr3_nt,reads,umis,raw_clonotype_id,raw_consensus_id"
     );
-    for ann in serde_json::Deserializer::from_str(&contents).into_iter::<ContigAnnotation>() {
+    for ann in serde_json::Deserializer::from_str(&contents).into_iter::<AnnotationWithDataset>() {
         let ann = ann.unwrap();
+        let dataset = ann.dataset.unwrap_or("null".to_string());
+        let ann = ann.data;
 
         let bc = ann.barcode.before("-");
-        let barcode = format!("{}-", bc);
+        let barcode = format!("{bc}-{dataset}");
         let is_cell = ann.is_cell;
         let mut contig_id = ann.contig_name;
         let contig = contig_id.rev_after("_");
-        contig_id = format!("{}-_contig_{}", bc, contig);
+        contig_id = format!("{bc}-{dataset}_contig_{contig}");
 
         let length = ann.sequence.len();
 
