@@ -6,7 +6,7 @@ use crate::USING_PAGER;
 use enclone::misc1::setup_pager;
 use enclone_args::proc_args::proc_args;
 use enclone_args::proc_args2::is_simple_arg;
-use enclone_build::prepare_for_apocalypse::prepare_for_apocalypse;
+use enclone_build::set_panic_handler;
 use enclone_core::defs::{get_config, EncloneControl};
 use enclone_core::{require_readable_file, tilde_expand_me, REMOTE_HOST};
 use enclone_help::help1::help1;
@@ -18,7 +18,6 @@ use enclone_help::help_utils::{HelpDesk, HELP_ALL, PLAIN};
 use enclone_testlist::TEST_FILES_VERSION;
 use io_utils::{open_for_read, path_exists};
 use itertools::Itertools;
-use pretty_trace::{new_thread_message, PrettyTrace};
 use std::env;
 use std::io::BufRead;
 use std::sync::atomic::Ordering::SeqCst;
@@ -227,10 +226,6 @@ pub fn setup(
         let mut nopager = false;
         let mut plain = false;
         let mut long_help = false;
-        if ctl.gen_opt.profile {
-            nopager = true;
-            ctl.gen_opt.profile = true;
-        }
         for i in 1..args.len() {
             if args[i] == "NOPAGER" || args[i] == "EVIL_EYE" {
                 nopager = true;
@@ -296,12 +291,9 @@ pub fn setup(
         }
         erase_if(&mut args, &to_delete);
         *argsx = args.clone();
-        if args.len() == 1 || args.contains(&"help".to_string()) {
-            PrettyTrace::new().on();
-            if !nopager && !ctl.gen_opt.profile {
-                using_pager = true;
-                setup_pager(true);
-            }
+        if !nopager && (args.len() == 1 || args.contains(&"help".to_string())) {
+            using_pager = true;
+            setup_pager(true);
         }
         let mut help_all = false;
         if args.len() >= 3 && args[1] == "help" && args[2] == "all" {
@@ -340,7 +332,6 @@ pub fn setup(
 
     ctl.pretty = true;
     let mut nopretty = false;
-    let mut visual = false;
     for i in 1..args.len() {
         if is_simple_arg(&args[i], "PLAIN")? {
             ctl.pretty = false;
@@ -355,41 +346,19 @@ pub fn setup(
             ctl.perf_opt.comp = true;
             ctl.perf_opt.comp2 = true;
         }
-        if is_simple_arg(&args[i], "VISUAL")? {
-            visual = true;
-        }
     }
 
-    // Turn on pretty trace.
-
-    if ctl.gen_opt.evil_eye {
-        println!("about to turn on pretty trace");
-    }
     if !nopretty && !ctl.gen_opt.cellranger {
-        let mut ctrlc = false;
-        for i in 1..args.len() {
-            if is_simple_arg(&args[i], "CTRLC")? {
-                if visual {
-                    return Err(format!("Sorry CTRLC can't be used in visual mode."));
-                }
-                ctrlc = true;
+        set_panic_handler(args_orig);
+        let mut nopager = false;
+        for i in 1..args_orig.len() {
+            if args_orig[i] == "NOPAGER" || args_orig[i] == "TOY_COM" {
+                nopager = true;
             }
         }
-        let thread_message = new_thread_message();
-        if ctrlc {
-            PrettyTrace::new().message(thread_message).ctrlc().on();
-        } else {
-            prepare_for_apocalypse(args_orig, false, &bug_reports);
-            let mut nopager = false;
-            for i in 1..args_orig.len() {
-                if args_orig[i] == "NOPAGER" {
-                    nopager = true;
-                }
-            }
-            if !nopager && !ctl.gen_opt.profile {
-                using_pager = true;
-                setup_pager(!nopager && !ctl.gen_opt.profile);
-            }
+        if !nopager {
+            using_pager = true;
+            setup_pager(!nopager);
         }
     }
     USING_PAGER.store(using_pager, SeqCst);

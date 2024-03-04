@@ -28,14 +28,13 @@
 
 use io_utils::*;
 use itertools::Itertools;
-use pretty_trace::*;
+
 use std::env;
 use std::fs::read_dir;
 use std::io::BufRead;
 use string_utils::*;
 
 fn main() {
-    PrettyTrace::new().on();
     let args: Vec<String> = env::args().collect();
     let dir = &args[1];
     let all = read_dir(&dir).unwrap();

@@ -5,7 +5,7 @@
 use vdj_ann::annotate::*;
 use enclone_denovo::vdj_features::*;
 use io_utils::*;
-use pretty_trace::*;
+
 use rayon::prelude::*;
 use std::io::Write;
 use string_utils::*;
@@ -108,7 +108,7 @@ IGLJ:  IFGSGTKLTVL
 */
 
 fn main() {
-    PrettyTrace::new().on();
+    
 
     // Get data from the abcellera human antibody list.
 

@@ -3,7 +3,7 @@
 // Load known covid antibodies and compute.
 
 use flate2::read::GzDecoder;
-use pretty_trace::PrettyTrace;
+
 use std::collections::HashMap;
 use std::io::Read;
 use std::mem::swap;
@@ -11,8 +11,6 @@ use string_utils::*;
 use vector_utils::*;
 
 fn main() {
-    PrettyTrace::new().on();
-
     // Load the transition matrix.  Code copied.
 
     let f = include_bytes!["../../../enclone_paper/data/mat.575142"].to_vec();

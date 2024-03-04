@@ -5,13 +5,13 @@
 use amino::*;
 use enclone_denovo::vdj_features::*;
 use fasta_tools::*;
-use pretty_trace::*;
+
 use std::cmp::max;
 use string_utils::*;
 use vector_utils::*;
 
 fn main() {
-    PrettyTrace::new().on();
+    
 
     // Get data from the current denovo references.
 

@@ -13,7 +13,7 @@
 
 use io_utils::*;
 use lz4::EncoderBuilder;
-use pretty_trace::PrettyTrace;
+
 use std::collections::HashMap;
 use std::env;
 use std::fs::{remove_file, File};
@@ -46,7 +46,6 @@ pub struct Contig {
 }
 
 fn main() {
-    PrettyTrace::new().on();
     let args: Vec<String> = env::args().collect();
     let tsv = open_for_read![&args[1]];
     let mut to_field = HashMap::<String, usize>::new();

@@ -4,7 +4,6 @@
 //
 // usage test_beta_cdf signal noise
 
-use pretty_trace::PrettyTrace;
 use statrs::distribution::ContinuousCDF;
 use std::env;
 use string_utils::*;
@@ -15,7 +14,6 @@ fn beta_cdf(x: f64, a: f64, b: f64) -> f64 {
 }
 
 fn main() {
-    PrettyTrace::new().on();
     let args: Vec<String> = env::args().collect();
     let s = args[1].force_f64();
     let n = args[2].force_f64();

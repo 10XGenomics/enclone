@@ -3,7 +3,7 @@
 // Run this from the top level of the repo.
 
 use enclone_tools::pdb::*;
-use pretty_trace::*;
+
 use std::env;
 use string_utils::*;
 use vdj_ann::vdj_features::*;
@@ -74,7 +74,6 @@ pub fn mean_dist(a: &Vec<[f32; 3]>, b: &Vec<[f32; 3]>) -> f32 {
 }
 
 fn main() {
-    PrettyTrace::new().on();
     let args: Vec<String> = env::args().collect();
     let code = &args[1];
     let pdb = fetch_pdb_structure(&code).unwrap();

@@ -6,13 +6,11 @@
 // in the directory where you want the file.
 // Creates GCA_id.n.fasta.gz.
 
-use pretty_trace::PrettyTrace;
 use std::env;
 use std::process::Command;
 use string_utils::TextUtils;
 
 fn main() {
-    PrettyTrace::new().on();
     let args: Vec<String> = env::args().collect();
     let id = &args[1];
     let url = format!("https://www.ncbi.nlm.nih.gov/assembly/{}", id);

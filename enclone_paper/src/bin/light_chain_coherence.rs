@@ -44,7 +44,7 @@
 
 use io_utils::*;
 use perf_stats::elapsed;
-use pretty_trace::PrettyTrace;
+
 use rand_chacha;
 use rand_chacha::rand_core::RngCore;
 use rand_chacha::rand_core::SeedableRng;
@@ -58,7 +58,6 @@ use tables::*;
 use vector_utils::*;
 
 fn main() {
-    PrettyTrace::new().on();
     let t = Instant::now();
     let mut randme = rand_chacha::ChaCha8Rng::seed_from_u64(123456789);
     let args: Vec<String> = env::args().collect();

@@ -19,7 +19,7 @@ use flate2::read::GzDecoder;
 use io_utils::*;
 use itertools::Itertools;
 use perf_stats::*;
-use pretty_trace::*;
+
 use rayon::prelude::*;
 use serde_json::Value;
 use sha2::{Digest, Sha256};
@@ -440,8 +440,6 @@ fn test_datasets_sha256() {
 #[cfg(feature = "cpu")]
 #[test]
 fn test_cpu() {
-    PrettyTrace::new().on();
-
     // Introductory comments.
 
     println!(

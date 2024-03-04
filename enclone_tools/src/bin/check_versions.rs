@@ -2,14 +2,11 @@
 
 // Check executable versions.  For now, only checks git.
 
-use pretty_trace::PrettyTrace;
 use std::process::Command;
 use string_utils::strme;
 use string_utils::TextUtils;
 
 fn main() {
-    PrettyTrace::new().on();
-
     let new = Command::new("git")
         .arg("--version")
         .output()

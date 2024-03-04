@@ -31,7 +31,6 @@ itertools.workspace = true
 perf_stats.workspace = true
 rand_chacha.workspace = true
 rayon.workspace = true
-pretty_trace.workspace = true
 string_utils.workspace = true
 tables.workspace = true
 triple_accel.workspace = true

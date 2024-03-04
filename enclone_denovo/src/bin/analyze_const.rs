@@ -5,13 +5,11 @@
 // usage: analyze_igh_data x
 //        where x is a or d or e or g or m (heavy chains) or k or l (light chains)
 
-use pretty_trace::PrettyTrace;
 use std::env;
 use string_utils::{abbrev_list, TextUtils};
 use vector_utils::{make_freq, sort_sync2};
 
 fn main() {
-    PrettyTrace::new().on();
     let args: Vec<String> = env::args().collect();
     let chain = &args[1];
     let chainx;

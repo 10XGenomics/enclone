@@ -148,10 +148,9 @@ pub fn ticks(low: f32, high: f32, max_ticks: usize, verbose: bool) -> Vec<String
 #[cfg(test)]
 mod tests {
     use super::*;
-    use pretty_trace::PrettyTrace;
+
     #[test]
     fn test_ticks() {
-        PrettyTrace::new().on();
         let max_ticks = 5;
         let mut examples = Vec::<(f32, f32, Vec<&str>)>::new();
 

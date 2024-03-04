@@ -7,12 +7,11 @@
 // Not robust to funny input.
 
 use itertools::Itertools;
-use pretty_trace::*;
+
 use std::env;
 use string_utils::*;
 
 fn main() {
-    PrettyTrace::new().on();
     let args: Vec<String> = env::args().collect();
     let fields = args[1].split(',').collect::<Vec<&str>>();
     let mut x = Vec::<usize>::new();

@@ -4,11 +4,10 @@
 
 use enclone_denovo::make_mammalian_pwms::*;
 use io_utils::*;
-use pretty_trace::*;
+
 use std::io::Write;
 
 fn main() {
-    PrettyTrace::new().on();
     let x = make_mammalian_pwms();
     let mut log = open_for_write_new!["src/mammalian_pwms.table"];
     for i in 0..x.len() {
