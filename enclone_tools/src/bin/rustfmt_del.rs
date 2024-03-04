@@ -3,12 +3,11 @@
 // Run rustfmt on all source files.
 
 use io_utils::*;
-use pretty_trace::PrettyTrace;
+
 use rayon::prelude::*;
 use std::process::Command;
 
 fn main() {
-    PrettyTrace::new().on();
     let mut paths = Vec::<String>::new();
     let all = dir_list(".");
     for d in all.iter() {

@@ -9,7 +9,7 @@ use itertools::Itertools;
 use tables::print_tabular_vbox;
 
 pub fn description_table(ctl: &EncloneControl, logx: &mut Vec<u8>) {
-    if ctl.visual_mode || ctl.gen_opt.vis_dump {
+    if ctl.gen_opt.vis_dump {
         let mut need = false;
         let n = ctl.origin_info.n();
         for i in 0..n {

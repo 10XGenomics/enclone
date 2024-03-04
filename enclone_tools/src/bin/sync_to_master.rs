@@ -5,14 +5,13 @@
 
 use io_utils::{fwrite, open_for_read, open_for_write_new, path_exists};
 use itertools::Itertools;
-use pretty_trace::PrettyTrace;
+
 use std::collections::HashMap;
 use std::fs::read_dir;
 use std::io::{BufRead, Write};
 use string_utils::TextUtils;
 
 fn main() {
-    PrettyTrace::new().on();
     let mut version = HashMap::<String, String>::new();
     let f = open_for_read!["master.toml"];
     for line in f.lines() {

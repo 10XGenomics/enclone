@@ -7,13 +7,11 @@
 // Only used IGHG, excluded clonotypes having three chains.
 
 use dna::*;
-use pretty_trace::*;
+
 use string_utils::*;
 use tables::*;
 
 fn main() {
-    PrettyTrace::new().on();
-
     // Define barcodes.  Data show (id = clonotype.cell, barcode, constant regions),
     // where the numbering scheme for clonotype and cell is for this list.
 

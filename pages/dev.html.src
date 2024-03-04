@@ -284,15 +284,6 @@ time by code section, and also tracks peak memory usage.  There is also a versio
 <code>COMP2</code> that prints a bit more.  Run this with <code>NOPAGER</code> if you want
 to see the lines printed as they happen.</li>
 
-<li>Add the argument <code>PROFILE</code> to your command.  This yields a list of tracebacks
-based on random interrupts.  These tracebacks are manicured and each is shown with its
-multiplicity.  When this option is used, the internal paging mechanism in #enclone is turned
-off, and you may wish to pipe the output to <code>less -r</code>.</li>
-
-<li>Add the argument <code>CTRLC</code> to your command.  Then upon CTRL-C, execution will
-be stopped and a traceback printed.  In general this is only useful if your code seems to
-be extremely slow or perhaps is stuck in an infinite loop.</li>
-
 </ol>
 <p>It is usually convenient to add the argument <code>NOPRINT</code> when using these profiling
 options, so as to suppress other output.</p>

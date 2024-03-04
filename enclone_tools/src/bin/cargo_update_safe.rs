@@ -11,7 +11,7 @@
 
 use io_utils::{fwriteln, open_for_read, open_for_write_new, path_exists};
 use perf_stats::elapsed;
-use pretty_trace::PrettyTrace;
+
 use std::collections::HashMap;
 use std::fs::read_dir;
 use std::io::{BufRead, Write};
@@ -47,7 +47,7 @@ fn reset() {
 
 fn main() {
     let t = Instant::now();
-    PrettyTrace::new().on();
+
     println!();
 
     // Test for synced to master.  This code is essentially identical to code in an enclone test.

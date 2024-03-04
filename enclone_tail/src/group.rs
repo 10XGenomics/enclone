@@ -776,9 +776,7 @@ pub fn group_and_print_clonotypes(
     // Print to stdout.
 
     if !ctl.gen_opt.html {
-        if !ctl.visual_mode {
-            print!("{}", compress_ansi_escapes(strme(&logx)));
-        }
+        print!("{}", compress_ansi_escapes(strme(&logx)));
     } else {
         // Remove initial newline if present.
         loop {

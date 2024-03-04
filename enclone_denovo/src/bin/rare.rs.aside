@@ -6,11 +6,11 @@
 use amino::*;
 use enclone_denovo::vdj_features::*;
 use fasta_tools::*;
-use pretty_trace::*;
+
 use string_utils::*;
 
 fn main() {
-    PrettyTrace::new().on();
+    
 
     // Get primate data.
 

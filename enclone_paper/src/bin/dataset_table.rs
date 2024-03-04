@@ -5,7 +5,6 @@
 // dataset_table
 
 use enclone_core::test_def::test_donor_id;
-use pretty_trace::PrettyTrace;
 
 const NAIVE: [usize; 40] = [
     1279049, 1279053, 1279057, 1279061, 1279065, 1279069, 1279073, 1279077, 1287144, 1287145,
@@ -26,7 +25,6 @@ const UNSWITCHED: [usize; 24] = [
 ];
 
 fn main() {
-    PrettyTrace::new().on();
     let mut all = Vec::<usize>::new();
     all.append(&mut NAIVE.to_vec());
     all.append(&mut UNSWITCHED.to_vec());

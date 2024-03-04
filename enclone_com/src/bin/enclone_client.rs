@@ -5,7 +5,7 @@
 // based on code in the rust tokio crate
 
 use enclone_com::typed_com::*;
-use pretty_trace::*;
+
 use std::error::Error;
 use std::io::{self, BufRead, Write};
 use string_utils::*;
@@ -14,7 +14,7 @@ use tokio::net::TcpListener;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
-    PrettyTrace::new().on();
+    
     println!(
         "\nHello, I am the goofball enclone client.  Now that you've started me, you need\n\
         to start enclone in a separate window, with the argument TOY_COM and enough other\n\

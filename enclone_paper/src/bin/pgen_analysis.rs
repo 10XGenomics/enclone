@@ -11,7 +11,7 @@
 //         > per_cell_stuff
 
 use io_utils::*;
-use pretty_trace::PrettyTrace;
+
 use std::collections::HashMap;
 use std::env;
 use std::io::BufRead;
@@ -20,7 +20,6 @@ use tables::*;
 use vector_utils::unique_sort;
 
 fn main() {
-    PrettyTrace::new().on();
     let args: Vec<String> = env::args().collect();
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓

@@ -16,14 +16,13 @@
 // 2. You have a working qsub.
 
 use io_utils::*;
-use pretty_trace::*;
+
 use std::env;
 use std::fs::File;
 use std::io::{BufRead, Write};
 use std::process::{Command, Stdio};
 
 fn main() {
-    PrettyTrace::new().on();
     let args: Vec<String> = env::args().collect();
     let (dir, source) = (&args[1], &args[2]);
     let mut merge = false;

@@ -2,13 +2,11 @@
 //
 // Download one isoseq dataset.
 
-use pretty_trace::PrettyTrace;
 use std::env;
 use std::process::Command;
 use string_utils::strme;
 
 fn main() {
-    PrettyTrace::new().on();
     let args: Vec<String> = env::args().collect();
     let acc = &args[1];
     let o = Command::new(

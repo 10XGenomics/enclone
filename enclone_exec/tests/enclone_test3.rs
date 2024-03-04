@@ -15,7 +15,7 @@ use enclone_tools::run_test::*;
 use io_utils::*;
 use itertools::Itertools;
 use perf_stats::*;
-use pretty_trace::*;
+
 use rayon::prelude::*;
 use sha2::Digest;
 use std::cmp::min;
@@ -169,7 +169,6 @@ fn test_site_examples() {
 #[cfg(not(feature = "cpu"))]
 #[test]
 fn test_enclone_examples() {
-    PrettyTrace::new().on();
     for t in 0..EXAMPLES.len() {
         let testn = format!("{}", EXAMPLES[t]);
         let out_file = format!("../enclone_help/src/example{}", t + 1);
@@ -217,7 +216,6 @@ fn test_enclone_examples() {
 #[cfg(not(feature = "cpu"))]
 #[test]
 fn test_version_number_in_readme() {
-    PrettyTrace::new().on();
     let readme = read_to_string("../README.md").unwrap();
     let fields = readme.split('/').collect::<Vec<&str>>();
     for x in fields {
@@ -245,7 +243,6 @@ fn test_version_number_in_readme() {
 #[cfg(not(feature = "cpu"))]
 #[test]
 fn test_dejavu() {
-    PrettyTrace::new().on();
     let mut cat_output_child = Command::new("cat")
         .arg("../pages/enclone_css_v2.css")
         .stdout(Stdio::piped())
@@ -281,7 +278,6 @@ fn test_dejavu() {
 #[cfg(not(feature = "cpu"))]
 #[test]
 fn test_help_output() {
-    PrettyTrace::new().on();
     for p in HELP_PAGES.iter() {
         let mut command = format!("enclone help {}", p);
         if *p == "setup" {
@@ -335,7 +331,6 @@ fn test_help_output() {
 #[cfg(not(feature = "cpu"))]
 #[test]
 fn test_help_no_stable() {
-    PrettyTrace::new().on();
     let mut new = Command::new(env!("CARGO_BIN_EXE_enclone"));
     let mut new = new.arg("help");
     new = new.arg("all");
@@ -361,7 +356,6 @@ fn test_help_no_stable() {
 #[cfg(not(feature = "cpu"))]
 #[test]
 fn test_enclone_prebuild() {
-    PrettyTrace::new().on();
     let t = Instant::now();
     let mb = format!(
         "../enclone-data/big_inputs/version{}/123217/outs/raw_feature_bc_matrix/feature_barcode_matrix.bin",
@@ -563,7 +557,6 @@ fn test_proto_write() -> Result<(), Error> {
 #[cfg(not(feature = "cpu"))]
 #[test]
 fn test_annotated_example() {
-    PrettyTrace::new().on();
     let it = 0;
     let test = "BCR=123085 CDR3=CTRDRDLRGATDAFDIW";
     let mut out = String::new();

@@ -25,37 +25,37 @@ path = "src/bin/enclone.rs"
 
 [dependencies]
 chrono = { version = "0.4", default-features = false, features = ["std", "clock"] }
-enclone_core = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/clean-up-json-handling" }
+enclone_core = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/delete_pretty_trace" }
 enclone_main = { path = "../enclone_main" }
 enclone_testlist = { path = "../enclone_testlist" }
 flate2 = "1"
 home = "0.5"
-io_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/clean-up-json-handling" }
+io_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/delete_pretty_trace" }
 itertools = "0.10"
 nix = { version = "0.27", features = ["signal"] }
-pretty_trace = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/clean-up-json-handling", features = ["pprof"]}
+
 serde_json = "1"
-string_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/clean-up-json-handling" }
+string_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/delete_pretty_trace" }
 tokio = { version = "1", default-features = false, features = ["io-util", "macros", "rt-multi-thread"] }
-vector_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/clean-up-json-handling" }
+vector_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/delete_pretty_trace" }
 
 [dev-dependencies]
-ansi_escape = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/clean-up-json-handling" }
+ansi_escape = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/delete_pretty_trace" }
 anyhow = "1"
 attohttpc = { version = "0.18", default-features = false, features = ["compress", "tls-rustls"] }
-enclone_vars = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/clean-up-json-handling" }
-enclone_proto = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/clean-up-json-handling" }
-enclone_ranger = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/clean-up-json-handling" }
+enclone_vars = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/delete_pretty_trace" }
+enclone_proto = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/delete_pretty_trace" }
+enclone_ranger = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/delete_pretty_trace" }
 enclone_tools = { path = "../enclone_tools" }
 flate2 = "1"
 fs_extra = "1"
 itertools = "0.10"
-perf_stats = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/clean-up-json-handling" }
+perf_stats = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/delete_pretty_trace" }
 rayon = "1"
 serde = "1"
 serde_json = "1"
 sha2 = "0.10"
-stats_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/clean-up-json-handling" }
+stats_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/delete_pretty_trace" }
 yaml-rust = "0.4"
 
 [features]

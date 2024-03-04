@@ -9,12 +9,11 @@
 use amino::aa_seq;
 use enclone_denovo::vdj_features::{cdr1, cdr2, fwr1, fwr2, fwr3};
 use fasta_tools::read_fasta_to_vec_vec_u8;
-use pretty_trace::PrettyTrace;
+
 use std::env;
 use string_utils::{strme, TextUtils};
 
 fn main() {
-    PrettyTrace::new().on();
     let args: Vec<String> = env::args().collect();
     let feature = &args[1];
     let len = args[2].force_usize();

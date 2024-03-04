@@ -20,7 +20,7 @@
 // 2. Add a second test using a different enclone executable.
 
 use io_utils::*;
-use pretty_trace::PrettyTrace;
+
 use serde_json::Value;
 use std::env;
 use std::fs::copy;
@@ -94,7 +94,6 @@ fn fails(
 }
 
 fn main() {
-    PrettyTrace::new().on();
     let args: Vec<String> = env::args().collect();
     let fail_condition = &args[1];
     let json = &args[2];

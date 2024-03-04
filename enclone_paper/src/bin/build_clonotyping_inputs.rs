@@ -13,7 +13,7 @@ use enclone_core::defs::get_config;
 use enclone_core::test_def::replace_at_test;
 use enclone_testlist::TEST_FILES_VERSION;
 use io_utils::*;
-use pretty_trace::*;
+
 use std::collections::HashMap;
 use std::env;
 use std::io::{BufRead, Write};
@@ -21,8 +21,6 @@ use string_utils::*;
 use vector_utils::VecUtils;
 
 pub fn main() {
-    PrettyTrace::new().on();
-
     // Get list of ids.
 
     let mut args: Vec<String> = env::args().collect();

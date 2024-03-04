@@ -7,7 +7,7 @@
 use chrono::prelude::*;
 use io_utils::{fwrite, open_for_read, open_for_write_new, path_exists};
 use itertools::Itertools;
-use pretty_trace::PrettyTrace;
+
 use std::fs::read_dir;
 use std::io::{BufRead, Write};
 use std::process::Command;
@@ -15,8 +15,6 @@ use string_utils::{strme, TextUtils};
 use vector_utils::unique_sort;
 
 fn main() {
-    PrettyTrace::new().on();
-
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
     // Step -1. Don't run on a Mac.

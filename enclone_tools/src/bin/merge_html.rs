@@ -8,7 +8,7 @@ use enclone_core::parse_bsv;
 use enclone_tools::html::{edit_html, insert_html};
 use io_utils::{fwrite, open_for_read, open_for_write_new};
 use itertools::Itertools;
-use pretty_trace::PrettyTrace;
+
 use rayon::prelude::*;
 use std::env;
 use std::fs::{read_dir, File};
@@ -189,8 +189,6 @@ pub const SITE_EXAMPLES: [(&str, &str); 28] = [
 ];
 
 fn main() {
-    PrettyTrace::new().on();
-
     // Build from source.
 
     let args: Vec<String> = env::args().collect();

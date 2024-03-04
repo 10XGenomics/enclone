@@ -17,14 +17,6 @@
 //
 // Annotate the given DNA sequences.
 
-extern crate debruijn;
-extern crate fasta_tools;
-#[macro_use]
-extern crate io_utils;
-extern crate pretty_trace;
-extern crate string_utils;
-
-extern crate vdj_ann;
 use annotate::*;
 use bio_edit::alignment::pairwise::*;
 use bio_edit::alignment::AlignmentOperation::*;
@@ -32,8 +24,9 @@ use debruijn::dna_string::*;
 use debruijn::*;
 use fasta_tools::*;
 use flate2::read::GzDecoder;
+use io_utils::fwriteln;
 use itertools::Itertools;
-use pretty_trace::*;
+
 use refx::*;
 use std::cmp::min;
 use std::env;
@@ -48,7 +41,6 @@ use vector_utils::*;
 fn main() {
     // Set up and parse args.
 
-    PrettyTrace::new().on();
     let args: Vec<String> = env::args().collect();
     let species = args[1].to_string();
     let mut is_dna = true;

@@ -3,14 +3,12 @@
 // Find duplicated crates.
 
 use io_utils::open_for_read;
-use pretty_trace::PrettyTrace;
 
 use std::io::BufRead;
 use string_utils::TextUtils;
 use vector_utils::next_diff;
 
 fn main() {
-    PrettyTrace::new().on();
     let mut crates = Vec::<String>::new();
     let f = open_for_read!["Cargo.lock"];
     let mut lines = Vec::<String>::new();

@@ -5,14 +5,13 @@
 // This can be used to examine the output of POUT.
 
 use io_utils::open_for_read;
-use pretty_trace::PrettyTrace;
+
 use std::env;
 
 use std::io::BufRead;
 use string_utils::parse_csv;
 
 fn main() {
-    PrettyTrace::new().on();
     let args: Vec<String> = env::args().collect();
     let f = open_for_read![&args[1]];
     let mut fields = Vec::<String>::new();

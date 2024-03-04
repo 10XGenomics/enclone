@@ -8,11 +8,10 @@
 use enclone::misc1::setup_pager;
 use enclone_testlist::main_testlist::TESTS;
 use enclone_tools::run_test::run_test;
-use pretty_trace::PrettyTrace;
+
 use rayon::prelude::*;
 
 fn main() {
-    PrettyTrace::new().on();
     setup_pager(true);
     let mut results = Vec::<(usize, bool, String)>::new();
     for i in 0..TESTS.len() {

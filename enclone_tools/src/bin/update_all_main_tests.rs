@@ -10,13 +10,12 @@
 use enclone_testlist::main_testlist::TESTS;
 use enclone_tools::run_test::run_test;
 use io_utils::{fwrite, open_for_write_new};
-use pretty_trace::PrettyTrace;
+
 use rayon::prelude::*;
 
 use std::io::Write;
 
 fn main() {
-    PrettyTrace::new().on();
     let mut results = Vec::<(usize, bool, String)>::new();
     for i in 0..TESTS.len() {
         if !TESTS[i].contains("EXPECT_FAIL") && !TESTS[i].contains("EXPECT_OK") {

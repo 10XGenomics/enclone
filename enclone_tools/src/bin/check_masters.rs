@@ -4,14 +4,13 @@
 // inconsistencies.
 
 use io_utils::{dir_list, open_for_read, path_exists};
-use pretty_trace::PrettyTrace;
+
 use std::env;
 
 use std::io::BufRead;
 use string_utils::TextUtils;
 
 fn main() {
-    PrettyTrace::new().on();
     let args: Vec<String> = env::args().collect();
     let repos = &args[1];
     let list = dir_list(repos);

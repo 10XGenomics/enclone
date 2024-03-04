@@ -6,11 +6,10 @@
 
 use fasta_tools::*;
 use io_utils::write_obj;
-use pretty_trace::*;
+
 use std::env;
 
 fn main() {
-    PrettyTrace::new().on();
     let args: Vec<String> = env::args().collect();
     let x = read_fasta_to_vec_vec_u8(&args[1]);
     write_obj(&x, &args[2]);

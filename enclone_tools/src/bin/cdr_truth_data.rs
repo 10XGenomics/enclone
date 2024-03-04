@@ -6,13 +6,10 @@
 //
 // This was run on 7/22/20 and stdout captured as cdr_truth_data.fasta.
 
-use pretty_trace::*;
 use std::process::Command;
 use string_utils::*;
 
 fn main() {
-    PrettyTrace::new().on();
-
     // Traverse the species.
 
     for pass in 1..=2 {

@@ -6,10 +6,8 @@
 
 use enclone_testlist::main_testlist::TESTS;
 use enclone_tools::run_test::run_test;
-use pretty_trace::PrettyTrace;
 
 fn main() {
-    PrettyTrace::new().on();
     println!(
         "\nYou should already have run ./build.  Otherwise this will give you the \
         wrong answer!\n"

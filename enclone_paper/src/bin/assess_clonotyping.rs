@@ -23,7 +23,7 @@
 
 use io_utils::*;
 use itertools::Itertools;
-use pretty_trace::*;
+
 use std::cmp::max;
 use std::collections::HashMap;
 use std::env;
@@ -32,8 +32,6 @@ use string_utils::*;
 use vector_utils::*;
 
 pub fn main() {
-    PrettyTrace::new().on();
-
     // Parse arguments.
 
     let args: Vec<String> = env::args().collect();

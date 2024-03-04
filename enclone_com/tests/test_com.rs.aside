@@ -7,7 +7,7 @@
 // ./test runs this and many other tests.
 
 use io_utils::*;
-use pretty_trace::*;
+
 use std::fs::File;
 use std::io::prelude::*;
 use std::io::BufWriter;
@@ -18,7 +18,7 @@ use string_utils::*;
 
 #[test]
 fn test_com() {
-    PrettyTrace::new().on();
+    
 
     // Define server command.
 

@@ -20,7 +20,7 @@ use flate2::read::GzDecoder;
 use io_utils::*;
 use itertools::Itertools;
 use perf_stats::*;
-use pretty_trace::*;
+
 use rayon::prelude::*;
 use serde_json::Value;
 use sha2::{Digest, Sha256};
@@ -67,7 +67,6 @@ const LOUPE_OUT_FILENAME: &str = "testx/__test_proto";
 #[cfg(not(feature = "cpu"))]
 #[test]
 fn test_enclone() {
-    PrettyTrace::new().on();
     let t = Instant::now();
     println!("running tests using {}", env!("CARGO_BIN_EXE_enclone"));
     //                       id     ok    output
@@ -150,7 +149,6 @@ fn test_enclone() {
 #[cfg(feature = "cpu")]
 #[test]
 fn test_accounting() {
-    PrettyTrace::new().on();
     let t = Instant::now();
     println!("running tests using {}", env!("CARGO_BIN_EXE_enclone"));
     //                       id     ok    output
@@ -225,7 +223,6 @@ fn test_accounting() {
 #[cfg(not(feature = "cpu"))]
 #[test]
 fn test_enclone_d() {
-    PrettyTrace::new().on();
     let t = Instant::now();
     println!("running tests using {}", env!("CARGO_BIN_EXE_enclone"));
     //                       id     ok    output
@@ -300,7 +297,6 @@ fn test_enclone_d() {
 #[cfg(not(feature = "cpu"))]
 #[test]
 fn test_grouping() {
-    PrettyTrace::new().on();
     let t = Instant::now();
     println!("running tests using {}", env!("CARGO_BIN_EXE_enclone"));
     //                       id     ok    output
@@ -380,7 +376,6 @@ fn test_grouping() {
 #[cfg(not(feature = "cpu"))]
 #[test]
 fn test_extended() {
-    PrettyTrace::new().on();
     let t = Instant::now();
     //                       id     ok    output
     let mut results = Vec::<(usize, bool, String)>::new();
@@ -428,7 +423,6 @@ fn test_extended() {
 #[cfg(not(feature = "cpu"))]
 #[test]
 fn test_crash() {
-    PrettyTrace::new().on();
     let t = Instant::now();
     let mut crash_tests = Vec::<String>::new();
     for i in 0..CRASH_SETS.len() {
@@ -479,7 +473,6 @@ fn test_crash() {
 #[cfg(not(feature = "cpu"))]
 #[test]
 fn test_internal() {
-    PrettyTrace::new().on();
     let t = Instant::now();
     //                       id     ok    output
     let mut results = Vec::<(usize, bool, String)>::new();

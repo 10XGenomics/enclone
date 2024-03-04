@@ -10,7 +10,7 @@
 use io_utils::*;
 use nix::sys::signal::{kill, SIGINT};
 use nix::unistd::Pid;
-use pretty_trace::*;
+
 use std::fs::File;
 use std::io::prelude::*;
 use std::io::BufWriter;
@@ -21,7 +21,7 @@ use string_utils::*;
 
 #[test]
 fn test_comx() {
-    PrettyTrace::new().on();
+    
 
     // Define commmands to be tested.
 

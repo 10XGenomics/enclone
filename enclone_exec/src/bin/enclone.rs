@@ -18,7 +18,7 @@ use nix::sys::signal::{kill, SIGINT};
 use nix::unistd::getppid;
 #[cfg(not(target_os = "windows"))]
 use nix::unistd::Pid;
-use pretty_trace::*;
+
 use std::env;
 use std::io::Write;
 use std::process::Command;
@@ -30,7 +30,6 @@ use vector_utils::unique_sort;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    PrettyTrace::new().on();
     let mut args: Vec<String> = env::args().collect();
     let mut no_kill = false;
     let mut update = false;

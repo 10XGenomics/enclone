@@ -7,13 +7,12 @@
 // sim_dup hpgen_sim.csv
 //
 use io_utils::*;
-use pretty_trace::PrettyTrace;
+
 use rayon::prelude::*;
 use std::env;
 use std::io::BufRead;
 
 fn main() {
-    PrettyTrace::new().on();
     let args: Vec<String> = env::args().collect();
     let f = open_for_read![&args[1]];
     // Data = pairs of heavy chain gene names and CDRH3 amino acid sequences.
