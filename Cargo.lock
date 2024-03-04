@@ -35,7 +35,7 @@ dependencies = [
 [[package]]
 name = "align_tools"
 version = "0.1.12"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/clean-up-json-handling#a80e2aa7816faf58aa86b6a22b7247aad80ebbf0"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/clean-up-json-handling#35e22045c84d1266067074ac3140acfa20815dc4"
 dependencies = [
  "bio_edit",
  "debruijn",
@@ -47,7 +47,7 @@ dependencies = [
 [[package]]
 name = "amino"
 version = "0.1.7"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/clean-up-json-handling#a80e2aa7816faf58aa86b6a22b7247aad80ebbf0"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/clean-up-json-handling#35e22045c84d1266067074ac3140acfa20815dc4"
 dependencies = [
  "debruijn",
  "string_utils",
@@ -56,7 +56,7 @@ dependencies = [
 [[package]]
 name = "ansi_escape"
 version = "0.1.3"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/clean-up-json-handling#a80e2aa7816faf58aa86b6a22b7247aad80ebbf0"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/clean-up-json-handling#35e22045c84d1266067074ac3140acfa20815dc4"
 dependencies = [
  "string_utils",
  "vector_utils",
@@ -67,6 +67,9 @@ name = "anyhow"
 version = "1.0.57"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "08f9b8508dccb7687a1d6c4ce66b2b0ecef467c94667de27d8d7fe1f8d2a9cdc"
+dependencies = [
+ "backtrace",
+]
 
 [[package]]
 name = "approx"
@@ -224,7 +227,7 @@ dependencies = [
 [[package]]
 name = "bio_edit"
 version = "0.1.1"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/clean-up-json-handling#a80e2aa7816faf58aa86b6a22b7247aad80ebbf0"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/clean-up-json-handling#35e22045c84d1266067074ac3140acfa20815dc4"
 dependencies = [
  "bio-types",
  "bit-set",
@@ -558,6 +561,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "deranged"
+version = "0.3.11"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b42b6fa04a440b495c8b04d0e71b707c585f83cb9cb28cf8cd0d976c315e31b4"
+dependencies = [
+ "powerfmt",
+]
+
+[[package]]
 name = "derive-new"
 version = "0.5.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -601,7 +613,7 @@ dependencies = [
 [[package]]
 name = "dna"
 version = "0.1.3"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/clean-up-json-handling#a80e2aa7816faf58aa86b6a22b7247aad80ebbf0"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/clean-up-json-handling#35e22045c84d1266067074ac3140acfa20815dc4"
 
 [[package]]
 name = "edit-distance"
@@ -618,7 +630,7 @@ checksum = "e78d4f1cc4ae33bbfc157ed5d5a5ef3bc29227303d595861deb238fcec4e9457"
 [[package]]
 name = "enclone"
 version = "0.5.219"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/clean-up-json-handling#a80e2aa7816faf58aa86b6a22b7247aad80ebbf0"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/clean-up-json-handling#35e22045c84d1266067074ac3140acfa20815dc4"
 dependencies = [
  "amino",
  "ansi_escape",
@@ -645,7 +657,7 @@ dependencies = [
 [[package]]
 name = "enclone_args"
 version = "0.5.219"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/clean-up-json-handling#a80e2aa7816faf58aa86b6a22b7247aad80ebbf0"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/clean-up-json-handling#35e22045c84d1266067074ac3140acfa20815dc4"
 dependencies = [
  "debruijn",
  "enclone_core",
@@ -655,6 +667,7 @@ dependencies = [
  "hdf5",
  "io_utils",
  "itertools",
+ "martian-filetypes",
  "rand",
  "rayon",
  "regex",
@@ -679,7 +692,7 @@ dependencies = [
 [[package]]
 name = "enclone_core"
 version = "0.5.219"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/clean-up-json-handling#a80e2aa7816faf58aa86b6a22b7247aad80ebbf0"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/clean-up-json-handling#35e22045c84d1266067074ac3140acfa20815dc4"
 dependencies = [
  "amino",
  "ansi_escape",
@@ -804,6 +817,7 @@ dependencies = [
  "hdf5",
  "io_utils",
  "itertools",
+ "martian-filetypes",
  "perf_stats",
  "pretty_trace",
  "rayon",
@@ -845,7 +859,7 @@ dependencies = [
 [[package]]
 name = "enclone_print"
 version = "0.5.219"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/clean-up-json-handling#a80e2aa7816faf58aa86b6a22b7247aad80ebbf0"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/clean-up-json-handling#35e22045c84d1266067074ac3140acfa20815dc4"
 dependencies = [
  "amino",
  "ansi_escape",
@@ -877,7 +891,7 @@ dependencies = [
 [[package]]
 name = "enclone_proto"
 version = "0.5.219"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/clean-up-json-handling#a80e2aa7816faf58aa86b6a22b7247aad80ebbf0"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/clean-up-json-handling#35e22045c84d1266067074ac3140acfa20815dc4"
 dependencies = [
  "bio_edit",
  "byteorder",
@@ -890,7 +904,7 @@ dependencies = [
 [[package]]
 name = "enclone_ranger"
 version = "0.5.219"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/clean-up-json-handling#a80e2aa7816faf58aa86b6a22b7247aad80ebbf0"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/clean-up-json-handling#35e22045c84d1266067074ac3140acfa20815dc4"
 dependencies = [
  "enclone",
  "enclone_args",
@@ -906,7 +920,7 @@ dependencies = [
 [[package]]
 name = "enclone_stuff"
 version = "0.5.219"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/clean-up-json-handling#a80e2aa7816faf58aa86b6a22b7247aad80ebbf0"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/clean-up-json-handling#35e22045c84d1266067074ac3140acfa20815dc4"
 dependencies = [
  "amino",
  "debruijn",
@@ -1024,7 +1038,7 @@ dependencies = [
 [[package]]
 name = "enclone_vars"
 version = "0.5.219"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/clean-up-json-handling#a80e2aa7816faf58aa86b6a22b7247aad80ebbf0"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/clean-up-json-handling#35e22045c84d1266067074ac3140acfa20815dc4"
 dependencies = [
  "io_utils",
  "itertools",
@@ -1064,7 +1078,7 @@ dependencies = [
 [[package]]
 name = "equiv"
 version = "0.1.3"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/clean-up-json-handling#a80e2aa7816faf58aa86b6a22b7247aad80ebbf0"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/clean-up-json-handling#35e22045c84d1266067074ac3140acfa20815dc4"
 
 [[package]]
 name = "errno"
@@ -1096,7 +1110,7 @@ checksum = "1d4fd7bd9e32c1205549decf6f36772d7b606a579b26afaffa335ae148151a5d"
 [[package]]
 name = "exons"
 version = "0.1.5"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/clean-up-json-handling#a80e2aa7816faf58aa86b6a22b7247aad80ebbf0"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/clean-up-json-handling#35e22045c84d1266067074ac3140acfa20815dc4"
 dependencies = [
  "io_utils",
  "string_utils",
@@ -1106,7 +1120,7 @@ dependencies = [
 [[package]]
 name = "expr_tools"
 version = "0.1.3"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/clean-up-json-handling#a80e2aa7816faf58aa86b6a22b7247aad80ebbf0"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/clean-up-json-handling#35e22045c84d1266067074ac3140acfa20815dc4"
 dependencies = [
  "evalexpr",
  "statrs",
@@ -1117,7 +1131,7 @@ dependencies = [
 [[package]]
 name = "fasta_tools"
 version = "0.1.8"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/clean-up-json-handling#a80e2aa7816faf58aa86b6a22b7247aad80ebbf0"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/clean-up-json-handling#35e22045c84d1266067074ac3140acfa20815dc4"
 dependencies = [
  "debruijn",
  "flate2",
@@ -1139,6 +1153,15 @@ name = "feature-probe"
 version = "0.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "835a3dc7d1ec9e75e2b5fb4ba75396837112d2060b03f7d43bc1897c7f7211da"
+
+[[package]]
+name = "fern"
+version = "0.6.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d9f0c14694cbd524c8720dd69b0e3179344f04ebb5f90f2e4a440c6ea3b2f1ee"
+dependencies = [
+ "log",
+]
 
 [[package]]
 name = "filetime"
@@ -1287,7 +1310,7 @@ checksum = "6fb8d784f27acf97159b40fc4db5ecd8aa23b9ad5ef69cdd136d3bc80665f0c0"
 [[package]]
 name = "graph_simple"
 version = "0.1.5"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/clean-up-json-handling#a80e2aa7816faf58aa86b6a22b7247aad80ebbf0"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/clean-up-json-handling#35e22045c84d1266067074ac3140acfa20815dc4"
 dependencies = [
  "petgraph",
  "vector_utils",
@@ -1332,7 +1355,7 @@ name = "hdf5-sys"
 version = "0.8.1"
 source = "git+https://github.com/10XGenomics/hdf5-rust.git?branch=conda_nov2021#2d4a40b7ef75de530bc53fd2eb0fe75047e083ad"
 dependencies = [
- "attohttpc 0.19.1",
+ "attohttpc 0.18.0",
  "bzip2",
  "libc",
  "libloading",
@@ -1403,7 +1426,7 @@ dependencies = [
 [[package]]
 name = "hyperbase"
 version = "0.1.8"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/clean-up-json-handling#a80e2aa7816faf58aa86b6a22b7247aad80ebbf0"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/clean-up-json-handling#35e22045c84d1266067074ac3140acfa20815dc4"
 dependencies = [
  "debruijn",
  "equiv",
@@ -1446,7 +1469,7 @@ dependencies = [
 [[package]]
 name = "io_utils"
 version = "0.3.2"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/clean-up-json-handling#a80e2aa7816faf58aa86b6a22b7247aad80ebbf0"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/clean-up-json-handling#35e22045c84d1266067074ac3140acfa20815dc4"
 dependencies = [
  "bincode",
  "flate2",
@@ -1512,7 +1535,7 @@ dependencies = [
 [[package]]
 name = "kmer_lookup"
 version = "0.1.5"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/clean-up-json-handling#a80e2aa7816faf58aa86b6a22b7247aad80ebbf0"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/clean-up-json-handling#35e22045c84d1266067074ac3140acfa20815dc4"
 dependencies = [
  "debruijn",
  "rayon",
@@ -1599,6 +1622,52 @@ checksum = "57d27b317e207b10f69f5e75494119e391a96f48861ae870d1da6edac98ca900"
 dependencies = [
  "cc",
  "libc",
+]
+
+[[package]]
+name = "martian"
+version = "0.26.0"
+source = "git+https://github.com/martian-lang/martian-rust?branch=master#345490b52d2722fe30b042d78dcd601225aaee21"
+dependencies = [
+ "anyhow",
+ "backtrace",
+ "fern",
+ "heck 0.4.0",
+ "log",
+ "rustc_version 0.4.0",
+ "serde",
+ "serde_json",
+ "tempfile",
+ "time",
+]
+
+[[package]]
+name = "martian-derive"
+version = "0.26.0"
+source = "git+https://github.com/martian-lang/martian-rust?branch=master#345490b52d2722fe30b042d78dcd601225aaee21"
+dependencies = [
+ "martian",
+ "proc-macro2",
+ "quote",
+ "serde",
+ "syn 2.0.52",
+]
+
+[[package]]
+name = "martian-filetypes"
+version = "0.27.0"
+source = "git+https://github.com/martian-lang/martian-rust?branch=master#345490b52d2722fe30b042d78dcd601225aaee21"
+dependencies = [
+ "anyhow",
+ "bincode",
+ "csv",
+ "flate2",
+ "lz4",
+ "martian",
+ "martian-derive",
+ "serde",
+ "serde_json",
+ "zstd",
 ]
 
 [[package]]
@@ -1715,7 +1784,7 @@ version = "0.1.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ac8cd24d9f185bb7223958d8c1ff7a961b74b1953fd05dba7cc568a63b3861ec"
 dependencies = [
- "rustc_version",
+ "rustc_version 0.1.7",
 ]
 
 [[package]]
@@ -1748,6 +1817,12 @@ checksum = "97fbc387afefefd5e9e39493299f3069e14a140dd34dc19b4c1c1a8fddb6a790"
 dependencies = [
  "num-traits",
 ]
+
+[[package]]
+name = "num-conv"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "51d515d32fb182ee37cda2ccdcb92950d6a3c2893aa280e540671c2cd0f3b1d9"
 
 [[package]]
 name = "num-integer"
@@ -1787,6 +1862,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "19e64526ebdee182341572e50e9ad03965aa510cd94427a4549448f285e957a1"
 dependencies = [
  "hermit-abi",
+ "libc",
+]
+
+[[package]]
+name = "num_threads"
+version = "0.1.7"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5c7398b9c8b70908f6371f47ed36737907c87c52af34c268fed0bf0ceb92ead9"
+dependencies = [
  "libc",
 ]
 
@@ -1886,7 +1970,7 @@ checksum = "d4fd5641d01c8f18a23da7b6fe29298ff4b55afcccdf78973b24cf3175fee32e"
 [[package]]
 name = "perf_stats"
 version = "0.1.8"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/clean-up-json-handling#a80e2aa7816faf58aa86b6a22b7247aad80ebbf0"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/clean-up-json-handling#35e22045c84d1266067074ac3140acfa20815dc4"
 dependencies = [
  "io_utils",
  "libc",
@@ -2012,6 +2096,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "powerfmt"
+version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "439ee305def115ba05938db6eb1644ff94165c5ab5e9420d1c1bcedbba909391"
+
+[[package]]
 name = "pprof"
 version = "0.9.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2043,7 +2133,7 @@ checksum = "eb9f9e6e233e5c4a35559a617bf40a4ec447db2e84c20b55a6f83167b7e57872"
 [[package]]
 name = "pretty_trace"
 version = "0.5.24"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/clean-up-json-handling#a80e2aa7816faf58aa86b6a22b7247aad80ebbf0"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/clean-up-json-handling#35e22045c84d1266067074ac3140acfa20815dc4"
 dependencies = [
  "backtrace",
  "io_utils",
@@ -2353,7 +2443,16 @@ version = "0.1.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c5f5376ea5e30ce23c03eb77cbe4962b988deead10910c372b226388b594c084"
 dependencies = [
- "semver",
+ "semver 0.1.20",
+]
+
+[[package]]
+name = "rustc_version"
+version = "0.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "bfa0f585226d2e68097d4f95d113b15b83a82e819ab25717ec0590d9584ef366"
+dependencies = [
+ "semver 1.0.22",
 ]
 
 [[package]]
@@ -2426,6 +2525,12 @@ name = "semver"
 version = "0.1.20"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d4f410fedcf71af0345d7607d246e7ad15faaadd49d240ee3b24e5dc21a820ac"
+
+[[package]]
+name = "semver"
+version = "1.0.22"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "92d43fe69e652f3df9bdc2b85b2854a0825b86e4fb76bc44d945137d053639ca"
 
 [[package]]
 name = "serde"
@@ -2530,12 +2635,12 @@ dependencies = [
 [[package]]
 name = "stats_utils"
 version = "0.1.3"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/clean-up-json-handling#a80e2aa7816faf58aa86b6a22b7247aad80ebbf0"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/clean-up-json-handling#35e22045c84d1266067074ac3140acfa20815dc4"
 
 [[package]]
 name = "string_utils"
 version = "0.1.4"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/clean-up-json-handling#a80e2aa7816faf58aa86b6a22b7247aad80ebbf0"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/clean-up-json-handling#35e22045c84d1266067074ac3140acfa20815dc4"
 dependencies = [
  "vector_utils",
 ]
@@ -2622,7 +2727,7 @@ dependencies = [
 [[package]]
 name = "tables"
 version = "0.1.5"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/clean-up-json-handling#a80e2aa7816faf58aa86b6a22b7247aad80ebbf0"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/clean-up-json-handling#35e22045c84d1266067074ac3140acfa20815dc4"
 dependencies = [
  "io_utils",
  "itertools",
@@ -2681,6 +2786,39 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8ab1f382b10dd7ff9926b5c33374bc4011b27c82ee890c741aef2bd3fa0d10ba"
 dependencies = [
  "libc",
+]
+
+[[package]]
+name = "time"
+version = "0.3.34"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c8248b6521bb14bc45b4067159b9b6ad792e2d6d754d6c41fb50e29fefe38749"
+dependencies = [
+ "deranged",
+ "itoa 1.0.1",
+ "libc",
+ "num-conv",
+ "num_threads",
+ "powerfmt",
+ "serde",
+ "time-core",
+ "time-macros",
+]
+
+[[package]]
+name = "time-core"
+version = "0.1.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ef927ca75afb808a4d64dd374f00a2adf8d0fcff8e7b184af886c3c87ec4a3f3"
+
+[[package]]
+name = "time-macros"
+version = "0.2.17"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7ba3a3ef41e6672a2f0f001392bb5dcd3ff0a9992d618ca761a11c3121547774"
+dependencies = [
+ "num-conv",
+ "time-core",
 ]
 
 [[package]]
@@ -2880,7 +3018,7 @@ checksum = "bc5cf98d8186244414c848017f0e2676b3fcb46807f6668a97dfe67359a3c4b7"
 [[package]]
 name = "vdj_ann"
 version = "0.4.4"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/clean-up-json-handling#a80e2aa7816faf58aa86b6a22b7247aad80ebbf0"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/clean-up-json-handling#35e22045c84d1266067074ac3140acfa20815dc4"
 dependencies = [
  "align_tools",
  "amino",
@@ -2902,7 +3040,7 @@ dependencies = [
 [[package]]
 name = "vdj_ann_ref"
 version = "0.2.1"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/clean-up-json-handling#a80e2aa7816faf58aa86b6a22b7247aad80ebbf0"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/clean-up-json-handling#35e22045c84d1266067074ac3140acfa20815dc4"
 dependencies = [
  "debruijn",
  "exons",
@@ -2920,7 +3058,7 @@ dependencies = [
 [[package]]
 name = "vdj_types"
 version = "0.2.0"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/clean-up-json-handling#a80e2aa7816faf58aa86b6a22b7247aad80ebbf0"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/clean-up-json-handling#35e22045c84d1266067074ac3140acfa20815dc4"
 dependencies = [
  "serde",
 ]
@@ -2937,7 +3075,7 @@ dependencies = [
 [[package]]
 name = "vector_utils"
 version = "0.1.5"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/clean-up-json-handling#a80e2aa7816faf58aa86b6a22b7247aad80ebbf0"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/clean-up-json-handling#35e22045c84d1266067074ac3140acfa20815dc4"
 dependencies = [
  "permutation",
  "superslice",

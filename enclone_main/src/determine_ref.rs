@@ -4,6 +4,8 @@
 
 use enclone_core::defs::EncloneControl;
 use io_utils::{open_for_read, open_maybe_compressed, path_exists};
+use martian_filetypes::json_file::{Json, LazyJsonReader};
+use martian_filetypes::LazyRead;
 use std::collections::HashMap;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
@@ -292,10 +294,12 @@ pub fn determine_ref(ctl: &mut EncloneControl, refx: &mut String) -> Result<(), 
             }
         }
         erase_if(&mut refhash, &to_delete);
-        'json_entry: for ann in
-            serde_json::Deserializer::from_reader(BufReader::new(open_maybe_compressed(&jsonx)))
-                .into_iter::<ContigAnnotation>()
-        {
+
+        let reader: LazyJsonReader<ContigAnnotation, Json, _> =
+            LazyJsonReader::with_reader(BufReader::new(open_maybe_compressed(&jsonx)))
+                .map_err(|err| format!("{err:#?}"))?;
+
+        'json_entry: for ann in reader.into_iter() {
             let ann = ann.unwrap();
             if ann.annotations.is_empty() {
                 return Err(format!(

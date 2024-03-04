@@ -35,6 +35,7 @@ enclone_testlist = { path = "../enclone_testlist" }
 expr_tools = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/clean-up-json-handling" }
 io_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/clean-up-json-handling" }
 itertools = "0.10"
+martian-filetypes = { git = "https://github.com/martian-lang/martian-rust", branch = "master" }
 perf_stats = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/clean-up-json-handling" }
 pretty_trace = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/clean-up-json-handling", features = ["pprof"]}
 rayon = "1"
