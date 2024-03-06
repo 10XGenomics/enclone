@@ -24,7 +24,6 @@ binary_vec_io.workspace = true
 bio_edit.workspace = true
 chrono.workspace = true
 debruijn.workspace = true
-dna.workspace = true
 edit-distance.workspace = true
 enclone.workspace = true
 enclone_core.workspace = true
