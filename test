@@ -51,7 +51,7 @@ if ( $status != 0 ) then
     exit 1
 endif
 cargo test --bin traceback1 --test enclone_test1 --test enclone_test2 --test enclone_test3 \
-    --test enclone_test4 --test enclone_test_peak_mem --no-run >& /dev/null
+    --test enclone_test4 --no-run >& /dev/null
 if ( $status != 0 ) then
     echo "compilation failed 2"
     exit 1
@@ -93,7 +93,7 @@ if ( $arg1 != linkless ) then
     endif
 else
     cargo test --bin traceback1 --test enclone_test1 --test enclone_test2 --test enclone_test3 \
-        --test enclone_test4 --test enclone_test_peak_mem --features linkless \
+        --test enclone_test4 --features linkless \
         -- --nocapture |& post_process_test
     if ( $status != 0 ) then
         echo "FAILED!"

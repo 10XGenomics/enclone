@@ -21,10 +21,9 @@ use vector_utils::{bin_member, unique_sort};
 
 pub const SITE_EXAMPLES: [(&str, &str); 28] = [
     // 1.
-    // Do not use NH5 because the bin file is too big for git.
     (
         "pages/auto/clonotype_with_gex.html",
-        "BCR=123085 CDR3=CTRDRDLRGATDAFDIW GEX=123217 H5 LVARSP=gex,IGHV3-49_g NUMI \
+        "BCR=123085 CDR3=CTRDRDLRGATDAFDIW GEX=123217 LVARSP=gex,IGHV3-49_g NUMI \
          HTML=\"enclone example with gex\"",
     ),
     // 2.
@@ -97,7 +96,7 @@ pub const SITE_EXAMPLES: [(&str, &str); 28] = [
     // 14.
     (
         "img/two_genes.svg",
-        "BCR=123085 GEX=123217 NOPRINT PLOTXY_EXACT=HLA-A_g,CD74_g,stdout H5",
+        "BCR=123085 GEX=123217 NOPRINT PLOTXY_EXACT=HLA-A_g,CD74_g,stdout",
     ),
     // 15.
     (
@@ -151,7 +150,7 @@ pub const SITE_EXAMPLES: [(&str, &str); 28] = [
     (
         "img/sim_mat_plot.svg",
         "BCR=123085 GEX=123217 SIM_MAT_PLOT=stdout,CDKN1A_g,CDKN1B_g,RBX1_g,IGLC1_g,IGLV3-21_g \
-         NOPRINT H5",
+         NOPRINT",
     ),
     // 24.
     (

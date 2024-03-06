@@ -42,7 +42,6 @@ fs_extra = "1"
 io_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
 itertools = "0.10"
 lz4 = "1"
-mirror_sparse_matrix = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
 perf_stats = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
 pretty_trace = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main", features = ["pprof"]}
 rand_chacha = "0.3"

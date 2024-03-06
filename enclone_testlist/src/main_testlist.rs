@@ -32,7 +32,7 @@ pub const TESTS: [&str; 305] = [
      CONST_IGH=IGHD"###,
     // 12. test colon lvar in KEEP_CLONO_IF_CELL_MEAN= and test for parsing error at +
     r###"BCR=86237 GEX=85679 LVARSP=g37:IGHV3-7_g_μ KEEP_CLONO_IF_CELL_MEAN="n + g37 >= 5.5"
-         MIN_CHAINS=2 NH5"###,
+         MIN_CHAINS=2"###,
     // 13. check TSV file with BC
     r###"BCR=123085 BC=testx/inputs/123077_cells.tsv PER_CELL LVARSP=T CDR3=CARGYEDFTMKYGMDVW"###,
     // 14. test cdr3_aa_conp
@@ -45,7 +45,7 @@ pub const TESTS: [&str; 305] = [
     // 17. tests gex with PER_CELL and tests n_gex
     // See also enclone_test_prebuild below, that tests nearly the same thing,
     // and tests versus the same output file.
-    r###"BCR=86237 GEX=85679 LVARSP=gex_max,gex,n_gex,CD19_ab_μ CELLS=3 PER_CELL NH5"###,
+    r###"BCR=86237 GEX=85679 LVARSP=gex_max,gex,n_gex,CD19_ab_μ CELLS=3 PER_CELL"###,
     // 18. makes sure cross filtering isn't applied to two origins from same donor
     r###"BCR=123085:123089 CDR3=CVRDEGGARPNKWNYEGAFDIW"###,
     // 19. there was a bug that caused a twosie to be deleted, and there was foursie junk
@@ -73,7 +73,7 @@ pub const TESTS: [&str; 305] = [
     r###"BCR=165807 BARCODE=CCCATACGTGATGATA-1,TCTATTGAGCTGAAAT-1"###,
     // 29. tests KEEP_CLONO_IF_CELL_MAX and parenthesized variable in it, SUM and MEAN, use of ≥
     r###"BCR=123085 GEX=123217 LVARSP=IGHV3-7_g,IGHV3-7_g_μ
-         KEEP_CLONO_IF_CELL_MAX="(IGHV3-7_g_μ)≥10000.0" MIN_CHAINS=2 SUM MEAN H5"###,
+         KEEP_CLONO_IF_CELL_MAX="(IGHV3-7_g_μ)≥10000.0" MIN_CHAINS=2 SUM MEAN"###,
     // 30. tests d_univ and d_donor
     r###"BCR=123085 CVARSP=d_univ,d_donor CDR3=CVKDRVTGTITELDYW"###,
     // 31. tests Cell Ranger 3.1 output
@@ -82,7 +82,7 @@ pub const TESTS: [&str; 305] = [
     r###"BCR=../2.0/124550 CDR3=CAREPLYYDFWSAYFDYW RE ACCEPT_BROKEN"###,
     // 33. tests SCAN
     r###"BCR=123085 GEX=123217 LVARSP=IGHV1-69D_g_μ MIN_CELLS=10 NGEX
-     SCAN="(IGHV1-69D_g_μ)>=100,(IGHV1-69D_g_μ)<=1,t-10*c>=0.1" NOPRINT H5"###,
+     SCAN="(IGHV1-69D_g_μ)>=100,(IGHV1-69D_g_μ)<=1,t-10*c>=0.1" NOPRINT"###,
     // 34. tests honeycomb plot
     // (This yields a lot of output so will be annoying to debug if something changes.)
     r###"BCR=123085:123089 MIN_CELLS=10 PLOT="stdout,s1->red,s2->blue" NOPRINT
@@ -107,17 +107,16 @@ pub const TESTS: [&str; 305] = [
          CDR3=CAADGGGDQYYYMDVW"###,
     // 40. indel was wrong
     // Note that F is deprecated, equals KEEP_CLONO_IF_CELL_MEAN.  Also test ⩾.
-    r###"BCR=86237 GEX=85679 LVARSP=IGHV3-7_g_μ F="(IGHV3-7_g_μ)⩾4.5" MIN_CHAINS=2 SUM MEAN
-         NH5"###,
+    r###"BCR=86237 GEX=85679 LVARSP=IGHV3-7_g_μ F="(IGHV3-7_g_μ)⩾4.5" MIN_CHAINS=2 SUM MEAN"###,
     // 41. test case for gex_cell
-    r###"BCR=86237 GEX=85679 CDR3=CAKAVAGKAVAGGWDYW POUT=stdouth PCOLS=gex_cell PCELL NH5"###,
+    r###"BCR=86237 GEX=85679 CDR3=CAKAVAGKAVAGGWDYW POUT=stdouth PCOLS=gex_cell PCELL"###,
     // 42. test case that should fail because gex_cell doesn't make sense without gex data
     r###"BCR=85333 CDR3=CQQRSNWPLYTF POUT=stdouth PCOLS=gex_cell PCELL PER_CELL EXPECT_FAIL"###,
     // 43. test case that should fail because _cell variables can't be used in LVARS
     r###"BCR=86237 GEX=85679 CDR3=CAKAVAGKAVAGGWDYW LVARS=gex_cell EXPECT_FAIL"###,
     // 44. test _cell
     r###"BCR=86237 GEX=85679 LVARSP=gex,RPS27_g_μ CELLS=3 POUT=stdouth
-         PCOLS=barcode,gex_cell,CD19_ab,CD19_ab_cell NH5 PCELL"###,
+         PCOLS=barcode,gex_cell,CD19_ab,CD19_ab_cell PCELL"###,
     // 45. test ndiff...
     r###"BCR=123085 CVARSP=ndiff1vj,ndiff2vj CDR3=CARDQNFDESSGYDAFDIW"###,
     // 46. test u_μ, u_min, r_μ, r_min and r_max
@@ -126,8 +125,7 @@ pub const TESTS: [&str; 305] = [
     // 47. this should fail
     r###"BCR=85333 CDR3=CAREEYYYDSSGDAFDIW LVARSP=gex_mean EXPECT_FAIL"###,
     // 48. test gex_mean and gex_Σ and NGEX
-    // Do not use NH5 because the bin file is too big for git.
-    r###"BCR=123085 GEX=123217 LVARSP=gex_mean,gex_Σ CDR3=CASRKSGNYIIYW NGEX H5"###,
+    r###"BCR=123085 GEX=123217 LVARSP=gex_mean,gex_Σ CDR3=CASRKSGNYIIYW NGEX"###,
     // 49. test HTML
     r###"BCR=85333 CDR3=CAAWDDSLNGWVF CHAINS=1 POUT=stdouth PCOLS=barcodes,n FASTA=stdout
          FASTA_AA=stdout HTML=CAAWDDSLNGWVF"###,
@@ -136,13 +134,11 @@ pub const TESTS: [&str; 305] = [
     // 51. make sure this fails gracefully
     r###"BCR=123085 PLOT=/nonexistent/broken.svg NOPRINT MIN_CELLS=50 EXPECT_FAIL"###,
     // 52. add test for some gene patterns
-    // Do not use NH5 because the bin file is too big for git.
-    r###"BCR=123085 GEX=123217 CDR3=CARPKSDYIIDAFDIW MIN_CELLS=10 H5
+    r###"BCR=123085 GEX=123217 CDR3=CARPKSDYIIDAFDIW MIN_CELLS=10
          LVARSP="(IGHV5-51|IGLV1-47)_g_%,IGH.*_g_%,IG(K|L).*_g_%""###,
     // 53. add test for _% with PER_CELL
-    // Do not use NH5 because the bin file is too big for git.
     r###"BCR=123085 GEX=123217 LVARSP="gex,n_gex,JCHAIN_g_%,IG%:IG.*_g_%" CVARS=u_μ,const
-         MIN_CHAINS_EXACT=2 CDR3=CAREGGVGVVTATDWYFDLW PER_CELL H5"###,
+         MIN_CHAINS_EXACT=2 CDR3=CAREGGVGVVTATDWYFDLW PER_CELL"###,
     // 54. make sure this fails gracefully
     r###"BCR=86237 GEX=85679 LVARSP=GERBULXXX123_g_% EXPECT_FAIL"###,
     // 55. test cred
@@ -170,9 +166,8 @@ pub const TESTS: [&str; 305] = [
     // 65. test NCELL
     r###"BCR=86237 NCELL CDR3=CAKTATTLGGYYSHGLDVW MIN_CELLS=2"###,
     // 66. test BC in combination with PER_CELL and PCELL
-    // Do not use NH5 because the bin file is too big for git.
     r###"BCR=123085 GEX=123217 BC=testx/inputs/123077_cells.csv PER_CELL LVARSP=gex,cred,T PCELL
-         POUT=stdouth PCOLS=barcode,T CDR3=CAKAGPTESGYYVWYFDLW MIN_CELLS=2 H5"###,
+         POUT=stdouth PCOLS=barcode,T CDR3=CAKAGPTESGYYVWYFDLW MIN_CELLS=2"###,
     // 67. expect fail if garbage PRE
     r###"PRE=garbage_gerbil_stuff BCR=86237 CELLS=3 EXPECT_FAIL NO_PRE"###,
     // 68. a test of PRE
@@ -210,9 +205,8 @@ pub const TESTS: [&str; 305] = [
     r###"BCR=86237 GEX=85679 CDR3=CARSFFGDTAMVMFQAFDPW POUT=stdouth PCELL
          PCOLS="barcode,IG:IG.*_g_%_cell,IG.*_g_%_cell,IGN:IG.*_g_%,IG.*_g_%""###,
     // 82. test entropy
-    // Do not use NH5 because the bin file is too big for git.
     r###"BCR=123085 GEX=123217 LVARSP=entropy PER_CELL POUT=stdouth PCELL
-         PCOLS=barcode,entropy,entropy_cell CDR3=CARAQRHDFWGGYYHYGMDVW H5"###,
+         PCOLS=barcode,entropy,entropy_cell CDR3=CARAQRHDFWGGYYHYGMDVW"###,
     // 83. test COMPLETE and dref
     r###"BCR=86237 CDR3=CARSFFGDTAMVMFQAFDPW COMPLETE LVARSP=dref"###,
     // 84. test CLUSTAL_AA
@@ -228,12 +222,10 @@ pub const TESTS: [&str; 305] = [
     // 89. test TREE and NEWICK
     r###"BCR=123085 COMPLETE TREE NEWICK CDR3=CARDLGGRYYGSKDPW"###,
     // 90. test KEEP_CELL_IF with non-null value
-    // Do not use NH5 because the bin file is too big for git.
-    r###"BCR=123085 GEX=123217 H5 BC=testx/inputs/123077_cells.csv PER_CELL LVARSP=gex,cred,T
+    r###"BCR=123085 GEX=123217 BC=testx/inputs/123077_cells.csv PER_CELL LVARSP=gex,cred,T
          CDR3=CARGYEDFTMKYGMDVW KEEP_CELL_IF="keeper == 'yes'""###,
     // 91. test FCELL with null value
-    // Do not use NH5 because the bin file is too big for git.
-    r###"BCR=123085 GEX=123217 H5 BC=testx/inputs/123077_cells.csv PER_CELL LVARSP=gex,cred,T
+    r###"BCR=123085 GEX=123217 BC=testx/inputs/123077_cells.csv PER_CELL LVARSP=gex,cred,T
          CDR3=CARGYEDFTMKYGMDVW FCELL="keeper == ''""###,
     // 92. test NALL_CELL
     r###"BCR=123085 NALL_CELL CDR3=CQKYDSAPLTF MIN_CELLS=20"###,
@@ -463,9 +455,9 @@ pub const TESTS: [&str; 305] = [
     // 193. check that this fails gracefully
     r###"NOPRINT EXPECT_FAIL"###,
     // 194. this crashed at one point
-    r###"BCR=86237 GEX=85679 LVARSP=g37:IGHV3-7_g_μ NH5 POUT=stdout PCOLS=g37 EXPECT_OK"###,
+    r###"BCR=86237 GEX=85679 LVARSP=g37:IGHV3-7_g_μ POUT=stdout PCOLS=g37 EXPECT_OK"###,
     // 195. failed at one point
-    r###"BCR=86237 GEX=85679 LVARSP=woof:IGHV3-7_g_μ NH5 POUT=stdout PCOLS=woof EXPECT_OK"###,
+    r###"BCR=86237 GEX=85679 LVARSP=woof:IGHV3-7_g_μ POUT=stdout PCOLS=woof EXPECT_OK"###,
     // 196. test TREE=n
     r###"BCR=123085 COMPLETE TREE=n CDR3=CARDLGGRYYGSKDPW"###,
     // 197. failed at one point
@@ -477,7 +469,7 @@ pub const TESTS: [&str; 305] = [
          KEEP_CLONO_IF_CELL_MEAN="moo>0""###,
     // 200. test SCAN_EXACT
     r###"BCR=123085 GEX=123217 LVARSP=IGHV1-69D_g_μ,IGHV3-64D_g_μ MIN_CELLS=10 
-         SCAN="(IGHV1-69D_g_μ)>=1800,(IGHV3-64D_g_μ)>=100,t-10*c>=5.0" NOPRINT H5 SCAN_EXACT"###,
+         SCAN="(IGHV1-69D_g_μ)>=1800,(IGHV3-64D_g_μ)>=100,t-10*c>=5.0" NOPRINT SCAN_EXACT"###,
     // 201. test SOURCE
     r###"SOURCE=testx/inputs/123085_args AMINO=cdr2,cdr3"###,
     // 202. DUPLICATE TO REPLACE
@@ -492,7 +484,7 @@ pub const TESTS: [&str; 305] = [
          PCOLS=moo LVARS=moo PCELL PER_CELL"###,
     // 205. test g<d> with PER_CELL and PCELL
     r###"BCR=123085 GEX=123217 AMINO=cdr3 LVARS=g15 CDR3=CARVRDILTGDYGMDVW POUT=stdout PCOLS=g15
-         PCELL PER_CELL H5"###,
+         PCELL PER_CELL"###,
     // 206. test origins with PER_CELL and PCELL
     r###"BCR=123085:123089 AMINO= CDR3=CTRAGFLSYQLLSYYYYGMDVW FOLD_HEADERS POUT=stdout PCELL
          PER_CELL PCOLS=origins LVARSP=origins"###,
@@ -515,13 +507,13 @@ pub const TESTS: [&str; 305] = [
          CDR3=CSAGQGDTEAFF"###,
     // 213. test cred with PER_CELL and PCELL
     r###"BCR=123085 GEX=123217 AMINO=cdr3 LVARS=cred CVARS=u POUT=stdout PCOLS=cred,cred_cell
-         PCELL PER_CELL H5 CDR3=CARDPEDIVLMVYAMGGNYGMDVW"###,
+         PCELL PER_CELL CDR3=CARDPEDIVLMVYAMGGNYGMDVW"###,
     // 214. test n_<name> with PER_CELL and PCELL
     r###"BCR=123085:123089 AMINO=cdr3 FOLD_HEADERS POUT=stdout PCELL PER_CELL PCOLS=n_s1
          LVARS=datasets,n_s1 CDR3=CARDLFVLVPAAITYYYGMDVW CVARS=u"###,
     // 215. test n_gex with PER_CELL and PCELL
     r###"BCR=123085 GEX=123217 AMINO=cdr3 LVARS=n_gex POUT=stdout PCOLS=n_gex,n_gex_cell PCELL 
-         PER_CELL H5 CDR3=CAKDKVPRRSSWSVFDYYGMDVW"###,
+         PER_CELL CDR3=CAKDKVPRRSSWSVFDYYGMDVW"###,
     // 216. test near with PER_CELL and PCELL
     r###"BCR=123085 AMINO=cdr3 POUT=stdout PCELL PER_CELL LVARSP=near PCOLS=near CVARS=u
          CDR3=CARHLQWELPYW"###,
@@ -539,7 +531,7 @@ pub const TESTS: [&str; 305] = [
          PCOLS=cdr3_aa_conp2 CVARS=cdr3_aa_conp"###,
     // 221. test RPS27_g with PER_CELL and PCELL
     r###"BCR=123085 GEX=123217 AMINO=cdr3 POUT=stdout PCOLS=RPS27_g,RPS27_g_cell PCELL
-         PER_CELL H5 CDR3=CAREVEQWLERNTLDYW LVARSP=RPS27_g"###,
+         PER_CELL CDR3=CAREVEQWLERNTLDYW LVARSP=RPS27_g"###,
     //
     // OTHER TESTS
     //
@@ -557,7 +549,7 @@ pub const TESTS: [&str; 305] = [
     // MORE TESTS OF PER_CELL AND PCELL
     //
     // 226. test RPS27_g_mean with PER_CELL and PCELL
-    r###"BCR=123085 GEX=123217 AMINO=cdr3 POUT=stdout PCOLS=RPS27_g_mean PCELL PER_CELL H5
+    r###"BCR=123085 GEX=123217 AMINO=cdr3 POUT=stdout PCOLS=RPS27_g_mean PCELL PER_CELL
          CDR3=CAREVEQWLERNTLDYW LVARSP=RPS27_g_mean CVARS=u"###,
     // 227. test datasets, donors, origins with PER_CELL and PCELL
     r###"BCR=123085:123089 CELLS=5 AMINO= CDR3=CTRAGFLSYQLLSYYYYGMDVW FOLD_HEADERS POUT=stdout
@@ -577,10 +569,10 @@ pub const TESTS: [&str; 305] = [
     // 231. test ≤
     r###"BCR=86237 KEEP_CLONO_IF_CELL_MEAN="u2≤150" NOPRINT SUMMARY SUMMARY_CLEAN"###,
     // 232. test nonsense variable in linear constraint
-    r###"BCR=86237 KEEP_CLONO_IF_CELL_MAX="gexzz > 8000" EXPECT_FAIL H5"###,
+    r###"BCR=86237 KEEP_CLONO_IF_CELL_MAX="gexzz > 8000" EXPECT_FAIL"###,
     // 233. test use of two linear constraints
     r###"BCR=123085 GEX=123217
-         KEEP_CLONO_IF_CELL_MAX="gex > 8000" KEEP_CLONO_IF_CELL_MAX="gex < 8200" H5"###,
+         KEEP_CLONO_IF_CELL_MAX="gex > 8000" KEEP_CLONO_IF_CELL_MAX="gex < 8200" "###,
     // 234. test tooltip comments; this is via a testing-only filename option gui_stdout
     r###"BCR=123085 MIN_CELLS=10 PLOT_BY_ISOTYPE=gui_stdout NOPRINT MIN_CHAINS_EXACT=2"###,
     // 235. test that v_name etc. do not appear in parseable output if chain is absent
@@ -596,7 +588,7 @@ pub const TESTS: [&str; 305] = [
     // 240. test sym option for PLOTXY_EXACT
     r###"BCR=123085 PLOTXY_EXACT=u1,u2,stdout,sym NOPRINT"###,
     // 241. test KEEP_CELL_IF on gex var
-    r###"BCR=123085 GEX=123217 LVARSP=IGHM_g KEEP_CELL_IF="IGHM_g>=10" CDR3=CARRYFGVVADAFDIW H5"###,
+    r###"BCR=123085 GEX=123217 LVARSP=IGHM_g KEEP_CELL_IF="IGHM_g>=10" CDR3=CARRYFGVVADAFDIW"###,
     // 242. test nchains_present
     r###"BCR=86237 LVARSP=nchains_present CDR3=CARSFFGDTAMVMFQAFDPW"###,
     // 243. this crashed at one point
@@ -674,8 +666,8 @@ pub const TESTS: [&str; 305] = [
     // 268. a test of VAR_DEF
     r###"BCR=86237 GEX=85679 VAR_DEF="pink:PINK1-AS_g" LVARSP=pink CDR3=CARSFFGDTAMVMFQAFDPW
          FOLD_HEADERS PER_CELL AMINO="###,
-    // 269. test fb variables
-    r###"BCR=86237 GEX=85679 ALLOW_INCONSISTENT NGEX LVARSP=fb1,fb1_n PER_CELL AMINO=cdr3 CVARS=             FOLD_HEADERS POUT=stdouth PCOLS=fb2,fb2_n,fb2_n_cell PCELL CDR3=CARSFFGDTAMVMFQAFDPW"###,
+    // 269. used to test fb variables, now duplicating test 270 since this feature has been deleted
+    r###"BCR=123085 CDR3=CTRDRDLRGATDAFDIW AMINO=cdr3,fwr4 NOSPACES CONX"###,
     // 270. test NOSPACES
     r###"BCR=123085 CDR3=CTRDRDLRGATDAFDIW AMINO=cdr3,fwr4 NOSPACES CONX"###,
     // 271. test for weird path bug

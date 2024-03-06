@@ -227,16 +227,6 @@ your terminal window to get the change to <code>PATH</code> to take effect.</li>
 <td align="left">full</td>
 </tr>
 
-<tr>
-<td align="left">3</td>
-<td align="left"><code>test_vis</code></td>
-<td align="left">many tests of <span style="color:rgb(120,123,175);font-weight:900">enclone visual</span> using screenshots</td>
-<td align="left">N/A</td>
-<td align="left">1</td>
-<td align="left">none</td>
-<td align="left">N/A</td>
-</tr>
-
 </tbody>
 </table>
 
@@ -278,7 +268,6 @@ other people can run the test with their own personal regression test images.</l
 and uses the code there as part of the test process.  To get versions fully synced, you need to 
 <code>touch enclone/enclone_core/defs.rs</code> on the Linux server and then <code>cargo b</code>.
 Otherwise you’ll get an error message.</li>
-<li>See the file <code>enclone_visual/src/bin/test_vis.rs</code>.</li>
 </ul>
 </p>
 
@@ -302,7 +291,6 @@ Otherwise you’ll get an error message.</li>
     it returned zero exit status, even though when called e.g. from a script, it would return
     a nonzero value.
 </li>
-<li>Manual tests listed at the bottom of <code>enclone_visual/src/testsuite.rs</code>.</li>
 </ul>
 </p>
 
@@ -312,7 +300,6 @@ Otherwise you’ll get an error message.</li>
 There are some other major things that are not tested:
 <ul>
 <li>Compilation of <span style="color:rgb(120,123,175);font-weight:900">enclone</span> under Windows.</li>
-<li>Functionality of <span style="color:rgb(120,123,175);font-weight:900">enclone visual</span> under Linux and Windows.</li>
 <li>Functionality of <code>hdf5</code> under Windows (which was previously broken).</li>
 </ul>
 </th>

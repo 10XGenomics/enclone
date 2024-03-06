@@ -5,10 +5,10 @@
 use ansi_escape::*;
 use anyhow::Error;
 use enclone_core::defs::*;
-use enclone_core::main_testlist::*;
 use enclone_core::*;
 use enclone_proto::proto_io::{read_proto, ClonotypeIter};
 use enclone_proto::types::EncloneOutputs;
+use enclone_testlist::main_testlist::*;
 use enclone_testlist::*;
 use enclone_tools::html::*;
 use enclone_tools::run_test::*;
@@ -55,9 +55,6 @@ fn test_site_examples() {
         f.read_to_end(&mut in_stuff).unwrap();
         let mut args = parse_bsv(&test);
         args.push("NO_KILL");
-        if args.contains(&"GEX=123217") && !args.contains(&"H5") {
-            panic!("Oops please fix this, to prevent sporadic failures.");
-        }
         let new = Command::new(env!("CARGO_BIN_EXE_enclone"))
             .args(&args)
             .output()
@@ -128,7 +125,7 @@ fn test_site_examples() {
     for i in 0..results.len() {
         print!("{}", results[i].2);
         if results[i].1 {
-            std::process::exit(1);
+            panic!("failed");
         }
     }
     insert_html(
@@ -151,7 +148,7 @@ fn test_site_examples() {
             fwrite!(f, "{}", new_index);
         }
         eprintln!("Please diff index.html enclone_exec/testx/outputs/index.html.new.\n");
-        std::process::exit(1);
+        panic!("failed");
     }
     /*
     if read_to_string("../pages/auto/expanded.html").unwrap()
@@ -161,7 +158,7 @@ fn test_site_examples() {
         != read_to_string("testx/outputs/expanded.html").unwrap()
     {
         eprintln!("\nContent of expanded.html has changed.\n");
-        std::process::exit(1);
+        panic!("failed");
     }
 }
 
@@ -178,9 +175,6 @@ fn test_enclone_examples() {
         let out_file = format!("../enclone_help/src/example{}", t + 1);
         let old = read_to_string(&out_file).unwrap();
         let args = testn.split(' ').collect::<Vec<&str>>();
-        if args.contains(&"GEX=123217") && !args.contains(&"H5") {
-            panic!("Oops please fix this, to prevent sporadic failures.");
-        }
         let mut new = Command::new(env!("CARGO_BIN_EXE_enclone"));
         let mut new = new.arg(format!(
             "PRE=../enclone-data/big_inputs/version{}",
@@ -202,7 +196,7 @@ fn test_enclone_examples() {
                 strme(&new.stderr),
             );
             eprintln!("If it's not clear what is happening, make sure you've run ./build.\n");
-            std::process::exit(1);
+            panic!("failed");
         }
         if old != new2 {
             eprintln!(
@@ -211,7 +205,7 @@ fn test_enclone_examples() {
             );
             eprintln!("old output =\n{}", old);
             eprintln!("new output =\n{}\n", new2);
-            std::process::exit(1);
+            panic!("failed");
         }
     }
 }
@@ -318,7 +312,7 @@ fn test_help_output() {
         if new.status.code() != Some(0) {
             eprintln!("Attempt to run {} failed.\n", command);
             eprintln!("stderr = {}", strme(&new.stderr));
-            std::process::exit(1);
+            panic!("failed");
         }
         let new2 = edit_html(&stringme(&new.stdout));
         if old != new2 {
@@ -329,7 +323,7 @@ fn test_help_output() {
                     assuming that the change is expected.\n",
                 p
             );
-            std::process::exit(1);
+            panic!("failed");
         }
     }
 }
@@ -354,15 +348,15 @@ fn test_help_no_stable() {
         .expect(&format!("failed to execute test_help_output"));
     if new.status.code() != Some(0) {
         eprintln!("Attempt to run enclone help all without STABLE_DOC failed.\n");
-        std::process::exit(1);
+        panic!("failed");
     }
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// 21. Test that PREBUILD works.  Because this creates and then deletes the .bin file, it
-// would play havoc with any test that runs with GEX=123217, unless it also has H5, resulting
-// in sporadic (rare) test failures.  So don't do that.
+// 21. Test that PREBUILD works.  This test used to exercise creation of the
+// binary matrix format, since removed.  It's not entirely clear what purpose this
+// test is serving now, beyond yet another regression test.
 
 #[cfg(not(feature = "cpu"))]
 #[test]
@@ -377,11 +371,9 @@ fn test_enclone_prebuild() {
         remove_file(&mb).unwrap();
     }
 
-    // First pass: run with NH5.
-
     let test_id = 48;
     let it = test_id - 1;
-    let testn = format!("{} NH5", TESTS[it]);
+    let testn = TESTS[it];
     let out_file = format!("testx/inputs/outputs/enclone_test{}_output", test_id);
     let old = read_to_string(&out_file).unwrap();
     let args = testn.split(' ').collect::<Vec<&str>>();
@@ -411,17 +403,10 @@ fn test_enclone_prebuild() {
         eprintln!("old output =\n{}\n", old);
         eprintln!("new output =\n{}\n", new2);
         eprintln!("new stderr = \n{}\n", strme(&new.stderr));
-        std::process::exit(1);
-    }
-    if !path_exists(&format!(
-        "../enclone-data/big_inputs/version{}/123217/outs/feature_barcode_matrix.bin",
-        TEST_FILES_VERSION
-    )) {
-        panic!("\nenclone_test_prebuild: did not create feature_barcode_matrix.bin.");
+        panic!("failed");
     }
 
-    // Second pass: run without PREBUILD but using the feature_barcode_matrix.bin that the first
-    // pass created.
+    // Second pass: run without PREBUILD
 
     let testn = TESTS[it];
     let args = testn.split(' ').collect::<Vec<&str>>();
@@ -448,16 +433,9 @@ fn test_enclone_prebuild() {
              And don't forget to remove feature_barcode_matrix.bin.\n"
         );
         eprintln!("new output =\n{}\n", new2);
-        std::process::exit(1);
+        panic!("failed");
     }
 
-    // Clean up: delete feature_barcode_matrix.bin.
-
-    std::fs::remove_file(&format!(
-        "../enclone-data/big_inputs/version{}/123217/outs/feature_barcode_matrix.bin",
-        TEST_FILES_VERSION
-    ))
-    .unwrap();
     println!("\nused {:.2} seconds in enclone_test_prebuild", elapsed(&t));
 }
 
@@ -526,7 +504,7 @@ fn test_proto_write() -> Result<(), Error> {
         let outputs_bin: EncloneOutputs = io_utils::read_obj(&bin_file);
         if outputs_proto != outputs_bin {
             eprintln!("\noutputs_proto is not equal to outputs_bin\n");
-            std::process::exit(1);
+            panic!("failed");
         }
 
         // Test to make sure that the clonotype iterator works
@@ -571,7 +549,7 @@ fn test_proto_write() -> Result<(), Error> {
                 point where the two files differ (or conceivably before)\n\
                 7. analyze what is happening with that barcode\n"
             );
-            std::process::exit(1);
+            panic!("failed");
         }
     }
     Ok(())
@@ -618,7 +596,7 @@ fn test_annotated_example() {
         );
         emit_end_escape(&mut log);
         eprintln!("{}", strme(&log));
-        std::process::exit(1);
+        panic!("failed");
     }
 }
 
@@ -665,7 +643,7 @@ fn test_subset_json() {
                 pass,
                 strme(&new.stderr),
             );
-            std::process::exit(1);
+            panic!("failed");
         }
         let o1 = new.stdout;
         let mut args = vec!["BCR=testx/outputs/woof".to_string()];
@@ -689,7 +667,7 @@ fn test_subset_json() {
                 pass,
                 strme(&new.stderr),
             );
-            std::process::exit(1);
+            panic!("failed");
         }
         let o2 = new.stdout;
         if o1 != o2 {
@@ -699,7 +677,7 @@ fn test_subset_json() {
             );
             eprintln!("output 1:\n{}\n", strme(&o1));
             eprintln!("output 2:\n{}\n", strme(&o2));
-            std::process::exit(1);
+            panic!("failed");
         }
         let _ = remove_dir_all("testx/outputs/woof");
     }
@@ -740,7 +718,6 @@ fn test_cell_exact() {
                     .arg(&pre_arg)
                     .arg("BCR=86237")
                     .arg("GEX=85679")
-                    .arg("NH5")
                     .arg("POUT=stdout")
                     .arg(&format!("PCOLS={}", varp))
                     .arg("PCELL")
@@ -762,7 +739,7 @@ fn test_cell_exact() {
             );
         }
         eprintln!("\n{}", msg);
-        std::process::exit(1);
+        panic!("failed");
     }
 }
 
@@ -783,10 +760,10 @@ fn test_ref_only() {
         .expect(&format!("failed to execute test_subset_json 1"));
     if new.status.code() == Some(0) {
         eprint!("\ntest_ref_only: enclone command should not have succeeded.\n");
-        std::process::exit(1);
+        panic!("failed");
     }
     if !strme(&new.stderr).contains("No TCR or BCR data have been specified.") {
         eprintln!("\ntest_ref_only: unexpected error message\n");
-        std::process::exit(1);
+        panic!("failed");
     }
 }

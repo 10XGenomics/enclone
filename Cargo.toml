@@ -9,17 +9,8 @@ members = [
     "enclone_tail",
     "enclone_tools",
     "enclone_version",
-    "enclone_visual",
     "enclone_build",
     "enclone_testlist",
-]
-
-exclude = [
-    "bugs/button_text_update_issue",
-    "bugs/canvas_in_scrollable",
-    # excluding because it's a nuisance to support this
-    # to restore, add back svg to features for iced
-    "scroll_crash",
 ]
 
 resolver = "2"

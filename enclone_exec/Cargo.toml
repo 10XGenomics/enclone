@@ -28,7 +28,6 @@ chrono = { version = "0.4", default-features = false, features = ["std", "clock"
 enclone_core = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
 enclone_main = { path = "../enclone_main" }
 enclone_testlist = { path = "../enclone_testlist" }
-enclone_visual = { path = "../enclone_visual", optional=true }
 flate2 = "1"
 home = "0.5"
 io_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
@@ -59,7 +58,7 @@ stats_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = 
 yaml-rust = "0.4"
 
 [features]
-default = ["enclone_visual"]
+default = []
 basic = []
 cpu = []
 linkless = []

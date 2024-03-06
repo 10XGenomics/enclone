@@ -36,7 +36,6 @@ fontdb = "0.7"
 io_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
 itertools = "0.10"
 lazy_static = "1"
-mirror_sparse_matrix = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
 ndarray = "0.15"
 palette = "0.6"
 perf_stats = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }

@@ -56,7 +56,7 @@ pub fn fetch_atoms(pdb: &PdbStructure, chain: usize, seq: &[u8]) -> Vec<[f32; 3]
         }
     }
     eprintln!("fetch_atoms failed");
-    std::process::exit(1);
+    panic!("failed");
 }
 
 pub fn mean_dist(a: &Vec<[f32; 3]>, b: &Vec<[f32; 3]>) -> f32 {
@@ -138,7 +138,7 @@ fn main() {
             "\nFailed to find EGFN in spike:\n{}.\n",
             strme(&pdb.chains[spike])
         );
-        std::process::exit(1);
+        panic!("failed");
     }
 
     // Find SASFSTF in the spike.
