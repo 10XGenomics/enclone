@@ -22,7 +22,7 @@ byteorder = "1"
 bytes = "1"
 dirs = "4"
 flate2 = "1"
-io_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/delete_pretty_trace" }
+io_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/delete-client-server" }
 itertools = "0.10"
 ndarray = "0.15"
 permutation = "0.4"
@@ -34,11 +34,11 @@ rayon = "1"
 regex = { version = "1", default-features = false, features = ["std", "perf"] }
 serde = "1"
 serde_derive = "1"
-stats_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/delete_pretty_trace" }
-stirling_numbers = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/delete_pretty_trace" }
-string_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/delete_pretty_trace" }
+stats_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/delete-client-server" }
+stirling_numbers = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/delete-client-server" }
+string_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/delete-client-server" }
 tar = "0.4"
-vector_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/delete_pretty_trace" }
+vector_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/delete-client-server" }
 
 [target.'cfg(not(windows))'.dependencies]
 pager = "0.16"

@@ -22,23 +22,23 @@ publish = false
 # To keep compile time down, this file should *not* access the enclone crate.
 
 [dependencies]
-align_tools = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/delete_pretty_trace" }
-amino = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/delete_pretty_trace" }
-ansi_escape = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/delete_pretty_trace" }
-bio_edit = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/delete_pretty_trace" }
+align_tools = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/delete-client-server" }
+amino = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/delete-client-server" }
+ansi_escape = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/delete-client-server" }
+bio_edit = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/delete-client-server" }
 crc = "2"
 debruijn = "0.3"
-enclone_core = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/delete_pretty_trace" }
-enclone_proto = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/delete_pretty_trace" }
-equiv = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/delete_pretty_trace" }
+enclone_core = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/delete-client-server" }
+enclone_proto = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/delete-client-server" }
+equiv = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/delete-client-server" }
 float-ord = "0.3"
 fontdb = "0.7"
-io_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/delete_pretty_trace" }
+io_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/delete-client-server" }
 itertools = "0.10"
 lazy_static = "1"
 ndarray = "0.15"
 palette = "0.6"
-perf_stats = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/delete_pretty_trace" }
+perf_stats = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/delete-client-server" }
 plotters = { version = "0.3", default_features = false, features = ["svg_backend", "point_series"] }
 
 rayon = "1"
@@ -46,16 +46,16 @@ resvg = { version = "0.19", default-features = false }
 serde = "1"
 serde_derive = "1"
 serde_json = "1"
-stats_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/delete_pretty_trace" }
-string_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/delete_pretty_trace" }
+stats_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/delete-client-server" }
+string_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/delete-client-server" }
 superslice = "1"
-tables = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/delete_pretty_trace" }
+tables = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/delete-client-server" }
 tar = "0.4"
 tiny-skia = "0.6"
 triple_accel = "0.4"
 usvg = { version = "0.19", features = ["text"] }
-vdj_ann = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/delete_pretty_trace" }
-vector_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/delete_pretty_trace" }
+vdj_ann = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/delete-client-server" }
+vector_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/delete-client-server" }
 enclone_help = { path = "../enclone_help" }
 enclone_build = { path = "../enclone_build" }
 # to replace by this after bumping version

@@ -11,12 +11,12 @@ chrono = { version = "0.4", default-features = false, features = ["std", "clock"
 itertools = "0.10"
 rayon = "1"
 
-string_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/delete_pretty_trace" }
-enclone_core = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/delete_pretty_trace" }
+string_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/delete-client-server" }
+enclone_core = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/delete-client-server" }
 
 [build-dependencies]
 chrono = { version = "0.4", default-features = false, features = ["std", "clock"] }
-string_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/delete_pretty_trace" }
+string_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/delete-client-server" }
 
 [dev-dependencies]
 assert_cmd = "2"

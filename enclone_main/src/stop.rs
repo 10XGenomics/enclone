@@ -241,22 +241,6 @@ pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<EncloneState
     erase_if(&mut pics, &to_delete);
     ctl.perf_stats(&t, "degrouping");
 
-    // Process TOY_COM option.
-
-    if ctl.gen_opt.toy_com {
-        println!(
-            "\nHello, enclone is now in server mode.  Hopefully you have already started\n\
-            enclone_client in a separate terminal window, before starting enclone, because\n\
-            otherwise the system won't work.  The client should now show a prompt.\n"
-        );
-        /*
-        enclone_server(&ctl, &refdata, &exacts, &exact_clonotypes, &groups, &pics)
-            .await
-            .unwrap();
-        */
-        return Ok(EncloneState::default());
-    }
-
     // Tail code.
 
     let mut svgs = Vec::<String>::new();

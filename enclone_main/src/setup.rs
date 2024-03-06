@@ -227,7 +227,7 @@ pub fn setup(
         let mut plain = false;
         let mut long_help = false;
         for i in 1..args.len() {
-            if args[i] == "NOPAGER" || args[i] == "EVIL_EYE" || args[i] == "TOY_COM" {
+            if args[i] == "NOPAGER" || args[i] == "EVIL_EYE" {
                 nopager = true;
                 ctl.gen_opt.nopager = true;
                 to_delete[i] = true;
@@ -291,10 +291,7 @@ pub fn setup(
         }
         erase_if(&mut args, &to_delete);
         *argsx = args.clone();
-        if (args.len() == 1 || args.contains(&"help".to_string()))
-            && !nopager
-            && !ctl.gen_opt.toy_com
-        {
+        if (args.len() == 1 || args.contains(&"help".to_string())) && !nopager {
             using_pager = true;
             setup_pager(true);
         }
@@ -355,7 +352,7 @@ pub fn setup(
         set_panic_handler(args_orig);
         let mut nopager = false;
         for i in 1..args_orig.len() {
-            if args_orig[i] == "NOPAGER" || args_orig[i] == "TOY_COM" {
+            if args_orig[i] == "NOPAGER" {
                 nopager = true;
             }
         }
