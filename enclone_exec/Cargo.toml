@@ -29,7 +29,6 @@ enclone_core = { git = "https://github.com/10XGenomics/enclone_ranger", branch =
 enclone_main = { path = "../enclone_main" }
 enclone_testlist = { path = "../enclone_testlist" }
 flate2 = "1"
-home = "0.5"
 io_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
 itertools = "0.10"
 nix = { version = "0.27", features = ["signal"] }

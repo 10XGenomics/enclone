@@ -722,25 +722,14 @@ dependencies = [
  "binary_vec_io",
  "bio",
  "debruijn",
- "equiv",
  "fasta_tools",
- "graph_simple",
- "hyperbase",
  "io_utils",
  "itertools",
- "kmer_lookup",
  "perf_stats",
- "permutation",
- "petgraph",
  "pretty_trace",
  "rayon",
- "regex",
- "serde_json",
- "stats_utils",
  "string_utils",
  "superslice",
- "tables",
- "vdj_ann",
  "vdj_ann_ref",
  "vector_utils",
 ]
@@ -762,7 +751,6 @@ dependencies = [
  "enclone_vars",
  "flate2",
  "fs_extra",
- "home",
  "io_utils",
  "itertools",
  "nix 0.27.1",
@@ -836,7 +824,6 @@ dependencies = [
  "io_utils",
  "itertools",
  "perf_stats",
- "plotters",
  "pretty_trace",
  "rand_chacha",
  "rayon",
@@ -944,9 +931,7 @@ dependencies = [
  "align_tools",
  "amino",
  "ansi_escape",
- "bio_edit",
  "crc",
- "debruijn",
  "enclone_build",
  "enclone_core",
  "enclone_help",
@@ -965,9 +950,6 @@ dependencies = [
  "pretty_trace",
  "rayon",
  "resvg",
- "serde",
- "serde_derive",
- "serde_json",
  "stats_utils",
  "string_utils",
  "superslice",
@@ -990,7 +972,6 @@ version = "0.5.219"
 dependencies = [
  "amino",
  "ansi_escape",
- "attohttpc 0.18.0",
  "binary_vec_io",
  "bio_edit",
  "chrono",
@@ -1006,16 +987,13 @@ dependencies = [
  "expr_tools",
  "fasta_tools",
  "flate2",
- "fs_extra",
  "io_utils",
  "itertools",
  "lz4",
  "pager",
  "perf_stats",
  "pretty_trace",
- "rand_chacha",
  "rayon",
- "regex",
  "serde_json",
  "statrs",
  "stats_utils",
@@ -1383,15 +1361,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "62b467343b94ba476dcb2500d242dadbb39557df889310ac77c5d99100aaac33"
 dependencies = [
  "libc",
-]
-
-[[package]]
-name = "home"
-version = "0.5.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2456aef2e6b6a9784192ae780c0f15bc57df0e918585282325e8c8ac27737654"
-dependencies = [
- "winapi",
 ]
 
 [[package]]

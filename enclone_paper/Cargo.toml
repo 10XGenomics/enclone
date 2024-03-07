@@ -31,7 +31,6 @@ flate2 = "1"
 io_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
 itertools = "0.10"
 perf_stats = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
-plotters = { version = "0.3", default_features = false, features = ["svg_backend", "point_series"] }
 rand_chacha = "0.3"
 rayon = "1"
 pretty_trace = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main", features = ["pprof"]}
