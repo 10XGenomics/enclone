@@ -28,7 +28,6 @@ enclone_testlist = { path = "../enclone_testlist" }
 flate2.workspace = true
 io_utils.workspace = true
 itertools.workspace = true
-perf_stats.workspace = true
 rand_chacha.workspace = true
 rayon.workspace = true
 string_utils.workspace = true

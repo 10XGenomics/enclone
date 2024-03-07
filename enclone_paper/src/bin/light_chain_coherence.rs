@@ -43,7 +43,6 @@
 // Y 0.7 0.2 0.8 8.0 0.5 1.4 0.3 0.6 0.1 0.5 0.6 0.6 8.0 0.5 1.2 0.5 1.0 0.5 0.7 0.0
 
 use io_utils::*;
-use perf_stats::elapsed;
 
 use rand_chacha;
 use rand_chacha::rand_core::RngCore;
@@ -203,7 +202,7 @@ fn main() {
             println!(
                 "\n(count = {}, time = {:.1} minutes)",
                 add_commas(count),
-                elapsed(&t) / 60.0
+                t.elapsed().as_secs_f64() / 60.0
             );
         }
 
@@ -297,7 +296,7 @@ fn main() {
             if count > 1 {
                 let nrel = n as f64 / canonical_n as f64;
                 print!("count = {count}, nrel = {nrel:.4}, light chain coherence = {nznz:.1}%");
-                println!(", used {:.1} minutes", elapsed(&t) / 60.0);
+                println!(", used {:.1} minutes", t.elapsed().as_secs_f64() / 60.0);
             }
             best_n = n;
         } else {

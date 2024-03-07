@@ -255,7 +255,6 @@ pub fn plot_clonotypes(
         group_color = make_group_colors(group_name.len());
     }
     let ngroups = group_color.len(); // THESE ARE SHADING GROUPS!
-    ctl.perf_stats(&t, "in preamble to plotting clonotypes");
 
     // Traverse the shading groups.  In the default case, there is just one!!!!!!!!!!!!!!!!!!!!!!!!
 
@@ -484,7 +483,6 @@ pub fn plot_clonotypes(
             }
         }
     }
-    ctl.perf_stats(&t, "plotting clonotypes");
 
     // Build the svg file.
 
@@ -733,7 +731,6 @@ pub fn plot_clonotypes(
         set_svg_height(svg, height + BOUNDARY as f64);
         *svg += "</svg>";
     }
-    ctl.perf_stats(&t, "doing more plotting stuff");
 
     // Add legend for color by variable.
 
@@ -924,6 +921,6 @@ pub fn plot_clonotypes(
             f.write_all(&png).unwrap();
         }
     }
-    ctl.perf_stats(&t, "building svg file");
+
     Ok(())
 }

@@ -454,7 +454,7 @@ fn main() {
         fasta_file.clone()
     };
     let mut refx: Vec<Vec<u8>> = read_obj(ref_path);
-    // println!("used {:.2} seconds loading genome", elapsed(&t));
+    // println!("used {:.2} seconds loading genome", t.elapsed().as_secs_f64());
 
     // Parse other arguments.
 
@@ -2061,7 +2061,7 @@ fn main() {
                     }
                 }
             }
-            println!("\nused {:.2} seconds\n", elapsed(&t));
+            println!("\nused {:.2} seconds\n", t.elapsed().as_secs_f64());
         }
     }
 
@@ -2259,7 +2259,7 @@ fn main() {
     min_p *= 0.1;
     const D_LOW: usize = 10;
     const D_HIGH: usize = 37;
-    use perf_stats::elapsed;
+
     use std::time::Instant;
     let t = Instant::now();
     const MAX_TIG: usize = 10_000_000;
@@ -2470,7 +2470,7 @@ fn main() {
                 phits,
                 true_d_pseudo.len()
             );
-            println!("used {:.2} seconds\n", elapsed(&t));
+            println!("used {:.2} seconds\n", t.elapsed().as_secs_f64());
             std::process::exit(0);
         }
     }

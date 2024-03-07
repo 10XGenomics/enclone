@@ -22,7 +22,6 @@ debruijn.workspace = true
 fasta_tools.workspace = true
 io_utils.workspace = true
 itertools.workspace = true
-perf_stats.workspace = true
 rayon.workspace = true
 string_utils.workspace = true
 superslice.workspace = true

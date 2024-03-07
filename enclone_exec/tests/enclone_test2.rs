@@ -19,7 +19,6 @@ use enclone_tools::run_test::*;
 use flate2::read::GzDecoder;
 use io_utils::*;
 use itertools::Itertools;
-use perf_stats::*;
 
 use rayon::prelude::*;
 use serde_json::Value;

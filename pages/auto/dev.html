@@ -348,114 +348,90 @@
                                 -->
 
                                 <hr>
-                                <h2>Profiling <span style="color:rgb(120,123,175);font-weight:900">enclone</span></h2>
+                                <h2>What could go wrong?</h2>
 
-                                <p><span style="color:rgb(120,123,175);font-weight:900">enclone</span> provides a few
-                                    built-in mechanisms for profiling:</p>
-                                <ol>
+                                <p>If the code crashes, you should get a clean traceback. If this happens on the
+                                    distributed
+                                    version of <span style="color:rgb(120,123,175);font-weight:900">enclone</span>
+                                    or the master version, that's a bug that should be reported.</p>
 
-                                    <li>Add the argument <code>COMP</code> to your command. This yields a summary of
-                                        wall-clock
-                                        time by code section, and also tracks peak memory usage. There is also a version
-                                        <code>COMP2</code> that prints a bit more. Run this with <code>NOPAGER</code> if
-                                        you want
-                                        to see the lines printed as they happen.
-                                    </li>
+                                <p>If you run out of disk space while building, you may get weird error messages
+                                    from the linker,
+                                    in which case you should fix your disk space problem. You might also need to
+                                    <code>cargo clean</code>.
+                                </p>
 
-                                </ol>
-                                <p>It is usually convenient to add the argument <code>NOPRINT</code> when using these
-                                    profiling
-                                    options, so as to suppress other output.</p>
+                                <p>Somewhat rarely, you'll get weird error messages from the linker, with no
+                                    apparent reason.
+                                    If this happens, <code>cargo clean</code> should fix the problem.</p>
 
                                 <! ––
                                     ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
                                     -->
 
                                     <hr>
-                                    <h2>What could go wrong?</h2>
+                                    <h2>Editing the <span style="color:rgb(120,123,175);font-weight:900">enclone</span>
+                                        web site
+                                    </h2>
 
-                                    <p>If the code crashes, you should get a clean traceback. If this happens on the
-                                        distributed
-                                        version of <span style="color:rgb(120,123,175);font-weight:900">enclone</span>
-                                        or the master version, that's a bug that should be reported.</p>
+                                    <p>This is done by editing the files in the subdirectory <code>pages</code>, and
+                                        never by
+                                        editing <code>.html</code> files directly. All the <code>.html</code> files
+                                        are
+                                        auto-generated.</p>
 
-                                    <p>If you run out of disk space while building, you may get weird error messages
-                                        from the linker,
-                                        in which case you should fix your disk space problem. You might also need to
-                                        <code>cargo clean</code>.
-                                    </p>
-
-                                    <p>Somewhat rarely, you'll get weird error messages from the linker, with no
-                                        apparent reason.
-                                        If this happens, <code>cargo clean</code> should fix the problem.</p>
+                                    <p>There is a script <code>./local_view</code> that copies the site to
+                                        your <code>public_html</code> directory so that it can be previewed.</p>
 
                                     <! ––
                                         ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
                                         -->
 
                                         <hr>
-                                        <h2>Editing the <span
-                                                style="color:rgb(120,123,175);font-weight:900">enclone</span> web site
-                                        </h2>
+                                        <h2>Releasing <span
+                                                style="color:rgb(120,123,175);font-weight:900">enclone</span></h2>
 
-                                        <p>This is done by editing the files in the subdirectory <code>pages</code>, and
-                                            never by
-                                            editing <code>.html</code> files directly. All the <code>.html</code> files
-                                            are
-                                            auto-generated.</p>
+                                        <p><span style="color:rgb(120,123,175);font-weight:900">enclone</span>
+                                            binaries for OSX and Linux can be released by “pushing a button”.
+                                            This only works at 10x Genomics.</p>
 
-                                        <p>There is a script <code>./local_view</code> that copies the site to
-                                            your <code>public_html</code> directory so that it can be previewed.</p>
+                                        <p>First, if the release warrants announcement, edit
+                                            <code>pages/history.html.src</code> to note
+                                            the relevant changes. Running <code>build</code> will then update the
+                                            actual file that goes on the
+                                            site.
+                                        </p>
+
+                                        <p>Run the <span style="color:rgb(120,123,175);font-weight:900">enclone</span>
+                                            test
+                                            suite.</p>
+
+                                        <p>From master on enclone, from a Linux server, type
+                                        <pre><code>start_release</code></pre>
+                                        This takes about five minutes. It causes GitHub Actions to initiate creation
+                                        of release binaries.
+                                        That takes about thirty-five minutes. When <code>start_release</code>
+                                        finishes, it launches
+                                        <code>release_nanny</code> in the background, which at the appropriate time
+                                        runs some final steps.
+                                        </p>
 
                                         <! ––
                                             ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
                                             -->
 
                                             <hr>
-                                            <h2>Releasing <span
-                                                    style="color:rgb(120,123,175);font-weight:900">enclone</span></h2>
+                                            <h2>Cross building for Windows on a Mac</h2>
 
-                                            <p><span style="color:rgb(120,123,175);font-weight:900">enclone</span>
-                                                binaries for OSX and Linux can be released by “pushing a button”.
-                                                This only works at 10x Genomics.</p>
-
-                                            <p>First, if the release warrants announcement, edit
-                                                <code>pages/history.html.src</code> to note
-                                                the relevant changes. Running <code>build</code> will then update the
-                                                actual file that goes on the
-                                                site.
-                                            </p>
-
-                                            <p>Run the <span
-                                                    style="color:rgb(120,123,175);font-weight:900">enclone</span> test
-                                                suite.</p>
-
-                                            <p>From master on enclone, from a Linux server, type
-                                            <pre><code>start_release</code></pre>
-                                            This takes about five minutes. It causes GitHub Actions to initiate creation
-                                            of release binaries.
-                                            That takes about thirty-five minutes. When <code>start_release</code>
-                                            finishes, it launches
-                                            <code>release_nanny</code> in the background, which at the appropriate time
-                                            runs some final steps.
-                                            </p>
-
-                                            <! ––
-                                                ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-                                                -->
-
-                                                <hr>
-                                                <h2>Cross building for Windows on a Mac</h2>
-
-                                                <p>In principle the following should work:
-                                                <pre><code>rustup target add x86_64-pc-windows-gnu</code>
+                                            <p>In principle the following should work:
+                                            <pre><code>rustup target add x86_64-pc-windows-gnu</code>
 <code>cargo b --target=x86_64-pc-windows-gnu</code></pre>
-                                                but when we tested this, we got errors. This should be resolvable but
-                                                we're not sure how.
-                                                Also note that this will clobber the results of an ordinary
-                                                <code>cargo b</code>. In principle
-                                                this can be avoided by specifying the target for it too.
-                                                </p>
+                                            but when we tested this, we got errors. This should be resolvable but
+                                            we're not sure how.
+                                            Also note that this will clobber the results of an ordinary
+                                            <code>cargo b</code>. In principle
+                                            this can be avoided by specifying the target for it too.
+                                            </p>
 
     </body>
 

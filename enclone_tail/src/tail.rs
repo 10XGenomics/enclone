@@ -325,6 +325,5 @@ pub fn tail_code(
 
     // Report time.
 
-    ctl.perf_stats(&t, "in rest of tail code");
     Ok(())
 }

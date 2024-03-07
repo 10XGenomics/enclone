@@ -48,7 +48,7 @@ pub fn grouper(
         }
         sort_sync2(&mut grepsn, &mut groups);
         groups.reverse();
-        ctl.perf_stats(&t, "in grouper");
+
         groups
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -92,7 +92,6 @@ pub fn grouper(
             }
             groups = groups2;
         }
-        ctl.perf_stats(&t, "grouping by vj refname");
 
         // Group by vdj_refname.
 
@@ -135,7 +134,6 @@ pub fn grouper(
             }
             groups = groups2;
         }
-        ctl.perf_stats(&t, "grouping by vdj refname");
 
         // Group by v_heavy_refname.
 
@@ -175,7 +173,6 @@ pub fn grouper(
             }
             groups = groups2;
         }
-        ctl.perf_stats(&t, "grouping by v heavy refname");
 
         // Group by vj_heavy_refname.
 
@@ -217,7 +214,6 @@ pub fn grouper(
             }
             groups = groups2;
         }
-        ctl.perf_stats(&t, "grouping by vj heavy refname");
 
         // Group by vdj_heavy_refname.
 
@@ -267,7 +263,6 @@ pub fn grouper(
             }
             groups = groups2;
         }
-        ctl.perf_stats(&t, "grouping by vdj heavy refname");
 
         // Group by vj_len.
 
@@ -299,7 +294,6 @@ pub fn grouper(
             }
             groups = groups2;
         }
-        ctl.perf_stats(&t, "grouping by vj length");
 
         // Group by cdr3_len.
 
@@ -331,7 +325,6 @@ pub fn grouper(
             }
             groups = groups2;
         }
-        ctl.perf_stats(&t, "grouping by cdr3 length");
 
         // Group by cdr3_heavy_len.
 
@@ -365,7 +358,6 @@ pub fn grouper(
             }
             groups = groups2;
         }
-        ctl.perf_stats(&t, "grouping by cdr3 heavy length");
 
         // Group by cdr3_light_len.
 
@@ -399,7 +391,6 @@ pub fn grouper(
             }
             groups = groups2;
         }
-        ctl.perf_stats(&t, "grouping by cdr3 light length");
 
         // Group by heavy_pc and then light_pc.
 
@@ -474,7 +465,6 @@ pub fn grouper(
                 groups.append(&mut results[i].1.clone());
             }
             let chain = if pass == 1 { "heavy" } else { "light" };
-            ctl.perf_stats(&t, &format!("grouping by {} percent", chain));
         }
 
         // Group by cdr3_aa_heavy≥n%:h:@f.
@@ -554,7 +544,6 @@ pub fn grouper(
             for i in 0..results.len() {
                 groups.append(&mut results[i].1.clone());
             }
-            ctl.perf_stats(&t, &format!("grouping by cdr3_aa_heavy≥n%:h:@f"));
         }
 
         // Group by aa_heavy_pc and then aa_light_pc.
@@ -631,7 +620,6 @@ pub fn grouper(
                 groups.append(&mut results[i].1.clone());
             }
             let chain = if pass == 1 { "heavy" } else { "light" };
-            ctl.perf_stats(&t, &format!("grouping by aa {} percent", chain));
         }
 
         // Group by cdr3_heavy_pc and then cdr3_light_pc.
@@ -709,7 +697,6 @@ pub fn grouper(
                 groups.append(&mut results[i].1.clone());
             }
             let chain = if pass == 1 { "heavy" } else { "light" };
-            ctl.perf_stats(&t, &format!("grouping by cdr3 {} percent", chain));
         }
 
         // Group by cdr3_aa_heavy_pc and then cdr3_aa_light_pc.
@@ -783,7 +770,6 @@ pub fn grouper(
                 groups.append(&mut results[i].1.clone());
             }
             let chain = if pass == 1 { "heavy" } else { "light" };
-            ctl.perf_stats(&t, &format!("grouping by cdr3 aa {} percent", chain));
         }
 
         // Join based on grouping.  Stupid, see next step.
@@ -851,7 +837,6 @@ pub fn grouper(
 
         // Done.
 
-        ctl.perf_stats(&t, "in grouper tail");
         groups
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -953,7 +938,7 @@ pub fn grouper(
                 groups.push(g);
             }
         }
-        ctl.perf_stats(&t, "in grouper");
+
         groups
     }
 }

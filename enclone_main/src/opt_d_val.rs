@@ -78,5 +78,4 @@ pub fn make_opt_d_val(
             }
         });
     }
-    ctl.perf_stats(&t, "computing opt_d");
 }

@@ -339,13 +339,6 @@ pub fn setup(
         if is_simple_arg(&args[i], "NOPRETTY")? {
             nopretty = true;
         }
-        if is_simple_arg(&args[i], "COMP")? || args[i] == "COMPE" {
-            ctl.perf_opt.comp = true;
-        }
-        if is_simple_arg(&args[i], "COMP2")? {
-            ctl.perf_opt.comp = true;
-            ctl.perf_opt.comp2 = true;
-        }
     }
 
     if !nopretty && !ctl.gen_opt.cellranger {
@@ -362,7 +355,6 @@ pub fn setup(
         }
     }
     USING_PAGER.store(using_pager, SeqCst);
-    ctl.perf_stats(&t, "in first part of setup");
 
     // Process args (and set defaults for them).
 
