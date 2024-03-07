@@ -20,32 +20,29 @@ publish = false
 # in the root of the enclone repo.
 
 [dependencies]
-dirs = "4"
-enclone_core = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
+dirs.workspace = true
+enclone_core.workspace = true
 enclone_help = { path = "../enclone_help" }
-enclone_print = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
-enclone_proto = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
-enclone_stuff = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
+enclone_print.workspace = true
+enclone_proto.workspace = true
+enclone_stuff.workspace = true
 enclone_tail = { path = "../enclone_tail" }
 enclone_build = { path = "../enclone_build" }
-enclone_vars = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
-enclone = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
-enclone_args = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
+enclone_vars.workspace = true
+enclone.workspace = true
+enclone_args.workspace = true
 enclone_testlist = { path = "../enclone_testlist" }
-expr_tools = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
-io_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
-itertools = "0.10"
-perf_stats = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
-pretty_trace = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main", features = ["pprof"]}
-rayon = "1"
-serde_json = "1"
-stats_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
-string_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
-tables = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
-vdj_ann = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
-vdj_ann_ref = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
-vector_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
-
-
-hdf5 = {git = "https://github.com/10XGenomics/hdf5-rust.git", branch = "conda_nov2021", features = ["conda"], default-features = false }
-# hdf5-sys = {git = "https://github.com/10XGenomics/hdf5-rust.git", branch = "conda_nov2021"}
+expr_tools.workspace = true
+io_utils.workspace = true
+itertools.workspace = true
+perf_stats.workspace = true
+pretty_trace.workspace = true
+rayon.workspace = true
+serde_json.workspace = true
+stats_utils.workspace = true
+string_utils.workspace = true
+tables.workspace = true
+vdj_ann.workspace = true
+vdj_ann_ref.workspace = true
+vector_utils.workspace = true
+hdf5.workspace = true

@@ -16,18 +16,17 @@ edition = "2018"
 publish = false
 
 [dependencies]
-amino = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
-binary_vec_io = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
-bio = "0.39"
-debruijn = "0.3"
-fasta_tools = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
-io_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
-itertools = "0.10"
-# poa_hmm = { git = "https://github.com/ban-m/partial_order_alignment.git" }
-perf_stats = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
-pretty_trace = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main", features = ["pprof"]}
-rayon = "1"
-string_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
-superslice = "1"
-vdj_ann_ref = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
-vector_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
+amino.workspace = true
+binary_vec_io.workspace = true
+bio.workspace = true
+debruijn.workspace = true
+fasta_tools.workspace = true
+io_utils.workspace = true
+itertools.workspace = true
+perf_stats.workspace = true
+pretty_trace.workspace = true
+rayon.workspace = true
+string_utils.workspace = true
+superslice.workspace = true
+vdj_ann_ref.workspace = true
+vector_utils.workspace = true

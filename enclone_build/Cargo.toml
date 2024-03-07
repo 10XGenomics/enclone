@@ -6,12 +6,12 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-chrono = { version = "0.4", default-features = false, features = ["std", "clock"] }
-itertools = "0.10"
-pretty_trace = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main", features = ["pprof"]}
-string_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
-enclone_core = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
+chrono.workspace = true
+itertools.workspace = true
+pretty_trace.workspace = true
+string_utils.workspace = true
+enclone_core.workspace = true
 
 [build-dependencies]
-chrono = { version = "0.4", default-features = false, features = ["std", "clock"] }
-string_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
+chrono.workspace = true
+string_utils.workspace = true
