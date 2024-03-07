@@ -6,8 +6,6 @@
 PROGRAM                        PURPOSE
 ------------------------------------------------------------------------------
 build_help_pages               build help pages for enclone site
-cargo_update_safe              update crate versions
-check_masters                  find inconsistencies between master.toml files
 dup_crates                     find duplicated crates
 merge_html                     built html files for the 10x site
 release_nanny                  used by release process
@@ -15,7 +13,6 @@ review_main_tests              walk through main tests and allow results changes
 run_last_test                  if you've just added a main test
 rustfmt_del                    fast formatting of everything
 start_release                  used to start release process
-sync_to_master                 changes Cargo.toml files to match master.toml
 update_all_main_tests          update all main tests, use with caution
 
 ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓

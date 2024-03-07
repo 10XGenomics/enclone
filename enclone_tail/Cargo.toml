@@ -16,50 +16,40 @@ edition = "2018"
 license-file = "LICENSE.txt"
 publish = false
 
-# Please do not edit crate versions within this file.  Instead edit the file master.toml
-# in the root of the enclone repo.
 
 # To keep compile time down, this file should *not* access the enclone crate.
 
 [dependencies]
-align_tools = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
-amino = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
-ansi_escape = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
-bio_edit = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
-crc = "2"
-debruijn = "0.3"
-enclone_core = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
-enclone_proto = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
-equiv = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
-float-ord = "0.3"
-fontdb = "0.7"
-io_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
-itertools = "0.10"
-lazy_static = "1"
-ndarray = "0.15"
-palette = "0.6"
-perf_stats = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
-plotters = { version = "0.3", default_features = false, features = ["svg_backend", "point_series"] }
-pretty_trace = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main", features = ["pprof"]}
-rayon = "1"
-resvg = { version = "0.19", default-features = false }
-serde = "1"
-serde_derive = "1"
-serde_json = "1"
-stats_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
-string_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
-superslice = "1"
-tables = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
-tar = "0.4"
-tiny-skia = "0.6"
-triple_accel = "0.4"
-usvg = { version = "0.19", features = ["text"] }
-vdj_ann = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
-vector_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
+align_tools.workspace = true
+amino.workspace = true
+ansi_escape.workspace = true
+crc.workspace = true
+enclone_core.workspace = true
+enclone_proto.workspace = true
+equiv.workspace = true
+float-ord.workspace = true
+fontdb.workspace = true
+io_utils.workspace = true
+itertools.workspace = true
+lazy_static.workspace = true
+ndarray.workspace = true
+palette.workspace = true
+perf_stats.workspace = true
+plotters.workspace = true
+pretty_trace.workspace = true
+rayon.workspace = true
+resvg.workspace = true
+stats_utils.workspace = true
+string_utils.workspace = true
+superslice.workspace = true
+tables.workspace = true
+tar.workspace = true
+tiny-skia.workspace = true
+triple_accel.workspace = true
+usvg.workspace = true
+vdj_ann.workspace = true
+vector_utils.workspace = true
 enclone_help = { path = "../enclone_help" }
 enclone_build = { path = "../enclone_build" }
-# to replace by this after bumping version
-# vector_utils = "0.1.0"
 
-hdf5 = {git = "https://github.com/10XGenomics/hdf5-rust.git", branch = "conda_nov2021", features = ["conda"], default-features = false }
-# hdf5-sys = {git = "https://github.com/10XGenomics/hdf5-rust.git", branch = "conda_nov2021"}
+hdf5.workspace = true

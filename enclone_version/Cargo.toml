@@ -16,9 +16,7 @@ edition = "2018"
 license-file = "LICENSE.txt"
 publish = false
 
-# Please do not edit crate versions within this file.  Instead edit the file master.toml
-# in the root of the enclone repo.
 
 [dependencies]
-chrono = { version = "0.4", default-features = false, features = ["std", "clock"] }
-string_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
+chrono.workspace = true
+string_utils.workspace = true

@@ -16,16 +16,14 @@ edition = "2018"
 license-file = "LICENSE.txt"
 publish = false
 
-# Please do not edit crate versions within this file.  Instead edit the file master.toml
-# in the root of the enclone repo.
 
 [dependencies]
-ansi_escape = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
-enclone_core = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
-io_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
-itertools = "0.10"
-string_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
-tables = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
+ansi_escape.workspace = true
+enclone_core.workspace = true
+io_utils.workspace = true
+itertools.workspace = true
+string_utils.workspace = true
+tables.workspace = true
 enclone_build = {path = "../enclone_build"}
 
 
