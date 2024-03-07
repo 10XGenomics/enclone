@@ -78,6 +78,10 @@ jobs:
       - name: Remove the Cargo target directory
         if: github.ref == 'refs/heads/master'
         run: cargo clean
+      - name: Check unused dependencies
+        uses: 10XGenomics/cargo-machete-action@main
+        with:
+          version: 0.6.0
       - name: build-enclone
         run: cargo build
       - name: download test data
