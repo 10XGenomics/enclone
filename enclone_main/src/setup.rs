@@ -14,7 +14,7 @@ use enclone_help::help2::help2;
 use enclone_help::help3::help3;
 use enclone_help::help4::help4;
 use enclone_help::help5::help5;
-use enclone_help::help_utils::{HelpDesk, HELP_ALL, PLAIN};
+use enclone_help::help_utils::HelpDesk;
 use enclone_testlist::TEST_FILES_VERSION;
 use io_utils::{open_for_read, path_exists};
 use itertools::Itertools;
@@ -262,9 +262,6 @@ pub fn setup(
             } else if args[i] == "PLAIN" {
                 to_delete[i] = true;
                 plain = true;
-                unsafe {
-                    PLAIN = true;
-                }
             } else if args[i] == "SPLIT" {
                 ctl.gen_opt.split = true;
             } else if args[i] == "BUG_REPORTS" {
@@ -297,9 +294,6 @@ pub fn setup(
         }
         let mut help_all = false;
         if args.len() >= 3 && args[1] == "help" && args[2] == "all" {
-            unsafe {
-                HELP_ALL = true;
-            }
             help_all = true;
         }
         let mut argsx = Vec::<String>::new();
