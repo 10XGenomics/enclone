@@ -68,15 +68,6 @@ option; the <code>colossus</code> option results in downloading of additional GE
 <p>We used Rust because the language makes it extremely easy to use Rust code written by
 other people, because Rust has its own build system, and because it is fast and safe.</p>
 
-<p>Technical details.  The repo is itself a Rust workspace, with a several
-subdirectories that comprise Rust crates.  Each of these crates has its own 
-<code>Cargo.toml</code> file.  Modification of dependency
-versions in these files files is done by modifying a file <code>master.toml</code> at the
-top level,
-and then typing <code>sync_to_master</code>, which invokes a program (part of the repo) to
-sync each <code>Cargo.toml</code> to <code>master.toml</code>.
-</p>
-
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
 <hr><h2>Prerequisites</h2>

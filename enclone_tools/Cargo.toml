@@ -16,8 +16,6 @@ edition = "2018"
 license-file = "LICENSE.txt"
 publish = false
 
-# Please do not edit crate versions within this file.  Instead edit the file master.toml
-# in the root of the enclone repo.
 
 [dependencies]
 amino.workspace = true

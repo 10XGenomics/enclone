@@ -16,8 +16,6 @@ edition = "2018"
 license-file = "../LICENSE.txt"
 publish = false
 
-# Please do not edit crate versions within this file.  Instead edit the file master.toml
-# in the root of the enclone repo.
 
 # To keep compile time down, this file should *not* access the enclone crate.
 

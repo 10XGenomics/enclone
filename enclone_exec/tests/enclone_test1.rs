@@ -186,48 +186,6 @@ fn test_css_existence() {
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-// 4. Make sure that if sync_master was run, nothing would change.
-//
-// A bit ugly because of duplicated code.
-
-#[cfg(not(feature = "cpu"))]
-#[test]
-fn test_sync_master() {
-    let mut version = HashMap::<String, String>::new();
-    let f = open_for_read!["../master.toml"];
-    for line in f.lines() {
-        let s = line.unwrap();
-        if !s.starts_with('#') && s.contains("=") {
-            version.insert(s.before(" = ").to_string(), s.after(" = ").to_string());
-        }
-    }
-    let all = read_dir("..").unwrap();
-    for f in all {
-        let f = f.unwrap().path();
-        let f = f.to_str().unwrap();
-        let toml = format!("{}/Cargo.toml", f);
-        if path_exists(&toml) {
-            let g = open_for_read![&toml];
-            for line in g.lines() {
-                let s = line.unwrap();
-                if s.contains(" =") {
-                    let cratex = s.before(" =").to_string();
-                    if version.contains_key(&cratex) {
-                        let t = format!("{} = {}", cratex, version[&cratex]);
-                        if t != s {
-                            eprintln!("\nFound change in {}.\nold: {}\nnew: {}", toml, s, t);
-                            eprintln!("You probably need to run sync_to_master\n");
-                            panic!("failed");
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
 // 5.
 
 // Run the download command on the landing page and make sure it works.
