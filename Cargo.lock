@@ -991,7 +991,6 @@ dependencies = [
  "itertools",
  "lz4",
  "pager",
- "perf_stats",
  "pretty_trace",
  "rayon",
  "serde_json",
