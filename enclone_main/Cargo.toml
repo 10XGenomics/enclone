@@ -30,9 +30,11 @@ enclone_vars.workspace = true
 enclone.workspace = true
 enclone_args.workspace = true
 enclone_testlist = { path = "../enclone_testlist" }
+enclone_tools = { path = "../enclone_tools" }
 expr_tools.workspace = true
 io_utils.workspace = true
 itertools.workspace = true
+martian-filetypes.workspace = true
 perf_stats.workspace = true
 pretty_trace.workspace = true
 rayon.workspace = true
