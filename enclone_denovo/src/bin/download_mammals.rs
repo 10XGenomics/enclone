@@ -2,15 +2,15 @@
 //
 // Download the mammals in the file ../genome_list, that are not already downloaded.
 //
-// Creates a binary_vec_vec file.
+// Creates a bincode file.
 //
 // This puts the file in two hardcoded locations.  Note that one is on deck, so space needs to
 // be made their first.
 //
 // This should put the temp fasta file in /mnt/assembly or better yet not create a file at all.
 
-use binary_vec_io::binary_write_vec_vec;
 use fasta_tools::read_fasta_to_vec_vec_u8;
+use io_utils::write_obj;
 use pretty_trace::PrettyTrace;
 use std::fs::{read_dir, File};
 use std::process::Command;
@@ -83,8 +83,8 @@ fn main() {
                     // no idea why the space is needed
                     std::fs::rename(&format!(" {}", fasta_file), &fasta_file).unwrap();
                     let x = read_fasta_to_vec_vec_u8(&fasta_file);
-                    binary_write_vec_vec::<u8>(&mut File::create(&outname1).unwrap(), &x).unwrap();
-                    binary_write_vec_vec::<u8>(&mut File::create(&outname2).unwrap(), &x).unwrap();
+                    write_obj(&x, &outname1);
+                    write_obj(&x, &outname2);
                     let _ = std::fs::remove_file(&fasta_file);
                     break;
                 }
