@@ -38,6 +38,11 @@ fn main() {
         let dataset = ann.dataset.unwrap_or("null".to_string());
         let ann = ann.data;
 
+        let v_gene = ann.get_gene_name(VdjRegion::V).cloned().unwrap_or_default();
+        let d_gene = ann.get_gene_name(VdjRegion::D).cloned().unwrap_or_default();
+        let j_gene = ann.get_gene_name(VdjRegion::J).cloned().unwrap_or_default();
+        let c_gene = ann.get_gene_name(VdjRegion::C).cloned().unwrap_or_default();
+
         let bc = ann.barcode.before("-");
         let barcode = format!("{bc}-{dataset}");
         let is_cell = ann.is_cell;
@@ -48,20 +53,6 @@ fn main() {
         let length = ann.sequence.len();
 
         let chain = ann.annotations[0].feature.chain;
-        let mut v_gene = String::new();
-        let mut d_gene = String::new();
-        let mut j_gene = String::new();
-        let mut c_gene = String::new();
-        for region in ann.annotations {
-            let gene_name = region.feature.gene_name;
-            match region.feature.region_type {
-                VdjRegion::V => v_gene = gene_name,
-                VdjRegion::D => d_gene = gene_name,
-                VdjRegion::J => j_gene = gene_name,
-                VdjRegion::C => c_gene = gene_name,
-                VdjRegion::UTR => (),
-            }
-        }
         let high_confidence = ann.high_confidence;
         let full_length = ann.full_length.unwrap_or_default();
         let productive = ann.productive.unwrap_or_default();
