@@ -1,20 +1,11 @@
+use enclone_tools::AnnotationWithDataset;
 // Copyright (c) 2022 10X Genomics, Inc. All rights reserved.
 //
 // Make filtered_contig.fasta and filtered_contig_annotations.csv from all_contig_annotations.json.
 use io_utils::{fwriteln, open_for_write_new, open_maybe_compressed};
-use serde::{Deserialize, Serialize};
 use std::io::Write;
 use string_utils::*;
-use vdj_ann::annotate::ContigAnnotation;
 use vdj_types::VdjRegion;
-
-// FIXME duplicated between here and enclone_main/src/subset.rs
-#[derive(Serialize, Deserialize)]
-struct AnnotationWithDataset {
-    dataset: Option<String>,
-    #[serde(flatten)]
-    data: ContigAnnotation,
-}
 
 fn main() {
     // Read in the json file and break it into entries.

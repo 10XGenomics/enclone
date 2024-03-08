@@ -800,6 +800,7 @@ dependencies = [
  "enclone_stuff",
  "enclone_tail",
  "enclone_testlist",
+ "enclone_tools",
  "enclone_vars",
  "expr_tools",
  "hdf5",

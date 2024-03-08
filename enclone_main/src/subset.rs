@@ -3,17 +3,9 @@
 // Process the SUBSET_JSON option.
 
 use enclone_core::defs::{EncloneControl, ExactClonotype};
+use enclone_tools::AnnotationWithDataset;
 use io_utils::{open_for_write_new, open_maybe_compressed, path_exists};
-use serde::{Deserialize, Serialize};
-use vdj_ann::annotate::ContigAnnotation;
 use vector_utils::{bin_member, unique_sort};
-
-#[derive(Serialize, Deserialize)]
-struct AnnotationWithDataset<'a> {
-    dataset: Option<&'a str>,
-    #[serde(flatten)]
-    data: ContigAnnotation,
-}
 
 pub fn subset_json(
     ctl: &EncloneControl,
@@ -57,7 +49,7 @@ pub fn subset_json(
                     .map(Result::unwrap)
                     .filter(|ann| bin_member(&barcode_li, &(&ann.data.barcode, li)))
                     .map(|ann| AnnotationWithDataset {
-                        dataset: Some(ds_id),
+                        dataset: Some(ds_id.clone()),
                         data: ann.data,
                     })
                     .collect::<Vec<_>>()
