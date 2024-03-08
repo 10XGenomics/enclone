@@ -92,25 +92,6 @@ mkdir -p enclone_exec/testx/outputs
 
 # ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-# run rustfmt
-#
-# The second form does not test all files!
-
-echo "formatting"
-if (`where rustfmt_del` == "") then
-    cargo fmt --all
-    if ( $status != 0 ) then
-        exit 1
-    endif
-else
-    rustfmt_del
-    if ( $status != 0 ) then
-        exit 1
-    endif
-endif
-
-# ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
 # cargo update once a week
 #
 # One reason we do this is that we don't want to accidentally get to a state where cargo update

@@ -78,6 +78,8 @@ jobs:
       - name: Remove the Cargo target directory
         if: github.ref == 'refs/heads/master'
         run: cargo clean
+      - name: Check Rust formatting
+        run: cargo fmt -- --check
       - name: build-enclone
         run: cargo build
       - name: download test data
