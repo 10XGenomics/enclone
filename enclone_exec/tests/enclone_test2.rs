@@ -39,19 +39,6 @@ use std::time::{Duration, Instant};
 use string_utils::*;
 use vector_utils::*;
 
-// Tests of internal features.
-
-pub const INTERNAL_TESTS: [&str; 3] = [
-    // 1. gave wrong result
-    r###"123085 CDR3=CARDRIAGRFGYGMDVW NFORCE"###,
-    // 2. test human + IMGT; note that specifying by number forces BCR+TCR reference checks
-    r###"123085 REQUIRE_UNBROKEN_OK IMGT ACCEPT_BROKEN EXPECT_NULL"###,
-    // 3. this crashed; it is not exactly an internal feature test but uses an internal feature
-    // (IMGT) to exhibit the phenomenon
-    r###"BCR=123085 IMGT RE ACCEPT_BROKEN POUT=stdout PCELL BARCODE=AGCAGCCCATTAGGCT-1
-         EXPECT_OK"###,
-];
-
 const LOUPE_OUT_FILENAME: &str = "testx/__test_proto";
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -422,48 +409,32 @@ fn test_extended() {
 
 // NOT BASIC
 
-// Crash tests.
-
 #[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
 #[test]
+/// Crash tests.  These are tests to make sure that certain options do not result in a crash, even
+/// when run on a large and complex dataset.  The options are in groups because not all are
+/// compatible with each other.  The datasets are defined by a single fixed list, to be enlarged
+/// over time based on discovery of pathologies in particular PUBLIC datasets.
+/// All run with certain shared options.
 fn test_crash() {
     PrettyTrace::new().on();
     let t = Instant::now();
-    let mut crash_tests = Vec::<String>::new();
-    for i in 0..CRASH_SETS.len() {
-        crash_tests.push(format!("{} {} {}", CRASH_DATA, CRASH_SETS[i], CRASH_OPTS));
-    }
-    let mut results = Vec::<(usize, bool, String)>::new();
-    for i in 0..crash_tests.len() {
-        results.push((i, false, String::new()));
-    }
-    results.par_iter_mut().for_each(|res| {
-        let it = res.0;
-        let test = &crash_tests[it];
-        let mut out = String::new();
-        run_test(
-            env!("CARGO_BIN_EXE_enclone"),
-            it,
-            "",
-            &test,
-            "crash_test",
-            &mut res.1,
-            &mut res.2,
-            &mut out,
-            40,
-        );
-    });
-    for i in 0..results.len() {
-        print!("{}", results[i].2);
-        if !results[i].1 {
-            panic!("failed");
-        }
-    }
-    println!(
-        "\ncrash tests total time for {} enclone subtests = {:.2} seconds\n",
-        crash_tests.len(),
-        elapsed(&t)
+    let crash_tests: Vec<_> = [
+        "CONP SEQC SUM MEAN BARCODES DIFF_STYLE=C1 GROUP_VJ_REFNAME",
+        "CONX FULL_SEQC DIFF_STYLE=C2 POUT=stdout PCOLS=count_CAR",
+        "AMINO=fwr1,cdr1,fwr2,cdr2,fwr3,cdr3,fwr4 CVARS=d1_name,d2_name,d_delta,d_Δ,cigar",
+        "PLOT_BY_ISOTYPE=stdout MIN_CELLS=3 GROUP_VJ_REFNAME_HEAVY ALIGN1 JALIGN1",
+        "GROUP_VDJ_REFNAME_HEAVY GVARS=d_inconsistent_%,d_inconsistent_n",
+        "GROUP=vj_refname,cdr3_aa_heavy≥90%,cdr3_aa_light≥90%",
+    ].iter().map(|crash_set| format!(
+            "BCR=\"45977;123085;testx/inputs/flaky\" {crash_set} NOPRINT BUILT_IN EXPECT_OK NO_PRE NFORCE",
+        )).collect();
+    run_tests(
+        env!("CARGO_BIN_EXE_enclone"),
+        &crash_tests,
+        "crash_test",
+        40,
     );
 }
 
@@ -480,25 +451,21 @@ fn test_crash() {
 #[test]
 fn test_internal() {
     PrettyTrace::new().on();
-    let failures: Vec<_> = INTERNAL_TESTS
-        .par_iter()
-        .enumerate()
-        .map(|(i, test)| {
-            run_test(
-                env!("CARGO_BIN_EXE_enclone"),
-                i,
-                "",
-                test,
-                "internal_test",
-                40,
-            )
-        })
-        .filter_map(Result::err)
-        .collect();
-    for f in failures {
-        print!("{}", f.log);
-    }
-    assert!(failures.is_empty());
+    run_tests(
+        env!("CARGO_BIN_EXE_enclone"),
+        &[
+            // 1. gave wrong result
+            r###"123085 CDR3=CARDRIAGRFGYGMDVW NFORCE"###,
+            // 2. test human + IMGT; note that specifying by number forces BCR+TCR reference checks
+            r###"123085 REQUIRE_UNBROKEN_OK IMGT ACCEPT_BROKEN EXPECT_NULL"###,
+            // 3. this crashed; it is not exactly an internal feature test but uses an internal feature
+            // (IMGT) to exhibit the phenomenon
+            r###"BCR=123085 IMGT RE ACCEPT_BROKEN POUT=stdout PCELL BARCODE=AGCAGCCCATTAGGCT-1
+                 EXPECT_OK"###,
+        ],
+        "internal_test",
+        40,
+    );
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓

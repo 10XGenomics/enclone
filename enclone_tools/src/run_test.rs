@@ -3,11 +3,27 @@
 use enclone_core::parse_bsv;
 use enclone_testlist::TEST_FILES_VERSION;
 use io_utils::{fwrite, fwriteln, path_exists};
+use rayon::prelude::*;
 use std::cmp::min;
 use std::fmt::Write;
 use std::fs::read_to_string;
 use std::process::Command;
 use string_utils::strme;
+
+/// Run a collection of test cases in parallel.
+/// TODO: replace this by declaring test cases individually.
+pub fn run_tests(enclone: &str, tests: &[&str], test_name: &str, max_cores: usize) {
+    let failures: Vec<_> = tests
+        .par_iter()
+        .enumerate()
+        .map(|(i, test)| run_test(enclone, i, "", test, test_name, max_cores))
+        .filter_map(Result::err)
+        .collect();
+    for f in &failures {
+        print!("{}", f.log);
+    }
+    assert!(failures.is_empty());
+}
 
 #[derive(Default)]
 pub struct TestResult {

@@ -114,32 +114,6 @@ pub const GTESTS: [&str; 21] = [
          EXPECT_OK"###,
 ];
 
-// Crash tests.  These are tests to make sure that certain options do not result in a crash, even
-// when run on a large and complex dataset.  The options are in groups because not all are
-// compatible with each other.  The datasets are defined by a single fixed list, to be enlarged
-// over time based on discovery of pathologies in particular PUBLIC datasets.
-// All run with certain shared options.
-
-pub const CRASH_DATA: &str = "BCR=\"45977;123085;testx/inputs/flaky\"";
-pub const CRASH_OPTS: &str = "NOPRINT BUILT_IN EXPECT_OK NO_PRE NFORCE";
-pub const CRASH_SETS: [&str; 6] = [
-    /* 1 */ "CONP SEQC SUM MEAN BARCODES DIFF_STYLE=C1 GROUP_VJ_REFNAME",
-    //
-    /* 2 */ "CONX FULL_SEQC DIFF_STYLE=C2 POUT=stdout PCOLS=count_CAR",
-    //
-    /* 3 */
-    "AMINO=fwr1,cdr1,fwr2,cdr2,fwr3,cdr3,fwr4 CVARS=d1_name,d2_name,d_delta,d_Δ,cigar",
-    //
-    /* 4 */
-    "PLOT_BY_ISOTYPE=stdout MIN_CELLS=3 GROUP_VJ_REFNAME_HEAVY ALIGN1 JALIGN1",
-    //
-    /* 5 */
-    "GROUP_VDJ_REFNAME_HEAVY GVARS=d_inconsistent_%,d_inconsistent_n",
-    //
-    /* 6 */
-    "GROUP=vj_refname,cdr3_aa_heavy≥90%,cdr3_aa_light≥90%",
-];
-
 // Test using datasets that are either in the extended public dataset collection,
 // or which require samtools.
 
@@ -177,19 +151,6 @@ pub const EXTENDED_TESTS: [&str; 12] = [
     r###"TCR=163914 CDR3=CASSLVQPSTDTQYF CVARSP=u_max NO_PRE NFORCE"###,
     // 12. this added because it got better when a noise filter was added; also test FASTA
     r###"TCR=163914 CDR3=CAFRGGSYIPTF FASTA=stdout NO_PRE NFORCE"###,
-];
-
-// Tests of internal features.
-
-pub const INTERNAL_TESTS: [&str; 3] = [
-    // 1. gave wrong result
-    r###"123085 CDR3=CARDRIAGRFGYGMDVW NFORCE"###,
-    // 2. test human + IMGT; note that specifying by number forces BCR+TCR reference checks
-    r###"123085 REQUIRE_UNBROKEN_OK IMGT ACCEPT_BROKEN EXPECT_NULL"###,
-    // 3. this crashed; it is not exactly an internal feature test but uses an internal feature
-    // (IMGT) to exhibit the phenomenon
-    r###"BCR=123085 IMGT RE ACCEPT_BROKEN POUT=stdout PCELL BARCODE=AGCAGCCCATTAGGCT-1
-         EXPECT_OK"###,
 ];
 
 // List of examples in documentation.
