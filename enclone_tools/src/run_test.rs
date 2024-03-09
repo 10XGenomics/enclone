@@ -10,13 +10,18 @@ use std::fs::read_to_string;
 use std::process::Command;
 use string_utils::strme;
 
+/// A test case is declared with a fixed test index, a comment, and the code to run.
+pub type TestCase = (i32, &str, &str);
+
 /// Run a collection of test cases in parallel.
 /// TODO: replace this by declaring test cases individually.
-pub fn run_tests(enclone: &str, tests: &[&str], test_name: &str, max_cores: usize) {
+pub fn run_tests(enclone: &str, test_name: &str, max_cores: usize, tests: &[TestCase]) {
+    println!("running tests using {enclone}");
     let failures: Vec<_> = tests
         .par_iter()
-        .enumerate()
-        .map(|(i, test)| run_test(enclone, i, "", test, test_name, max_cores))
+        .map(|(number, comments, args)| {
+            run_test(enclone, *number, comments, args, test_name, max_cores)
+        })
         .filter_map(Result::err)
         .collect();
     for f in &failures {
@@ -36,11 +41,11 @@ pub struct TestResult {
 /// Run a single test case.
 pub fn run_test(
     enclone: &str,    // name of the enclone executable
-    it: usize,        // test number
-    comments: &str,   // info about the test
-    test: &str,       // arguments for the test
     testname: &str,   // test category e.g. "test" or "ext_test"
     max_cores: usize, // max cores, or if 0, default value determined here
+    num: usize,       // test number
+    comments: &str,   // info about the test
+    test: &str,       // arguments for the test
 ) -> Result<TestResult, TestResult> {
     let mut test = test.replace('\n', "");
     let mut expect_null = false;
@@ -82,7 +87,7 @@ pub fn run_test(
     while test.contains("  ") {
         test = test.replace("  ", " ");
     }
-    let out_file = format!("testx/inputs/outputs/enclone_{}{}_output", testname, it + 1);
+    let out_file = format!("testx/inputs/outputs/enclone_{}{}_output", testname, num);
     let mut pre_arg = format!(
         "PRE=../enclone-data/big_inputs/version{}",
         TEST_FILES_VERSION
@@ -95,8 +100,6 @@ pub fn run_test(
         pre_arg = String::new();
         local_pre_arg = String::new();
     }
-
-    let test_index_from_1 = it + 1;
 
     if !path_exists(&out_file) && !expect_fail && !expect_ok {
         return Err(TestResult {
@@ -148,14 +151,14 @@ pub fn run_test(
     // dubious use of expect:
     let new = new
         .output()
-        .unwrap_or_else(|_| panic!("failed to execute enclone for test {}", test_index_from_1));
+        .unwrap_or_else(|_| panic!("failed to execute enclone for test {}", num));
     let mut res = TestResult {
         stdout: String::from_utf8_lossy(&new.stdout).to_string(),
         ..Default::default()
     };
 
     let Some(status) = new.status.code() else {
-        res.log = format!("Failed to get status code for command for subtest {test_index_from_1}.");
+        res.log = format!("Failed to get status code for command for subtest {num}.");
         return Err(res);
     };
 
@@ -218,7 +221,7 @@ pub fn run_test(
     }
 
     // Process tests that yield unexpected stdout.
-    fwriteln!(&mut res.log, "\nSubtest {}: old and new differ", it + 1);
+    fwriteln!(&mut res.log, "\nSubtest {}: old and new differ", num);
     fwriteln!(
         &mut res.log,
         "old has u8 length {} and new has u8 length {}",
@@ -296,7 +299,7 @@ pub fn run_test(
                      If you are happy with the new output, \
                      you can replace the\noutput by executing the following command from \
                      the top level of the enclone repo (essential):\n",
-            it + 1,
+            num,
             comments
         );
     } else {
@@ -305,7 +308,7 @@ pub fn run_test(
             "enclone subtest {} failed.  If you are happy with the new output, \
                      you can replace the\noutput by executing the following command from \
                      the top level of the enclone repo (essential):\n",
-            it + 1
+            num
         );
     }
     if set_in_stone {
@@ -322,7 +325,7 @@ pub fn run_test(
         local_pre_arg,
         test,
         testname,
-        it + 1
+        num
     );
     fwrite!(&mut res.log, "and then committing the changed file.  ");
     fwriteln!(

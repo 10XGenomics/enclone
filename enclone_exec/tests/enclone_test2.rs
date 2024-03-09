@@ -129,285 +129,279 @@ fn test_enclone() {
     );
 }
 
-// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
-// 10a.  unaccounted time test
-
-#[cfg(not(feature = "basic"))]
-#[cfg(feature = "cpu")]
-#[test]
-fn test_accounting() {
-    PrettyTrace::new().on();
-    let t = Instant::now();
-    println!("running tests using {}", env!("CARGO_BIN_EXE_enclone"));
-    //                       id     ok    output
-    let mut results = Vec::<(usize, bool, String)>::new();
-    for i in 0..UNAC_TESTS.len() {
-        results.push((i, false, String::new()));
-    }
-    let this = include_str!("../../enclone_core/src/testlist.rs");
-    let mut tracking = false;
-    let mut comments = Vec::<String>::new();
-    let mut lines = Vec::<String>::new();
-    for line in this.lines() {
-        if line.starts_with("pub const UNAC_TESTS: ") {
-            tracking = true;
-            continue;
-        }
-        if tracking {
-            if line == "];" {
-                break;
-            }
-            lines.push(line.to_string());
-        }
-    }
-    let mut i = 0;
-    while i < lines.len() {
-        let mut j = i + 1;
-        while j < lines.len() {
-            if lines[j].starts_with("    // ") {
-                let c = lines[j].after("    // ").as_bytes()[0];
-                if c >= b'0' && c <= b'9' {
-                    break;
-                }
-            }
-            j += 1;
-        }
-        comments.push(lines[i..j].iter().format("\n").to_string());
-        i = j;
-    }
-    results.par_iter_mut().for_each(|res| {
-        let it = res.0;
-        let test = UNAC_TESTS[it].to_string();
-        let mut out = String::new();
-        run_test(
-            env!("CARGO_BIN_EXE_enclone"),
-            it,
-            &comments[it],
-            &test,
-            "unac_test",
-            &mut res.1,
-            &mut res.2,
-            &mut out,
-            0,
-        );
-    });
-    for i in 0..results.len() {
-        print!("{}", results[i].2);
-        if !results[i].1 {
-            panic!("failed");
-        }
-    }
-    println!(
-        "\ntotal time for {} enclone unaccounted subtests = {:.2} seconds\n",
-        UNAC_TESTS.len(),
-        elapsed(&t)
-    );
-}
-
-// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
-// 10b.  tests that are affected by D region assignment
-
 #[cfg(not(feature = "cpu"))]
 #[test]
+/// Tests that are affected by the D region alignment algorithm.
 fn test_enclone_d() {
     PrettyTrace::new().on();
-    let t = Instant::now();
-    println!("running tests using {}", env!("CARGO_BIN_EXE_enclone"));
-    //                       id     ok    output
-    let mut results = Vec::<(usize, bool, String)>::new();
-    for i in 0..DTESTS.len() {
-        results.push((i, false, String::new()));
-    }
-    let this = include_str!("../../enclone_testlist/src/lib.rs");
-    let mut tracking = false;
-    let mut comments = Vec::<String>::new();
-    let mut lines = Vec::<String>::new();
-    for line in this.lines() {
-        if line.starts_with("pub const DTESTS: ") {
-            tracking = true;
-            continue;
-        }
-        if tracking {
-            if line == "];" {
-                break;
-            }
-            lines.push(line.to_string());
-        }
-    }
-    let mut i = 0;
-    while i < lines.len() {
-        let mut j = i + 1;
-        while j < lines.len() {
-            if lines[j].starts_with("    // ") {
-                let c = lines[j].after("    // ").as_bytes()[0];
-                if c >= b'0' && c <= b'9' {
-                    break;
-                }
-            }
-            j += 1;
-        }
-        comments.push(lines[i..j].iter().format("\n").to_string());
-        i = j;
-    }
-    results.par_iter_mut().for_each(|res| {
-        let it = res.0;
-        let test = DTESTS[it].to_string();
-        let mut out = String::new();
-        run_test(
-            env!("CARGO_BIN_EXE_enclone"),
-            it,
-            &comments[it],
-            &test,
-            "dtest",
-            &mut res.1,
-            &mut res.2,
-            &mut out,
-            40,
-        );
-    });
-    for i in 0..results.len() {
-        print!("{}", results[i].2);
-        if !results[i].1 {
-            panic!("failed");
-        }
-    }
-    println!(
-        "\ntotal time for {} enclone d gene subtests = {:.2} seconds\n",
-        DTESTS.len(),
-        elapsed(&t)
+    run_tests(
+        env!("CARGO_BIN_EXE_enclone"),
+        "dtest",
+        40,
+        &[
+            (
+                1,
+                "test ALIGN_2ND<n>",
+                r###"BCR=123085 CDR3=CKVMLYDSRGSDYYYVMDVW ALIGN_2ND1 CVARS=d1_name"###,
+            ),
+            (
+                2,
+                "test JALIGN_2ND<n>",
+                r###"BCR=123085 CDR3=CKVMLYDSRGSDYYYVMDVW JALIGN_2ND1 CVARS=d2_name"###,
+            ),
+            (
+                3,
+                "test ALIGN_JALIGN_CONSISTENCY",
+                r###"BCR=123085 CELLS=1 CHAINS=2 ALIGN1 JALIGN1 ALIGN_JALIGN_CONSISTENCY AMINO=cdr3
+             PLAIN NOPAGER EXPECT_OK"###,
+            ),
+            (
+                4,
+                "test D_INCONSISTENT, and lock number of inconsistencies",
+                r###"BCR=123085 D_INCONSISTENT CVARS=d1_name COMPLETE NGROUP"###,
+            ),
+            (
+                5,
+                "the JALIGN1 in this example had a boundary location that was off by one",
+                r###"BCR=165807 JALIGN1 AMINO=cdr3 CVARS=d1_score,d2_score CDR3=CAKEYYDFWSGYSDVRGVIPNIDYW"###,
+            ),
+            (
+                6,
+                "the JALIGN1 in this example had a boundary location that was off by one",
+                r###"BCR=123085 CELLS=2 JALIGN1 AMINO=cdr3 CVARS=d1_name CDR3=CAKAGPTESGYYVWYFDLW"###,
+            ),
+            (
+                7,
+                "test d_inconsistent_{%,n}",
+                r###"BCR=123085 GVARS=d_inconsistent_%,d_inconsistent_n NOPRINT SUMMARY SUMMARY_CLEAN"###,
+            ),
+            (
+                8,
+                "test ALIGN<n>",
+                r###"BCR=123085 CDR3=CKVMLYDSRGSDYYYVMDVW ALIGN1 CVARS=d1_name"###,
+            ),
+            (
+                9,
+                "test ALIGN<n> and JALIGN<n>, case where there's a D segment",
+                r###"BCR=85333 ALIGN1 JALIGN1 CDR3=CARGYDFWSGYLVGNWAGDYYYYMDVW"###,
+            ),
+            (
+                10,
+                "test ALIGN<n> and JALIGN<n>, case where there is no D segment",
+                r###"BCR=85333 ALIGN1 JALIGN1 CDR3=CAKGKGFRNYYYYMDVW"###,
+            ),
+            (
+                11,
+                "test d1 etc.",
+                r###"BCR=123085 CVARS=d1_name,d2_name,d_Δ,d_delta AMINO=cdr3 CDR3=CARVRDILTGDYGMDVW"###,
+            ),
+            (
+                12,
+                "test GROUP_VDJ_REFNAME_HEAVY (deprecated but supported)",
+                r###"BCR=86237 GROUP_VDJ_REFNAME_HEAVY CDR3="CAKAVAGKAVAGGWDYW|CAKVSTGIAVAGPGDYW" COMPLETE"###,
+            ),
+            (
+                13,
+                "test GROUP_VJ_REFNAME_HEAVY (deprecated but supported)",
+                r###"BCR=86237 GROUP_VJ_REFNAME_HEAVY CDR3="CARGVLWFGELGAFDIW|CARAGLGVVLAARGAFDIW""###,
+            ),
+            (
+                14,
+                "test placement of indel, needed shifting right",
+                r###"BCR=123085 CELLS=1 CHAINS=2 AMINO=cdr3 JALIGN2 CDR3=CAKDKSRPPTHYYGSGSYYSRILDNW"###,
+            ),
+            (
+                15,
+                "test placement of indel, needed shifting left",
+                r###"BCR=123085 CELLS=1 CHAINS=2 AMINO=cdr3 JALIGN2 CDR3=CARMAQFYSGSGTYYIGPYYFEYW"###,
+            ),
+        ],
     );
 }
-
-// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
-// 10c.  tests that are affected grouping
 
 #[cfg(not(feature = "cpu"))]
 #[test]
+/// Tests that are affected by the grouping algorithm.
 fn test_grouping() {
     PrettyTrace::new().on();
-    let t = Instant::now();
-    println!("running tests using {}", env!("CARGO_BIN_EXE_enclone"));
-    //                       id     ok    output
-    let mut results = Vec::<(usize, bool, String)>::new();
-    for i in 0..GTESTS.len() {
-        results.push((i, false, String::new()));
-    }
-    let this = include_str!("../../enclone_testlist/src/lib.rs");
-    let mut tracking = false;
-    let mut comments = Vec::<String>::new();
-    let mut lines = Vec::<String>::new();
-    for line in this.lines() {
-        if line.starts_with("pub const GTESTS: ") {
-            tracking = true;
-            continue;
-        }
-        if tracking {
-            if line == "];" {
-                break;
-            }
-            lines.push(line.to_string());
-        }
-    }
-    let mut i = 0;
-    while i < lines.len() {
-        let mut j = i + 1;
-        while j < lines.len() {
-            if lines[j].starts_with("    // ") {
-                let c = lines[j].after("    // ").as_bytes()[0];
-                if c >= b'0' && c <= b'9' {
-                    break;
-                }
-            }
-            j += 1;
-        }
-        comments.push(lines[i..j].iter().format("\n").to_string());
-        i = j;
-    }
-    results.par_iter_mut().for_each(|res| {
-        let it = res.0;
-        let test = GTESTS[it].to_string();
-        let mut out = String::new();
-        run_test(
-            env!("CARGO_BIN_EXE_enclone"),
-            it,
-            &comments[it],
-            &test,
-            "gtest",
-            &mut res.1,
-            &mut res.2,
-            &mut out,
-            0,
-        );
-    });
-    for i in 0..results.len() {
-        print!("{}", results[i].2);
-        if !results[i].1 {
-            panic!("failed");
-        }
-    }
-    println!(
-        "\ntotal time for {} enclone grouping subtests = {:.2} seconds\n",
-        GTESTS.len(),
-        elapsed(&t)
+    run_tests(
+        env!("CARGO_BIN_EXE_enclone"),
+        "gtest",
+        0,
+        &[
+            (
+                1,
+                "test 5/8 for newline correctness (this grouping option deprecated but supported)",
+                r###"BCR=85333 GROUP_VJ_REFNAME MIN_GROUP=2 AMINO= PLAIN SET_IN_STONE"###,
+            ),
+            (
+                2,
+                "test 6/8 for newline correctness (this grouping option deprecated but supported)",
+                r###"BCR=85333 GROUP_VJ_REFNAME MIN_GROUP=2 AMINO= PLAIN NGROUP SET_IN_STONE"###,
+            ),
+            (
+                3,
+                "test 7/8 for newline correctness (this grouping option deprecated but supported)",
+                r###"BCR=85333 GROUP_VJ_REFNAME MIN_GROUP=2 AMINO= PLAIN HTML SET_IN_STONE"###,
+            ),
+            (
+                4,
+                "test 8/8 for newline correctness (this grouping option deprecated but supported)",
+                r###"BCR=85333 GROUP_VJ_REFNAME MIN_GROUP=2 AMINO= PLAIN HTML NGROUP SET_IN_STONE"###,
+            ),
+            (
+                5,
+                "test of GROUP",
+                r###"BCR=123085 GROUP=vj_refname,cdr3_aa_heavy≥80%,cdr3_aa_light≥80% CVARS=cdr3_len
+             AMINO=cdr3 CDR3="CARHLQWELP.*W""###,
+            ),
+            (
+                6,
+                "test of GROUP",
+                r###"BCR=123085 GROUP=vj_refname,len,cdr3_len MIN_GROUP=2 MIN_CHAINS=2 CDR3="CQQSY.*TLATF"
+             CVARS=cdr3_len"###,
+            ),
+            (
+                7,
+                "test of GROUP",
+                r###"BCR=123085 GROUP=cdr3_aa_heavy≥100% MIN_GROUP=2 MIN_CHAINS=2 CVARS=cdr3_len
+             CDR3=CARPKSDYIIDAFDIW"###,
+            ),
+            (
+                8,
+                "test of GROUP",
+                r###"BCR=123085 GROUP=cdr3_aa_light≥100% MIN_GROUP=2 MIN_CHAINS=2 CVARS=cdr3_len
+             CDR3=CQTWGTGPWVF"###,
+            ),
+            (
+                9,
+                "test of GROUP",
+                r###"BCR=123085 GROUP=vj_refname,aa_heavy≥100% MIN_GROUP=2 MIN_CHAINS=2 CVARS=cdr3_len
+             CDR3=CARVPYYYDRSYYYYGMDVW"###,
+            ),
+            (
+                10,
+                "test of AGROUP",
+                r###"BCR=123085 AGROUP AG_CENTER=from_filters CDR3=CARHSYSSGWYDEWDYW
+             AG_DIST_FORMULA=cdr3_edit_distance AG_DIST_BOUND=top=2"###,
+            ),
+            (
+                11,
+                "test of AGROUP",
+                r###"BCR=123085 AGROUP AG_CENTER=from_filters CDR3=CAKDGGEHYYDSSGYYASYYFDYW 
+             AG_DIST_FORMULA=cdr3_edit_distance AG_DIST_BOUND=max=14"###,
+            ),
+            (
+                12,
+                "test of AGROUP",
+                r###"BCR=123085 AGROUP AG_CENTER=from_filters CDR3=CAKDGGEHYYDSSGYYASYYFDYW 
+             AG_DIST_FORMULA=cdr3_edit_distance AG_DIST_BOUND=max=13"###,
+            ),
+            (
+                13,
+                "test of AGROUP",
+                r###"BCR=123085 AGROUP AG_CENTER=copy_filters MIN_CELLS=2 MAX_CELLS=2
+             AG_DIST_FORMULA=cdr3_edit_distance AG_DIST_BOUND=max=3 MIN_GROUP=2"###,
+            ),
+            (
+                14,
+                "test symmetric grouping stats",
+                r###"BCR=123085 GROUP=vj_refname,cdr3_aa_heavy≥80%,cdr3_aa_light≥80% NOPRINT
+             SUMMARY SUMMARY_CLEAN"###,
+            ),
+            (
+                15,
+                "test of GROUP",
+                r###"BCR=123085 GROUP=cdr3_heavy≥100% MIN_GROUP=2 MIN_CHAINS=2 CVARS=cdr3_len
+             CDR3=CARPKSDYIIDAFDIW"###,
+            ),
+            (
+                16,
+                "test of GROUP",
+                r###"BCR=123085 GROUP="cdr3_light>=100%" MIN_GROUP=2 MIN_CHAINS=2 CVARS=cdr3_len
+             CDR3=CQTWGTGPWVF"###,
+            ),
+            (
+                17,
+                "test of GROUP",
+                r###"BCR=123085 GROUP=vj_refname,heavy≥96.6% MIN_GROUP=2 MIN_CHAINS=2 
+             CDR3="CARVIVGPKKLEGRLYSSSLHFDCW|CARVIVGPEKQEGRLYSSSLHFDYW" POUT=stdout PCOLS=vj_seq1"###,
+            ),
+            (
+                18,
+                "test of GROUP",
+                r###"BCR=123085 GROUP=vj_heavy_refname,cdr3_heavy_len,cdr3_heavy≥80% LVARS=n,donors,dref 
+             CVARS=const,cdr3_len AMINO=cdr3 CHAINS=2 MIN_GROUP=2
+             CDR3="CARDLHGYDPYGMDVW|CARELRHYDTYGMDVW""###,
+            ),
+            (
+                19,
+                "test of GROUP",
+                r###"BCR=123085 GROUP=vj_refname,cdr3_light_len LVARS=n,donors,dref CVARS=const,cdr3_len 
+             AMINO=cdr3 CHAINS=2 MIN_GROUP=2 CDR3="CARESAVAGDMDVW|CARDYGDYRWWVDGMDVW""###,
+            ),
+            (
+                20,
+                "test of group",
+                r###"BCR=123085 GROUP=vj_refname GROUP_CDR3=CACFGRIGVVVRAAHYW"###,
+            ),
+            (
+                21,
+                "test of group, asserted at one time",
+                r###"BCR=123085 GROUP=vj_refname,cdr3_len MIN_GROUP=3 HONEY=out=stdout,color=var,u1 
+             EXPECT_OK"###,
+            ),
+        ],
     );
 }
-
-// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
-// 11.
-
-// NOT BASIC
-
-// Regression tests using the extended public dataset collection.
 
 #[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
 #[test]
+/// Test using datasets that are either in the extended public dataset collection,
+/// or which require samtools.
 fn test_extended() {
     PrettyTrace::new().on();
-    let t = Instant::now();
-    //                       id     ok    output
-    let mut results = Vec::<(usize, bool, String)>::new();
-    for i in 0..EXTENDED_TESTS.len() {
-        results.push((i, false, String::new()));
-    }
-    results.par_iter_mut().for_each(|res| {
-        let it = res.0;
-        let test = EXTENDED_TESTS[it].to_string();
-        let mut out = String::new();
-        run_test(
-            env!("CARGO_BIN_EXE_enclone"),
-            it,
-            "",
-            &test,
-            "ext_test",
-            &mut res.1,
-            &mut res.2,
-            &mut out,
-            0,
-        );
-    });
-    for i in 0..results.len() {
-        print!("{}", results[i].2);
-        if !results[i].1 {
-            panic!("failed");
-        }
-    }
-    println!(
-        "\nextended tests total time for {} enclone subtests = {:.2} seconds\n",
-        EXTENDED_TESTS.len(),
-        elapsed(&t)
+    run_tests(
+        env!("CARGO_BIN_EXE_enclone"),
+        "ext_test",
+        0,
+        &[
+            (1, "Make sure that POUT works on full dataset. If we experience failures on other PUBLIC ids, we can add them to this list.",
+            r###"BCR=86237 RE POUT=/dev/null NOPRINT EXPECT_OK NO_PRE NFORCE"###),
+            (2, "tests nd2",
+            r###"BCR=47199,47200,47212 AMINO=cdr3 NCROSS LVARS=nd2 CDR3=CVKGKSGSFWYYFENW
+             NO_PRE NFORCE"###),
+            (3, "test sec and mem [requires samtools]",
+            r###"BCR=123085 GEX=123217 LVARSP=sec,mem CDR3=CVKDRVTGTITELDYW"###),
+            (4, "crashed at one point",
+            r###"BCR=128037,128040 GEX=127798,127801 LVARSP=pe1 NOPRINT EXPECT_OK NO_PRE NFORCE"###),
+            //
+            (5, "this added because it got better when a bug in bads detection was fixed",
+            r###"TCR=163914 CDR3=CASRLGGEETQYF NO_PRE NFORCE"###),
+            (6, "Test PCHAINS=max.  For this we need a clonotype having at least five chains, and the \
+                question is whether the header line represents cvars for all the chains.  The output of
+                this is expected to change whenever variables are added.",
+            r###"BCR=123085,123089,124547 NWEAK_CHAINS NDOUBLET MIN_CHAINS=5 POUT=stdout PCHAINS=max
+             NOPRINT RE NO_PRE NFORCE"###),
+            (7, "test MIN_GROUP_DONORS",
+            r###"BCR="40953;43899" MIX_DONORS MIN_GROUP=2 NO_PRE NFORCE
+             GROUP="cdr3_len,cdr3_aa_heavy>=85%,cdr3_aa_light>=85%,vj_refname" MIN_GROUP_DONORS=2"###),
+            (8, "this asserted at one point",
+            r###"BUILT_IN GROUP=vj_refname,cdr3_aa_heavy≥90% MIN_CHAINS_EXACT=2 MIN_GROUP=2 
+             KEEP_CLONO_IF_CELL_MEAN="cdr3_len1>=18" BCR=1018096-1018098 JALIGN1 NO_PRE NFORCE
+             EXPECT_OK"###),
+            (9, "this clonotype included a junk chain before we made a change, and test /outs",
+            r###"TCR=163911/outs CDR3=CAPSAGDKIIF AMINO=donor NO_PRE NFORCE"###),
+            (10, "test case where digit rows are just barely present",
+            r###"TCR=163911 CDR3=CASSLVQPSTDTQYF AMINO=donor NO_PRE NFORCE"###),
+            (11, "this added because it got better when a noise filter was added, also tests u_max",
+            r###"TCR=163914 CDR3=CASSLVQPSTDTQYF CVARSP=u_max NO_PRE NFORCE"###),
+            (12, "this added because it got better when a noise filter was added; also test FASTA",
+            r###"TCR=163914 CDR3=CAFRGGSYIPTF FASTA=stdout NO_PRE NFORCE"###),
+        ],
     );
 }
-
-// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
-// 12.
-
-// NOT BASIC
 
 #[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
@@ -421,50 +415,41 @@ fn test_crash() {
     PrettyTrace::new().on();
     let t = Instant::now();
     let crash_tests: Vec<_> = [
-        "CONP SEQC SUM MEAN BARCODES DIFF_STYLE=C1 GROUP_VJ_REFNAME",
-        "CONX FULL_SEQC DIFF_STYLE=C2 POUT=stdout PCOLS=count_CAR",
-        "AMINO=fwr1,cdr1,fwr2,cdr2,fwr3,cdr3,fwr4 CVARS=d1_name,d2_name,d_delta,d_Δ,cigar",
-        "PLOT_BY_ISOTYPE=stdout MIN_CELLS=3 GROUP_VJ_REFNAME_HEAVY ALIGN1 JALIGN1",
-        "GROUP_VDJ_REFNAME_HEAVY GVARS=d_inconsistent_%,d_inconsistent_n",
-        "GROUP=vj_refname,cdr3_aa_heavy≥90%,cdr3_aa_light≥90%",
-    ].iter().map(|crash_set| format!(
+        (1, "CONP SEQC SUM MEAN BARCODES DIFF_STYLE=C1 GROUP_VJ_REFNAME"),
+        (2, "CONX FULL_SEQC DIFF_STYLE=C2 POUT=stdout PCOLS=count_CAR"),
+        (3, "AMINO=fwr1,cdr1,fwr2,cdr2,fwr3,cdr3,fwr4 CVARS=d1_name,d2_name,d_delta,d_Δ,cigar"),
+        (4, "PLOT_BY_ISOTYPE=stdout MIN_CELLS=3 GROUP_VJ_REFNAME_HEAVY ALIGN1 JALIGN1"),
+        (5, "GROUP_VDJ_REFNAME_HEAVY GVARS=d_inconsistent_%,d_inconsistent_n"),
+        (6, "GROUP=vj_refname,cdr3_aa_heavy≥90%,cdr3_aa_light≥90%"),
+    ].iter().map(|(num, crash_set)| (num, "crash test", format!(
             "BCR=\"45977;123085;testx/inputs/flaky\" {crash_set} NOPRINT BUILT_IN EXPECT_OK NO_PRE NFORCE",
-        )).collect();
+        ))).collect();
     run_tests(
         env!("CARGO_BIN_EXE_enclone"),
-        &crash_tests,
         "crash_test",
         40,
+        &crash_tests.iter().map(String::as_str).collect_vec(),
     );
 }
-
-// ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
-// 13.
-
-// NOT BASIC
-
-// Regression tests for internal features.
 
 #[cfg(not(feature = "basic"))]
 #[cfg(not(feature = "cpu"))]
 #[test]
+/// Regression tests for internal features.
 fn test_internal() {
     PrettyTrace::new().on();
     run_tests(
         env!("CARGO_BIN_EXE_enclone"),
-        &[
-            // 1. gave wrong result
-            r###"123085 CDR3=CARDRIAGRFGYGMDVW NFORCE"###,
-            // 2. test human + IMGT; note that specifying by number forces BCR+TCR reference checks
-            r###"123085 REQUIRE_UNBROKEN_OK IMGT ACCEPT_BROKEN EXPECT_NULL"###,
-            // 3. this crashed; it is not exactly an internal feature test but uses an internal feature
-            // (IMGT) to exhibit the phenomenon
-            r###"BCR=123085 IMGT RE ACCEPT_BROKEN POUT=stdout PCELL BARCODE=AGCAGCCCATTAGGCT-1
-                 EXPECT_OK"###,
-        ],
         "internal_test",
         40,
+        &[
+            (1, "gave wrong result",
+            r###"123085 CDR3=CARDRIAGRFGYGMDVW NFORCE"###),
+            (2, "test human + IMGT; note that specifying by number forces BCR+TCR reference checks",
+            r###"123085 REQUIRE_UNBROKEN_OK IMGT ACCEPT_BROKEN EXPECT_NULL"###),
+            (3, "this crashed; it is not exactly an internal feature test but uses an internal feature (IMGT) to exhibit the phenomenon",
+            r###"BCR=123085 IMGT RE ACCEPT_BROKEN POUT=stdout PCELL BARCODE=AGCAGCCCATTAGGCT-1 EXPECT_OK"###),
+        ],
     );
 }
 
