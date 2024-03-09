@@ -180,14 +180,13 @@ fn test_enclone_examples() {
     for (num, args) in examples {
         let out_file = format!("../enclone_help/src/example{}", num);
         let old = read_to_string(&out_file).unwrap();
-        let args = testn.split(' ').collect::<Vec<&str>>();
         let mut new = Command::new(env!("CARGO_BIN_EXE_enclone"));
         let mut new = new.arg(format!(
             "PRE=../enclone-data/big_inputs/version{}",
             TEST_FILES_VERSION
         ));
-        for i in 0..args.len() {
-            new = new.arg(&args[i]);
+        for arg in args.split(' ') {
+            new = new.arg(arg);
         }
         let new = new
             .arg("FORCE_EXTERNAL")
@@ -198,7 +197,7 @@ fn test_enclone_examples() {
         if new.status.code() != Some(0) {
             eprint!(
                 "\nenclone_test_examples: example{} failed to execute, stderr =\n{}",
-                t + 1,
+                num,
                 strme(&new.stderr),
             );
             eprintln!("If it's not clear what is happening, make sure you've run ./build.\n");
@@ -207,7 +206,7 @@ fn test_enclone_examples() {
         if old != new2 {
             eprintln!(
                 "\nenclone_test_examples: the file enclone_help/src/example{} is not up to date\n",
-                t + 1
+                num
             );
             eprintln!("old output =\n{}", old);
             eprintln!("new output =\n{}\n", new2);
@@ -377,19 +376,17 @@ fn test_enclone_prebuild() {
         remove_file(&mb).unwrap();
     }
 
-    let test_id = 48;
-    let it = test_id - 1;
-    let testn = TESTS[it];
-    let out_file = format!("testx/inputs/outputs/enclone_test{}_output", test_id);
+    let (test_num, comment, args) = TESTS[47];
+    assert_eq!(48, test_num);
+    let out_file = format!("testx/inputs/outputs/enclone_test{}_output", test_num);
     let old = read_to_string(&out_file).unwrap();
-    let args = testn.split(' ').collect::<Vec<&str>>();
     let mut new = Command::new(env!("CARGO_BIN_EXE_enclone"));
     let mut new = new.arg(format!(
         "PRE=../enclone-data/big_inputs/version{}",
         TEST_FILES_VERSION
     ));
-    for i in 0..args.len() {
-        new = new.arg(&args[i]);
+    for arg in args.split(' ') {
+        new = new.arg(arg);
     }
     // dubious use of expect:
     let new = new
@@ -404,7 +401,7 @@ fn test_enclone_prebuild() {
             "\nenclone_test_prebuild: first pass output has changed.\n\
             If you are OK with the new output, it should work to type:\n\
             enclone {} > enclone_exec/{}\n",
-            testn, out_file
+            args, out_file
         );
         eprintln!("old output =\n{}\n", old);
         eprintln!("new output =\n{}\n", new2);
@@ -413,16 +410,13 @@ fn test_enclone_prebuild() {
     }
 
     // Second pass: run without PREBUILD
-
-    let testn = TESTS[it];
-    let args = testn.split(' ').collect::<Vec<&str>>();
     let mut new = Command::new(env!("CARGO_BIN_EXE_enclone"));
     let mut new = new.arg(format!(
         "PRE=../enclone-data/big_inputs/version{}",
         TEST_FILES_VERSION
     ));
-    for i in 0..args.len() {
-        new = new.arg(&args[i]);
+    for arg in args.split(' ') {
+        new = new.arg(arg);
     }
     // dubious use of expect:
     let new = new
