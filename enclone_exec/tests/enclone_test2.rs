@@ -480,39 +480,25 @@ fn test_crash() {
 #[test]
 fn test_internal() {
     PrettyTrace::new().on();
-    let t = Instant::now();
-    //                       id     ok    output
-    let mut results = Vec::<(usize, bool, String)>::new();
-    for i in 0..INTERNAL_TESTS.len() {
-        results.push((i, false, String::new()));
+    let failures: Vec<_> = INTERNAL_TESTS
+        .par_iter()
+        .enumerate()
+        .map(|(i, test)| {
+            run_test(
+                env!("CARGO_BIN_EXE_enclone"),
+                i,
+                "",
+                test,
+                "internal_test",
+                40,
+            )
+        })
+        .filter_map(Result::err)
+        .collect();
+    for f in failures {
+        print!("{}", f.log);
     }
-    results.par_iter_mut().for_each(|res| {
-        let it = res.0;
-        let test = INTERNAL_TESTS[it].to_string();
-        let mut out = String::new();
-        run_test(
-            env!("CARGO_BIN_EXE_enclone"),
-            it,
-            "",
-            &test,
-            "internal_test",
-            &mut res.1,
-            &mut res.2,
-            &mut out,
-            40,
-        );
-    });
-    for i in 0..results.len() {
-        print!("{}", results[i].2);
-        if !results[i].1 {
-            panic!("failed");
-        }
-    }
-    println!(
-        "\ninternal tests total time for {} enclone subtests = {:.2} seconds\n",
-        INTERNAL_TESTS.len(),
-        elapsed(&t)
-    );
+    assert!(failures.is_empty());
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓

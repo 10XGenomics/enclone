@@ -810,7 +810,6 @@ dependencies = [
  "perf_stats",
  "pretty_trace",
  "rayon",
- "serde",
  "serde_json",
  "stats_utils",
  "string_utils",
