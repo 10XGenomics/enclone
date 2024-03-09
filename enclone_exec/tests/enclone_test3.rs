@@ -170,9 +170,15 @@ fn test_site_examples() {
 #[test]
 fn test_enclone_examples() {
     PrettyTrace::new().on();
-    for t in 0..EXAMPLES.len() {
-        let testn = format!("{}", EXAMPLES[t]);
-        let out_file = format!("../enclone_help/src/example{}", t + 1);
+    let examples = [
+        (1, r###"BCR=123089 CDR3=CARRYFGVVADAFDIW"###),
+        (
+            2,
+            r###"BCR=123085 GEX=123217 LVARSP=gex,IGHV2-5_g_μ CDR3=CALMGTYCSGDNCYSWFDPW"###,
+        ),
+    ];
+    for (num, args) in examples {
+        let out_file = format!("../enclone_help/src/example{}", num);
         let old = read_to_string(&out_file).unwrap();
         let args = testn.split(' ').collect::<Vec<&str>>();
         let mut new = Command::new(env!("CARGO_BIN_EXE_enclone"));
@@ -562,42 +568,29 @@ fn test_proto_write() -> Result<(), Error> {
 
 #[cfg(not(feature = "cpu"))]
 #[test]
-fn test_annotated_example() {
+fn test_annotated_example() -> Result<(), String> {
     PrettyTrace::new().on();
-    let it = 0;
-    let test = "BCR=123085 CDR3=CTRDRDLRGATDAFDIW";
-    let mut out = String::new();
-    let mut log = String::new();
-    let mut ok = false;
     run_test(
         env!("CARGO_BIN_EXE_enclone"),
-        it,
-        "",
-        &test,
         "annotated_example_test",
-        &mut ok,
-        &mut log,
-        &mut out,
         0,
-    );
-    print!("{}", log);
-    if !ok {
-        let mut log = Vec::<u8>::new();
-        emit_red_escape(&mut log);
-        fwriteln!(
-            log,
-            "Oh no: the results for the annotated example on the landing page have \
-            changed.  Assuming that\nthe change is intentional, to fix this you \
-            need to do two things:\n\
-            1. Update the test output.\n\
-            2. Manually update the annotated example output.\n\
-            Because the second item is such a big pain, we stopped doing it, but you should\n\
-            check to make sure that it has not changed too much from what is shown."
-        );
-        emit_end_escape(&mut log);
-        eprintln!("{}", strme(&log));
-        panic!("failed");
-    }
+        1,
+        "",
+        "BCR=123085 CDR3=CTRDRDLRGATDAFDIW",
+    )
+    .map_err(|res| {
+        format!(
+            "{}\n\nOh no: the results for the annotated example on the landing page have \
+        changed. Assuming that the change is intentional, to fix this you \
+        need to do two things:\n\
+        1. Update the test output.\n\
+        2. Manually update the annotated example output.\n\
+        Because the second item is such a big pain, we stopped doing it, but you should \
+        check to make sure that it has not changed too much from what is shown.",
+            res.log
+        )
+    })?;
+    Ok(())
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓

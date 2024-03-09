@@ -11,7 +11,7 @@ use std::process::Command;
 use string_utils::strme;
 
 /// A test case is declared with a fixed test index, a comment, and the code to run.
-pub type TestCase = (i32, &str, &str);
+pub type TestCase<'a> = (usize, &'a str, &'a str);
 
 /// Run a collection of test cases in parallel.
 /// TODO: replace this by declaring test cases individually.
@@ -20,7 +20,7 @@ pub fn run_tests(enclone: &str, test_name: &str, max_cores: usize, tests: &[Test
     let failures: Vec<_> = tests
         .par_iter()
         .map(|(number, comments, args)| {
-            run_test(enclone, *number, comments, args, test_name, max_cores)
+            run_test(enclone, test_name, max_cores, *number, comments, args)
         })
         .filter_map(Result::err)
         .collect();
@@ -41,7 +41,7 @@ pub struct TestResult {
 /// Run a single test case.
 pub fn run_test(
     enclone: &str,    // name of the enclone executable
-    testname: &str,   // test category e.g. "test" or "ext_test"
+    name: &str,       // test category e.g. "test" or "ext_test"
     max_cores: usize, // max cores, or if 0, default value determined here
     num: usize,       // test number
     comments: &str,   // info about the test
@@ -87,7 +87,7 @@ pub fn run_test(
     while test.contains("  ") {
         test = test.replace("  ", " ");
     }
-    let out_file = format!("testx/inputs/outputs/enclone_{}{}_output", testname, num);
+    let out_file = format!("testx/inputs/outputs/enclone_{}{}_output", name, num);
     let mut pre_arg = format!(
         "PRE=../enclone-data/big_inputs/version{}",
         TEST_FILES_VERSION
@@ -107,8 +107,8 @@ pub fn run_test(
                 "\nYou need to create the output file {out_file}.\n\
                  Do this by executing the following command from \
                  the top level of the enclone repo:\n\n\
-                 enclone {local_pre_arg} {test} > enclone_exec/testx/inputs/outputs/enclone_{testname}{test_index_from_1}_output; \
-                 git add enclone_exec/testx/inputs/outputs/enclone_{testname}{test_index_from_1}_output\n\n\
+                 enclone {local_pre_arg} {test} > enclone_exec/testx/inputs/outputs/enclone_{name}{num}_output; \
+                 git add enclone_exec/testx/inputs/outputs/enclone_{name}{num}_output\n\n\
                  If you just added a test to the TESTS group in testlist.rs, it would have been \
                  faster if you had\nsimply typed run_last_test to get this information.  But you first \
                  need to run ./build.",
@@ -168,14 +168,14 @@ pub fn run_test(
             1 => Ok(res),
             0 => {
                 res.log = format!(
-                    "Command for subtest {test_index_from_1} failed.\n\
+                    "Command for subtest {num} failed.\n\
             The test command was expected to fail but it succeeded unexpectedly."
                 );
                 Err(res)
             }
             _ => {
                 res.log = format!(
-                    "Command for subtest {test_index_from_1} failed.\n
+                    "Command for subtest {num} failed.\n
             The test was expected to fail with with exit status 1,\n\
             but instead failed with exit status {status}."
                 );
@@ -188,7 +188,7 @@ pub fn run_test(
             Ok(res)
         } else {
             res.log = format!(
-                "Command for subtest {test_index_from_1} failed with exit status {status}.\n\
+                "Command for subtest {num} failed with exit status {status}.\n\
                 The command was\n\nenclone {test} {local_pre_arg}\n\n
                 stdout = {}\n\n\
                 stderr = {}",
@@ -204,15 +204,12 @@ pub fn run_test(
         if old.len() <= 1 && !expect_null {
             fwriteln!(
                 &mut res.log,
-                "Warning: old output for subtest {test_index_from_1} has {} bytes.\n",
+                "Warning: old output for subtest {num} has {} bytes.\n",
                 old.len()
             );
         }
         if !new.stderr.is_empty() {
-            fwriteln!(
-                &mut res.log,
-                "Command for subtest {test_index_from_1} failed.\n"
-            );
+            fwriteln!(&mut res.log, "Command for subtest {num} failed.\n");
             fwriteln!(&mut res.log, "stderr has {} bytes:", new.stderr.len());
             fwrite!(&mut res.log, "{}", strme(&new.stderr));
             return Err(res);
@@ -324,7 +321,7 @@ pub fn run_test(
                  > enclone_exec/testx/inputs/outputs/enclone_{}{}_output\n",
         local_pre_arg,
         test,
-        testname,
+        name,
         num
     );
     fwrite!(&mut res.log, "and then committing the changed file.  ");

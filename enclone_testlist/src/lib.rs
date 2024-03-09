@@ -5,20 +5,6 @@ pub mod main_testlist;
 
 pub const TEST_FILES_VERSION: u8 = 15;
 
-// Tests that are affected by the grouping algorithm.  All such tests should go here, if not
-// already in DTESTS.
-
-// List of examples in documentation.
-
-pub const EXAMPLES: [&str; 2] = [
-    (1, "", r###"BCR=123089 CDR3=CARRYFGVVADAFDIW"###),
-    (
-        2,
-        "",
-        r###"BCR=123085 GEX=123217 LVARSP=gex,IGHV2-5_g_μ CDR3=CALMGTYCSGDNCYSWFDPW"###,
-    ),
-];
-
 // List of examples on site.
 
 pub const SITE_EXAMPLES: [(&str, &str); 28] = [
