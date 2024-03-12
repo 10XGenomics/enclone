@@ -146,7 +146,7 @@ fn main() {
         annotate_seq(&seq, &refdata, &mut ann, true, false, true);
         print_cdr3_using_ann(&seq, &refdata, &ann, &mut log);
         print_start_codon_positions(&seq, &mut log);
-        if is_valid(&seq, &refdata, &ann, true, &mut log, Some(gamma_delta)) {
+        if is_productive_contig(&seq, &refdata, &ann).0 {
             fwriteln!(log, "VALID");
         }
 

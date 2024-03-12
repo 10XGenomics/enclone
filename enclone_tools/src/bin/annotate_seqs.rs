@@ -11,7 +11,7 @@ use refx::*;
 use std::env;
 use std::io::{BufRead, Write};
 use string_utils::*;
-use vdj_ann::transcript::*;
+use vdj_ann::transcript::is_productive_contig;
 use vdj_ann::*;
 
 fn main() {
@@ -81,7 +81,7 @@ fn main() {
         print_annotations(&seq, &refdata, &mut log, false, true, false);
         let mut ann = Vec::<(i32, i32, i32, i32, i32)>::new();
         annotate_seq(&seq, &refdata, &mut ann, true, false, true);
-        let valid = is_valid(&seq, &refdata, &ann, false, &mut log, None);
+        let (valid, _) = is_productive_contig(&seq, &refdata, &ann);
         let mut shift = false;
         for i in 1..ann.len() {
             if ann[i - 1].2 == ann[i].2 {
