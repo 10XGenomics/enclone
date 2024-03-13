@@ -1,68 +1,9 @@
-[workspace]
+# This file contains master definitions for Cargo.toml files in this workspace.
+#
+# If you want to change the version of a crate that's used, edit this file, and not one
+# of the Cargo.toml files in the crates within this repo.  Then use sync_to_master (which
+# is in the enclone crate) to propagate the change.  When you run "cargo t", this is enforced.
 
-members = [
-    "enclone_denovo",
-    "enclone_exec",
-    "enclone_help",
-    "enclone_main",
-    "enclone_paper",
-    "enclone_tail",
-    "enclone_tools",
-    "enclone_version",
-    "enclone_build",
-    "enclone_testlist",
-]
-
-resolver = "2"
-
-# ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
-# dev mode profile: setting lto = true or lto = "thin" or codegen-units = 1 or even
-# codegen-units = 5 all speed up execution (as measured by our cycle count test), by up to
-# about 10%, but they all have at least some effect on compile time, and it doesn't seem worth it
-
-[profile.dev]
-debug = 1
-opt-level = 3
-split-debuginfo = "unpacked"
-
-# ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
-[profile.release]
-debug = 1
-lto = true
-codegen-units = 1
-overflow-checks = true
-
-# ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
-[profile.test]
-debug = 1
-opt-level = 3
-split-debuginfo = "unpacked"
-
-# Cautionary note.  We set package versions in enclone_versions, but it's not clear that
-# this is a sound practice, particularly in the case where a crate outside the enclone repo
-# depends on a crate in the enclone repo.  Such an external crate sees "*" and it's not clear
-# what is done with that.
-
-# ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
-# We attempted to speed up loading on the Mac using zld,
-# https://github.com/michaeleisel/zld.  First we downloaded the current release at
-# https://github.com/michaeleisel/zld/releases/tag/1.3.2, and then added these lines
-# (without the #) to .cargo/config:
-# [target.x86_64-apple-darwin]
-# rustflags = ["-C", "link-arg=-fuse-ld=/Users/david.jaffe/bin/zld"]
-# To get this to work, we had to install Xcode 12.4, by going to the apple developers site.
-# For the particular version of macOS we have, the later versions of Xcode wouldn't work.
-# To complete the installation, we did
-# sudo xcode-select -s /path/to/Xcode.app
-# and then cargo b worked.  This seemed to speed up loading by 5-10%, but that did not seem
-# like enough to justify using zld.  It might be worth trying again later, as it is being
-# improved.
-
-[workspace.dependencies]
 align_tools = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "nmmsv/refactor-annotation-tuple" }
 amino = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "nmmsv/refactor-annotation-tuple" }
 anyhow = "1"
@@ -111,7 +52,6 @@ fontdb = "0.7"
 fs_extra = "1"
 git = "https://github.com/10xGenomics/hdf5-rust.git"
 graph_simple = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "nmmsv/refactor-annotation-tuple" }
-hdf5 = { git = "https://github.com/10XGenomics/hdf5-rust.git", branch = "conda_nov2021", features = ["conda"], default-features = false }
 home = "0.5"
 hyperbase = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "nmmsv/refactor-annotation-tuple" }
 image = { version = "0.23", features = ["jpeg", "png", "jpeg_rayon"], default-features = false }
@@ -125,7 +65,6 @@ libc = "0.2"
 log = "0.4"
 lz4 = "1"
 mach = "0.3"
-martian-filetypes = { git = "https://github.com/martian-lang/martian-rust", branch = "master" }
 ndarray = "0.15"
 nix = { version = "0.27", features = ["signal"] }
 num-traits = "0.2"
@@ -137,7 +76,7 @@ permutation = "0.4"
 petgraph = "0.6"
 plotters = { version = "0.3", default_features = false, features = ["svg_backend", "point_series"] }
 png-decoder = "0.1"
-pretty_trace = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main", features = ["pprof"]}
+pretty_trace = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "nmmsv/refactor-annotation-tuple", features = ["pprof"]}
 procfs = { version = "0.12", default_features = false }
 # prost: enclone will compile without the std and prost-derive features, but other things
 #        (such as enclone_proto) break.
@@ -170,7 +109,7 @@ tonic-build = { version = "0.6", default-features = false, features = ["transpor
 triple_accel = "0.4"
 users = "0.11"
 usvg = { version = "0.19", features = ["text"] }
-vdj_types = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "nmmsv/refactor-annotation-tuple" }
+# vdj_ann = "0.4"
 vdj_ann = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "nmmsv/refactor-annotation-tuple" }
 vdj_ann_ref = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "nmmsv/refactor-annotation-tuple" }
 vector_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "nmmsv/refactor-annotation-tuple" }

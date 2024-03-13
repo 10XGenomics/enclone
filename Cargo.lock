@@ -35,31 +35,31 @@ dependencies = [
 [[package]]
 name = "align_tools"
 version = "0.1.12"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=main#e24e55da3ff959ab118db3ee074b80ee35d0c9a1"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple#bf0dc28590e33abf852b0360dacc2be41f706cb8"
 dependencies = [
  "bio_edit",
  "debruijn",
  "itertools",
- "string_utils",
- "vector_utils",
+ "string_utils 0.1.4 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
+ "vector_utils 0.1.5 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
 ]
 
 [[package]]
 name = "amino"
 version = "0.1.7"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=main#e24e55da3ff959ab118db3ee074b80ee35d0c9a1"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple#bf0dc28590e33abf852b0360dacc2be41f706cb8"
 dependencies = [
  "debruijn",
- "string_utils",
+ "string_utils 0.1.4 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
 ]
 
 [[package]]
 name = "ansi_escape"
 version = "0.1.3"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=main#e24e55da3ff959ab118db3ee074b80ee35d0c9a1"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple#bf0dc28590e33abf852b0360dacc2be41f706cb8"
 dependencies = [
- "string_utils",
- "vector_utils",
+ "string_utils 0.1.4 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
+ "vector_utils 0.1.5 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
 ]
 
 [[package]]
@@ -227,7 +227,7 @@ dependencies = [
 [[package]]
 name = "bio_edit"
 version = "0.1.1"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=main#e24e55da3ff959ab118db3ee074b80ee35d0c9a1"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple#bf0dc28590e33abf852b0360dacc2be41f706cb8"
 dependencies = [
  "bio-types",
  "bit-set",
@@ -613,7 +613,7 @@ dependencies = [
 [[package]]
 name = "dna"
 version = "0.1.3"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=main#e24e55da3ff959ab118db3ee074b80ee35d0c9a1"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple#0eaf27a47092300954b352d1f587c568ec172a80"
 
 [[package]]
 name = "edit-distance"
@@ -630,7 +630,7 @@ checksum = "e78d4f1cc4ae33bbfc157ed5d5a5ef3bc29227303d595861deb238fcec4e9457"
 [[package]]
 name = "enclone"
 version = "0.5.219"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=main#e24e55da3ff959ab118db3ee074b80ee35d0c9a1"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple#0eaf27a47092300954b352d1f587c568ec172a80"
 dependencies = [
  "amino",
  "ansi_escape",
@@ -640,24 +640,24 @@ dependencies = [
  "equiv",
  "graph_simple",
  "hdf5",
- "io_utils",
+ "io_utils 0.3.2 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
  "itertools",
  "pager",
  "perf_stats",
  "petgraph",
- "pretty_trace",
+ "pretty_trace 0.5.24 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
  "qd",
  "rayon",
- "stats_utils",
- "string_utils",
+ "stats_utils 0.1.3 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
+ "string_utils 0.1.4 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
  "vdj_ann",
- "vector_utils",
+ "vector_utils 0.1.5 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
 ]
 
 [[package]]
 name = "enclone_args"
 version = "0.5.219"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=main#e24e55da3ff959ab118db3ee074b80ee35d0c9a1"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple#0eaf27a47092300954b352d1f587c568ec172a80"
 dependencies = [
  "debruijn",
  "enclone_core",
@@ -665,17 +665,17 @@ dependencies = [
  "evalexpr",
  "expr_tools",
  "hdf5",
- "io_utils",
+ "io_utils 0.3.2 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
  "itertools",
  "martian-filetypes",
  "rand",
  "rayon",
  "regex",
  "serde_json",
- "string_utils",
+ "string_utils 0.1.4 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
  "vdj_ann",
  "vdj_types",
- "vector_utils",
+ "vector_utils 0.1.5 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
 ]
 
 [[package]]
@@ -685,14 +685,14 @@ dependencies = [
  "chrono",
  "enclone_core",
  "itertools",
- "pretty_trace",
- "string_utils",
+ "pretty_trace 0.5.24 (git+https://github.com/10XGenomics/enclone_ranger?branch=main)",
+ "string_utils 0.1.4 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
 ]
 
 [[package]]
 name = "enclone_core"
 version = "0.5.219"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=main#e24e55da3ff959ab118db3ee074b80ee35d0c9a1"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple#bf0dc28590e33abf852b0360dacc2be41f706cb8"
 dependencies = [
  "amino",
  "ansi_escape",
@@ -702,7 +702,7 @@ dependencies = [
  "enclone_proto",
  "evalexpr",
  "hdf5",
- "io_utils",
+ "io_utils 0.3.2 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
  "itertools",
  "lazy_static",
  "perf_stats",
@@ -710,13 +710,13 @@ dependencies = [
  "rayon",
  "regex",
  "serde",
- "stats_utils",
- "string_utils",
+ "stats_utils 0.1.3 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
+ "string_utils 0.1.4 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
  "superslice",
- "tables",
+ "tables 0.1.5 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
  "tilde-expand",
  "vdj_ann",
- "vector_utils",
+ "vector_utils 0.1.5 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
  "zstd",
 ]
 
@@ -728,15 +728,15 @@ dependencies = [
  "bio",
  "debruijn",
  "fasta_tools",
- "io_utils",
+ "io_utils 0.3.2 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
  "itertools",
  "perf_stats",
- "pretty_trace",
+ "pretty_trace 0.5.24 (git+https://github.com/10XGenomics/enclone_ranger?branch=main)",
  "rayon",
- "string_utils",
+ "string_utils 0.1.4 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
  "superslice",
  "vdj_ann_ref",
- "vector_utils",
+ "vector_utils 0.1.5 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
 ]
 
 [[package]]
@@ -756,19 +756,19 @@ dependencies = [
  "enclone_vars",
  "flate2",
  "fs_extra",
- "io_utils",
+ "io_utils 0.3.2 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
  "itertools",
  "nix 0.27.1",
  "perf_stats",
- "pretty_trace",
+ "pretty_trace 0.5.24 (git+https://github.com/10XGenomics/enclone_ranger?branch=main)",
  "rayon",
  "serde",
  "serde_json",
  "sha2",
- "stats_utils",
- "string_utils",
+ "stats_utils 0.1.3 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
+ "string_utils 0.1.4 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
  "tokio",
- "vector_utils",
+ "vector_utils 0.1.5 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
  "yaml-rust",
 ]
 
@@ -779,10 +779,10 @@ dependencies = [
  "ansi_escape",
  "enclone_build",
  "enclone_core",
- "io_utils",
+ "io_utils 0.3.2 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
  "itertools",
- "string_utils",
- "tables",
+ "string_utils 0.1.4 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
+ "tables 0.1.5 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
 ]
 
 [[package]]
@@ -804,19 +804,19 @@ dependencies = [
  "enclone_vars",
  "expr_tools",
  "hdf5",
- "io_utils",
+ "io_utils 0.3.2 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
  "itertools",
  "martian-filetypes",
  "perf_stats",
- "pretty_trace",
+ "pretty_trace 0.5.24 (git+https://github.com/10XGenomics/enclone_ranger?branch=main)",
  "rayon",
  "serde_json",
- "stats_utils",
- "string_utils",
- "tables",
+ "stats_utils 0.1.3 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
+ "string_utils 0.1.4 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
+ "tables 0.1.5 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
  "vdj_ann",
  "vdj_ann_ref",
- "vector_utils",
+ "vector_utils 0.1.5 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
 ]
 
 [[package]]
@@ -829,24 +829,24 @@ dependencies = [
  "enclone_tail",
  "enclone_testlist",
  "flate2",
- "io_utils",
+ "io_utils 0.3.2 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
  "itertools",
  "perf_stats",
- "pretty_trace",
+ "pretty_trace 0.5.24 (git+https://github.com/10XGenomics/enclone_ranger?branch=main)",
  "rand_chacha",
  "rayon",
- "string_utils",
- "tables",
+ "string_utils 0.1.4 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
+ "tables 0.1.5 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
  "triple_accel",
  "vdj_ann",
  "vdj_ann_ref",
- "vector_utils",
+ "vector_utils 0.1.5 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
 ]
 
 [[package]]
 name = "enclone_print"
 version = "0.5.219"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=main#e24e55da3ff959ab118db3ee074b80ee35d0c9a1"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple#0eaf27a47092300954b352d1f587c568ec172a80"
 dependencies = [
  "amino",
  "ansi_escape",
@@ -859,7 +859,7 @@ dependencies = [
  "equiv",
  "expr_tools",
  "hdf5",
- "io_utils",
+ "io_utils 0.3.2 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
  "itertools",
  "ndarray",
  "permutation",
@@ -867,18 +867,18 @@ dependencies = [
  "rayon",
  "regex",
  "serde_json",
- "stats_utils",
- "string_utils",
- "tables",
+ "stats_utils 0.1.3 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
+ "string_utils 0.1.4 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
+ "tables 0.1.5 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
  "triple_accel",
  "vdj_ann",
- "vector_utils",
+ "vector_utils 0.1.5 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
 ]
 
 [[package]]
 name = "enclone_proto"
 version = "0.5.219"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=main#e24e55da3ff959ab118db3ee074b80ee35d0c9a1"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple#bf0dc28590e33abf852b0360dacc2be41f706cb8"
 dependencies = [
  "bio_edit",
  "byteorder",
@@ -891,7 +891,7 @@ dependencies = [
 [[package]]
 name = "enclone_ranger"
 version = "0.5.219"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=main#e24e55da3ff959ab118db3ee074b80ee35d0c9a1"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple#0eaf27a47092300954b352d1f587c568ec172a80"
 dependencies = [
  "enclone",
  "enclone_args",
@@ -900,14 +900,14 @@ dependencies = [
  "enclone_stuff",
  "hdf5",
  "rayon",
- "string_utils",
+ "string_utils 0.1.4 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
  "vdj_ann",
 ]
 
 [[package]]
 name = "enclone_stuff"
 version = "0.5.219"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=main#e24e55da3ff959ab118db3ee074b80ee35d0c9a1"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple#0eaf27a47092300954b352d1f587c568ec172a80"
 dependencies = [
  "amino",
  "debruijn",
@@ -919,17 +919,17 @@ dependencies = [
  "equiv",
  "evalexpr",
  "hdf5",
- "io_utils",
+ "io_utils 0.3.2 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
  "itertools",
  "ndarray",
  "qd",
  "rayon",
  "regex",
- "stats_utils",
- "string_utils",
- "tables",
+ "stats_utils 0.1.3 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
+ "string_utils 0.1.4 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
+ "tables 0.1.5 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
  "vdj_ann",
- "vector_utils",
+ "vector_utils 0.1.5 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
 ]
 
 [[package]]
@@ -948,26 +948,26 @@ dependencies = [
  "float-ord",
  "fontdb",
  "hdf5",
- "io_utils",
+ "io_utils 0.3.2 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
  "itertools",
  "lazy_static",
  "ndarray",
  "palette",
  "perf_stats",
  "plotters",
- "pretty_trace",
+ "pretty_trace 0.5.24 (git+https://github.com/10XGenomics/enclone_ranger?branch=main)",
  "rayon",
  "resvg",
- "stats_utils",
- "string_utils",
+ "stats_utils 0.1.3 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
+ "string_utils 0.1.4 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
  "superslice",
- "tables",
+ "tables 0.1.5 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
  "tar",
  "tiny-skia",
  "triple_accel",
  "usvg",
  "vdj_ann",
- "vector_utils",
+ "vector_utils 0.1.5 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
 ]
 
 [[package]]
@@ -994,34 +994,34 @@ dependencies = [
  "expr_tools",
  "fasta_tools",
  "flate2",
- "io_utils",
+ "io_utils 0.3.2 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
  "itertools",
  "lz4",
  "pager",
- "pretty_trace",
+ "pretty_trace 0.5.24 (git+https://github.com/10XGenomics/enclone_ranger?branch=main)",
  "rayon",
  "serde",
  "serde_json",
  "statrs",
- "stats_utils",
- "string_utils",
- "tables",
+ "stats_utils 0.1.3 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
+ "string_utils 0.1.4 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
+ "tables 0.1.5 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
  "vdj_ann",
  "vdj_ann_ref",
  "vdj_types",
- "vector_utils",
+ "vector_utils 0.1.5 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
 ]
 
 [[package]]
 name = "enclone_vars"
 version = "0.5.219"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=main#e24e55da3ff959ab118db3ee074b80ee35d0c9a1"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple#0eaf27a47092300954b352d1f587c568ec172a80"
 dependencies = [
- "io_utils",
+ "io_utils 0.3.2 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
  "itertools",
- "pretty_trace",
- "string_utils",
- "vector_utils",
+ "pretty_trace 0.5.24 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
+ "string_utils 0.1.4 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
+ "vector_utils 0.1.5 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
 ]
 
 [[package]]
@@ -1029,7 +1029,7 @@ name = "enclone_version"
 version = "0.5.219"
 dependencies = [
  "chrono",
- "string_utils",
+ "string_utils 0.1.4 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
 ]
 
 [[package]]
@@ -1055,7 +1055,7 @@ dependencies = [
 [[package]]
 name = "equiv"
 version = "0.1.3"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=main#e24e55da3ff959ab118db3ee074b80ee35d0c9a1"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple#bf0dc28590e33abf852b0360dacc2be41f706cb8"
 
 [[package]]
 name = "errno"
@@ -1087,33 +1087,33 @@ checksum = "1d4fd7bd9e32c1205549decf6f36772d7b606a579b26afaffa335ae148151a5d"
 [[package]]
 name = "exons"
 version = "0.1.5"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=main#e24e55da3ff959ab118db3ee074b80ee35d0c9a1"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple#0eaf27a47092300954b352d1f587c568ec172a80"
 dependencies = [
- "io_utils",
- "string_utils",
- "vector_utils",
+ "io_utils 0.3.2 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
+ "string_utils 0.1.4 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
+ "vector_utils 0.1.5 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
 ]
 
 [[package]]
 name = "expr_tools"
 version = "0.1.3"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=main#e24e55da3ff959ab118db3ee074b80ee35d0c9a1"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple#0eaf27a47092300954b352d1f587c568ec172a80"
 dependencies = [
  "evalexpr",
  "statrs",
- "string_utils",
- "vector_utils",
+ "string_utils 0.1.4 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
+ "vector_utils 0.1.5 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
 ]
 
 [[package]]
 name = "fasta_tools"
 version = "0.1.8"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=main#e24e55da3ff959ab118db3ee074b80ee35d0c9a1"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple#bf0dc28590e33abf852b0360dacc2be41f706cb8"
 dependencies = [
  "debruijn",
  "flate2",
- "io_utils",
- "string_utils",
+ "io_utils 0.3.2 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
+ "string_utils 0.1.4 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
 ]
 
 [[package]]
@@ -1287,10 +1287,10 @@ checksum = "6fb8d784f27acf97159b40fc4db5ecd8aa23b9ad5ef69cdd136d3bc80665f0c0"
 [[package]]
 name = "graph_simple"
 version = "0.1.5"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=main#e24e55da3ff959ab118db3ee074b80ee35d0c9a1"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple#bf0dc28590e33abf852b0360dacc2be41f706cb8"
 dependencies = [
  "petgraph",
- "vector_utils",
+ "vector_utils 0.1.5 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
 ]
 
 [[package]]
@@ -1394,14 +1394,14 @@ dependencies = [
 [[package]]
 name = "hyperbase"
 version = "0.1.8"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=main#e24e55da3ff959ab118db3ee074b80ee35d0c9a1"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple#bf0dc28590e33abf852b0360dacc2be41f706cb8"
 dependencies = [
  "debruijn",
  "equiv",
  "graph_simple",
  "kmer_lookup",
  "petgraph",
- "vector_utils",
+ "vector_utils 0.1.5 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
 ]
 
 [[package]]
@@ -1443,7 +1443,19 @@ dependencies = [
  "flate2",
  "lz4",
  "serde",
- "string_utils",
+ "string_utils 0.1.4 (git+https://github.com/10XGenomics/enclone_ranger?branch=main)",
+]
+
+[[package]]
+name = "io_utils"
+version = "0.3.2"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple#bf0dc28590e33abf852b0360dacc2be41f706cb8"
+dependencies = [
+ "bincode",
+ "flate2",
+ "lz4",
+ "serde",
+ "string_utils 0.1.4 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
 ]
 
 [[package]]
@@ -1503,11 +1515,11 @@ dependencies = [
 [[package]]
 name = "kmer_lookup"
 version = "0.1.5"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=main#e24e55da3ff959ab118db3ee074b80ee35d0c9a1"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple#bf0dc28590e33abf852b0360dacc2be41f706cb8"
 dependencies = [
  "debruijn",
  "rayon",
- "vector_utils",
+ "vector_utils 0.1.5 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
 ]
 
 [[package]]
@@ -1764,6 +1776,7 @@ dependencies = [
  "bitflags 1.3.2",
  "cfg-if",
  "libc",
+ "memoffset",
 ]
 
 [[package]]
@@ -1938,11 +1951,11 @@ checksum = "d4fd5641d01c8f18a23da7b6fe29298ff4b55afcccdf78973b24cf3175fee32e"
 [[package]]
 name = "perf_stats"
 version = "0.1.8"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=main#e24e55da3ff959ab118db3ee074b80ee35d0c9a1"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple#bf0dc28590e33abf852b0360dacc2be41f706cb8"
 dependencies = [
- "io_utils",
+ "io_utils 0.3.2 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
  "libc",
- "string_utils",
+ "string_utils 0.1.4 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
 ]
 
 [[package]]
@@ -2104,15 +2117,28 @@ version = "0.5.24"
 source = "git+https://github.com/10XGenomics/enclone_ranger?branch=main#e24e55da3ff959ab118db3ee074b80ee35d0c9a1"
 dependencies = [
  "backtrace",
- "io_utils",
+ "io_utils 0.3.2 (git+https://github.com/10XGenomics/enclone_ranger?branch=main)",
  "lazy_static",
  "libc",
  "nix 0.27.1",
  "pprof",
- "stats_utils",
- "string_utils",
- "tables",
- "vector_utils",
+ "stats_utils 0.1.3 (git+https://github.com/10XGenomics/enclone_ranger?branch=main)",
+ "string_utils 0.1.4 (git+https://github.com/10XGenomics/enclone_ranger?branch=main)",
+ "tables 0.1.5 (git+https://github.com/10XGenomics/enclone_ranger?branch=main)",
+ "vector_utils 0.1.5 (git+https://github.com/10XGenomics/enclone_ranger?branch=main)",
+]
+
+[[package]]
+name = "pretty_trace"
+version = "0.5.24"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple#bf0dc28590e33abf852b0360dacc2be41f706cb8"
+dependencies = [
+ "backtrace",
+ "lazy_static",
+ "libc",
+ "nix 0.24.2",
+ "string_utils 0.1.4 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
+ "vector_utils 0.1.5 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
 ]
 
 [[package]]
@@ -2603,14 +2629,27 @@ dependencies = [
 [[package]]
 name = "stats_utils"
 version = "0.1.3"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=main#e24e55da3ff959ab118db3ee074b80ee35d0c9a1"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=main#51f755f643f32551eb2921d07b2c17e61f3c1e94"
+
+[[package]]
+name = "stats_utils"
+version = "0.1.3"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple#bf0dc28590e33abf852b0360dacc2be41f706cb8"
 
 [[package]]
 name = "string_utils"
 version = "0.1.4"
 source = "git+https://github.com/10XGenomics/enclone_ranger?branch=main#e24e55da3ff959ab118db3ee074b80ee35d0c9a1"
 dependencies = [
- "vector_utils",
+ "vector_utils 0.1.5 (git+https://github.com/10XGenomics/enclone_ranger?branch=main)",
+]
+
+[[package]]
+name = "string_utils"
+version = "0.1.4"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple#bf0dc28590e33abf852b0360dacc2be41f706cb8"
+dependencies = [
+ "vector_utils 0.1.5 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
 ]
 
 [[package]]
@@ -2697,9 +2736,19 @@ name = "tables"
 version = "0.1.5"
 source = "git+https://github.com/10XGenomics/enclone_ranger?branch=main#e24e55da3ff959ab118db3ee074b80ee35d0c9a1"
 dependencies = [
- "io_utils",
+ "io_utils 0.3.2 (git+https://github.com/10XGenomics/enclone_ranger?branch=main)",
  "itertools",
- "string_utils",
+ "string_utils 0.1.4 (git+https://github.com/10XGenomics/enclone_ranger?branch=main)",
+]
+
+[[package]]
+name = "tables"
+version = "0.1.5"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple#bf0dc28590e33abf852b0360dacc2be41f706cb8"
+dependencies = [
+ "io_utils 0.3.2 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
+ "itertools",
+ "string_utils 0.1.4 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
 ]
 
 [[package]]
@@ -2986,7 +3035,7 @@ checksum = "bc5cf98d8186244414c848017f0e2676b3fcb46807f6668a97dfe67359a3c4b7"
 [[package]]
 name = "vdj_ann"
 version = "0.4.4"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=main#e24e55da3ff959ab118db3ee074b80ee35d0c9a1"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple#bf0dc28590e33abf852b0360dacc2be41f706cb8"
 dependencies = [
  "align_tools",
  "amino",
@@ -2994,39 +3043,39 @@ dependencies = [
  "debruijn",
  "fasta_tools",
  "hyperbase",
- "io_utils",
+ "io_utils 0.3.2 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
  "itertools",
  "kmer_lookup",
  "serde",
  "serde_json",
- "stats_utils",
- "string_utils",
+ "stats_utils 0.1.3 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
+ "string_utils 0.1.4 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
  "vdj_types",
- "vector_utils",
+ "vector_utils 0.1.5 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
 ]
 
 [[package]]
 name = "vdj_ann_ref"
 version = "0.2.1"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=main#e24e55da3ff959ab118db3ee074b80ee35d0c9a1"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple#0eaf27a47092300954b352d1f587c568ec172a80"
 dependencies = [
  "debruijn",
  "exons",
  "fasta_tools",
  "flate2",
- "io_utils",
+ "io_utils 0.3.2 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
  "perf_stats",
- "pretty_trace",
+ "pretty_trace 0.5.24 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
  "sha2",
- "string_utils",
+ "string_utils 0.1.4 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
  "vdj_ann",
- "vector_utils",
+ "vector_utils 0.1.5 (git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple)",
 ]
 
 [[package]]
 name = "vdj_types"
 version = "0.2.0"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=main#e24e55da3ff959ab118db3ee074b80ee35d0c9a1"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple#bf0dc28590e33abf852b0360dacc2be41f706cb8"
 dependencies = [
  "serde",
 ]
@@ -3043,7 +3092,16 @@ dependencies = [
 [[package]]
 name = "vector_utils"
 version = "0.1.5"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=main#e24e55da3ff959ab118db3ee074b80ee35d0c9a1"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=main#51f755f643f32551eb2921d07b2c17e61f3c1e94"
+dependencies = [
+ "permutation",
+ "superslice",
+]
+
+[[package]]
+name = "vector_utils"
+version = "0.1.5"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=nmmsv/refactor-annotation-tuple#bf0dc28590e33abf852b0360dacc2be41f706cb8"
 dependencies = [
  "permutation",
  "superslice",
