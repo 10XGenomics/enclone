@@ -209,7 +209,7 @@ fn main() {
         annotate_seq(&x, &refdata, &mut ann, true, false, true);
         let mut annv = Vec::<Annotation>::new();
         for i in 0..ann.len() {
-            let t = ann[i].f2 as usize;
+            let t = ann[i].ref_id as usize;
             if refdata.is_v(t) {
                 annv.push(ann[i]);
             }
@@ -255,7 +255,7 @@ fn main() {
             let mut v_ref_id = None;
             let mut j_ref_id = None;
             for i in 0..ann.len() {
-                let t = ann[i].f2 as usize;
+                let t = ann[i].ref_id as usize;
                 if refdata.is_v(t) {
                     v_ref_id = Some(t);
                 } else if refdata.is_j(t) {
@@ -325,8 +325,8 @@ fn main() {
                 let mut seq_start = vstart as isize;
                 // probably not exactly right
                 if annv.len() > 1 {
-                    let q1 = annv[0].f0 + ann[0].f1;
-                    let q2 = annv[1].f0;
+                    let q1 = annv[0].tig_start + ann[0].match_len;
+                    let q2 = annv[1].tig_start;
                     seq_start += q2 as isize - q1 as isize;
                 }
                 let mut seq_end = seq.len() - (jref.len() - jend);

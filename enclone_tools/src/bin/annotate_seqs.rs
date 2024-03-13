@@ -84,14 +84,14 @@ fn main() {
         let (valid, _) = is_productive_contig(&seq, &refdata, &ann);
         let mut shift = false;
         for i in 1..ann.len() {
-            if ann[i - 1].f2 == ann[i].f2 {
-                if ann[i].f0 == ann[i - 1].f0 + ann[i - 1].f1 + 1
-                    && ann[i].f3 == ann[i - 1].f3 + ann[i - 1].f1
+            if ann[i - 1].ref_id == ann[i].ref_id {
+                if ann[i].tig_start == ann[i - 1].tig_start + ann[i - 1].match_len + 1
+                    && ann[i].ref_start == ann[i - 1].ref_start + ann[i - 1].match_len
                 {
                     shift = true;
                 }
-                if ann[i].f0 == ann[i - 1].f0 + ann[i - 1].f1
-                    && ann[i].f3 == ann[i - 1].f3 + ann[i - 1].f1 + 1
+                if ann[i].tig_start == ann[i - 1].tig_start + ann[i - 1].match_len
+                    && ann[i].ref_start == ann[i - 1].ref_start + ann[i - 1].match_len + 1
                 {
                     shift = true;
                 }
@@ -102,7 +102,7 @@ fn main() {
         }
         let mut match_len = 0;
         for j in 0..ann.len() {
-            match_len += ann[j].f1;
+            match_len += ann[j].match_len;
         }
         let mut log0 = Vec::<u8>::new();
         print_cdr3_using_ann(&seq, &refdata, &ann, &mut log0);

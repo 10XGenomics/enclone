@@ -161,20 +161,20 @@ fn main() {
             let (mut v, mut j) = (None, None);
             let (mut vstart, mut jstop) = (0, 0);
             for i in 0..ann.len() {
-                let t = ann[i].f2 as usize;
+                let t = ann[i].ref_id as usize;
                 if refdata.rtype[t] == 0 as i32 || refdata.rtype[t] == 4 as i32 {
                     if refdata.is_v(t) {
                         v = Some(t);
                     } else if refdata.is_j(t) {
                         j = Some(t);
-                        jstop = (ann[i].f0 + ann[i].f1) as usize;
+                        jstop = (ann[i].tig_start + ann[i].match_len) as usize;
                     }
                 }
             }
             for i in 0..ann.len() {
-                let t = ann[i].f2 as usize;
+                let t = ann[i].ref_id as usize;
                 if refdata.is_v(t) {
-                    vstart = ann[i].f0 as usize;
+                    vstart = ann[i].tig_start as usize;
                     break;
                 }
             }
