@@ -339,7 +339,8 @@ pub fn align_n(
                                 let mut seq_start = vstart as isize;
                                 // probably not exactly right
                                 if ex.share[r].annv.len() > 1 {
-                                    let q1 = ex.share[r].annv[0].tig_start + ex.share[r].annv[0].match_len;
+                                    let q1 = ex.share[r].annv[0].tig_start
+                                        + ex.share[r].annv[0].match_len;
                                     let q2 = ex.share[r].annv[1].tig_start;
                                     seq_start += q2 as isize - q1 as isize;
                                 }
