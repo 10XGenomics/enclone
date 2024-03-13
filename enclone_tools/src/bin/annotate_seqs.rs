@@ -79,19 +79,19 @@ fn main() {
         let mut log = Vec::<u8>::new();
         fwriteln!(log, ", len = {}", len);
         print_annotations(&seq, &refdata, &mut log, false, true, false);
-        let mut ann = Vec::<(i32, i32, i32, i32, i32)>::new();
+        let mut ann = Vec::<Annotation>::new();
         annotate_seq(&seq, &refdata, &mut ann, true, false, true);
         let (valid, _) = is_productive_contig(&seq, &refdata, &ann);
         let mut shift = false;
         for i in 1..ann.len() {
-            if ann[i - 1].2 == ann[i].2 {
-                if ann[i].0 == ann[i - 1].0 + ann[i - 1].1 + 1
-                    && ann[i].3 == ann[i - 1].3 + ann[i - 1].1
+            if ann[i - 1].f2 == ann[i].f2 {
+                if ann[i].f0 == ann[i - 1].f0 + ann[i - 1].f1 + 1
+                    && ann[i].f3 == ann[i - 1].f3 + ann[i - 1].f1
                 {
                     shift = true;
                 }
-                if ann[i].0 == ann[i - 1].0 + ann[i - 1].1
-                    && ann[i].3 == ann[i - 1].3 + ann[i - 1].1 + 1
+                if ann[i].f0 == ann[i - 1].f0 + ann[i - 1].f1
+                    && ann[i].f3 == ann[i - 1].f3 + ann[i - 1].f1 + 1
                 {
                     shift = true;
                 }
@@ -102,7 +102,7 @@ fn main() {
         }
         let mut match_len = 0;
         for j in 0..ann.len() {
-            match_len += ann[j].1;
+            match_len += ann[j].f1;
         }
         let mut log0 = Vec::<u8>::new();
         print_cdr3_using_ann(&seq, &refdata, &ann, &mut log0);

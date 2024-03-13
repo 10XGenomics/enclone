@@ -339,8 +339,8 @@ pub fn align_n(
                                 let mut seq_start = vstart as isize;
                                 // probably not exactly right
                                 if ex.share[r].annv.len() > 1 {
-                                    let q1 = ex.share[r].annv[0].0 + ex.share[r].annv[0].1;
-                                    let q2 = ex.share[r].annv[1].0;
+                                    let q1 = ex.share[r].annv[0].f0 + ex.share[r].annv[0].f1;
+                                    let q2 = ex.share[r].annv[1].f0;
                                     seq_start += q2 as isize - q1 as isize;
                                 }
                                 let mut seq_end = seq.len() - (jref.len() - jend);

@@ -142,7 +142,7 @@ fn main() {
             fwriteln!(log, "\nFW ANNOTATION VERSUS PLAIN REFERENCE\n");
         }
         print_annotations(&seq, &refdata, &mut log, false, true, verbose);
-        let mut ann = Vec::<(i32, i32, i32, i32, i32)>::new();
+        let mut ann = Vec::<Annotation>::new();
         annotate_seq(&seq, &refdata, &mut ann, true, false, true);
         print_cdr3_using_ann(&seq, &refdata, &ann, &mut log);
         print_start_codon_positions(&seq, &mut log);
@@ -161,20 +161,20 @@ fn main() {
             let (mut v, mut j) = (None, None);
             let (mut vstart, mut jstop) = (0, 0);
             for i in 0..ann.len() {
-                let t = ann[i].2 as usize;
+                let t = ann[i].f2 as usize;
                 if refdata.rtype[t] == 0 as i32 || refdata.rtype[t] == 4 as i32 {
                     if refdata.is_v(t) {
                         v = Some(t);
                     } else if refdata.is_j(t) {
                         j = Some(t);
-                        jstop = (ann[i].0 + ann[i].1) as usize;
+                        jstop = (ann[i].f0 + ann[i].f1) as usize;
                     }
                 }
             }
             for i in 0..ann.len() {
-                let t = ann[i].2 as usize;
+                let t = ann[i].f2 as usize;
                 if refdata.is_v(t) {
-                    vstart = ann[i].0 as usize;
+                    vstart = ann[i].f0 as usize;
                     break;
                 }
             }
