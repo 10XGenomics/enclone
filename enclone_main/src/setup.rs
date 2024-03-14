@@ -352,7 +352,7 @@ pub fn setup(
         set_panic_handler(args_orig);
         let mut nopager = false;
         for i in 1..args_orig.len() {
-            if args_orig[i] == "NOPAGER" || args_orig[i] == "TOY_COM" {
+            if args_orig[i] == "NOPAGER" {
                 nopager = true;
             }
         }
