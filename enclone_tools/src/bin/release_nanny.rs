@@ -5,7 +5,7 @@
 
 use enclone_core::defs::get_config;
 use io_utils::*;
-use pretty_trace::PrettyTrace;
+
 use std::collections::HashMap;
 use std::env;
 use std::io::Write;
@@ -30,8 +30,6 @@ fn mail(address: &str, title: &str) {
 }
 
 fn main() {
-    PrettyTrace::new().on();
-
     // Don't run on a Mac.
 
     if cfg!(any(target_os = "macos", target_os = "ios")) {

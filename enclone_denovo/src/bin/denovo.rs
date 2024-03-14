@@ -155,7 +155,7 @@ use fasta_tools::read_fasta_contents_into_vec_dna_string_plus_headers;
 use io_utils::read_obj;
 use io_utils::{fwrite, fwriteln, open_for_write_new};
 use itertools::Itertools;
-use pretty_trace::PrettyTrace;
+
 use rayon::prelude::*;
 use std::cmp::{max, min};
 use std::collections::HashMap;
@@ -324,8 +324,6 @@ pub fn lscore2(x: &[u8]) -> usize {
 }
 
 fn main() {
-    PrettyTrace::new().on();
-
     // Get the species and load the genome reference.  We read the entire fasta file into a
     // Vec<Vec<u8>>, with records alternating between headers and bases.  This may not be
     // correctly handled in subsequent code.

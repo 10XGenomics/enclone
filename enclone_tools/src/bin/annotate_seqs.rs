@@ -5,7 +5,7 @@
 use annotate::*;
 use debruijn::dna_string::*;
 use io_utils::*;
-use pretty_trace::*;
+
 use rayon::prelude::*;
 use refx::*;
 use std::env;
@@ -17,7 +17,6 @@ use vdj_ann::*;
 fn main() {
     // Set up and parse args.
 
-    PrettyTrace::new().on();
     let args: Vec<String> = env::args().collect();
     let (fasta_file, ref_file) = (&args[1], &args[2]);
     let mut nreads = 0;

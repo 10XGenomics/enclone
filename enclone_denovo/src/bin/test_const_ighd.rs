@@ -7,7 +7,7 @@
 use io_utils::fwriteln;
 use itertools::Itertools;
 use perf_stats::elapsed;
-use pretty_trace::PrettyTrace;
+
 use rayon::prelude::*;
 use std::io::Write;
 use std::process::Command;
@@ -16,7 +16,6 @@ use string_utils::{strme, TextUtils};
 use vector_utils::unique_sort;
 
 fn main() {
-    PrettyTrace::new().on();
     let t = Instant::now();
     let mut id_seq = Vec::<(String, String, String)>::new();
     let f = include_str!("../const_ighd_best_hits");

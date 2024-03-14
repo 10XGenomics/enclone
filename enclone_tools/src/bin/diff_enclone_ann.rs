@@ -20,13 +20,11 @@
 //
 // Typically one would run this with just the dataset specification and OLD_EXEC.
 
-use pretty_trace::PrettyTrace;
 use std::env;
 use std::process::Command;
 use string_utils::{strme, TextUtils};
 
 fn main() {
-    PrettyTrace::new().on();
     let mut args: Vec<String> = env::args().collect();
     let (mut old_param, mut old_exec) = (None, None);
     let mut args2 = Vec::<String>::new();

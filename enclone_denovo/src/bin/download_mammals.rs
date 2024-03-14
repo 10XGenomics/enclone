@@ -11,14 +11,13 @@
 
 use fasta_tools::read_fasta_to_vec_vec_u8;
 use io_utils::write_obj;
-use pretty_trace::PrettyTrace;
+
 use std::fs::{read_dir, File};
 use std::process::Command;
 use string_utils::TextUtils;
 use vector_utils::bin_member;
 
 fn main() {
-    PrettyTrace::new().on();
     let dir1 = "/mnt/assembly/genomes";
     let dir2 = "/mnt/deck5/david.jaffe/genomes";
     let all = read_dir(&dir1).unwrap();

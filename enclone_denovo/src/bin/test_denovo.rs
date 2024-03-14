@@ -7,13 +7,12 @@
 
 use fasta_tools::*;
 use io_utils::*;
-use pretty_trace::PrettyTrace;
+
 use std::cmp::min;
 use std::io::BufRead;
 use string_utils::*;
 
 fn main() {
-    PrettyTrace::new().on();
     let denovo = read_fasta_to_vec_vec_u8("xxx.fasta");
     let imgt = read_fasta_to_vec_vec_u8("imgt.fasta");
     let tenx = read_fasta_to_vec_vec_u8("regions.fa");

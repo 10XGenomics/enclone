@@ -19,7 +19,7 @@
 use enclone::misc1::setup_pager;
 use equiv::EquivRel;
 use itertools::Itertools;
-use pretty_trace::PrettyTrace;
+
 use std::collections::HashMap;
 use std::env;
 use std::process::Command;
@@ -27,7 +27,6 @@ use string_utils::{strme, TextUtils};
 use vector_utils::{bin_member, bin_position, next_diff1_2, unique_sort};
 
 fn main() {
-    PrettyTrace::new().on();
     setup_pager(true);
     let mut args: Vec<String> = env::args().collect();
     let (mut old_param, mut old_exec) = (None, None);

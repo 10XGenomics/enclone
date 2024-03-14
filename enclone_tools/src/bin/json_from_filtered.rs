@@ -7,7 +7,7 @@
 // 2. Doesn't annotate so you need to rerun enclone with BUILT_IN.
 
 use io_utils::*;
-use pretty_trace::PrettyTrace;
+
 use std::collections::HashMap;
 use std::io::BufRead;
 use std::io::Write;
@@ -25,7 +25,6 @@ pub struct Contig {
 }
 
 fn main() {
-    PrettyTrace::new().on();
     let fasta = open_for_read!["filtered_contig.fasta"];
     let csv = open_for_read!["filtered_contig_annotations.csv"];
     let mut to_field = HashMap::<String, usize>::new();

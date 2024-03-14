@@ -12,8 +12,6 @@ use itertools::Itertools;
 use perf_stats::elapsed;
 #[cfg(not(target_os = "windows"))]
 use perf_stats::peak_mem_usage_gb;
-#[cfg(not(target_os = "windows"))]
-use pretty_trace::stop_profiling;
 use rayon::prelude::*;
 use stats_utils::percent_ratio;
 use std::{
@@ -275,17 +273,6 @@ pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<EncloneState
         &mut svgs,
         &mut summary,
     )?;
-
-    // Report profiling.
-
-    #[cfg(not(target_os = "windows"))]
-    {
-        if ctl.gen_opt.profile {
-            let t = Instant::now();
-            stop_profiling();
-            ctl.perf_stats(&t, "summarizing profiling");
-        }
-    }
 
     // Report computational performance.
 

@@ -71,6 +71,7 @@ arboard = "2"
 assert_cmd = "2"
 async-trait = "0.1"
 attohttpc = { version = "0.18", default-features = false, features = ["compress", "tls-rustls"] }
+backtrace = "0.3"
 base64 = "0.13"
 binary_vec_io = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
 bio = "0.39"

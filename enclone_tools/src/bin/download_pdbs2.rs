@@ -13,13 +13,12 @@
 // 2. group_structures_by_antigen
 
 use io_utils::*;
-use pretty_trace::*;
+
 use std::env;
 use std::io::BufRead;
 use std::process::Command;
 
 fn main() {
-    PrettyTrace::new().on();
     let args: Vec<String> = env::args().collect();
     let (list, dir) = (&args[1], &args[2]);
     let f = open_for_read![&list];

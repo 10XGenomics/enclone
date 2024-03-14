@@ -5,14 +5,13 @@
 // Read and remove certain fields that are not needed, at least if BUILT_IN and REPROD are used.
 
 use io_utils::*;
-use pretty_trace::PrettyTrace;
+
 use serde_json::Value;
 use std::env;
 
 use std::io::Write;
 
 fn main() {
-    PrettyTrace::new().on();
     let args: Vec<String> = env::args().collect();
     let json = std::fs::read_to_string(&args[1]).unwrap();
     let v: Value = serde_json::from_str(&json).unwrap();

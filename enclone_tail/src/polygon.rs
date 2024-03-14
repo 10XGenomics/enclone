@@ -175,10 +175,9 @@ impl IntervalVec {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use pretty_trace::PrettyTrace;
+
     #[test]
     fn test_interval_vec() {
-        PrettyTrace::new().on();
         let mut v = IntervalVec::default();
         v.is.push(Interval { x1: 1.1, x2: 1.2 });
         v.is.push(Interval { x1: 1.0, x2: 2.0 });

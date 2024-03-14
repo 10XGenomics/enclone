@@ -20,7 +20,7 @@
 use enclone_core::hcat;
 use enclone_core::test_def::test_donor_id;
 use io_utils::*;
-use pretty_trace::PrettyTrace;
+
 use rayon::prelude::*;
 use std::collections::HashMap;
 use std::env;
@@ -49,7 +49,6 @@ const UNSWITCHED: [usize; 24] = [
 ];
 
 fn main() {
-    PrettyTrace::new().on();
     let args: Vec<String> = env::args().collect();
     let opt_flow = if args.len() >= 3 && args[2] == "FLOW" {
         true

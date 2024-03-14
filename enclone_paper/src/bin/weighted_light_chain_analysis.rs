@@ -11,7 +11,7 @@
 //         PCOLS=donors_cell,v_name1,v_name2,dref,cdr3_aa1 > per_cell_stuff
 
 use io_utils::*;
-use pretty_trace::PrettyTrace;
+
 use rayon::prelude::*;
 use std::collections::HashMap;
 use std::env;
@@ -19,7 +19,6 @@ use std::io::BufRead;
 use string_utils::{stringme, TextUtils};
 
 fn main() {
-    PrettyTrace::new().on();
     let args: Vec<String> = env::args().collect();
     let f = open_for_read![&args[1]];
     let mut first = true;

@@ -36,7 +36,6 @@ io_utils.workspace = true
 itertools.workspace = true
 martian-filetypes.workspace = true
 perf_stats.workspace = true
-pretty_trace.workspace = true
 rayon.workspace = true
 serde_json.workspace = true
 stats_utils.workspace = true

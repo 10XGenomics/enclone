@@ -4,14 +4,12 @@
 
 use enclone_core::defs::HELP_PAGES;
 use io_utils::{fwrite, open_for_write_new};
-use pretty_trace::PrettyTrace;
 
 use std::io::Write;
 use std::process::Command;
 use string_utils::strme;
 
 fn main() {
-    PrettyTrace::new().on();
     let new = Command::new("target/debug/enclone")
         .arg("HTML")
         .arg("STABLE_DOC")

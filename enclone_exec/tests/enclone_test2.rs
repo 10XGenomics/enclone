@@ -20,7 +20,7 @@ use flate2::read::GzDecoder;
 use io_utils::*;
 use itertools::Itertools;
 use perf_stats::*;
-use pretty_trace::*;
+
 use rayon::prelude::*;
 use serde_json::Value;
 use sha2::{Digest, Sha256};
@@ -54,7 +54,6 @@ const LOUPE_OUT_FILENAME: &str = "testx/__test_proto";
 #[cfg(not(feature = "cpu"))]
 #[test]
 fn test_enclone() {
-    PrettyTrace::new().on();
     run_tests(env!("CARGO_BIN_EXE_enclone"), "test", 0, &TESTS);
 }
 
@@ -62,7 +61,6 @@ fn test_enclone() {
 #[test]
 /// Tests that are affected by the D region alignment algorithm.
 fn test_enclone_d() {
-    PrettyTrace::new().on();
     run_tests(
         env!("CARGO_BIN_EXE_enclone"),
         "dtest",
@@ -152,7 +150,6 @@ fn test_enclone_d() {
 #[test]
 /// Tests that are affected by the grouping algorithm.
 fn test_grouping() {
-    PrettyTrace::new().on();
     run_tests(
         env!("CARGO_BIN_EXE_enclone"),
         "gtest",
@@ -290,7 +287,6 @@ fn test_grouping() {
 /// Test using datasets that are either in the extended public dataset collection,
 /// or which require samtools.
 fn test_extended() {
-    PrettyTrace::new().on();
     run_tests(
         env!("CARGO_BIN_EXE_enclone"),
         "ext_test",
@@ -341,7 +337,6 @@ fn test_extended() {
 /// over time based on discovery of pathologies in particular PUBLIC datasets.
 /// All run with certain shared options.
 fn test_crash() {
-    PrettyTrace::new().on();
     let t = Instant::now();
     let crash_tests: Vec<_> = [
         (1, "CONP SEQC SUM MEAN BARCODES DIFF_STYLE=C1 GROUP_VJ_REFNAME"),
@@ -369,7 +364,6 @@ fn test_crash() {
 #[test]
 /// Regression tests for internal features.
 fn test_internal() {
-    PrettyTrace::new().on();
     run_tests(
         env!("CARGO_BIN_EXE_enclone"),
         "internal_test",

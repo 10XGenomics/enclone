@@ -13,7 +13,7 @@
 
 use enclone_core::hcat;
 use io_utils::*;
-use pretty_trace::PrettyTrace;
+
 use rayon::prelude::*;
 use std::collections::HashMap;
 use std::env;
@@ -22,7 +22,6 @@ use string_utils::TextUtils;
 use tables::print_tabular_vbox;
 
 fn main() {
-    PrettyTrace::new().on();
     let args: Vec<String> = env::args().collect();
     let f = open_for_read![&args[1]];
     let mut first = true;

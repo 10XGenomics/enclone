@@ -18,7 +18,7 @@
 
 use enclone_tail::plot_points::plot_points;
 use io_utils::*;
-use pretty_trace::PrettyTrace;
+
 use rand_chacha;
 use rand_chacha::rand_core::RngCore;
 use rand_chacha::rand_core::SeedableRng;
@@ -29,7 +29,6 @@ use string_utils::TextUtils;
 use triple_accel::levenshtein;
 
 fn main() {
-    PrettyTrace::new().on();
     let args: Vec<String> = env::args().collect();
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓

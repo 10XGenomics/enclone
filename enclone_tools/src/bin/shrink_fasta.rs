@@ -7,14 +7,13 @@
 
 use fasta_tools::read_fasta_to_vec_vec_u8;
 use io_utils::{fwrite, fwriteln, open_for_write_new};
-use pretty_trace::PrettyTrace;
+
 use std::env;
 
 use std::io::Write;
 use string_utils::strme;
 
 fn main() {
-    PrettyTrace::new().on();
     let args: Vec<String> = env::args().collect();
     let (in_file, out_file) = (&args[1], &args[2]);
     let n = 1000;

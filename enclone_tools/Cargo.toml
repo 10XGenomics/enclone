@@ -37,7 +37,6 @@ flate2.workspace = true
 io_utils.workspace = true
 itertools.workspace = true
 lz4.workspace = true
-pretty_trace.workspace = true
 rayon.workspace = true
 serde.workspace = true
 serde_json.workspace = true

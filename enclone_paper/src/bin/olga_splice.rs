@@ -10,7 +10,7 @@ use enclone_core::defs::Junction;
 use enclone_core::opt_d::{jflank, opt_d};
 use enclone_tail::align_n::print_vis_align;
 use io_utils::*;
-use pretty_trace::*;
+
 use rayon::prelude::*;
 use std::cmp::min;
 use std::env;
@@ -24,7 +24,6 @@ use vdj_ann_ref::human_ref;
 use vector_utils::make_freq;
 
 fn main() {
-    PrettyTrace::new().on();
     let args: Vec<String> = env::args().collect();
     let mut n = 0;
     if args.len() >= 3 {

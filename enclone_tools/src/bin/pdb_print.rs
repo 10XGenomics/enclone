@@ -1,11 +1,10 @@
 // Copyright (c) 2020 10X Genomics, Inc. All rights reserved.
 
 use enclone_tools::pdb::*;
-use pretty_trace::*;
+
 use string_utils::*;
 
 fn main() {
-    PrettyTrace::new().on();
     let pdb_list = include_str!("antibody_antigen_structures");
     for line in pdb_list.lines() {
         if !line.starts_with('#') && line.len() > 0 {

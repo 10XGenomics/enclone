@@ -12,14 +12,12 @@
 //
 // It has also failed on occasion.
 
-use pretty_trace::PrettyTrace;
 use std::fs::read_dir;
 use std::process::Command;
 use string_utils::{strme, TextUtils};
 use vector_utils::bin_member;
 
 fn main() {
-    PrettyTrace::new().on();
     let dir = "/mnt/assembly/isoseq";
     let all = read_dir(&dir).unwrap();
     let mut owned = Vec::<String>::new();

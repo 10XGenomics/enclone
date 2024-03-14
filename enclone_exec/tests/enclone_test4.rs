@@ -9,7 +9,7 @@ use enclone_vars::export_code::*;
 use enclone_vars::var::*;
 use enclone_vars::*;
 use io_utils::*;
-use pretty_trace::*;
+
 use stats_utils::*;
 use std::fs::{metadata, read_to_string, remove_file, rename, File};
 use std::io::{BufRead, BufReader, Read};
@@ -34,7 +34,6 @@ const LOUPE_OUT_FILENAME: &str = "testx/__test_proto";
 #[cfg(target_os = "linux")]
 #[test]
 fn test_cpu_usage() {
-    PrettyTrace::new().on();
     let args = [
         "stat",
         "-e",
@@ -104,7 +103,6 @@ fn test_cpu_usage() {
 #[cfg(not(feature = "cpu"))]
 #[test]
 fn test_source_code_file_length() {
-    PrettyTrace::new().on();
     const MAX_RS_LINES: usize = 1000;
     let top = dir_list("..");
     let mut dirs = Vec::<String>::new();
@@ -282,7 +280,6 @@ fn test_dependency_structure() {
 #[cfg(not(feature = "cpu"))]
 #[test]
 fn test_rust_version() {
-    PrettyTrace::new().on();
     let new = Command::new("rustc")
         .arg("--version")
         .output()
@@ -327,7 +324,6 @@ fn test_rust_version() {
 #[cfg(not(feature = "cpu"))]
 #[test]
 fn test_exit() {
-    PrettyTrace::new().on();
     let exit_free_crates = ["enclone_help", "enclone_main", "enclone_tail"];
     for cname in exit_free_crates.iter() {
         let files = dir_list(&format!("../{}/src", cname));
@@ -370,7 +366,6 @@ fn test_exit() {
 #[cfg(not(feature = "cpu"))]
 #[test]
 fn test_authors() {
-    PrettyTrace::new().on();
     let dirs = dir_list(&format!("../.."));
     let mut aud = Vec::<(String, Vec<String>)>::new();
     for d in dirs.iter() {
@@ -462,7 +457,6 @@ fn test_honey() {
 #[cfg(not(feature = "cpu"))]
 #[test]
 fn test_yaml() {
-    PrettyTrace::new().on();
     let content = include_str!["../../.github/workflows/release.yaml"];
     let yaml = yaml_rust::YamlLoader::load_from_str(&content);
     if yaml.is_err() {
@@ -594,7 +588,6 @@ fn test_unpushed() {
 #[cfg(not(feature = "cpu"))]
 #[test]
 fn test_export_code() {
-    PrettyTrace::new().on();
     let outs = export_code(1);
     for i in 0..outs.len() {
         let f = format!("../{}", outs[i].0);

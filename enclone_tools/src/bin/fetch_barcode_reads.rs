@@ -9,19 +9,13 @@
 // As implemented, this outputs one fasta record per read pair, and puts the R1 sequence
 // in the header.  This makes some sense if R1 contains only the barcode and UMI.
 
-extern crate io_utils;
-extern crate pretty_trace;
-extern crate string_utils;
-extern crate vector_utils;
-
 use io_utils::*;
-use pretty_trace::*;
+
 use std::env;
 use std::fs::read_dir;
 use string_utils::*;
 
 fn main() {
-    PrettyTrace::new().on();
     let args: Vec<String> = env::args().collect();
     let mut dir = String::new();
     let mut bc = String::new();

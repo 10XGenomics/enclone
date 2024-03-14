@@ -39,7 +39,7 @@ use enclone_tools::pdb::*;
 use equiv::*;
 use fasta_tools::*;
 use io_utils::*;
-use pretty_trace::*;
+
 use rayon::prelude::*;
 use std::cmp::min;
 use std::env;
@@ -100,7 +100,6 @@ pub fn fetch_atoms(pdb: &PdbStructure, chain: usize, seq: &[u8]) -> Vec<[f32; 3]
 }
 
 fn main() {
-    PrettyTrace::new().on();
     if !path_exists("antibody_sets/pdbs") {
         eprintln!("\nYou need to run pdb2.\n");
         std::process::exit(1);

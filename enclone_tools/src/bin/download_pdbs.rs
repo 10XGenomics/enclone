@@ -6,12 +6,11 @@
 // These need to be git added.
 
 use io_utils::*;
-use pretty_trace::*;
+
 use std::process::Command;
 use string_utils::*;
 
 fn main() {
-    PrettyTrace::new().on();
     let pdb_list = include_str!("antibody_antigen_structures");
     for line in pdb_list.lines() {
         if !line.starts_with('#') && line.len() > 0 {

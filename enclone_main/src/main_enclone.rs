@@ -3,8 +3,6 @@
 // See README for documentation.
 
 use self::refx::{make_vdj_ref_data_core, RefData};
-#[cfg(not(target_os = "windows"))]
-use crate::blacklist::profiling_blacklist;
 use crate::determine_ref::determine_ref;
 use crate::sec_mem::test_sec_mem;
 use crate::setup::{critical_args, setup};
@@ -13,9 +11,7 @@ use enclone::innate::species;
 use enclone::secret::fetch_secmem;
 use enclone_args::load_gex::get_gex_info;
 use enclone_args::proc_args2::is_simple_arg;
-use enclone_args::proc_args_check::{
-    check_gvars, check_lvars, check_one_lvar, check_pcols, get_known_features,
-};
+use enclone_args::proc_args_check::{check_gvars, check_lvars, check_pcols, get_known_features};
 use enclone_core::cell_color::CellColor;
 use enclone_core::defs::EncloneControl;
 use enclone_core::enclone_structs::*;
@@ -25,8 +21,6 @@ use enclone_vars::decode_arith;
 use expr_tools::vars_of_node;
 use io_utils::{open_for_read, open_userfile_for_read, path_exists};
 use itertools::Itertools;
-#[cfg(not(target_os = "windows"))]
-use pretty_trace::start_profiling;
 use std::{collections::HashMap, env, fs, fs::read_to_string, io::BufRead, time::Instant};
 use string_utils::TextUtils;
 use vdj_ann::refx;
@@ -89,18 +83,7 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
     let mut ctl = EncloneControl::default();
     let args = critical_args(args, &mut ctl)?;
     ctl.start_time = Some(tall);
-    for i in 0..args.len() {
-        let arg = &args[i];
-        if arg == "PROFILE" {
-            ctl.gen_opt.profile = true;
-        }
-    }
-    #[cfg(not(target_os = "windows"))]
-    {
-        if ctl.gen_opt.profile {
-            start_profiling(&profiling_blacklist());
-        }
-    }
+
     let (mut comp, mut comp2) = (false, false);
     for i in 1..args.len() {
         if args[i] == "PRINT_CPU" {
