@@ -41,7 +41,10 @@ pub fn fetch_atoms(pdb: &PdbStructure, chain: usize, seq: &[u8]) -> Vec<[f32; 3]
         if pdb.chains[chain][i..].starts_with(seq) {
             let mut u = Vec::<[f32; 3]>::new();
             for j in 0..pdb.atoms.len() {
-                if pdb.atoms[j].chain as usize == chain && (pdb.atoms[j].chain_pos as usize) >= i && (pdb.atoms[j].chain_pos as usize) < i + seq.len() {
+                if pdb.atoms[j].chain as usize == chain
+                    && (pdb.atoms[j].chain_pos as usize) >= i
+                    && (pdb.atoms[j].chain_pos as usize) < i + seq.len()
+                {
                     let x_s = pdb.atoms[j].x;
                     let y_s = pdb.atoms[j].y;
                     let z_s = pdb.atoms[j].z;
@@ -273,10 +276,16 @@ fn main() {
                 let mut dist = 1_000_000_000.0_f32;
                 for j in 0..pdb.atoms.len() {
                     if pdb.atoms[j].chain as usize == *c {
-                        if *c == heavy && (pdb.atoms[j].chain_pos < heavy_cdr3_start as u16 || pdb.atoms[j].chain_pos > heavy_cdr3_stop as u16) {
+                        if *c == heavy
+                            && (pdb.atoms[j].chain_pos < heavy_cdr3_start as u16
+                                || pdb.atoms[j].chain_pos > heavy_cdr3_stop as u16)
+                        {
                             continue;
                         }
-                        if *c == light && (pdb.atoms[j].chain_pos < light_cdr3_start as u16 || pdb.atoms[j].chain_pos > light_cdr3_stop as u16) {
+                        if *c == light
+                            && (pdb.atoms[j].chain_pos < light_cdr3_start as u16
+                                || pdb.atoms[j].chain_pos > light_cdr3_stop as u16)
+                        {
                             continue;
                         }
                         let x_c = pdb.atoms[j].x;

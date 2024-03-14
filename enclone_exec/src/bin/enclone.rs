@@ -4,11 +4,8 @@
 // zero.  As far as we know, in all other cases where it is not run from the command line, it
 // returns exit status zero.
 
-
-
 use enclone_main::main_enclone::main_enclone;
 use enclone_main::USING_PAGER;
-
 
 use io_utils::*;
 
@@ -26,7 +23,6 @@ use std::sync::atomic::Ordering::SeqCst;
 use std::thread;
 use std::time::Duration;
 use string_utils::*;
-
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {

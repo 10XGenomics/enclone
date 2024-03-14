@@ -476,7 +476,11 @@ fn main() {
                     }
                     let ident = 100.0 * samex as f64 / data[k1].2.len() as f64;
                     let ident = ident.floor() as usize;
-                    if ident >= min_ident && data[k1].5 > 0 && data[k2].5 > 0 && data[k1].3 != data[k2].3 {
+                    if ident >= min_ident
+                        && data[k1].5 > 0
+                        && data[k2].5 > 0
+                        && data[k1].3 != data[k2].3
+                    {
                         let ins = data[k1].9;
                         if ins == data[k2].9 {
                             res.3[ins] += 1;

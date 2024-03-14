@@ -615,8 +615,7 @@ fn test_subset_json() {
             .args(&args)
             .arg("NO_KILL")
             .output()
-            .unwrap_or_else(|_| panic!("failed to execute test_subset_json 1, pass = {}",
-                pass));
+            .unwrap_or_else(|_| panic!("failed to execute test_subset_json 1, pass = {}", pass));
         if new.status.code() != Some(0) {
             eprint!(
                 "\nsubset json test 1, pass = {}: failed to execute, stderr =\n{}",
@@ -637,8 +636,7 @@ fn test_subset_json() {
             .args(&args)
             .arg("NO_KILL")
             .output()
-            .unwrap_or_else(|_| panic!("failed to execute test_subset_json 2, pass = {}",
-                pass));
+            .unwrap_or_else(|_| panic!("failed to execute test_subset_json 2, pass = {}", pass));
         if new.status.code() != Some(0) {
             eprint!(
                 "\nsubset json test 2, pass = {}: failed to execute, stderr =\n{}",

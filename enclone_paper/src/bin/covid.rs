@@ -133,7 +133,11 @@ fn main() {
 
             // Don't consider antibodies with same author, as best we can tell.
 
-            if x.4.contains(' ') && y.4.contains(' ') && x.4.after(" ").contains(' ') && y.4.after(" ").contains(' ') {
+            if x.4.contains(' ')
+                && y.4.contains(' ')
+                && x.4.after(" ").contains(' ')
+                && y.4.after(" ").contains(' ')
+            {
                 let t1 = x.4.after(" ").after(" ");
                 let a1 = t1.rev_before(t1);
                 let t2 = y.4.after(" ").after(" ");

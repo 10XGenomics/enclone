@@ -855,9 +855,7 @@ pub fn plot_clonotypes(
             legend_xstart, legend_ystart, legend_width, legend_height, LEGEND_BOX_STROKE_WIDTH
         );
         for i in 0..labels.len() {
-            let y = legend_ystart
-                + BOUNDARY as f64 * 2.5
-                + ((font_size + BOUNDARY / 2) * i) as f64;
+            let y = legend_ystart + BOUNDARY as f64 * 2.5 + ((font_size + BOUNDARY / 2) * i) as f64;
             *svg += &format!(
                 "<text x=\"{}\" y=\"{}\" font-family=\"Arial\" \
                  font-size=\"{}\">{}</text>\n",

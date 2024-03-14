@@ -19,7 +19,6 @@
 use enclone_tail::plot_points::plot_points;
 use io_utils::*;
 
-
 use rand_chacha::rand_core::RngCore;
 use rand_chacha::rand_core::SeedableRng;
 use std::collections::{HashMap, HashSet};

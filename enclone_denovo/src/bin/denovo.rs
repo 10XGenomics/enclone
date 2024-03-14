@@ -2923,8 +2923,7 @@ fn main() {
                                                         }
                                                         -n
                                                     };
-                                                    let (gap_open, gap_extend) =
-                                                        (-n, -n);
+                                                    let (gap_open, gap_extend) = (-n, -n);
 
                                                     // Set up the aligner.
 

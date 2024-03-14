@@ -204,8 +204,10 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
         check_pcols(
             &ctl,
             &gex_info,
-            &[ctl.plot_opt.plot_xy_xvar.clone(),
-                ctl.plot_opt.plot_xy_yvar.clone()],
+            &[
+                ctl.plot_opt.plot_xy_xvar.clone(),
+                ctl.plot_opt.plot_xy_yvar.clone(),
+            ],
             ctl.parseable_opt.pbarcode,
         )?;
     }

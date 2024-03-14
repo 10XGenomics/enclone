@@ -12,7 +12,7 @@
 use fasta_tools::read_fasta_to_vec_vec_u8;
 use io_utils::write_obj;
 
-use std::fs::{read_dir};
+use std::fs::read_dir;
 use std::process::Command;
 use string_utils::TextUtils;
 use vector_utils::bin_member;

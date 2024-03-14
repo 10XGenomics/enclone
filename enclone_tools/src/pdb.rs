@@ -32,7 +32,10 @@ impl PdbStructure {
     pub fn fetch_atoms_range(&self, chain: usize, start: usize, stop: usize) -> Vec<[f32; 3]> {
         let mut u = Vec::<[f32; 3]>::new();
         for j in 0..self.atoms.len() {
-            if self.atoms[j].chain as usize == chain && (self.atoms[j].chain_pos as usize) >= start && (self.atoms[j].chain_pos as usize) < stop {
+            if self.atoms[j].chain as usize == chain
+                && (self.atoms[j].chain_pos as usize) >= start
+                && (self.atoms[j].chain_pos as usize) < stop
+            {
                 let x_s = self.atoms[j].x;
                 let y_s = self.atoms[j].y;
                 let z_s = self.atoms[j].z;

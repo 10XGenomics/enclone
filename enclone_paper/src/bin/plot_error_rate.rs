@@ -64,11 +64,13 @@ fn main() {
     // Plot points for dataset-level sampling.
 
     let blue = (0, 0, 255);
-    let points2 = [(652537.0, 0.66),
+    let points2 = [
+        (652537.0, 0.66),
         (672653.0, 1.23),
         (405168.0, 0.75),
         (245629.0, 0.43),
-        (301997.0, 0.68)];
+        (301997.0, 0.68),
+    ];
     for i in 0..points2.len() {
         points.push((large, blue, points2[i].0, points2[i].1));
     }

@@ -286,7 +286,10 @@ fn test_curl_command() {
                     let f = open_for_read![&p];
                     let s = f.lines().next().unwrap().unwrap();
                     println!("see version {}", s);
-                    if s.starts_with('v') && s.contains('.') && s.between("v", ".").parse::<usize>().is_ok() {
+                    if s.starts_with('v')
+                        && s.contains('.')
+                        && s.between("v", ".").parse::<usize>().is_ok()
+                    {
                         ok = true;
                     }
 

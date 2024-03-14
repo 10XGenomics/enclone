@@ -185,7 +185,10 @@ pub fn print_stats(
                         for k2 in 0..ex2.clones.len() {
                             if (j1, k1) < (j2, k2) {
                                 let x2 = &ex2.clones[k2][0];
-                                if x1.donor_index.is_some() && x2.donor_index.is_some() && x1.donor_index.unwrap() != x2.donor_index.unwrap() {
+                                if x1.donor_index.is_some()
+                                    && x2.donor_index.is_some()
+                                    && x1.donor_index.unwrap() != x2.donor_index.unwrap()
+                                {
                                     mixes += 1;
                                 }
                             }
