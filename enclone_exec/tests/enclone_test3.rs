@@ -170,18 +170,23 @@ fn test_site_examples() {
 #[test]
 fn test_enclone_examples() {
     PrettyTrace::new().on();
-    for t in 0..EXAMPLES.len() {
-        let testn = format!("{}", EXAMPLES[t]);
-        let out_file = format!("../enclone_help/src/example{}", t + 1);
+    let examples = [
+        (1, r###"BCR=123089 CDR3=CARRYFGVVADAFDIW"###),
+        (
+            2,
+            r###"BCR=123085 GEX=123217 LVARSP=gex,IGHV2-5_g_μ CDR3=CALMGTYCSGDNCYSWFDPW"###,
+        ),
+    ];
+    for (num, args) in examples {
+        let out_file = format!("../enclone_help/src/example{}", num);
         let old = read_to_string(&out_file).unwrap();
-        let args = testn.split(' ').collect::<Vec<&str>>();
         let mut new = Command::new(env!("CARGO_BIN_EXE_enclone"));
         let mut new = new.arg(format!(
             "PRE=../enclone-data/big_inputs/version{}",
             TEST_FILES_VERSION
         ));
-        for i in 0..args.len() {
-            new = new.arg(&args[i]);
+        for arg in args.split(' ') {
+            new = new.arg(arg);
         }
         let new = new
             .arg("FORCE_EXTERNAL")
@@ -192,7 +197,7 @@ fn test_enclone_examples() {
         if new.status.code() != Some(0) {
             eprint!(
                 "\nenclone_test_examples: example{} failed to execute, stderr =\n{}",
-                t + 1,
+                num,
                 strme(&new.stderr),
             );
             eprintln!("If it's not clear what is happening, make sure you've run ./build.\n");
@@ -201,7 +206,7 @@ fn test_enclone_examples() {
         if old != new2 {
             eprintln!(
                 "\nenclone_test_examples: the file enclone_help/src/example{} is not up to date\n",
-                t + 1
+                num
             );
             eprintln!("old output =\n{}", old);
             eprintln!("new output =\n{}\n", new2);
@@ -371,19 +376,17 @@ fn test_enclone_prebuild() {
         remove_file(&mb).unwrap();
     }
 
-    let test_id = 48;
-    let it = test_id - 1;
-    let testn = TESTS[it];
-    let out_file = format!("testx/inputs/outputs/enclone_test{}_output", test_id);
+    let (test_num, comment, args) = TESTS[47];
+    assert_eq!(48, test_num);
+    let out_file = format!("testx/inputs/outputs/enclone_test{}_output", test_num);
     let old = read_to_string(&out_file).unwrap();
-    let args = testn.split(' ').collect::<Vec<&str>>();
     let mut new = Command::new(env!("CARGO_BIN_EXE_enclone"));
     let mut new = new.arg(format!(
         "PRE=../enclone-data/big_inputs/version{}",
         TEST_FILES_VERSION
     ));
-    for i in 0..args.len() {
-        new = new.arg(&args[i]);
+    for arg in args.split(' ') {
+        new = new.arg(arg);
     }
     // dubious use of expect:
     let new = new
@@ -398,7 +401,7 @@ fn test_enclone_prebuild() {
             "\nenclone_test_prebuild: first pass output has changed.\n\
             If you are OK with the new output, it should work to type:\n\
             enclone {} > enclone_exec/{}\n",
-            testn, out_file
+            args, out_file
         );
         eprintln!("old output =\n{}\n", old);
         eprintln!("new output =\n{}\n", new2);
@@ -407,16 +410,13 @@ fn test_enclone_prebuild() {
     }
 
     // Second pass: run without PREBUILD
-
-    let testn = TESTS[it];
-    let args = testn.split(' ').collect::<Vec<&str>>();
     let mut new = Command::new(env!("CARGO_BIN_EXE_enclone"));
     let mut new = new.arg(format!(
         "PRE=../enclone-data/big_inputs/version{}",
         TEST_FILES_VERSION
     ));
-    for i in 0..args.len() {
-        new = new.arg(&args[i]);
+    for arg in args.split(' ') {
+        new = new.arg(arg);
     }
     // dubious use of expect:
     let new = new
@@ -562,42 +562,29 @@ fn test_proto_write() -> Result<(), Error> {
 
 #[cfg(not(feature = "cpu"))]
 #[test]
-fn test_annotated_example() {
+fn test_annotated_example() -> Result<(), String> {
     PrettyTrace::new().on();
-    let it = 0;
-    let test = "BCR=123085 CDR3=CTRDRDLRGATDAFDIW";
-    let mut out = String::new();
-    let mut log = String::new();
-    let mut ok = false;
     run_test(
         env!("CARGO_BIN_EXE_enclone"),
-        it,
-        "",
-        &test,
         "annotated_example_test",
-        &mut ok,
-        &mut log,
-        &mut out,
         0,
-    );
-    print!("{}", log);
-    if !ok {
-        let mut log = Vec::<u8>::new();
-        emit_red_escape(&mut log);
-        fwriteln!(
-            log,
-            "Oh no: the results for the annotated example on the landing page have \
-            changed.  Assuming that\nthe change is intentional, to fix this you \
-            need to do two things:\n\
-            1. Update the test output.\n\
-            2. Manually update the annotated example output.\n\
-            Because the second item is such a big pain, we stopped doing it, but you should\n\
-            check to make sure that it has not changed too much from what is shown."
-        );
-        emit_end_escape(&mut log);
-        eprintln!("{}", strme(&log));
-        panic!("failed");
-    }
+        1,
+        "",
+        "BCR=123085 CDR3=CTRDRDLRGATDAFDIW",
+    )
+    .map_err(|res| {
+        format!(
+            "{}\n\nOh no: the results for the annotated example on the landing page have \
+        changed. Assuming that the change is intentional, to fix this you \
+        need to do two things:\n\
+        1. Update the test output.\n\
+        2. Manually update the annotated example output.\n\
+        Because the second item is such a big pain, we stopped doing it, but you should \
+        check to make sure that it has not changed too much from what is shown.",
+            res.log
+        )
+    })?;
+    Ok(())
 }
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
