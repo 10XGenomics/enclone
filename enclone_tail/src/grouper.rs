@@ -454,7 +454,6 @@ pub fn grouper(
             for i in 0..results.len() {
                 groups.append(&mut results[i].1.clone());
             }
-            let _chain = if pass == 1 { "heavy" } else { "light" };
         }
 
         // Group by cdr3_aa_heavy≥n%:h:@f.
@@ -607,7 +606,6 @@ pub fn grouper(
             for i in 0..results.len() {
                 groups.append(&mut results[i].1.clone());
             }
-            let _chain = if pass == 1 { "heavy" } else { "light" };
         }
 
         // Group by cdr3_heavy_pc and then cdr3_light_pc.
@@ -683,7 +681,6 @@ pub fn grouper(
             for i in 0..results.len() {
                 groups.append(&mut results[i].1.clone());
             }
-            let _chain = if pass == 1 { "heavy" } else { "light" };
         }
 
         // Group by cdr3_aa_heavy_pc and then cdr3_aa_light_pc.
@@ -755,7 +752,6 @@ pub fn grouper(
             for i in 0..results.len() {
                 groups.append(&mut results[i].1.clone());
             }
-            let _chain = if pass == 1 { "heavy" } else { "light" };
         }
 
         // Join based on grouping.  Stupid, see next step.

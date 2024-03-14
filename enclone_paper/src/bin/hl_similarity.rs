@@ -126,11 +126,7 @@ fn main() {
                 let dref1 = data[k1].5;
                 let dref2 = data[k2].5;
                 if donor1 != donor2 && dref1 > 0 && dref2 > 0 {
-                    let _hname1 = &data[k1].0;
-                    let _hname2 = &data[k2].0;
-                    if
-                    /* hname1 == hname2 && */
-                    data[k1].2 == data[k2].2 {
+                    if data[k1].2 == data[k2].2 {
                         bucket.push((k1, k2));
                     }
                 }
