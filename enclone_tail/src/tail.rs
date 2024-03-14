@@ -73,7 +73,6 @@ pub fn tail_code(
 
     // Do gene scan.
 
-    let _t = Instant::now();
     if ctl.gen_opt.gene_scan_test.is_some() {
         println!("\nFEATURE SCAN\n");
         let mut test_cells = 0;

@@ -46,7 +46,6 @@ pub fn plot_clonotypes(
     groups: &Vec<Vec<(i32, String)>>,
     svg: &mut String,
 ) -> Result<(), String> {
-    let _t = Instant::now();
     if plot_opt.plot_file.is_empty() {
         return Ok(());
     }
@@ -258,7 +257,6 @@ pub fn plot_clonotypes(
 
     // Traverse the shading groups.  In the default case, there is just one!!!!!!!!!!!!!!!!!!!!!!!!
 
-    let _t = Instant::now();
     let using_shading = ngroups > 1 || !group_color[0].is_empty();
     let mut blacklist = Vec::<Polygon>::new();
     let mut shades = Vec::<Polygon>::new();
@@ -486,7 +484,6 @@ pub fn plot_clonotypes(
 
     // Build the svg file.
 
-    let _t = Instant::now();
     for i in 0..clusters.len() {
         for j in 0..clusters[i].coords.len() {
             clusters[i].coords[j].0 += centers[i].0;
@@ -734,7 +731,6 @@ pub fn plot_clonotypes(
 
     // Add legend for color by variable.
 
-    let _t = Instant::now();
     let mut dcx = Vec::<Vec<u8>>::new();
     if need_default_colors || by_cat_var {
         dcx = default_colors();

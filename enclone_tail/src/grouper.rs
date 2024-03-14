@@ -30,7 +30,6 @@ pub fn grouper(
     opt_d_val: &Vec<(usize, Vec<Vec<Vec<usize>>>)>,
     dref: &Vec<DonorReferenceItem>,
 ) -> Vec<Vec<(i32, String)>> {
-    let _t = Instant::now();
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
     // Case 0: no grouping.
@@ -95,7 +94,6 @@ pub fn grouper(
 
         // Group by vdj_refname.
 
-        let _t = Instant::now();
         if ctl.clono_group_opt.vdj_refname {
             let mut groups2 = Vec::<Vec<usize>>::new();
             for g in groups.iter() {
@@ -137,7 +135,6 @@ pub fn grouper(
 
         // Group by v_heavy_refname.
 
-        let _t = Instant::now();
         if ctl.clono_group_opt.v_heavy_refname {
             let mut groups2 = Vec::<Vec<usize>>::new();
             for g in groups.iter() {
@@ -176,7 +173,6 @@ pub fn grouper(
 
         // Group by vj_heavy_refname.
 
-        let _t = Instant::now();
         if ctl.clono_group_opt.vj_heavy_refname {
             let mut groups2 = Vec::<Vec<usize>>::new();
             for g in groups.iter() {
@@ -217,7 +213,6 @@ pub fn grouper(
 
         // Group by vdj_heavy_refname.
 
-        let _t = Instant::now();
         if ctl.clono_group_opt.vdj_heavy_refname {
             let mut groups2 = Vec::<Vec<usize>>::new();
             for g in groups.iter() {
@@ -266,7 +261,6 @@ pub fn grouper(
 
         // Group by vj_len.
 
-        let _t = Instant::now();
         if ctl.clono_group_opt.vj_len {
             let mut groups2 = Vec::<Vec<usize>>::new();
             for g in groups.iter() {
@@ -297,7 +291,6 @@ pub fn grouper(
 
         // Group by cdr3_len.
 
-        let _t = Instant::now();
         if ctl.clono_group_opt.cdr3_len {
             let mut groups2 = Vec::<Vec<usize>>::new();
             for g in groups.iter() {
@@ -328,7 +321,6 @@ pub fn grouper(
 
         // Group by cdr3_heavy_len.
 
-        let _t = Instant::now();
         if ctl.clono_group_opt.cdr3_heavy_len {
             let mut groups2 = Vec::<Vec<usize>>::new();
             for g in groups.iter() {
@@ -361,7 +353,6 @@ pub fn grouper(
 
         // Group by cdr3_light_len.
 
-        let _t = Instant::now();
         if ctl.clono_group_opt.cdr3_light_len {
             let mut groups2 = Vec::<Vec<usize>>::new();
             for g in groups.iter() {
@@ -401,7 +392,6 @@ pub fn grouper(
             if pass == 2 && ctl.clono_group_opt.light_pc.is_none() {
                 continue;
             }
-            let _t = Instant::now();
             let min_r = if pass == 1 {
                 ctl.clono_group_opt.heavy_pc.unwrap() / 100.0
             } else {
@@ -470,7 +460,6 @@ pub fn grouper(
         // Group by cdr3_aa_heavy≥n%:h:@f.
 
         if ctl.clono_group_opt.cdr3_heavy_pc_hf.is_some() {
-            let _t = Instant::now();
             let min_r = ctl.clono_group_opt.cdr3_heavy_pc_hf.as_ref().unwrap().0 / 100.0;
             let m = &ctl.clono_group_opt.cdr3_heavy_pc_hf.as_ref().unwrap().1;
             let mut penalty = vec![vec![0.0; 27]; 27];
@@ -555,7 +544,6 @@ pub fn grouper(
             if pass == 2 && ctl.clono_group_opt.aa_light_pc.is_none() {
                 continue;
             }
-            let _t = Instant::now();
             let min_r = if pass == 1 {
                 ctl.clono_group_opt.aa_heavy_pc.unwrap() / 100.0
             } else {
@@ -631,7 +619,6 @@ pub fn grouper(
             if pass == 2 && ctl.clono_group_opt.cdr3_light_pc.is_none() {
                 continue;
             }
-            let _t = Instant::now();
             let min_r = if pass == 1 {
                 ctl.clono_group_opt.cdr3_heavy_pc.unwrap() / 100.0
             } else {
@@ -708,7 +695,6 @@ pub fn grouper(
             if pass == 2 && ctl.clono_group_opt.cdr3_aa_light_pc.is_none() {
                 continue;
             }
-            let _t = Instant::now();
             let min_r = if pass == 1 {
                 ctl.clono_group_opt.cdr3_aa_heavy_pc.unwrap() / 100.0
             } else {
@@ -774,7 +760,6 @@ pub fn grouper(
 
         // Join based on grouping.  Stupid, see next step.
 
-        let _t = Instant::now();
         for g in groups.iter() {
             for i in 0..g.len() - 1 {
                 e.join(g[i] as i32, g[i + 1] as i32);

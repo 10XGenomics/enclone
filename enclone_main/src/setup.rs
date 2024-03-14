@@ -208,7 +208,6 @@ pub fn setup(
     argsx: &mut Vec<String>,
     args_orig: &Vec<String>,
 ) -> Result<(), String> {
-    let _t = Instant::now();
     let mut using_pager = false;
     // Provide help if requested.
 

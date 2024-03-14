@@ -21,7 +21,6 @@ pub fn make_opt_d_val(
     drefs: &Vec<DonorReferenceItem>,
     opt_d_val: &mut Vec<(usize, Vec<Vec<Vec<usize>>>)>,
 ) {
-    let _t = Instant::now();
     let mut need_opt_d_val =
         ctl.clono_group_opt.vdj_refname || ctl.clono_group_opt.vdj_heavy_refname;
     for x in ctl.gen_opt.gvars.iter() {

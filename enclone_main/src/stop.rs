@@ -42,7 +42,6 @@ pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<EncloneState
     // Load the GEX and FB data.  This is quite horrible: the code and computation are duplicated
     // verbatim in fcell.rs.
 
-    let _tdi = Instant::now();
     let mut d_readers = Vec::<Option<Reader>>::new();
     let mut ind_readers = Vec::<Option<Reader>>::new();
     for li in 0..ctl.origin_info.n() {
@@ -118,7 +117,6 @@ pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<EncloneState
 
     // Find and print clonotypes.  (But we don't actually print them here.)
 
-    let _torb = Instant::now();
     let mut pics = Vec::<String>::new();
     let mut exacts = Vec::<Vec<usize>>::new(); // ugly reuse of name
     let mut in_center = Vec::<bool>::new();
@@ -202,7 +200,6 @@ pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<EncloneState
 
     // Remove clonotypes that are not in groups.
 
-    let _t = Instant::now();
     let mut to_delete = vec![true; exacts.len()];
     for i in 0..groups.len() {
         for j in 0..groups[i].len() {
