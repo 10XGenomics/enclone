@@ -25,7 +25,7 @@ fn main() {
     let mut count = 0;
     for line in f.lines() {
         let pdb = line.unwrap();
-        if !pdb.starts_with('#') && pdb.len() > 0 {
+        if !pdb.starts_with('#') && !pdb.is_empty() {
             count += 1;
             if !path_exists(&format!("{}/{}.gz", dir, pdb)) {
                 println!("downloading {} = {}", count, pdb);
@@ -35,7 +35,7 @@ fn main() {
                     .arg(&format!("{}/{}.gz", dir, pdb))
                     .arg(&format!("https://files.rcsb.org/download/{}.cif.gz", pdb))
                     .output()
-                    .expect(&format!("failed to execute wget"));
+                    .expect("failed to execute wget");
                 if x.status.code() != Some(0) {
                     eprintln!("\nDownload of {} failed.\n", pdb);
                     std::process::exit(1);

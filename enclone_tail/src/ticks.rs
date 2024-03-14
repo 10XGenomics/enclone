@@ -66,7 +66,7 @@ pub fn ticks(low: f32, high: f32, max_ticks: usize, verbose: bool) -> Vec<String
     let mut best_p = 0_i32;
     for q in [p, p - 1, p - 2].iter() {
         let (s1, s2) = (s1 as i32, s2 as i32);
-        let p = *q as i32;
+        let p = *q;
         let r1 = r1 * 10.0_f32.powi(s1 - p);
         let r2 = r2 * 10.0_f32.powi(s2 - p);
         let n1 = r1.ceil() as i32;

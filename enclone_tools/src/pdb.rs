@@ -32,23 +32,19 @@ impl PdbStructure {
     pub fn fetch_atoms_range(&self, chain: usize, start: usize, stop: usize) -> Vec<[f32; 3]> {
         let mut u = Vec::<[f32; 3]>::new();
         for j in 0..self.atoms.len() {
-            if self.atoms[j].chain as usize == chain {
-                if (self.atoms[j].chain_pos as usize) >= start
-                    && (self.atoms[j].chain_pos as usize) < stop
-                {
-                    let x_s = self.atoms[j].x;
-                    let y_s = self.atoms[j].y;
-                    let z_s = self.atoms[j].z;
-                    u.push([x_s, y_s, z_s]);
-                }
+            if self.atoms[j].chain as usize == chain && (self.atoms[j].chain_pos as usize) >= start && (self.atoms[j].chain_pos as usize) < stop {
+                let x_s = self.atoms[j].x;
+                let y_s = self.atoms[j].y;
+                let z_s = self.atoms[j].z;
+                u.push([x_s, y_s, z_s]);
             }
         }
-        return u;
+        u
     }
 }
 
 pub fn fetch_pdb_structure(name: &str) -> Result<PdbStructure, ()> {
-    fetch_pdb_structure_gen(&name, "antibody_sets/pdbs")
+    fetch_pdb_structure_gen(name, "antibody_sets/pdbs")
 }
 
 pub fn fetch_pdb_structure_gen(name: &str, dir: &str) -> Result<PdbStructure, ()> {
@@ -68,13 +64,13 @@ pub fn fetch_pdb_structure_gen(name: &str, dir: &str) -> Result<PdbStructure, ()
             .arg("-")
             .arg(&format!("https://files.rcsb.org/download/{}.cif", name))
             .output()
-            .expect(&format!("failed to execute wget"));
+            .expect("failed to execute wget");
         for line in strme(&x.stdout).lines() {
             lines.push(line.to_string());
         }
     }
     if lines.is_empty() {
-        eprintln!("");
+        eprintln!();
         eprintme!(name, dir);
         eprintln!("No lines read.\n");
         std::process::exit(1);
@@ -102,7 +98,7 @@ pub fn fetch_pdb_structure_gen(name: &str, dir: &str) -> Result<PdbStructure, ()
                     s = s.replace("  ", " ");
                 }
                 if s.starts_with(&format!("{} ", count)) {
-                    if s.after(" ").contains(" ") {
+                    if s.after(" ").contains(' ') {
                         let mtype = s.between(" ", " ");
                         let mut known = false;
                         for u in 0..mtypes.len() {
@@ -135,7 +131,7 @@ pub fn fetch_pdb_structure_gen(name: &str, dir: &str) -> Result<PdbStructure, ()
                 }
                 if s.between(" ", " ") == "polymer" {
                     let mut t = s.after("polymer").to_string();
-                    if t.contains("'") && t.after("'").contains("'") {
+                    if t.contains('\'') && t.after("'").contains('\'') {
                         t = t.between("'", "'").to_string();
                     }
                     chain_names.push(t);
@@ -149,16 +145,16 @@ pub fn fetch_pdb_structure_gen(name: &str, dir: &str) -> Result<PdbStructure, ()
             while j < lines.len() && !lines[j].starts_with('#') {
                 if lines[j].contains("'polypeptide(L)'") {
                     j += 1;
-                    if lines[j].starts_with("#") {
+                    if lines[j].starts_with('#') {
                         break;
                     }
-                    if !lines[j].contains(";") {
+                    if !lines[j].contains(';') {
                         return Err(());
                     }
                     let mut s = lines[j].after(";").as_bytes().to_vec();
                     while j < lines.len() {
                         j += 1;
-                        if lines[j].starts_with(";") {
+                        if lines[j].starts_with(';') {
                             break;
                         }
                         s.append(&mut lines[j].as_bytes().to_vec());
@@ -172,7 +168,7 @@ pub fn fetch_pdb_structure_gen(name: &str, dir: &str) -> Result<PdbStructure, ()
         } else if lines[i].starts_with("ATOM ") {
             let fields = lines[i].split_ascii_whitespace().collect::<Vec<&str>>();
             let atom0 = fields[2].as_bytes();
-            let mut atom = [0 as u8; 2];
+            let mut atom = [0_u8; 2];
             atom[0] = atom0[0];
             if atom0.len() == 2 {
                 atom[1] = atom0[1];
@@ -187,7 +183,7 @@ pub fn fetch_pdb_structure_gen(name: &str, dir: &str) -> Result<PdbStructure, ()
 
             // Create atom.
 
-            let aa = aa3_to_aa(&fields[5].as_bytes());
+            let aa = aa3_to_aa(fields[5].as_bytes());
             let pos_on_entity = fields[8].force_usize() as u16;
             let entity = fields[7].force_usize() as u16;
             let xcoord = fields[10].force_f64() as f32;
@@ -217,7 +213,7 @@ pub fn fetch_pdb_structure_gen(name: &str, dir: &str) -> Result<PdbStructure, ()
                 for j in 0..chains[i].len() - 4 {
                     if chains[i][j] == b'(' && chains[i][j + 4] == b')' {
                         let s = stringme(&chains[i]);
-                        let t = s.replace(&strme(&chains[i][j..j + 4]), "X");
+                        let t = s.replace(strme(&chains[i][j..j + 4]), "X");
                         chains[i] = t.as_bytes().to_vec();
                         found = true;
                         break;
@@ -233,8 +229,8 @@ pub fn fetch_pdb_structure_gen(name: &str, dir: &str) -> Result<PdbStructure, ()
             }
         }
         Ok(PdbStructure {
-            chain_names: chain_names,
-            chains: chains,
+            chain_names,
+            chains,
             atoms: ms,
         })
     }

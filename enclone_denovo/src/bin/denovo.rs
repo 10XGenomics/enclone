@@ -849,7 +849,7 @@ fn main() {
                                             .between(":", ".")
                                             .to_string();
                                     }
-                                    name = name.replace("_", " ");
+                                    name = name.replace('_', " ");
                                     let tig = originy[i].0;
                                     let best = format!(
                                         "{}{}.{}  {}  {}|{}|{}  {:.1}  {}  {}",
@@ -1086,7 +1086,7 @@ fn main() {
         }
         let mut zref = Vec::<DnaString>::new();
         let mut zheaders = Vec::<String>::new();
-        read_fasta_contents_into_vec_dna_string_plus_headers(&r, &mut zref, &mut zheaders);
+        read_fasta_contents_into_vec_dna_string_plus_headers(r, &mut zref, &mut zheaders);
         for i in 0..zref.len() {
             if !zheaders[i].contains("V-REGION") {
                 continue;
@@ -2675,7 +2675,7 @@ fn main() {
                         if start + l + 1 >= r.len() {
                             break;
                         }
-                        let bb = aa_seq(&r[start..start + l].to_vec(), 0);
+                        let bb = aa_seq(&r[start..start + l], 0);
                         if bb.contains(&b'*') {
                             continue;
                         }
@@ -2707,7 +2707,7 @@ fn main() {
                     if start < 10 {
                         continue;
                     }
-                    let bb = aa_seq(&r[start..start + l].to_vec(), 0);
+                    let bb = aa_seq(&r[start..start + l], 0);
                     for mx in LOW_INTRON..=HIGH_INTRON {
                         let start2 = start + l + mx;
                         if start2 > r.len() || r.len() - start2 < 10 {
@@ -2741,7 +2741,7 @@ fn main() {
 
                         // Keep going.
 
-                        let cc = aa_seq(&r[start2 + 2..stop2].to_vec(), 0);
+                        let cc = aa_seq(&r[start2 + 2..stop2], 0);
                         let mid = vec![r[start + l - 1], r[start2], r[start2 + 1]];
                         let mut s = String::new();
                         if show_transition {
@@ -2924,7 +2924,7 @@ fn main() {
                                                         -n
                                                     };
                                                     let (gap_open, gap_extend) =
-                                                        (-1 * n as i32, -n as i32);
+                                                        (-n, -n);
 
                                                     // Set up the aligner.
 
@@ -3443,7 +3443,7 @@ fn main() {
     let mut tag_origin = Vec::<(usize, usize)>::new();
     for i in 0..upstream.len() {
         for j in 0..=upstream[i].len() - TAG_LEN {
-            if upstream[i][j..].starts_with(&MOTIF1.to_vec()) {
+            if upstream[i][j..].starts_with(MOTIF1.as_ref()) {
                 tag_origin.push((i, j));
                 tags.push(upstream[i][j..j + TAG_LEN].to_vec());
             }
@@ -3659,7 +3659,7 @@ fn main() {
             }
             if wrong || amb {
                 mcount += 1;
-                m = m.replace("[", &format!("[{}.", mcount));
+                m = m.replace('[', &format!("[{}.", mcount));
                 print!("\n{}", m);
                 // print!(" upstream={}", strme(&upstream[k]));
                 println!();
@@ -3670,7 +3670,7 @@ fn main() {
                     nonsimples -= 1;
                 }
                 mcount += 1;
-                m = m.replace("[", &format!("[{}.", mcount));
+                m = m.replace('[', &format!("[{}.", mcount));
                 print!("\n{}", m);
                 // print!(" upstream={}", strme(&upstream[k]));
                 println!();

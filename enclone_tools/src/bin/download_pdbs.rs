@@ -13,7 +13,7 @@ use string_utils::*;
 fn main() {
     let pdb_list = include_str!("antibody_antigen_structures");
     for line in pdb_list.lines() {
-        if !line.starts_with('#') && line.len() > 0 {
+        if !line.starts_with('#') && !line.is_empty() {
             let x = line.after(" ").split(',').collect::<Vec<&str>>();
             for pdb in x.iter() {
                 if !path_exists(&format!("antibody_sets/pdbs/{}.gz", pdb)) {
@@ -23,7 +23,7 @@ fn main() {
                         .arg(&format!("antibody_sets/pdbs/{}.gz", pdb))
                         .arg(&format!("https://files.rcsb.org/download/{}.cif.gz", pdb))
                         .output()
-                        .expect(&format!("failed to execute wget"));
+                        .expect("failed to execute wget");
                     if x.status.code() != Some(0) {
                         eprintln!("\nDownload of {} failed.\n", pdb);
                         std::process::exit(1);

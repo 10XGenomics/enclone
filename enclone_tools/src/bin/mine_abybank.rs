@@ -37,7 +37,7 @@ use string_utils::*;
 fn main() {
     let args: Vec<String> = env::args().collect();
     let dir = &args[1];
-    let all = read_dir(&dir).unwrap();
+    let all = read_dir(dir).unwrap();
     for f in all {
         let f = f.unwrap().path();
         let f = f.to_str().unwrap();
@@ -51,10 +51,10 @@ fn main() {
         let mut last = String::new();
         for line in f.lines() {
             let mut s = line.unwrap();
-            if s.contains("SPECIES") && species.len() == 0 {
+            if s.contains("SPECIES") && species.is_empty() {
                 species = s.after(":").after(": ").to_string();
             } else if s.starts_with("ATOM") {
-                s = s.replace("\t", " ");
+                s = s.replace('\t', " ");
                 s = s.replace("  ", " ");
                 s = s.replace("  ", " ");
                 s = s.replace("  ", " ");
@@ -64,7 +64,7 @@ fn main() {
                     continue;
                 }
                 let pos = fields[5];
-                if pos.to_string() == last {
+                if *pos == last {
                     continue;
                 }
                 last = pos.to_string();
@@ -98,7 +98,7 @@ fn main() {
                 }
             }
         }
-        if species.contains("SYNTHETIC") || species.contains(",") || species.contains("VIRUS") {
+        if species.contains("SYNTHETIC") || species.contains(',') || species.contains("VIRUS") {
             continue;
         }
         println!("\nid = {}", id);
@@ -125,7 +125,7 @@ fn main() {
                 s = s.before("F").to_string();
             }
             let n = s.force_usize();
-            if n >= 57 && n <= 88 {
+            if (57..=88).contains(&n) {
                 fr3.push(light_aa[i]);
             }
         }
@@ -140,8 +140,8 @@ fn main() {
                     break;
                 }
             }
-            let n = strme(&s).force_usize();
-            if n >= 33 && n <= 49 {
+            let n = strme(s).force_usize();
+            if (33..=49).contains(&n) {
                 fr2.push(heavy_aa[i]);
             }
         }
@@ -156,9 +156,9 @@ fn main() {
                     break;
                 }
             }
-            let n = strme(&s).force_usize();
+            let n = strme(s).force_usize();
             // had 94???
-            if n >= 57 && n <= 92 {
+            if (57..=92).contains(&n) {
                 fr3.push(heavy_aa[i]);
             }
         }
@@ -173,8 +173,8 @@ fn main() {
                     break;
                 }
             }
-            let n = strme(&s).force_usize();
-            if n >= 24 && n <= 34 {
+            let n = strme(s).force_usize();
+            if (24..=34).contains(&n) {
                 cdr1.push(light_aa[i]);
             }
         }
@@ -189,8 +189,8 @@ fn main() {
                     break;
                 }
             }
-            let n = strme(&s).force_usize();
-            if n >= 50 && n <= 56 {
+            let n = strme(s).force_usize();
+            if (50..=56).contains(&n) {
                 cdr2.push(light_aa[i]);
             }
         }
@@ -205,8 +205,8 @@ fn main() {
                     break;
                 }
             }
-            let n = strme(&s).force_usize();
-            if n >= 26 && n <= 32 {
+            let n = strme(s).force_usize();
+            if (26..=32).contains(&n) {
                 cdr1.push(heavy_aa[i]);
             }
         }
@@ -221,8 +221,8 @@ fn main() {
                     break;
                 }
             }
-            let n = strme(&s).force_usize();
-            if n >= 52 && n <= 56 {
+            let n = strme(s).force_usize();
+            if (52..=56).contains(&n) {
                 cdr2.push(heavy_aa[i]);
             }
         }

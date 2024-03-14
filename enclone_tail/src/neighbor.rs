@@ -37,7 +37,7 @@ pub fn neighbor_joining(d: &Vec<Vec<f64>>) -> Vec<(usize, usize, f64)> {
     }
     let mut verts = vec![0; n0];
     for i in 0..n0 {
-        verts[i as usize] = i;
+        verts[i] = i;
     }
     let mut edges = vec![(0, 0, 0.0); 2 * n0 - 3];
     let mut q = vec![vec![0.0; n0]; n0];
@@ -106,7 +106,7 @@ pub fn neighbor_joining(d: &Vec<Vec<f64>>) -> Vec<(usize, usize, f64)> {
             verts[k] = verts[k + 1];
         }
         for i in 0..n {
-            for j in 0..n as usize {
+            for j in 0..n {
                 d2[i][j] = d[i][j];
             }
         }

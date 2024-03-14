@@ -46,7 +46,7 @@ fn main() {
         let mut log = Vec::<u8>::new();
         fwriteln!(log, "running denovo {} = {}", id, species);
         let o = Command::new("denovo")
-            .arg(&id)
+            .arg(id)
             .output()
             .expect("failed to execute denovo");
         if o.status.code().unwrap() != 0 {

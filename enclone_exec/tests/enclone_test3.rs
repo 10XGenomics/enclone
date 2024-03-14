@@ -49,15 +49,15 @@ fn test_site_examples() {
         let example_name = SITE_EXAMPLES[i].0;
         let test = SITE_EXAMPLES[i].1;
         let in_file = format!("../{}", example_name);
-        let mut f = File::open(&in_file).expect(&format!("couldn't find {}", in_file));
+        let mut f = File::open(&in_file).unwrap_or_else(|_| panic!("couldn't find {}", in_file));
         let mut in_stuff = Vec::<u8>::new();
         f.read_to_end(&mut in_stuff).unwrap();
-        let mut args = parse_bsv(&test);
+        let mut args = parse_bsv(test);
         args.push("NO_KILL");
         let new = Command::new(env!("CARGO_BIN_EXE_enclone"))
             .args(&args)
             .output()
-            .expect(&format!("failed to execute test_site_examples"));
+            .expect("failed to execute test_site_examples");
         if new.status.code() != Some(0) {
             res.2 = format!(
                 "\nenclone_site_examples: example {} failed to execute, stderr =\n{}",
@@ -74,11 +74,11 @@ fn test_site_examples() {
             if String::from_utf8(in_stuff.clone()).is_err()
                 && String::from_utf8(out_stuff.clone()).is_err()
             {
-                res.2 += &mut format!("Both the old and new files are binary.\n\n");
+                res.2 += &mut "Both the old and new files are binary.\n\n".to_string();
             } else if String::from_utf8(in_stuff.clone()).is_err() {
-                res.2 += &mut format!("The new file is binary but the old is not.\n\n");
+                res.2 += &mut "The new file is binary but the old is not.\n\n".to_string();
             } else if String::from_utf8(out_stuff.clone()).is_err() {
-                res.2 += &mut format!("The old file is binary but the new is not.\n\n");
+                res.2 += &mut "The old file is binary but the new is not.\n\n".to_string();
             } else {
                 let old_lines = strme(&in_stuff).split('\n').collect::<Vec<&str>>();
                 let new_lines = strme(&out_stuff).split('\n').collect::<Vec<&str>>();
@@ -190,7 +190,7 @@ fn test_enclone_examples() {
             .arg("FORCE_EXTERNAL")
             .arg("NO_KILL")
             .output()
-            .expect(&format!("failed to execute test_enclone_examples"));
+            .expect("failed to execute test_enclone_examples");
         let new2 = stringme(&new.stdout);
         if new.status.code() != Some(0) {
             eprint!(
@@ -270,7 +270,7 @@ fn test_dejavu() {
             head_output_child.wait().unwrap();
             let cksum = String::from_utf8(cksum_stdout.stdout).unwrap();
             // println!("cksum = {}", cksum);
-            assert!(cksum == "2474276863 1467\n".to_string());
+            assert!(cksum == *"2474276863 1467\n");
         }
     }
 }
@@ -308,7 +308,7 @@ fn test_help_output() {
             .arg("FORCE_EXTERNAL")
             .arg("NO_KILL")
             .output()
-            .expect(&format!("failed to execute test_help_output"));
+            .expect("failed to execute test_help_output");
         if new.status.code() != Some(0) {
             eprintln!("Attempt to run {} failed.\n", command);
             eprintln!("stderr = {}", strme(&new.stderr));
@@ -344,7 +344,7 @@ fn test_help_no_stable() {
         .arg("FORCE_EXTERNAL")
         .arg("NO_KILL")
         .output()
-        .expect(&format!("failed to execute test_help_output"));
+        .expect("failed to execute test_help_output");
     if new.status.code() != Some(0) {
         eprintln!("Attempt to run enclone help all without STABLE_DOC failed.\n");
         panic!("failed");
@@ -369,7 +369,7 @@ fn test_enclone_prebuild() {
         remove_file(&mb).unwrap();
     }
 
-    let (test_num, comment, args) = TESTS[47];
+    let (test_num, _comment, args) = TESTS[47];
     assert_eq!(48, test_num);
     let out_file = format!("testx/inputs/outputs/enclone_test{}_output", test_num);
     let old = read_to_string(&out_file).unwrap();
@@ -386,7 +386,7 @@ fn test_enclone_prebuild() {
         .arg("FORCE_EXTERNAL")
         .arg("NO_KILL")
         .output()
-        .expect(&format!("failed to execute test_enclone_prebuild"));
+        .expect("failed to execute test_enclone_prebuild");
     // let new_err = strme(&new.stderr).split('\n').collect::<Vec<&str>>();
     let new2 = stringme(&new.stdout);
     if old != new2 {
@@ -416,7 +416,7 @@ fn test_enclone_prebuild() {
         .arg("FORCE_EXTERNAL")
         .arg("NO_KILL")
         .output()
-        .expect(&format!("failed to execute enclone_test_prebuild"));
+        .expect("failed to execute enclone_test_prebuild");
     // let new_err = strme(&new.stderr).split('\n').collect::<Vec<&str>>();
     let new2 = stringme(&new.stdout);
     if old != new2 {
@@ -475,7 +475,7 @@ fn check_enclone_outs_consistency(enclone_outs: &EncloneOutputs) {
 #[cfg(not(feature = "cpu"))]
 #[test]
 fn test_proto_write() -> Result<(), Error> {
-    let tests = vec!["BCR=123085", "TCR=101287"];
+    let tests = ["BCR=123085", "TCR=101287"];
     let pre_arg = format!(
         "PRE=../enclone-data/big_inputs/version{}",
         TEST_FILES_VERSION
@@ -489,10 +489,10 @@ fn test_proto_write() -> Result<(), Error> {
     for t in tests.iter() {
         // FIXME: It would be nicer to use the enclone API here
         std::process::Command::new(env!("CARGO_BIN_EXE_enclone"))
-            .args(&[&pre_arg, *t, &binary_arg, &proto_arg])
+            .args([&pre_arg, *t, &binary_arg, &proto_arg])
             .arg("NO_KILL")
             .output()
-            .expect(&format!("failed to execute enclone for test_proto_write"));
+            .expect("failed to execute enclone for test_proto_write");
 
         // Test to make sure proto and bin are consistent.
 
@@ -609,16 +609,14 @@ fn test_subset_json() {
             TEST_FILES_VERSION
         );
         */
-        let args = parse_bsv(&test);
+        let args = parse_bsv(test);
         let new = Command::new(env!("CARGO_BIN_EXE_enclone"))
             // .arg(&pre_arg)
             .args(&args)
             .arg("NO_KILL")
             .output()
-            .expect(&format!(
-                "failed to execute test_subset_json 1, pass = {}",
-                pass
-            ));
+            .unwrap_or_else(|_| panic!("failed to execute test_subset_json 1, pass = {}",
+                pass));
         if new.status.code() != Some(0) {
             eprint!(
                 "\nsubset json test 1, pass = {}: failed to execute, stderr =\n{}",
@@ -639,10 +637,8 @@ fn test_subset_json() {
             .args(&args)
             .arg("NO_KILL")
             .output()
-            .expect(&format!(
-                "failed to execute test_subset_json 2, pass = {}",
-                pass
-            ));
+            .unwrap_or_else(|_| panic!("failed to execute test_subset_json 2, pass = {}",
+                pass));
         if new.status.code() != Some(0) {
             eprint!(
                 "\nsubset json test 2, pass = {}: failed to execute, stderr =\n{}",
@@ -684,7 +680,7 @@ fn test_cell_exact() {
         // WARNING: NOTE THAT FOOTNOTE 3 TEST IS HARDCODED.
         if lines[i].contains("<td> cell-exact") && !lines[i - 2].contains(" 3 ") {
             let var = lines[i - 3].between("<code> ", " </code>");
-            if !var.contains("&") {
+            if !var.contains('&') {
                 let lvar = lines[i - 1].contains("lvar");
                 let varp;
                 if lvar {
@@ -705,7 +701,7 @@ fn test_cell_exact() {
                     .arg("PCELL")
                     .arg("NO_KILL")
                     .output()
-                    .expect(&format!("failed to execute test_cel_exact"));
+                    .expect("failed to execute test_cel_exact");
                 if new.status.code() != Some(0) {
                     fails.push(var.to_string());
                 }
@@ -734,12 +730,12 @@ fn test_cell_exact() {
 fn test_ref_only() {
     let test = "REF=../enclone-data/big_inputs/version15/█≈ΠΠΠ≈█/outs/\
         vdj_reference/fasta/regions.fa";
-    let args = parse_bsv(&test);
+    let args = parse_bsv(test);
     let new = Command::new(env!("CARGO_BIN_EXE_enclone"))
         .args(&args)
         .arg("NO_KILL")
         .output()
-        .expect(&format!("failed to execute test_subset_json 1"));
+        .expect("failed to execute test_subset_json 1");
     if new.status.code() == Some(0) {
         eprint!("\ntest_ref_only: enclone command should not have succeeded.\n");
         panic!("failed");

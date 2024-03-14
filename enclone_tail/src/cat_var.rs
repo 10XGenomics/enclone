@@ -31,8 +31,8 @@ pub fn setup_cat_var(
         for i in 0..out_datas.len() {
             for j in 0..out_datas[i].len() {
                 for (z, var) in vars.iter().enumerate() {
-                    if out_datas[i][j].contains_key(&*var) {
-                        let val_list = &out_datas[i][j][&*var];
+                    if out_datas[i][j].contains_key(var) {
+                        let val_list = &out_datas[i][j][var];
                         let vals = val_list.split(POUT_SEP).collect::<Vec<&str>>();
                         let ex = &exact_clonotypes[exacts[i][j]];
                         for k in 0..ex.ncells() {

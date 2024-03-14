@@ -19,7 +19,7 @@ use vector_utils::bin_member;
 
 fn main() {
     let dir = "/mnt/assembly/isoseq";
-    let all = read_dir(&dir).unwrap();
+    let all = read_dir(dir).unwrap();
     let mut owned = Vec::<String>::new();
     for f in all {
         let f = f.unwrap().path();
@@ -30,12 +30,12 @@ fn main() {
     }
     owned.sort();
     let f = include_str!("../isoseq_list");
-    let _ = std::env::set_current_dir(&dir);
+    let _ = std::env::set_current_dir(dir);
     for line in f.lines() {
         if line.starts_with('#') || line.is_empty() {
             continue;
         }
-        let line = line.replace(" ", "");
+        let line = line.replace(' ', "");
         let acc = line.after(":").split(',').collect::<Vec<&str>>();
         for i in 0..acc.len() {
             if !bin_member(&owned, &acc[i].to_string()) {
@@ -45,7 +45,7 @@ fn main() {
                     SRA/sratoolkit.2.9.2-centos_linux64/bin/fastq-dump",
                 )
                 .arg("--fasta")
-                .arg(&acc[i])
+                .arg(acc[i])
                 .output()
                 .expect("failed to execute fastq-dump");
                 if o.status.code().unwrap() != 0 {

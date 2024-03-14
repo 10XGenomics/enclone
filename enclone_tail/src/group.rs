@@ -66,7 +66,7 @@ pub fn group_and_print_clonotypes(
 ) -> Result<(), String> {
     // Build index to join info.
 
-    let t = Instant::now();
+    let _t = Instant::now();
     let mut to_join_info = vec![Vec::<usize>::new(); exact_clonotypes.len()];
     for i in 0..join_info.len() {
         to_join_info[join_info[i].0].push(i);
@@ -83,12 +83,12 @@ pub fn group_and_print_clonotypes(
     set_speakers(ctl, &mut parseable_fields, max_chains);
     #[allow(bare_trait_objects)]
     let mut pout = match ctl.parseable_opt.pout.as_str() {
-        "" => (Box::new(stdout()) as Box<Write>),
-        "stdout" => (Box::new(stdout()) as Box<Write>),
-        "stdouth" => (Box::new(stdout()) as Box<Write>),
+        "" => Box::new(stdout()) as Box<Write>,
+        "stdout" => Box::new(stdout()) as Box<Write>,
+        "stdouth" => Box::new(stdout()) as Box<Write>,
         _ => {
             let path = Path::new(&ctl.parseable_opt.pout);
-            Box::new(File::create(&path).unwrap()) as Box<Write>
+            Box::new(File::create(path).unwrap()) as Box<Write>
         }
     };
     let mut pcols = ctl.parseable_opt.pcols.clone();
@@ -109,7 +109,7 @@ pub fn group_and_print_clonotypes(
     }
     pcols = pcols2;
     let mut pcols_show = pcols.clone();
-    if ctl.parseable_opt.pcols_show.len() > 0 {
+    if !ctl.parseable_opt.pcols_show.is_empty() {
         pcols_show = ctl.parseable_opt.pcols_show.clone();
     }
     if !ctl.parseable_opt.pout.is_empty()
@@ -124,20 +124,20 @@ pub fn group_and_print_clonotypes(
 
     #[allow(bare_trait_objects)]
     let mut fout = match ctl.gen_opt.fasta_filename.as_str() {
-        "" => (Box::new(stdout()) as Box<Write>),
-        "stdout" => (Box::new(stdout()) as Box<Write>),
+        "" => Box::new(stdout()) as Box<Write>,
+        "stdout" => Box::new(stdout()) as Box<Write>,
         _ => {
             let path = Path::new(&ctl.gen_opt.fasta_filename);
-            Box::new(File::create(&path).unwrap()) as Box<Write>
+            Box::new(File::create(path).unwrap()) as Box<Write>
         }
     };
     #[allow(bare_trait_objects)]
     let mut faaout = match ctl.gen_opt.fasta_aa_filename.as_str() {
-        "" => (Box::new(stdout()) as Box<Write>),
-        "stdout" => (Box::new(stdout()) as Box<Write>),
+        "" => Box::new(stdout()) as Box<Write>,
+        "stdout" => Box::new(stdout()) as Box<Write>,
         _ => {
             let path = Path::new(&ctl.gen_opt.fasta_aa_filename);
-            Box::new(File::create(&path).unwrap()) as Box<Write>
+            Box::new(File::create(path).unwrap()) as Box<Write>
         }
     };
 
@@ -169,11 +169,11 @@ pub fn group_and_print_clonotypes(
 
     #[allow(bare_trait_objects)]
     let mut pgout = match ctl.gen_opt.peer_group_filename.as_str() {
-        "" => (Box::new(stdout()) as Box<Write>),
-        "stdout" => (Box::new(stdout()) as Box<Write>),
+        "" => Box::new(stdout()) as Box<Write>,
+        "stdout" => Box::new(stdout()) as Box<Write>,
         _ => {
             let path = Path::new(&ctl.gen_opt.peer_group_filename);
-            Box::new(File::create(&path).unwrap()) as Box<Write>
+            Box::new(File::create(path).unwrap()) as Box<Write>
         }
     };
     if !ctl.gen_opt.peer_group_filename.is_empty() && ctl.gen_opt.peer_group_filename != *"stdout" {
@@ -186,7 +186,7 @@ pub fn group_and_print_clonotypes(
 
     // Echo command.
 
-    let t = Instant::now();
+    let _t = Instant::now();
     let mut last_width = 0;
     let mut logx = Vec::<u8>::new();
     if ctl.gen_opt.echo {
@@ -765,7 +765,7 @@ pub fn group_and_print_clonotypes(
         &mut three_chain,
         &mut four_chain,
         opt_d_val,
-        &refdata,
+        refdata,
     );
     *summary = stringme(&slog);
     if ctl.gen_opt.summary {
@@ -818,7 +818,7 @@ pub fn group_and_print_clonotypes(
 
     // Output clonotype plot (if it was generated and directed to stdout).
 
-    let t = Instant::now();
+    let _t = Instant::now();
     if ctl.plot_opt.plot_file == "stdout" || ctl.plot_opt.plot_file == "gui_stdout" {
         print!("{}", svg);
         if !ctl.gen_opt.noprint {

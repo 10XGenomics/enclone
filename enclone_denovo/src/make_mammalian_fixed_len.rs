@@ -23,7 +23,7 @@ pub fn make_mammalian_fixed_len() -> Vec<(String, String, usize, Vec<Vec<(u32, u
 
     // Gather the reference sequences.
 
-    let all = read_dir(&"v_segments").unwrap();
+    let all = read_dir("v_segments").unwrap();
     for f in all {
         let f = f.unwrap().path();
         let f = f.to_str().unwrap();
@@ -47,7 +47,7 @@ pub fn make_mammalian_fixed_len() -> Vec<(String, String, usize, Vec<Vec<(u32, u
 
         let mut refs = Vec::<DnaString>::new();
         let mut headers = Vec::<String>::new();
-        read_fasta_into_vec_dna_string_plus_headers(&f.to_string(), &mut refs, &mut headers);
+        read_fasta_into_vec_dna_string_plus_headers(f, &mut refs, &mut headers);
 
         // Skip broken references: Canus_lupus_familiaris and a bunch of others.
 

@@ -607,7 +607,7 @@ pub fn fr3_start(aa: &Vec<u8>, chain_type: &str, verbose: bool) -> Option<usize>
                 if verbose {
                     println!("j = {}, score = {}", j, score);
                 }
-                score_pos.push((score, -(j as isize)));
+                score_pos.push((score, -j));
             }
         }
         reverse_sort(&mut score_pos);

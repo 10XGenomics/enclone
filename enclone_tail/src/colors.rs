@@ -51,7 +51,7 @@ pub fn reorder_color_list(y: &mut Vec<Vec<u8>>) {
                 continue;
             }
             let x2 = &y[k];
-            let dist = color_distance(&x1, &x2);
+            let dist = color_distance(x1, x2);
             if dist > max_dist {
                 max_dist = dist;
                 best_k = k;

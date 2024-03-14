@@ -83,17 +83,17 @@ fn main() {
 
     // Compute Tm for the relevant constant region primers.
 
-    println!("");
+    println!();
     let s = "TCCTGAGGACTGTAGGACAGC";
-    let tg = tm_nearest_neighbor(&s);
+    let tg = tm_nearest_neighbor(s);
     println!("IGHG = {} ==> {:.1}°", s, tg);
     let s = "TAGCTGCTGGCCGC";
-    let tl = tm_nearest_neighbor(&s);
+    let tl = tm_nearest_neighbor(s);
     println!("IGLC = {} ==> {:.1}°", s, tl);
     let s = "GCGTTATCCACCTTCCACTGT";
-    let tk = tm_nearest_neighbor(&s);
+    let tk = tm_nearest_neighbor(s);
     println!("IGKC = {} ==> {:.1}°", s, tk);
-    println!("");
+    println!();
     let tx = 57.5;
 
     // Sequence of pR1.  This is immediately before the barcode.
@@ -152,8 +152,8 @@ fn main() {
         let b = &b[0..8];
         let mut res = Vec::<(f64, f64, String)>::new();
         for j in 0..=pr1.len() {
-            let x = format!("{}{}", strme(&pr1[npr - j..npr]), strme(&b));
-            let mut xp = format!("{}+{}", strme(&pr1[npr - j..npr]), strme(&b));
+            let x = format!("{}{}", strme(&pr1[npr - j..npr]), strme(b));
+            let mut xp = format!("{}+{}", strme(&pr1[npr - j..npr]), strme(b));
             if j == 0 {
                 xp = x.clone();
             }
@@ -177,7 +177,7 @@ fn main() {
         rows.push(row);
     }
     let mut log = String::new();
-    print_tabular_vbox(&mut log, &rows, 2, &b"l|l|l|l|l|l".to_vec(), false, false);
+    print_tabular_vbox(&mut log, &rows, 2, b"l|l|l|l|l|l".as_ref(), false, false);
     println!("{}", log);
     for i in 0..rows.len() {
         if i == 1 {
@@ -193,6 +193,6 @@ fn main() {
             }
             print!("{}", s);
         }
-        println!("");
+        println!();
     }
 }

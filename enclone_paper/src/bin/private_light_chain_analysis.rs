@@ -29,7 +29,7 @@ fn main() {
     let mut data = Vec::<(String, usize, Vec<u8>, String, String, usize)>::new();
     for line in f.lines() {
         let s = line.unwrap();
-        if s.starts_with("#") {
+        if s.starts_with('#') {
             continue;
         }
         let fields = s.split(',').collect::<Vec<&str>>();
@@ -54,7 +54,7 @@ fn main() {
     // Replace paralogous gene names.
 
     for i in 0..data.len() {
-        data[i].4 = data[i].4.replace("D", "");
+        data[i].4 = data[i].4.replace('D', "");
     }
 
     // Define groups based on equal donor and CDR3H length.
@@ -181,7 +181,7 @@ fn main() {
             }
             rows.push(row);
         }
-        print_tabular_vbox(&mut log, &rows, 0, &b"l|r|r|r|r|r".to_vec(), false, false);
+        print_tabular_vbox(&mut log, &rows, 0, b"l|r|r|r|r|r".as_ref(), false, false);
         logs.push(log);
     }
     let mut logr = vec![Vec::<String>::new(); 2];

@@ -30,7 +30,7 @@ pub fn grouper(
     opt_d_val: &Vec<(usize, Vec<Vec<Vec<usize>>>)>,
     dref: &Vec<DonorReferenceItem>,
 ) -> Vec<Vec<(i32, String)>> {
-    let t = Instant::now();
+    let _t = Instant::now();
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
     // Case 0: no grouping.
@@ -95,7 +95,7 @@ pub fn grouper(
 
         // Group by vdj_refname.
 
-        let t = Instant::now();
+        let _t = Instant::now();
         if ctl.clono_group_opt.vdj_refname {
             let mut groups2 = Vec::<Vec<usize>>::new();
             for g in groups.iter() {
@@ -137,7 +137,7 @@ pub fn grouper(
 
         // Group by v_heavy_refname.
 
-        let t = Instant::now();
+        let _t = Instant::now();
         if ctl.clono_group_opt.v_heavy_refname {
             let mut groups2 = Vec::<Vec<usize>>::new();
             for g in groups.iter() {
@@ -176,7 +176,7 @@ pub fn grouper(
 
         // Group by vj_heavy_refname.
 
-        let t = Instant::now();
+        let _t = Instant::now();
         if ctl.clono_group_opt.vj_heavy_refname {
             let mut groups2 = Vec::<Vec<usize>>::new();
             for g in groups.iter() {
@@ -217,7 +217,7 @@ pub fn grouper(
 
         // Group by vdj_heavy_refname.
 
-        let t = Instant::now();
+        let _t = Instant::now();
         if ctl.clono_group_opt.vdj_heavy_refname {
             let mut groups2 = Vec::<Vec<usize>>::new();
             for g in groups.iter() {
@@ -266,7 +266,7 @@ pub fn grouper(
 
         // Group by vj_len.
 
-        let t = Instant::now();
+        let _t = Instant::now();
         if ctl.clono_group_opt.vj_len {
             let mut groups2 = Vec::<Vec<usize>>::new();
             for g in groups.iter() {
@@ -297,7 +297,7 @@ pub fn grouper(
 
         // Group by cdr3_len.
 
-        let t = Instant::now();
+        let _t = Instant::now();
         if ctl.clono_group_opt.cdr3_len {
             let mut groups2 = Vec::<Vec<usize>>::new();
             for g in groups.iter() {
@@ -328,7 +328,7 @@ pub fn grouper(
 
         // Group by cdr3_heavy_len.
 
-        let t = Instant::now();
+        let _t = Instant::now();
         if ctl.clono_group_opt.cdr3_heavy_len {
             let mut groups2 = Vec::<Vec<usize>>::new();
             for g in groups.iter() {
@@ -361,7 +361,7 @@ pub fn grouper(
 
         // Group by cdr3_light_len.
 
-        let t = Instant::now();
+        let _t = Instant::now();
         if ctl.clono_group_opt.cdr3_light_len {
             let mut groups2 = Vec::<Vec<usize>>::new();
             for g in groups.iter() {
@@ -395,13 +395,13 @@ pub fn grouper(
         // Group by heavy_pc and then light_pc.
 
         for pass in 1..=2 {
-            if pass == 1 && !ctl.clono_group_opt.heavy_pc.is_some() {
+            if pass == 1 && ctl.clono_group_opt.heavy_pc.is_none() {
                 continue;
             }
-            if pass == 2 && !ctl.clono_group_opt.light_pc.is_some() {
+            if pass == 2 && ctl.clono_group_opt.light_pc.is_none() {
                 continue;
             }
-            let t = Instant::now();
+            let _t = Instant::now();
             let min_r = if pass == 1 {
                 ctl.clono_group_opt.heavy_pc.unwrap() / 100.0
             } else {
@@ -433,7 +433,7 @@ pub fn grouper(
                                             continue;
                                         }
                                         let dna2 = &ex2.share[p2].seq;
-                                        let d = levenshtein(&dna1, &dna2) as usize;
+                                        let d = levenshtein(dna1, dna2) as usize;
                                         let r1 = if d <= dna1.len() { dna1.len() - d } else { 0 };
                                         let r1 = r1 as f64 / dna1.len() as f64;
                                         let r2 = if d <= dna2.len() { dna2.len() - d } else { 0 };
@@ -464,13 +464,13 @@ pub fn grouper(
             for i in 0..results.len() {
                 groups.append(&mut results[i].1.clone());
             }
-            let chain = if pass == 1 { "heavy" } else { "light" };
+            let _chain = if pass == 1 { "heavy" } else { "light" };
         }
 
         // Group by cdr3_aa_heavy≥n%:h:@f.
 
         if ctl.clono_group_opt.cdr3_heavy_pc_hf.is_some() {
-            let t = Instant::now();
+            let _t = Instant::now();
             let min_r = ctl.clono_group_opt.cdr3_heavy_pc_hf.as_ref().unwrap().0 / 100.0;
             let m = &ctl.clono_group_opt.cdr3_heavy_pc_hf.as_ref().unwrap().1;
             let mut penalty = vec![vec![0.0; 27]; 27];
@@ -549,13 +549,13 @@ pub fn grouper(
         // Group by aa_heavy_pc and then aa_light_pc.
 
         for pass in 1..=2 {
-            if pass == 1 && !ctl.clono_group_opt.aa_heavy_pc.is_some() {
+            if pass == 1 && ctl.clono_group_opt.aa_heavy_pc.is_none() {
                 continue;
             }
-            if pass == 2 && !ctl.clono_group_opt.aa_light_pc.is_some() {
+            if pass == 2 && ctl.clono_group_opt.aa_light_pc.is_none() {
                 continue;
             }
-            let t = Instant::now();
+            let _t = Instant::now();
             let min_r = if pass == 1 {
                 ctl.clono_group_opt.aa_heavy_pc.unwrap() / 100.0
             } else {
@@ -619,19 +619,19 @@ pub fn grouper(
             for i in 0..results.len() {
                 groups.append(&mut results[i].1.clone());
             }
-            let chain = if pass == 1 { "heavy" } else { "light" };
+            let _chain = if pass == 1 { "heavy" } else { "light" };
         }
 
         // Group by cdr3_heavy_pc and then cdr3_light_pc.
 
         for pass in 1..=2 {
-            if pass == 1 && !ctl.clono_group_opt.cdr3_heavy_pc.is_some() {
+            if pass == 1 && ctl.clono_group_opt.cdr3_heavy_pc.is_none() {
                 continue;
             }
-            if pass == 2 && !ctl.clono_group_opt.cdr3_light_pc.is_some() {
+            if pass == 2 && ctl.clono_group_opt.cdr3_light_pc.is_none() {
                 continue;
             }
-            let t = Instant::now();
+            let _t = Instant::now();
             let min_r = if pass == 1 {
                 ctl.clono_group_opt.cdr3_heavy_pc.unwrap() / 100.0
             } else {
@@ -696,19 +696,19 @@ pub fn grouper(
             for i in 0..results.len() {
                 groups.append(&mut results[i].1.clone());
             }
-            let chain = if pass == 1 { "heavy" } else { "light" };
+            let _chain = if pass == 1 { "heavy" } else { "light" };
         }
 
         // Group by cdr3_aa_heavy_pc and then cdr3_aa_light_pc.
 
         for pass in 1..=2 {
-            if pass == 1 && !ctl.clono_group_opt.cdr3_aa_heavy_pc.is_some() {
+            if pass == 1 && ctl.clono_group_opt.cdr3_aa_heavy_pc.is_none() {
                 continue;
             }
-            if pass == 2 && !ctl.clono_group_opt.cdr3_aa_light_pc.is_some() {
+            if pass == 2 && ctl.clono_group_opt.cdr3_aa_light_pc.is_none() {
                 continue;
             }
-            let t = Instant::now();
+            let _t = Instant::now();
             let min_r = if pass == 1 {
                 ctl.clono_group_opt.cdr3_aa_heavy_pc.unwrap() / 100.0
             } else {
@@ -769,12 +769,12 @@ pub fn grouper(
             for i in 0..results.len() {
                 groups.append(&mut results[i].1.clone());
             }
-            let chain = if pass == 1 { "heavy" } else { "light" };
+            let _chain = if pass == 1 { "heavy" } else { "light" };
         }
 
         // Join based on grouping.  Stupid, see next step.
 
-        let t = Instant::now();
+        let _t = Instant::now();
         for g in groups.iter() {
             for i in 0..g.len() - 1 {
                 e.join(g[i] as i32, g[i + 1] as i32);
@@ -793,7 +793,7 @@ pub fn grouper(
         for i in 0..greps.len() {
             let mut o = Vec::<i32>::new();
             e.orbit(greps[i], &mut o);
-            if !keeper_group(&o, &refdata, &exacts, &exact_clonotypes, &ctl, &rsi, &dref) {
+            if !keeper_group(&o, refdata, exacts, exact_clonotypes, ctl, rsi, dref) {
                 continue;
             }
             let mut z = Vec::<(i32, String)>::new();

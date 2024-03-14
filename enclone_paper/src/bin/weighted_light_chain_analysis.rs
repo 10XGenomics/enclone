@@ -26,7 +26,7 @@ fn main() {
     let mut data = Vec::<(String, usize, Vec<u8>, String, String, usize)>::new();
     for line in f.lines() {
         let s = line.unwrap();
-        if s.starts_with("#") {
+        if s.starts_with('#') {
             continue;
         }
         let fields = s.split(',').collect::<Vec<&str>>();
@@ -51,7 +51,7 @@ fn main() {
     // Replace paralogs.
 
     for i in 0..data.len() {
-        data[i].4 = data[i].4.replace("D", "");
+        data[i].4 = data[i].4.replace('D', "");
     }
 
     // Define penalty matrix.
@@ -61,7 +61,7 @@ fn main() {
     let mut m = Vec::<Vec<f64>>::new();
     for line in f.lines() {
         let mut s = line.to_string();
-        let sb = s.replace(" ", "");
+        let sb = s.replace(' ', "");
         if sb == "ACDEFGHIKLMNPQRSTVWY" {
             continue;
         }
@@ -175,5 +175,5 @@ fn main() {
             println!("{}% ==> {nznz:.1}% of {n}", 5 * j);
         }
     }
-    println!("");
+    println!();
 }

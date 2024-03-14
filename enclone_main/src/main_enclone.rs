@@ -186,7 +186,7 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
 
     let gex_info = get_gex_info(&mut ctl)?;
     check_lvars(&ctl, &gex_info)?;
-    let twoof = Instant::now();
+    let _twoof = Instant::now();
     check_gvars(&ctl)?;
     check_pcols(
         &ctl,
@@ -204,16 +204,14 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
         check_pcols(
             &ctl,
             &gex_info,
-            &vec![
-                ctl.plot_opt.plot_xy_xvar.clone(),
-                ctl.plot_opt.plot_xy_yvar.clone(),
-            ],
+            &[ctl.plot_opt.plot_xy_xvar.clone(),
+                ctl.plot_opt.plot_xy_yvar.clone()],
             ctl.parseable_opt.pbarcode,
         )?;
     }
     match ctl.plot_opt.cell_color {
         CellColor::ByVariableValue(ref x) => {
-            check_pcols(&ctl, &gex_info, &vec![x.var.clone()], true)?;
+            check_pcols(&ctl, &gex_info, &[x.var.clone()], true)?;
         }
         CellColor::ByCategoricalVariableValue(ref x) => {
             check_pcols(&ctl, &gex_info, &x.vars, true)?;
@@ -238,9 +236,9 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
     let mut var_def_vars = Vec::<String>::new();
     for i in 0..ctl.gen_opt.var_def.len() {
         let n = &ctl.gen_opt.var_def[i].2;
-        let vars = vars_of_node(&n);
+        let vars = vars_of_node(n);
         for v in vars.iter() {
-            let w = decode_arith(&*v);
+            let w = decode_arith(v);
             var_def_vars.push(w);
         }
     }
@@ -248,7 +246,7 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
 
     // Check DVARS.
 
-    let tfcell = Instant::now();
+    let _tfcell = Instant::now();
     if !ctl.gen_opt.dvars.is_empty() {
         let known_features = get_known_features(&gex_info)?;
         for j in 0..ctl.gen_opt.dvars.len() {
@@ -325,7 +323,7 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
 
     // Start of code to determine the reference sequence that is to be used.
 
-    let tr = Instant::now();
+    let _tr = Instant::now();
     let mut refx = String::new();
     let ann;
     if !ctl.gen_opt.cellranger {
@@ -340,7 +338,7 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
 
     // Build reference data.
 
-    let tr = Instant::now();
+    let _tr = Instant::now();
     let refx2 = &refx;
     let mut refdata = RefData::new();
     let ext_refx = String::new();

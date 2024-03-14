@@ -43,10 +43,7 @@ fn get_commit_hash() -> String {
 }
 
 fn is_github() -> bool {
-    match std::env::var("GITHUB_SHA") {
-        Ok(_) => true,
-        _ => false,
-    }
+    std::env::var("GITHUB_SHA").is_ok()
 }
 
 // We used to have the commit date here but this is easier and serves the same purpose for

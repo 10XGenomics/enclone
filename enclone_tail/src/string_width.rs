@@ -17,7 +17,7 @@ pub fn arial_width(s: &str, font_size: f64) -> f64 {
             len += ARIAL_1000_WIDTH_TABLE[p as usize].1;
         }
     }
-    len as f64 * font_size as f64 / 1000.0
+    len as f64 * font_size / 1000.0
 }
 
 // Note that the following table must be sorted.

@@ -35,22 +35,22 @@ pub fn sens_spec(
             for i1 in 0..ex.share.len() {
                 if ex.share[i1].left {
                     let mut vname = refdata.name[ex.share[i1].v_ref_id].clone();
-                    if vname.contains("*") {
+                    if vname.contains('*') {
                         vname = vname.before("*").to_string();
                     }
                     let mut jname = refdata.name[ex.share[i1].j_ref_id].clone();
-                    if jname.contains("*") {
+                    if jname.contains('*') {
                         jname = jname.before("*").to_string();
                     }
                     let vjh = format!("{}+{}", vname, jname);
                     for i2 in 0..ex.share.len() {
                         if !ex.share[i2].left {
                             let mut vname = refdata.name[ex.share[i2].v_ref_id].clone();
-                            if vname.contains("*") {
+                            if vname.contains('*') {
                                 vname = vname.before("*").to_string();
                             }
                             let mut jname = refdata.name[ex.share[i2].j_ref_id].clone();
-                            if jname.contains("*") {
+                            if jname.contains('*') {
                                 jname = jname.before("*").to_string();
                             }
                             let vjl = format!("{}+{}", vname, jname);

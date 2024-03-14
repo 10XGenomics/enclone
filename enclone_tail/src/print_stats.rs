@@ -185,10 +185,8 @@ pub fn print_stats(
                         for k2 in 0..ex2.clones.len() {
                             if (j1, k1) < (j2, k2) {
                                 let x2 = &ex2.clones[k2][0];
-                                if x1.donor_index.is_some() && x2.donor_index.is_some() {
-                                    if x1.donor_index.unwrap() != x2.donor_index.unwrap() {
-                                        mixes += 1;
-                                    }
+                                if x1.donor_index.is_some() && x2.donor_index.is_some() && x1.donor_index.unwrap() != x2.donor_index.unwrap() {
+                                    mixes += 1;
                                 }
                             }
                         }
@@ -357,7 +355,7 @@ pub fn print_stats(
 
         // Print barcode fate.
 
-        print_fate(&ctl, fate, logx);
+        print_fate(ctl, fate, logx);
 
         // Print other stats.
 
@@ -409,8 +407,8 @@ pub fn print_stats(
         ];
         rows.push(row);
         let mut log = String::new();
-        print_tabular_vbox(&mut log, &rows, 2, &b"l|r|r|r".to_vec(), false, false);
-        log = log.replace("\n", "\n   ");
+        print_tabular_vbox(&mut log, &rows, 2, b"l|r|r|r".as_ref(), false, false);
+        log = log.replace('\n', "\n   ");
         fwrite!(logx, "   {}", log);
 
         // Print other cell/clonotype stats.
@@ -680,8 +678,8 @@ pub fn print_stats(
         }
         if rows.len() > 3 {
             let mut log = String::new();
-            print_tabular_vbox(&mut log, &rows, 2, &b"llr".to_vec(), false, false);
-            log = log.replace("\n", "\n   ");
+            print_tabular_vbox(&mut log, &rows, 2, b"llr".as_ref(), false, false);
+            log = log.replace('\n', "\n   ");
             fwrite!(logx, "   {}", log);
         }
 
@@ -758,15 +756,15 @@ pub fn print_stats(
                     rows.push(row);
                 }
                 let mut log = String::new();
-                print_tabular_vbox(&mut log, &rows, 2, &b"r|r|r|r|r".to_vec(), false, false);
-                log = log.replace("\n", "\n   ");
+                print_tabular_vbox(&mut log, &rows, 2, b"r|r|r|r|r".as_ref(), false, false);
+                log = log.replace('\n', "\n   ");
                 fwrite!(logx, "   {}", log);
             }
         }
 
         // Print dataset-level variable values.
 
-        print_dataset_vars(&ctl, &gex_info, logx);
+        print_dataset_vars(ctl, gex_info, logx);
 
         // Print global variable values.
 
@@ -835,7 +833,7 @@ pub fn print_stats(
                 i = j;
             }
             let mut log = String::new();
-            print_tabular_vbox(&mut log, &rows, 2, &b"r|r".to_vec(), false, false);
+            print_tabular_vbox(&mut log, &rows, 2, b"r|r".as_ref(), false, false);
             logx.append(&mut log.as_bytes().to_vec());
             let mut lights = 0;
             let mut lights_same = 0;
@@ -858,14 +856,14 @@ pub fn print_stats(
                                 if !ex1.share[k1].left && !ex2.share[k2].left {
                                     let mut light1 = refdata.name[ex1.share[k1].v_ref_id].clone();
                                     let mut light2 = refdata.name[ex2.share[k2].v_ref_id].clone();
-                                    if light1.contains("*") {
+                                    if light1.contains('*') {
                                         light1 = light1.before("*").to_string();
                                     }
-                                    if light2.contains("*") {
+                                    if light2.contains('*') {
                                         light2 = light2.before("*").to_string();
                                     }
-                                    light1 = light1.replace("D", "");
-                                    light2 = light2.replace("D", "");
+                                    light1 = light1.replace('D', "");
+                                    light2 = light2.replace('D', "");
                                     if light1 == light2 {
                                         lights_same += 1;
                                         if ex1.clones[0][0].donor_index

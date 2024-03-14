@@ -110,7 +110,7 @@ pub fn sim_mat_plot(
         let mut log = Vec::<u8>::new();
         print_tabular(&mut log, &rtm, 2, Some(b"lrl".to_vec()));
         let mut slong = stringme(&log);
-        slong = slong.replace(" ", "\u{00A0}"); // convert spaces to non-breaking spaces
+        slong = slong.replace(' ', "\u{00A0}"); // convert spaces to non-breaking spaces
         let mut lines = Vec::<String>::new();
         for line in slong.lines() {
             lines.push(line.to_string());

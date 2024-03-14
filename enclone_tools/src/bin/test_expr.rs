@@ -17,7 +17,7 @@ fn main() {
 
     // Compile the expression.
 
-    let compiled = build_operator_tree(&expr); // creates a Node
+    let compiled = build_operator_tree(expr); // creates a Node
     if compiled.is_err() {
         println!("failed");
     } else {

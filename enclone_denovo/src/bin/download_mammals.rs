@@ -12,7 +12,7 @@
 use fasta_tools::read_fasta_to_vec_vec_u8;
 use io_utils::write_obj;
 
-use std::fs::{read_dir, File};
+use std::fs::{read_dir};
 use std::process::Command;
 use string_utils::TextUtils;
 use vector_utils::bin_member;
@@ -20,7 +20,7 @@ use vector_utils::bin_member;
 fn main() {
     let dir1 = "/mnt/assembly/genomes";
     let dir2 = "/mnt/deck5/david.jaffe/genomes";
-    let all = read_dir(&dir1).unwrap();
+    let all = read_dir(dir1).unwrap();
     let mut owned = Vec::<String>::new();
     for f in all {
         let f = f.unwrap().path();

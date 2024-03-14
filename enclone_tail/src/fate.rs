@@ -107,8 +107,8 @@ pub fn print_fate(
     }
     rows.push(vec![format!("{}", fates.len()), "total".to_string()]);
     let mut log = String::new();
-    print_tabular_vbox(&mut log, &rows, 2, &b"r|l".to_vec(), false, false);
+    print_tabular_vbox(&mut log, &rows, 2, b"r|l".as_ref(), false, false);
     log.truncate(log.len() - 1);
-    log = log.replace("\n", "\n   ");
+    log = log.replace('\n', "\n   ");
     fwrite!(logx, "   {}\n", log);
 }

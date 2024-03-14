@@ -38,18 +38,14 @@ pub fn cdr3_start_longer(aa: &[u8], _chain_type: &str, _verbose: bool) -> usize 
 
 pub fn fetch_atoms(pdb: &PdbStructure, chain: usize, seq: &[u8]) -> Vec<[f32; 3]> {
     for i in 0..pdb.chains[chain].len() {
-        if pdb.chains[chain][i..].starts_with(&seq) {
+        if pdb.chains[chain][i..].starts_with(seq) {
             let mut u = Vec::<[f32; 3]>::new();
             for j in 0..pdb.atoms.len() {
-                if pdb.atoms[j].chain as usize == chain {
-                    if (pdb.atoms[j].chain_pos as usize) >= i
-                        && (pdb.atoms[j].chain_pos as usize) < i + seq.len()
-                    {
-                        let x_s = pdb.atoms[j].x;
-                        let y_s = pdb.atoms[j].y;
-                        let z_s = pdb.atoms[j].z;
-                        u.push([x_s, y_s, z_s]);
-                    }
+                if pdb.atoms[j].chain as usize == chain && (pdb.atoms[j].chain_pos as usize) >= i && (pdb.atoms[j].chain_pos as usize) < i + seq.len() {
+                    let x_s = pdb.atoms[j].x;
+                    let y_s = pdb.atoms[j].y;
+                    let z_s = pdb.atoms[j].z;
+                    u.push([x_s, y_s, z_s]);
                 }
             }
             return u;
@@ -76,7 +72,7 @@ pub fn mean_dist(a: &Vec<[f32; 3]>, b: &Vec<[f32; 3]>) -> f32 {
 fn main() {
     let args: Vec<String> = env::args().collect();
     let code = &args[1];
-    let pdb = fetch_pdb_structure(&code).unwrap();
+    let pdb = fetch_pdb_structure(code).unwrap();
     for i in 0..pdb.chain_names.len() {
         println!(
             "{} = {} (len = {})",
@@ -157,8 +153,8 @@ fn main() {
     let light_thru_cdr3 = &pdb.chains[light][0..light_fwr4_stop - 9];
     let heavy_cdr3_stop = heavy_thru_cdr3.len();
     let light_cdr3_stop = light_thru_cdr3.len();
-    let heavy_cdr3_start = cdr3_start_longer(&heavy_thru_cdr3, "IGH", false) - 1;
-    let light_cdr3_start = cdr3_start_longer(&light_thru_cdr3, &light_chain_type, false) - 1;
+    let heavy_cdr3_start = cdr3_start_longer(heavy_thru_cdr3, "IGH", false) - 1;
+    let light_cdr3_start = cdr3_start_longer(light_thru_cdr3, &light_chain_type, false) - 1;
     let heavy_trim = format!(
         "MXXXXXXXXXXXXXXXXXXX{}",
         strme(&heavy_thru_cdr3[0..heavy_cdr3_start + 10])
@@ -189,7 +185,7 @@ fn main() {
         strme(&pdb.chains[heavy][heavy_cdr2_start..heavy_cdr2_stop])
     );
     let heavy_cdr3 = &pdb.chains[heavy][heavy_cdr3_start..heavy_cdr3_stop];
-    println!("heavy cdr3 = {}", strme(&heavy_cdr3));
+    println!("heavy cdr3 = {}", strme(heavy_cdr3));
     println!("light chain type = {}", light_chain_type);
     println!(
         "light cdr1 = {}",
@@ -200,7 +196,7 @@ fn main() {
         strme(&pdb.chains[light][light_cdr2_start..light_cdr2_stop])
     );
     let light_cdr3 = &pdb.chains[light][light_cdr3_start..light_cdr3_stop];
-    println!("light cdr3 = {}", strme(&light_cdr3));
+    println!("light cdr3 = {}", strme(light_cdr3));
 
     // Get atoms.
 
@@ -277,19 +273,11 @@ fn main() {
                 let mut dist = 1_000_000_000.0_f32;
                 for j in 0..pdb.atoms.len() {
                     if pdb.atoms[j].chain as usize == *c {
-                        if *c == heavy {
-                            if pdb.atoms[j].chain_pos < heavy_cdr3_start as u16
-                                || pdb.atoms[j].chain_pos > heavy_cdr3_stop as u16
-                            {
-                                continue;
-                            }
+                        if *c == heavy && (pdb.atoms[j].chain_pos < heavy_cdr3_start as u16 || pdb.atoms[j].chain_pos > heavy_cdr3_stop as u16) {
+                            continue;
                         }
-                        if *c == light {
-                            if pdb.atoms[j].chain_pos < light_cdr3_start as u16
-                                || pdb.atoms[j].chain_pos > light_cdr3_stop as u16
-                            {
-                                continue;
-                            }
+                        if *c == light && (pdb.atoms[j].chain_pos < light_cdr3_start as u16 || pdb.atoms[j].chain_pos > light_cdr3_stop as u16) {
+                            continue;
                         }
                         let x_c = pdb.atoms[j].x;
                         let y_c = pdb.atoms[j].y;
@@ -323,12 +311,12 @@ fn main() {
             pdb.chains[spike][sp[i] as usize] as char
         );
     }
-    println!("");
+    println!();
 
     // let s1 = fetch_atoms(&pdb, spike, b"EGFN");
     // let s2 = fetch_atoms(&pdb, spike, b"SASFSTF");
-    let l = fetch_atoms(&pdb, light, &light_cdr3);
-    let h = fetch_atoms(&pdb, heavy, &heavy_cdr3);
+    let l = fetch_atoms(&pdb, light, light_cdr3);
+    let h = fetch_atoms(&pdb, heavy, heavy_cdr3);
     println!(
         "mean distance from heavy CDR3 to light CDR3 = {:.1}",
         mean_dist(&h, &l)

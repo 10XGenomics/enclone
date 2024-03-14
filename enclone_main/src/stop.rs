@@ -33,7 +33,7 @@ pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<EncloneState
     let gex_info = &inter.setup.gex_info;
     let sr = &inter.ex.sr;
     let ann = &inter.setup.ann;
-    let mut fate = &mut inter.ex.fate;
+    let fate = &mut inter.ex.fate;
     let ctl = &inter.setup.ctl;
     let is_bcr = inter.ex.is_bcr;
     let tall = &inter.setup.tall.unwrap();
@@ -42,7 +42,7 @@ pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<EncloneState
     // Load the GEX and FB data.  This is quite horrible: the code and computation are duplicated
     // verbatim in fcell.rs.
 
-    let tdi = Instant::now();
+    let _tdi = Instant::now();
     let mut d_readers = Vec::<Option<Reader>>::new();
     let mut ind_readers = Vec::<Option<Reader>>::new();
     for li in 0..ctl.origin_info.n() {
@@ -118,7 +118,7 @@ pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<EncloneState
 
     // Find and print clonotypes.  (But we don't actually print them here.)
 
-    let torb = Instant::now();
+    let _torb = Instant::now();
     let mut pics = Vec::<String>::new();
     let mut exacts = Vec::<Vec<usize>>::new(); // ugly reuse of name
     let mut in_center = Vec::<bool>::new();
@@ -126,7 +126,7 @@ pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<EncloneState
     let mut out_datas = Vec::<Vec<HashMap<String, String>>>::new();
     let mut tests = Vec::<usize>::new();
     let mut controls = Vec::<usize>::new();
-    if ctl.gen_opt.trace_barcode.len() > 0 {
+    if !ctl.gen_opt.trace_barcode.is_empty() {
         for u in 0..exact_clonotypes.len() {
             let ex = &exact_clonotypes[u];
             for j in 0..ex.clones.len() {
@@ -163,7 +163,7 @@ pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<EncloneState
         &mut out_datas,
         &mut tests,
         &mut controls,
-        &mut fate,
+        fate,
         allele_data,
     )?;
 
@@ -202,7 +202,7 @@ pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<EncloneState
 
     // Remove clonotypes that are not in groups.
 
-    let t = Instant::now();
+    let _t = Instant::now();
     let mut to_delete = vec![true; exacts.len()];
     for i in 0..groups.len() {
         for j in 0..groups[i].len() {

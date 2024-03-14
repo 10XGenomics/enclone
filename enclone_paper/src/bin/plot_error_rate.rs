@@ -33,7 +33,7 @@ fn main() {
     // Plot individual data points for cellwise subsampling.
 
     let orange = (255, 153, 51);
-    let cells = 1325190.0 as f32;
+    let cells = 1325190.0_f32;
     #[rustfmt::skip]
     let srx = [
         (0.1, [1.77, 0.16, 0.48, 0.00, 0.00, 0.32, 0.16, 0.32, 0.00, 0.48, 
@@ -64,13 +64,11 @@ fn main() {
     // Plot points for dataset-level sampling.
 
     let blue = (0, 0, 255);
-    let points2 = vec![
-        (652537.0, 0.66),
+    let points2 = [(652537.0, 0.66),
         (672653.0, 1.23),
         (405168.0, 0.75),
         (245629.0, 0.43),
-        (301997.0, 0.68),
-    ];
+        (301997.0, 0.68)];
     for i in 0..points2.len() {
         points.push((large, blue, points2[i].0, points2[i].1));
     }
@@ -78,7 +76,7 @@ fn main() {
     // Plot point for all the data.
 
     let red = (255, 0, 0);
-    let points3 = vec![(1325190.0, 0.90)];
+    let points3 = [(1325190.0, 0.90)];
     for i in 0..points3.len() {
         points.push((large, red, points3[i].0, points3[i].1));
     }

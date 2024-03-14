@@ -50,7 +50,7 @@ fn main() {
     let mut tof = HashMap::<String, usize>::new();
     let mut data = Vec::<(String, String, usize, String, String)>::new();
     for (i, line) in s.lines().enumerate() {
-        let fields = parse_csv(&line);
+        let fields = parse_csv(line);
         if i == 0 {
             for (j, x) in fields.iter().enumerate() {
                 tof.insert(x.clone(), j);
@@ -63,7 +63,7 @@ fn main() {
             // Get the CDR3H and extend by one amino acid on each end.
 
             let mut cdrh3 = fields[tof["CDRH3"]].clone();
-            cdrh3 = cdrh3.replace(" ", "");
+            cdrh3 = cdrh3.replace(' ', "");
             if cdrh3 == "ND" || !h.contains(&cdrh3) {
                 continue;
             }
@@ -84,9 +84,9 @@ fn main() {
             // Save.
 
             if vh.contains("Human") && vl.contains("Human") {
-                let vh = vh.replace(" ", "");
-                let vl = vl.replace(" ", "");
-                let vl = vl.replace("D", "");
+                let vh = vh.replace(' ', "");
+                let vl = vl.replace(' ', "");
+                let vl = vl.replace('D', "");
                 let vh = vh.before("(").to_string();
                 let vl = vl.before("(").to_string();
                 let mut source = fields[tof["Sources"]].clone();
@@ -133,15 +133,13 @@ fn main() {
 
             // Don't consider antibodies with same author, as best we can tell.
 
-            if x.4.contains(" ") && y.4.contains(" ") {
-                if x.4.after(" ").contains(" ") && y.4.after(" ").contains(" ") {
-                    let t1 = x.4.after(" ").after(" ");
-                    let a1 = t1.rev_before(&t1);
-                    let t2 = y.4.after(" ").after(" ");
-                    let a2 = t2.rev_before(&t2);
-                    if a1 == a2 {
-                        continue;
-                    }
+            if x.4.contains(' ') && y.4.contains(' ') && x.4.after(" ").contains(' ') && y.4.after(" ").contains(' ') {
+                let t1 = x.4.after(" ").after(" ");
+                let a1 = t1.rev_before(t1);
+                let t2 = y.4.after(" ").after(" ");
+                let a2 = t2.rev_before(t2);
+                if a1 == a2 {
+                    continue;
                 }
             }
 
@@ -191,5 +189,5 @@ fn main() {
     for i in 0..freq.len() {
         println!("[{}] {}, {}", freq[i].0, freq[i].1 .0, freq[i].1 .1);
     }
-    println!("");
+    println!();
 }

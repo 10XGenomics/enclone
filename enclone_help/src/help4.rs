@@ -6,7 +6,7 @@ use crate::help_utils::{explain_alt_versions, HelpDesk};
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) -> Result<(), String> {
+pub fn help4(args: &Vec<String>, h: &mut HelpDesk) -> Result<(), String> {
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
     // Provide special filtering help.
@@ -552,7 +552,7 @@ pub fn help4(args: &Vec<String>, mut h: &mut HelpDesk) -> Result<(), String> {
              See \"enclone help filter\" \
              for more information about regular expressions.\n\n",
         )?;
-        explain_alt_versions(&mut h)?;
+        explain_alt_versions(h)?;
         h.print(
             "\n\\blue{●} Similar to the above but simpler: n_gex is just a count of cells, \
              visual (one cell) shows 0 or 1, n_gex_cell is defined for parseable (one cell), \

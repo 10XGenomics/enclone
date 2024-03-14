@@ -31,7 +31,7 @@ fn compress(source: &str, destination: &str) {
 
 fn lz4_file(f: &str) {
     compress(f, &format!("{}.lz4", f));
-    remove_file(&f).unwrap();
+    remove_file(f).unwrap();
 }
 
 pub struct Contig {
@@ -64,7 +64,7 @@ fn main() {
                 contig_id: format!("contig_{}", i),
                 is_cell: productive,
                 high_confidence: productive,
-                productive: productive,
+                productive,
                 reads: 0,
                 umis: fields[to_field["consensus_count"]].force_usize(),
                 seq: fields[to_field["sequence"]].to_string().as_bytes().to_vec(),

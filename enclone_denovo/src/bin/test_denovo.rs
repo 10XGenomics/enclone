@@ -21,7 +21,7 @@ fn main() {
         if l > 0 {
             let s = line.unwrap();
             let s = s.as_bytes();
-            if s.len() == 0 {
+            if s.is_empty() {
                 continue;
             }
             let mut best_mis = 1000000;
@@ -74,9 +74,9 @@ fn main() {
                 }
             }
             if best_mis < best_mis_tenx && best_mis < best_mis_imgt {
-                println!("");
+                println!();
                 printme!(l, best_mis, best_mis_tenx, best_mis_imgt);
-                println!("seq  = {}", strme(&s));
+                println!("seq  = {}", strme(s));
                 println!("novo = {}", strme(&denovo[best_i]));
                 println!("tenx = {}", strme(&tenx[best_i_tenx]));
                 println!("imgt = {}", strme(&imgt[best_i_imgt]));

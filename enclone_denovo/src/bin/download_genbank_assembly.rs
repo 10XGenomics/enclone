@@ -52,7 +52,7 @@ fn main() {
                 .output()
                 .expect("failed to execute wget");
             // no idea why this is needed
-            std::fs::rename(&format!(" {}", fasta_file), &fasta_file).unwrap();
+            std::fs::rename(format!(" {}", fasta_file), &fasta_file).unwrap();
             std::process::exit(0);
         }
     }

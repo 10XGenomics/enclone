@@ -283,7 +283,7 @@ fn test_rust_version() {
     let new = Command::new("rustc")
         .arg("--version")
         .output()
-        .expect(&format!("failed to execute test_cpu_usage"));
+        .expect("failed to execute test_cpu_usage");
     if new.status.code() != Some(0) {
         eprint!(
             "\netest_rust_version: failed to execute, stderr =\n{}",
@@ -292,7 +292,7 @@ fn test_rust_version() {
         panic!("failed");
     }
     let version = strme(&new.stdout).between(" ", " ");
-    let test_yaml = format!("../.github/workflows/test.yaml");
+    let test_yaml = "../.github/workflows/test.yaml".to_string();
     let f = open_for_read![&test_yaml];
     let mut version_found = false;
     for line in f.lines() {
@@ -366,7 +366,7 @@ fn test_exit() {
 #[cfg(not(feature = "cpu"))]
 #[test]
 fn test_authors() {
-    let dirs = dir_list(&format!("../.."));
+    let dirs = dir_list("../..");
     let mut aud = Vec::<(String, Vec<String>)>::new();
     for d in dirs.iter() {
         let toml = format!("../../{}/Cargo.toml", d);
@@ -382,7 +382,7 @@ fn test_authors() {
                 if started {
                     au.push(s.to_string());
                 }
-                if s.contains("]") {
+                if s.contains(']') {
                     break;
                 }
             }
@@ -423,7 +423,7 @@ fn test_honey() {
     let new1 = Command::new(env!("CARGO_BIN_EXE_enclone"))
         .args(&args1)
         .output()
-        .expect(&format!("failed to execute test_honey 1"));
+        .expect("failed to execute test_honey 1");
     if new1.status.code() != Some(0) {
         eprintln!(
             "\ntest_honey 1: failed to execute, stderr =\n{}",
@@ -434,7 +434,7 @@ fn test_honey() {
     let new2 = Command::new(env!("CARGO_BIN_EXE_enclone"))
         .args(&args2)
         .output()
-        .expect(&format!("failed to execute test_honey 2"));
+        .expect("failed to execute test_honey 2");
     if new2.status.code() != Some(0) {
         eprintln!(
             "\ntest_honey 2: failed to execute, stderr =\n{}",
@@ -458,13 +458,13 @@ fn test_honey() {
 #[test]
 fn test_yaml() {
     let content = include_str!["../../.github/workflows/release.yaml"];
-    let yaml = yaml_rust::YamlLoader::load_from_str(&content);
+    let yaml = yaml_rust::YamlLoader::load_from_str(content);
     if yaml.is_err() {
         eprintln!("\nrelease.yaml is not valid YAML.\n");
         panic!("failed");
     }
     let content = include_str!["../../.github/workflows/test.yaml"];
-    let yaml = yaml_rust::YamlLoader::load_from_str(&content);
+    let yaml = yaml_rust::YamlLoader::load_from_str(content);
     if yaml.is_err() {
         eprintln!("\ntest.yaml is not valid YAML.\n");
         panic!("failed");
@@ -527,17 +527,17 @@ fn test_ranger() {
         } else {
             main_enclone(&args).unwrap();
         }
-        if !path_exists(&proto_out) {
+        if !path_exists(proto_out) {
             eprintln!("pass = {}, can't find proto_out", pass);
             panic!("failed");
         }
-        if !path_exists(&donor_ref_out) {
+        if !path_exists(donor_ref_out) {
             eprintln!("pass = {}, can't find donor_ref_out", pass);
             panic!("failed");
         }
-        let mut f = File::open(&proto_out).unwrap();
+        let mut f = File::open(proto_out).unwrap();
         f.read_to_end(&mut files[0][pass - 1]).unwrap();
-        let mut f = File::open(&donor_ref_out).unwrap();
+        let mut f = File::open(donor_ref_out).unwrap();
         f.read_to_end(&mut files[1][pass - 1]).unwrap();
     }
     for i in 0..2 {
@@ -562,7 +562,7 @@ fn test_unpushed() {
     let new = Command::new("git")
         .arg("status")
         .output()
-        .expect(&format!("failed to execute git status"));
+        .expect("failed to execute git status");
     if new.status.code() != Some(0) {
         eprint!(
             "\netest_unpushed: failed to execute, stderr =\n{}",
@@ -613,7 +613,7 @@ fn test_newline_bad() {
     let new = Command::new(env!("CARGO_BIN_EXE_enclone"))
         .arg("METAX=\"bcr;86237;\n     null:83808\"")
         .output()
-        .expect(&format!("failed to execute test_newline_bad"));
+        .expect("failed to execute test_newline_bad");
     if new.status.code() != Some(0) {
         eprintln!("\ntest_newline_bad: failed\n");
         eprintln!("stderr = {}\n", strme(&new.stderr));

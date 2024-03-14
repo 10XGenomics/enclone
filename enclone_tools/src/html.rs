@@ -141,7 +141,7 @@ pub fn insert_html(in_file: &str, out_file: &str, up: bool, level: usize) {
     let mut title = String::new();
     let mut extra_head = String::new();
     {
-        let f = BufReader::new(File::open(&in_file).unwrap_or_else(|_| {
+        let f = BufReader::new(File::open(in_file).unwrap_or_else(|_| {
             panic!("In directory {}, could not open file \"{}\"", pwd, &in_file)
         }));
         let mut in_head = false;
@@ -246,7 +246,7 @@ pub fn insert_html(in_file: &str, out_file: &str, up: bool, level: usize) {
                 "#required_two_cell_clonotypes",
                 &add_commas(required_two_cell_clonotypes),
             );
-            s = s.replace("#required_fp_percent", &(&required_fp_percent).to_string());
+            s = s.replace("#required_fp_percent", &required_fp_percent.to_string());
             fwriteln!(g, "{}", s);
         }
     }

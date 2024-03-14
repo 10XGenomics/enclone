@@ -98,7 +98,7 @@ fn main() {
     let nref = refs.len();
     let mut refdata = RefData::new();
     let ext_ref = String::new();
-    make_vdj_ref_data_core(&mut refdata, &href, &ext_ref, false, true, None);
+    make_vdj_ref_data_core(&mut refdata, href, &ext_ref, false, true, None);
 
     // Load the input file.
 
@@ -184,7 +184,7 @@ fn main() {
         // fwriteln!(log, "\nlooking for {} in {}", strme(&junv), strme(&vseq));
         let mut vstart = None;
         for k in (0..=vseq.len() - junv.len()).rev() {
-            if vseq[k..].starts_with(&junv) {
+            if vseq[k..].starts_with(junv) {
                 if k % 3 != 0 {
                     continue;
                 }
@@ -203,7 +203,7 @@ fn main() {
         seq.append(&mut jtail);
         fwriteln!(log, "\ncdr3[{}] = {}\n", i + 1, cdr3[i]);
         fwriteln!(log, "seq[{}] = {}\n", i + 1, strme(&seq));
-        let x = DnaString::from_dna_string(&strme(&seq));
+        let x = DnaString::from_dna_string(strme(&seq));
         let mut ann = Vec::<Annotation>::new();
         annotate_seq(&x, &refdata, &mut ann, true, false, true);
         let mut annv = Vec::<Annotation>::new();
@@ -289,7 +289,7 @@ fn main() {
                     j_ref_id,
                     &seq,
                     &ann,
-                    &strme(&cdr3x[0].1),
+                    strme(&cdr3x[0].1),
                     &refdata,
                     &Vec::new(),
                     &mut scores,
@@ -395,13 +395,13 @@ fn main() {
                     }
                 }
                 let _jun = Junction {
-                    hcomp: hcomp,
-                    matches: matches,
-                    mismatches: mismatches,
-                    jun_ins: jun_ins,
+                    hcomp,
+                    matches,
+                    mismatches,
+                    jun_ins,
                     d: ds[0].clone(),
-                    vstart: vstart,
-                    indels: indels,
+                    vstart,
+                    indels,
                 };
                 fwriteln!(log, "D = {}", drefname);
                 fwriteln!(log, "junction insertion = {}", jun_ins);
@@ -432,7 +432,7 @@ fn main() {
                     &drefx,
                     &d2ref,
                     &jref,
-                    &jrefname,
+                    jrefname,
                     true,
                     &mut log,
                     width,
@@ -449,11 +449,11 @@ fn main() {
                 res.1 = Data {
                     out: log,
                     fail: false,
-                    drefname: drefname,
-                    d: d,
-                    jun_ins: jun_ins,
+                    drefname,
+                    d,
+                    jun_ins,
                     subs: mismatches,
-                    rate: rate,
+                    rate,
                     cdrh3_len: cdr3[i].len(),
                 };
             }
@@ -476,7 +476,7 @@ fn main() {
             fails += 1;
         } else {
             let drefname = results[i].1.drefname.clone();
-            if drefname.contains(":") {
+            if drefname.contains(':') {
                 dd += 1;
             }
             drefnames.push(drefname);
@@ -516,7 +516,7 @@ fn main() {
         "mean junction insertion length = {:.1}\n",
         total as f64 / jun_ins.len() as f64
     );
-    if ds_all.len() > 0 {
+    if !ds_all.is_empty() {
         ds_all.sort();
         let mut freq = Vec::<(u32, String)>::new();
         make_freq(&ds_all, &mut freq);
@@ -532,7 +532,7 @@ fn main() {
             );
         }
     }
-    if subs.len() > 0 {
+    if !subs.is_empty() {
         subs.sort();
         let mut freq = Vec::<(u32, usize)>::new();
         make_freq(&subs, &mut freq);
@@ -552,7 +552,7 @@ fn main() {
             total += subs[i];
         }
         println!("mean = {:.1}", total as f64 / subs.len() as f64);
-        let mut bins = vec![0; 21];
+        let mut bins = [0; 21];
         for i in 0..rates.len() {
             bins[(20.0 * rates[i]).floor() as usize] += 1;
         }
@@ -573,7 +573,7 @@ fn main() {
         }
         println!(
             "mean substitution rate = {:.1}%",
-            100.0 * total as f64 / rates.len() as f64
+            100.0 * total / rates.len() as f64
         );
         println!(
             "\nDD fraction = {:.2}%\n",
