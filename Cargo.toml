@@ -63,18 +63,18 @@ split-debuginfo = "unpacked"
 # improved.
 
 [workspace.dependencies]
-align_tools = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "nmmsv/ann-refactor-attempt-2" }
-amino = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "nmmsv/ann-refactor-attempt-2" }
+align_tools = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
+amino = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
 anyhow = "1"
-ansi_escape = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "nmmsv/ann-refactor-attempt-2" }
+ansi_escape = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
 arboard = "2"
 assert_cmd = "2"
 async-trait = "0.1"
 attohttpc = { version = "0.18", default-features = false, features = ["compress", "tls-rustls"] }
 base64 = "0.13"
-binary_vec_io = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "nmmsv/ann-refactor-attempt-2" }
+binary_vec_io = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
 bio = "0.39"
-bio_edit = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "nmmsv/ann-refactor-attempt-2" }
+bio_edit = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
 byteorder = "1"
 bytes = "1"
 chrono = { version = "0.4", default-features = false, features = ["std", "clock"] }
@@ -85,41 +85,41 @@ core-graphics = "0.22"
 crc = "2"
 debruijn = "0.3"
 dirs = "4"
-dna = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "nmmsv/ann-refactor-attempt-2" }
+dna = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
 edit-distance = "2"
-enclone_args = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "nmmsv/ann-refactor-attempt-2" }
-enclone_core = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "nmmsv/ann-refactor-attempt-2" }
+enclone_args = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
+enclone_core = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
 enclone_denovo = { path = "../enclone_denovo" }
 enclone_help = { path = "../enclone_help" }
-enclone = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "nmmsv/ann-refactor-attempt-2" }
-enclone_print = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "nmmsv/ann-refactor-attempt-2" }
-enclone_proto = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "nmmsv/ann-refactor-attempt-2" }
-enclone_ranger = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "nmmsv/ann-refactor-attempt-2" }
+enclone = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
+enclone_print = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
+enclone_proto = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
+enclone_ranger = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
 enclone_server_proto = { path = "../enclone_server_proto" }
-enclone_stuff = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "nmmsv/ann-refactor-attempt-2" }
+enclone_stuff = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
 enclone_tail = { path = "../enclone_tail" }
-enclone_vars = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "nmmsv/ann-refactor-attempt-2" }
+enclone_vars = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
 enclone_version = { path = "../enclone_version" }
-equiv = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "nmmsv/ann-refactor-attempt-2" }
+equiv = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
 evalexpr = "7"
-expr_tools = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "nmmsv/ann-refactor-attempt-2" }
-fasta_tools = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "nmmsv/ann-refactor-attempt-2" }
+expr_tools = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
+fasta_tools = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
 file-lock = "2"
 flate2 = "1"
 float-ord = "0.3"
 fontdb = "0.7"
 fs_extra = "1"
 git = "https://github.com/10xGenomics/hdf5-rust.git"
-graph_simple = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "nmmsv/ann-refactor-attempt-2" }
+graph_simple = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
 hdf5 = { git = "https://github.com/10XGenomics/hdf5-rust.git", branch = "conda_nov2021", features = ["conda"], default-features = false }
 home = "0.5"
-hyperbase = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "nmmsv/ann-refactor-attempt-2" }
+hyperbase = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
 image = { version = "0.23", features = ["jpeg", "png", "jpeg_rayon"], default-features = false }
 include_dir = { version = "0.6", features = ["search"] }
-io_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "nmmsv/ann-refactor-attempt-2" }
+io_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
 itertools = "0.10"
 jpeg-decoder = "0.2"
-kmer_lookup = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "nmmsv/ann-refactor-attempt-2" }
+kmer_lookup = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
 lazy_static = "1"
 libc = "0.2"
 log = "0.4"
@@ -132,12 +132,12 @@ num-traits = "0.2"
 objc = "0.2"
 pager = "0.16"
 palette = "0.6"
-perf_stats = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "nmmsv/ann-refactor-attempt-2" }
+perf_stats = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
 permutation = "0.4"
 petgraph = "0.6"
 plotters = { version = "0.3", default_features = false, features = ["svg_backend", "point_series"] }
 png-decoder = "0.1"
-pretty_trace = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "nmmsv/ann-refactor-attempt-2", features = ["pprof"]}
+pretty_trace = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main", features = ["pprof"]}
 procfs = { version = "0.12", default_features = false }
 # prost: enclone will compile without the std and prost-derive features, but other things
 #        (such as enclone_proto) break.
@@ -153,12 +153,12 @@ serde = "1"
 serde_derive = "1"
 serde_json = "1"
 sha2 = "0.10"
-stats_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "nmmsv/ann-refactor-attempt-2" }
+stats_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
 statrs = "0.15"
-stirling_numbers = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "nmmsv/ann-refactor-attempt-2" }
-string_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "nmmsv/ann-refactor-attempt-2" }
+stirling_numbers = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
+string_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
 superslice = "1"
-tables = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "nmmsv/ann-refactor-attempt-2" }
+tables = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
 tar = "0.4"
 thiserror = "1"
 tilde-expand = "0.1"
@@ -170,9 +170,9 @@ tonic-build = { version = "0.6", default-features = false, features = ["transpor
 triple_accel = "0.4"
 users = "0.11"
 usvg = { version = "0.19", features = ["text"] }
-vdj_types = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "nmmsv/ann-refactor-attempt-2" }
-vdj_ann = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "nmmsv/ann-refactor-attempt-2" }
-vdj_ann_ref = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "nmmsv/ann-refactor-attempt-2" }
-vector_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "nmmsv/ann-refactor-attempt-2" }
+vdj_types = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
+vdj_ann = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
+vdj_ann_ref = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
+vector_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "main" }
 whoami = "1"
 yaml-rust = "0.4"
