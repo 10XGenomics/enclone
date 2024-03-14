@@ -10,7 +10,7 @@ use enclone_tail::tail::tail_code;
 use io_utils::{dir_list, open_for_read, path_exists};
 use rayon::prelude::*;
 use stats_utils::percent_ratio;
-use std::{collections::HashMap, env, io::BufRead, thread, time, time::Instant};
+use std::{collections::HashMap, env, io::BufRead, thread, time};
 use string_utils::TextUtils;
 use vector_utils::*;
 

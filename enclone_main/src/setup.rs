@@ -21,7 +21,7 @@ use itertools::Itertools;
 use std::env;
 use std::io::BufRead;
 use std::sync::atomic::Ordering::SeqCst;
-use std::time::Instant;
+
 use string_utils::TextUtils;
 use vector_utils::erase_if;
 

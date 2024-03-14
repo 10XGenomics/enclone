@@ -14,7 +14,7 @@ use enclone_proto::types::DonorReferenceItem;
 use equiv::EquivRel;
 use rayon::prelude::*;
 use std::cmp::min;
-use std::time::Instant;
+
 use string_utils::TextUtils;
 use triple_accel::{levenshtein, levenshtein::levenshtein_simd_k};
 use vdj_ann::refx::RefData;

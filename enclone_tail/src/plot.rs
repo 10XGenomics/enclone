@@ -24,7 +24,7 @@ use io_utils::{fwriteln, open_for_read, open_for_write_new};
 use std::collections::HashMap;
 use std::fs::File;
 use std::io::{BufRead, BufWriter, Write};
-use std::time::Instant;
+
 use string_utils::TextUtils;
 use vdj_ann::refx::RefData;
 use vector_utils::{

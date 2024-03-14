@@ -4,7 +4,7 @@ use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype};
 use enclone_core::opt_d::opt_d;
 use enclone_proto::types::DonorReferenceItem;
 use rayon::prelude::*;
-use std::time::Instant;
+
 use vdj_ann::refx::RefData;
 
 // Assign a D segment to each "left" column in a clonotype (if we need this information).
