@@ -6,7 +6,6 @@
 
 use io_utils::fwriteln;
 use itertools::Itertools;
-use perf_stats::elapsed;
 
 use rayon::prelude::*;
 use std::io::Write;
@@ -81,7 +80,7 @@ fn main() {
         }
         print!("{}", strme(&results[i].1));
     }
-    println!("used {:.2} minutes\n", elapsed(&t) / 60.0);
+    println!("used {:.2} minutes\n", t.elapsed().as_secs_f64() / 60.0);
     if fail {
         println!("\nFAILED!\n");
         panic!("failed");

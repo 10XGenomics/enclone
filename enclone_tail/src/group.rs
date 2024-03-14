@@ -183,7 +183,6 @@ pub fn group_and_print_clonotypes(
             fwriteln!(pgout, "group,clonotype,chain,pos,distribution");
         }
     }
-    ctl.perf_stats(&t, "in group code 1");
 
     // Echo command.
 
@@ -801,7 +800,6 @@ pub fn group_and_print_clonotypes(
         );
         print!("{}", s);
     }
-    ctl.perf_stats(&t, "in group code, before plotting clonotypes");
 
     // Plot clonotypes.
 
@@ -842,6 +840,6 @@ pub fn group_and_print_clonotypes(
         three_chain,
         four_chain,
     )?;
-    ctl.perf_stats(&t, "in group code 2");
+
     Ok(())
 }

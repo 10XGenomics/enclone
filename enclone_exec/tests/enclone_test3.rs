@@ -14,7 +14,6 @@ use enclone_tools::html::*;
 use enclone_tools::run_test::*;
 use io_utils::*;
 use itertools::Itertools;
-use perf_stats::*;
 
 use rayon::prelude::*;
 use sha2::Digest;
@@ -430,7 +429,10 @@ fn test_enclone_prebuild() {
         panic!("failed");
     }
 
-    println!("\nused {:.2} seconds in enclone_test_prebuild", elapsed(&t));
+    println!(
+        "\nused {:.2} seconds in enclone_test_prebuild",
+        t.elapsed().as_secs_f64()
+    );
 }
 
 fn check_enclone_outs_consistency(enclone_outs: &EncloneOutputs) {

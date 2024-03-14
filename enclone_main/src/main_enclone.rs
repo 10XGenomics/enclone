@@ -84,7 +84,6 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
     let args = critical_args(args, &mut ctl)?;
     ctl.start_time = Some(tall);
 
-    let (mut comp, mut comp2) = (false, false);
     for i in 1..args.len() {
         if args[i] == "PRINT_CPU" {
             ctl.gen_opt.print_cpu = true;
@@ -92,18 +91,6 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
         if args[i] == "PRINT_CPU_INFO" {
             ctl.gen_opt.print_cpu_info = true;
         }
-        if args[i] == "COMP" || args[i] == "COMPE" {
-            comp = true;
-        }
-        if args[i] == "COMPE" {
-            ctl.perf_opt.comp_enforce = true;
-        }
-        if args[i] == "COMP2" {
-            comp2 = true;
-        }
-    }
-    if comp && !comp2 {
-        println!();
     }
     ctl.gen_opt.cpu_all_start = 0;
     ctl.gen_opt.cpu_this_start = 0;
@@ -131,7 +118,7 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
     if ctl.gen_opt.evil_eye {
         println!("calling perf_stats, before setup");
     }
-    ctl.perf_stats(&tall, "before setup");
+
     let mut argsx = Vec::<String>::new();
     setup(&mut ctl, &args, &mut argsx, &args_orig)?;
     if ctl.gen_opt.split {
@@ -259,8 +246,6 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
     }
     check_pcols(&ctl, &gex_info, &var_def_vars, ctl.parseable_opt.pbarcode)?;
 
-    ctl.perf_stats(&twoof, "checking pcols");
-
     // Check DVARS.
 
     let tfcell = Instant::now();
@@ -331,7 +316,6 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
             }
         }
     }
-    ctl.perf_stats(&tfcell, "checking fcell");
 
     // Find matching features for <regular expression>_g etc.
 
@@ -353,7 +337,6 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
     if refx.is_empty() && ctl.origin_info.n() == 0 {
         return Err("\nNo data and no TCR or BCR data have been specified.\n".to_string());
     }
-    ctl.perf_stats(&tr, "starting reference");
 
     // Build reference data.
 
@@ -384,7 +367,6 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
     if ctl.gen_opt.using_secmem {
         fetch_secmem(&mut ctl)?;
     }
-    ctl.perf_stats(&tr, "building reference and other things");
 
     // Get VDJ data paths.
 

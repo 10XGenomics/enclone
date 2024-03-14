@@ -10,10 +10,6 @@ use enclone_core::barcode_fate::BarcodeFate;
 use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype, GexInfo};
 use enclone_core::median::median;
 use io_utils::{fwrite, fwriteln};
-use perf_stats::elapsed;
-
-#[cfg(target_os = "linux")]
-use perf_stats::peak_mem_usage_gb;
 
 use stats_utils::percent_ratio;
 use std::cmp::max;
@@ -355,10 +351,8 @@ pub fn print_stats(
             fwriteln!(
                 logx,
                 "   • total elapsed time = {:.1} seconds",
-                elapsed(tall)
+                tall.elapsed().as_secs_f64()
             );
-            #[cfg(target_os = "linux")]
-            fwriteln!(logx, "   • peak memory = {:.1} GB", peak_mem_usage_gb());
         }
 
         // Print barcode fate.

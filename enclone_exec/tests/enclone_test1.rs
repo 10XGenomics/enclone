@@ -18,7 +18,6 @@ use enclone_tools::run_test::*;
 use flate2::read::GzDecoder;
 use io_utils::*;
 use itertools::Itertools;
-use perf_stats::*;
 
 use rayon::prelude::*;
 use serde_json::Value;
@@ -553,7 +552,7 @@ fn test_cpu() {
         &mut out,
         0,
     );
-    let this_used = elapsed(&t);
+    let this_used = t.elapsed().as_secs_f64();
     let dev = 100.0 * (this_used as f64 - expect as f64) / (expect as f64);
     println!(
         "\nused wallclock = {:.1} seconds, dev = {:.1}%\n",

@@ -46,7 +46,6 @@ enclone_tools = { path = "../enclone_tools" }
 flate2.workspace = true
 fs_extra.workspace = true
 itertools.workspace = true
-perf_stats.workspace = true
 rayon.workspace = true
 serde.workspace = true
 serde_json.workspace = true

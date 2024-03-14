@@ -265,22 +265,6 @@ There are some other major things that are not tested:
 
 <! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
 
-<hr><h2>Profiling #enclone</h2>
-
-<p>#enclone provides a few built-in mechanisms for profiling:</p>
-<ol>
-
-<li>Add the argument <code>COMP</code> to your command.  This yields a summary of wall-clock
-time by code section, and also tracks peak memory usage.  There is also a version
-<code>COMP2</code> that prints a bit more.  Run this with <code>NOPAGER</code> if you want
-to see the lines printed as they happen.</li>
-
-</ol>
-<p>It is usually convenient to add the argument <code>NOPRINT</code> when using these profiling
-options, so as to suppress other output.</p>
-
-<! –– ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
-
 <hr><h2>What could go wrong?</h2>
 
 <p>If the code crashes, you should get a clean traceback.  If this happens on the distributed

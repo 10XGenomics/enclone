@@ -75,14 +75,6 @@ if ( `where post_process_test` == "" ) then
     exit 1
 endif
 
-##### RUN UNACCOUNTED TIME TEST #####
-
-# This is separate because we think it will fail less if it is not running at the same time
-# as other tests. Also, we don't want it in GitHub Actions because it fails occasionally.
-
-echo
-cargo test --features cpu test_accounting -- --nocapture |& post_process_test
-
 ##### RUN TEST GROUP 1 #####
 
 if ( $arg1 != linkless ) then

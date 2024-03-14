@@ -5,5 +5,5 @@ set rootdir = `dirname $0`
 enclone \
     BCR=`cat $rootdir/../../enclone_exec/tests/testdata.public.bcr.human | grep -v '#' | tr -d ' ' | grep -v '^$' | head --bytes=-1 | \
         tr '\n' ';' | tr -s ';'` \
-    ANN COMP SHOW_BC MIN_DONORS=2 PLAIN NSILENT PRINT_FAILED_JOINS \
+    ANN SHOW_BC MIN_DONORS=2 PLAIN NSILENT PRINT_FAILED_JOINS \
     PRE=/mnt/assembly/vdj/current15 $*
