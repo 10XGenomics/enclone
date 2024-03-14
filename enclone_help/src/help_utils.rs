@@ -209,19 +209,19 @@ impl HelpDesk {
             print_color(1, &mut log);
             log.push(b'e');
             emit_end_escape(&mut log);
-            self.print(&strme(&log).to_string())?;
+            self.print(strme(&log))?;
         }
         Ok(())
     }
     pub fn print_tab2(&mut self) -> Result<(), String> {
         let mut log = String::new();
-        print_tabular_vbox(&mut log, &self.rows, 2, &b"l|l".to_vec(), false, false);
+        print_tabular_vbox(&mut log, &self.rows, 2, b"l|l".as_ref(), false, false);
         self.print_plain(&log.to_string())?;
         Ok(())
     }
     pub fn print_tab3(&mut self) -> Result<(), String> {
         let mut log = String::new();
-        print_tabular_vbox(&mut log, &self.rows, 2, &b"l|l|l".to_vec(), false, false);
+        print_tabular_vbox(&mut log, &self.rows, 2, b"l|l|l".as_ref(), false, false);
         self.print_plain(&log.to_string())?;
         Ok(())
     }
@@ -233,22 +233,20 @@ impl HelpDesk {
             if !self.plain {
                 emit_blue_escape(&mut log);
             }
-            self.print_plain(&strme(&log).to_string())?;
+            self.print_plain(strme(&log))?;
             for _ in 1..100 {
                 self.print_plain("▓")?;
             }
-            self.print_plain(&strme(&log).to_string())?;
+            self.print_plain(strme(&log))?;
             if title.is_empty() {
                 self.print_plain(
-                    &"\nenclone main help page (what you get by typing \
-                    \"enclone\")\n"
-                        .to_string(),
+                    "\nenclone main help page (what you get by typing \
+                    \"enclone\")\n",
                 )?;
             } else if title == "setup" {
                 self.print_plain(
-                    &"\nenclone setup page (for one time use, what you get by typing \
-                    \"enclone help\")\n"
-                        .to_string(),
+                    "\nenclone setup page (for one time use, what you get by typing \
+                    \"enclone help\")\n",
                 )?;
             } else {
                 self.print_plain(&format!("\nenclone help {}\n", title))?;
@@ -257,7 +255,7 @@ impl HelpDesk {
             if !self.plain {
                 emit_blue_escape(&mut log);
             }
-            self.print_plain(&strme(&log).to_string())?;
+            self.print_plain(strme(&log))?;
             for _ in 1..100 {
                 self.print_plain("▓")?;
             }
@@ -283,7 +281,7 @@ impl HelpDesk {
             rows.push(vec![z.to_string()]);
         }
         let mut log = String::new();
-        print_tabular_vbox(&mut log, &rows, 2, &b"l".to_vec(), false, bold_box);
+        print_tabular_vbox(&mut log, &rows, 2, b"l".as_ref(), false, bold_box);
         self.print_plain(&format!("{}\n", log))?;
         Ok(())
     }
@@ -647,7 +645,7 @@ impl HelpDesk {
 
 pub fn print_tab2(rows: &Vec<Vec<String>>) {
     let mut log = String::new();
-    print_tabular_vbox(&mut log, rows, 2, &b"l|l".to_vec(), false, false);
+    print_tabular_vbox(&mut log, rows, 2, b"l|l".as_ref(), false, false);
     print!("{}", log);
 }
 
@@ -787,7 +785,7 @@ pub fn explain_alt_versions(h: &mut HelpDesk) -> Result<(), String> {
     ];
     rows.push(row);
     let mut log = String::new();
-    print_tabular_vbox(&mut log, &rows, 2, &b"l|l|l|l|l|l".to_vec(), false, false);
+    print_tabular_vbox(&mut log, &rows, 2, b"l|l|l|l|l|l".as_ref(), false, false);
     h.print_plain(&gray_left_bar(&log, h.plain))?;
     h.print_plain(&gray_left_bar(
         &h.print_to(

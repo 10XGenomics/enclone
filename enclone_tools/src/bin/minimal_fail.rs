@@ -63,7 +63,7 @@ fn fails(
 
     let o = Command::new("enclone.old")
         .arg(&format!("BCR={}", work))
-        .args(&*extra)
+        .args(extra)
         .output()
         .expect("failed to execute old enclone");
 
@@ -84,11 +84,11 @@ fn fails(
     let mut failed = false;
     if fail_condition == "#PANIC" {
         failed = panicked;
-    } else if out.contains(&fail_condition) {
+    } else if out.contains(fail_condition) {
         failed = true;
     }
     if failed {
-        copy(&working_json, &format!("{}.good", working_json)).unwrap();
+        copy(working_json, format!("{}.good", working_json)).unwrap();
     }
     failed
 }
@@ -102,7 +102,7 @@ fn main() {
     for i in 4..args.len() {
         extra.push(args[i].clone());
     }
-    let json = std::fs::read_to_string(&json).unwrap();
+    let json = std::fs::read_to_string(json).unwrap();
     let v: Value = serde_json::from_str(&json).unwrap();
     let entries = v.as_array().unwrap();
     let n = entries.len();
@@ -120,34 +120,32 @@ fn main() {
         let mut progress = false;
         for k in [10000, 1000, 100, 10, 1].iter() {
             let k = *k;
-            if total == 0 || total > k {
-                if n >= k {
-                    for i in (0..=n - k).step_by(k) {
-                        let mut usingx = using.clone();
-                        for j in 0..k {
-                            usingx[i + j] = false;
-                        }
-                        if usingx != using {
-                            println!("trying to delete {}", k);
-                            let panicked = fails(
-                                &fail_condition,
-                                &entries,
-                                &usingx,
-                                &work,
-                                &working_json,
-                                &extra,
-                            );
-                            if panicked {
-                                using = usingx;
-                                total = 0;
-                                for x in using.iter() {
-                                    if *x {
-                                        total += 1;
-                                    }
+            if (total == 0 || total > k) && n >= k {
+                for i in (0..=n - k).step_by(k) {
+                    let mut usingx = using.clone();
+                    for j in 0..k {
+                        usingx[i + j] = false;
+                    }
+                    if usingx != using {
+                        println!("trying to delete {}", k);
+                        let panicked = fails(
+                            fail_condition,
+                            entries,
+                            &usingx,
+                            work,
+                            &working_json,
+                            &extra,
+                        );
+                        if panicked {
+                            using = usingx;
+                            total = 0;
+                            for x in using.iter() {
+                                if *x {
+                                    total += 1;
                                 }
-                                println!("deleted {}, leaving {}", k, total);
-                                progress = true;
                             }
+                            println!("deleted {}, leaving {}", k, total);
+                            progress = true;
                         }
                     }
                 }

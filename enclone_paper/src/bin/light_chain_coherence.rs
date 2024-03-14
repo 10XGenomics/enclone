@@ -44,7 +44,6 @@
 
 use io_utils::*;
 
-use rand_chacha;
 use rand_chacha::rand_core::RngCore;
 use rand_chacha::rand_core::SeedableRng;
 use rayon::prelude::*;
@@ -66,7 +65,7 @@ fn main() {
     let mut data = Vec::<(String, usize, Vec<u8>, String, String, usize)>::new();
     for line in f.lines() {
         let s = line.unwrap();
-        if s.starts_with("#") {
+        if s.starts_with('#') {
             continue;
         }
         let fields = s.split(',').collect::<Vec<&str>>();
@@ -99,7 +98,7 @@ fn main() {
     // Replace paralogs.
 
     for i in 0..data.len() {
-        data[i].4 = data[i].4.replace("D", "");
+        data[i].4 = data[i].4.replace('D', "");
     }
 
     // Replace light chain genes and donors by numbers.
@@ -186,14 +185,14 @@ fn main() {
                 }
             }
         }
-        if bucket.len() > 0 {
+        if !bucket.is_empty() {
             buckets.push((bucket, (0, 0)));
         }
     }
 
     // Loop.
 
-    println!("");
+    println!();
     let mut best_n = 0;
     let mut canonical_n = 0;
     let mut changed = false;

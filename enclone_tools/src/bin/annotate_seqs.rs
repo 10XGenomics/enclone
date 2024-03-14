@@ -33,20 +33,18 @@ fn main() {
     for line in fin.lines() {
         let s = line.unwrap();
         if first {
-            if !s.starts_with(">") {
+            if !s.starts_with('>') {
                 panic!("fasta format failure");
             }
             first = false;
-        } else {
-            if s.starts_with(">") {
-                seqs.push(DnaString::from_dna_string(&last));
-                if seqs.len() == nreads {
-                    break;
-                }
-                last.clear();
-            } else {
-                last += &s;
+        } else if s.starts_with('>') {
+            seqs.push(DnaString::from_dna_string(&last));
+            if seqs.len() == nreads {
+                break;
             }
+            last.clear();
+        } else {
+            last += &s;
         }
     }
     seqs.push(DnaString::from_dna_string(&last));
@@ -58,7 +56,7 @@ fn main() {
     // Make reference data.
 
     let mut refdata = RefData::new();
-    let refx = std::fs::read_to_string(&ref_file).unwrap();
+    let refx = std::fs::read_to_string(ref_file).unwrap();
     let ext_ref = String::new();
     make_vdj_ref_data_core(&mut refdata, &refx, &ext_ref, true, true, None);
 
@@ -114,11 +112,11 @@ fn main() {
             fwrite!(r.1, "\n");
         }
     });
-    println!("");
+    println!();
     let (mut count, mut shift, mut valids) = (0, 0, 0);
     for i in 0..results.len() {
         shift += results[i].2;
-        if results[i].1.len() > 0 {
+        if !results[i].1.is_empty() {
             count += 1;
             let log = strme(&results[i].1);
             print!("sequence {} = {}{}", count, results[i].0 + 1, log);

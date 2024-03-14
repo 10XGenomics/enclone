@@ -172,8 +172,8 @@ pub fn print_tree(
                 if i > 0 && i <= n && !ctl.gen_opt.tree.is_empty() {
                     let x = &out_datas[oo][i - 1];
                     for w in ctl.gen_opt.tree.iter() {
-                        if x.contains_key(&*w) {
-                            c += &format!(",{}={}", w, x[&*w]);
+                        if x.contains_key(w) {
+                            c += &format!(",{}={}", w, x[w]);
                         }
                     }
                 }

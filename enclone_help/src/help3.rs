@@ -485,7 +485,7 @@ pub fn help3(args: &Vec<String>, h: &mut HelpDesk) -> Result<(), String> {
             "or Levenshtein distance 2 of CQVWDSSSDHPYVF".to_string(),
         ]);
         let mut log = String::new();
-        print_tabular_vbox(&mut log, &rows, 2, &b"l|l".to_vec(), false, false);
+        print_tabular_vbox(&mut log, &rows, 2, b"l|l".as_ref(), false, false);
         h.print(&format!("{}\n", log))?;
         h.print(
             "Note that double quotes should be used if the pattern \

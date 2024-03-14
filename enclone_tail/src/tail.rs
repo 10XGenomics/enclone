@@ -5,12 +5,12 @@
 use crate::group::group_and_print_clonotypes;
 use enclone_core::barcode_fate::BarcodeFate;
 use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype, GexInfo};
-use enclone_core::median::median_f64;
+
 use enclone_proto::types::DonorReferenceItem;
 use io_utils::fwrite;
 use ndarray::s;
 use rayon::prelude::*;
-use std::cmp::min;
+
 use std::collections::HashMap;
 use std::io::Write;
 use std::time::Instant;
@@ -31,7 +31,7 @@ pub fn tail_code(
     rsi: &Vec<ColInfo>,
     exact_clonotypes: &Vec<ExactClonotype>,
     ctl: &EncloneControl,
-    mut out_datas: &mut Vec<Vec<HashMap<String, String>>>,
+    out_datas: &mut Vec<Vec<HashMap<String, String>>>,
     join_info: &Vec<(usize, usize, bool, Vec<u8>)>,
     gex_info: &GexInfo,
     vdj_cells: &Vec<Vec<String>>,
@@ -59,7 +59,7 @@ pub fn tail_code(
         rsi,
         exact_clonotypes,
         ctl,
-        &mut out_datas,
+        out_datas,
         join_info,
         gex_info,
         vdj_cells,
@@ -73,7 +73,7 @@ pub fn tail_code(
 
     // Do gene scan.
 
-    let t = Instant::now();
+    let _t = Instant::now();
     if ctl.gen_opt.gene_scan_test.is_some() {
         println!("\nFEATURE SCAN\n");
         let mut test_cells = 0;

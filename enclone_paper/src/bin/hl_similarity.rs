@@ -19,7 +19,6 @@
 use enclone_tail::plot_points::plot_points;
 use io_utils::*;
 
-use rand_chacha;
 use rand_chacha::rand_core::RngCore;
 use rand_chacha::rand_core::SeedableRng;
 use std::collections::{HashMap, HashSet};
@@ -60,7 +59,7 @@ fn main() {
     )>::new();
     for line in f.lines() {
         let s = line.unwrap();
-        if s.starts_with("#") {
+        if s.starts_with('#') {
             continue;
         }
         let fields = s.split(',').collect::<Vec<&str>>();
@@ -92,7 +91,7 @@ fn main() {
 
     // Print CSV header.
 
-    if svg_file1.len() == 0 {
+    if svg_file1.is_empty() {
         println!("class,donor1,donor2,const1,const2,hd,ld");
     }
 
@@ -164,10 +163,10 @@ fn main() {
         let i2 = bucket[m].1;
         let h1 = &data[i1].10.as_bytes();
         let h2 = &data[i2].10.as_bytes();
-        let hd = levenshtein(&h1, &h2) as usize;
+        let hd = levenshtein(h1, h2) as usize;
         let l1 = &data[i1].11.as_bytes();
         let l2 = &data[i2].11.as_bytes();
-        let ld = levenshtein(&l1, &l2) as usize;
+        let ld = levenshtein(l1, l2) as usize;
         x.push(hd as f64);
         y.push(ld as f64);
         lds.push(ld);
@@ -179,7 +178,7 @@ fn main() {
         let donor2 = &data[i2].3;
         let const1 = &data[i1].7;
         let const2 = &data[i2].7;
-        if svg_file1.len() == 0 {
+        if svg_file1.is_empty() {
             println!("{class},{donor1},{donor2},{const1},{const2},{hd},{ld}");
         }
         points2.push((0, (255, 0, 0), hd as f32, ld as f32));
@@ -204,13 +203,13 @@ fn main() {
     for i in 0..n {
         sd_x += (x[i] - mean_x) * (x[i] - mean_x);
     }
-    sd_x = sd_x / n as f64;
+    sd_x /= n as f64;
     sd_x = sd_x.sqrt();
     let mut sd_y = 0.0;
     for i in 0..n {
         sd_y += (y[i] - mean_y) * (y[i] - mean_y);
     }
-    sd_y = sd_y / n as f64;
+    sd_y /= n as f64;
     sd_y = sd_y.sqrt();
     println!("\nx has mean = {mean_x:.1}, sd = {sd_x:.1}");
     println!("y has mean = {mean_y:.1}, sd = {sd_y:.1}");
@@ -241,15 +240,15 @@ fn main() {
                 seen.insert((i1, i2));
                 let h1 = &data[i1].10.as_bytes();
                 let h2 = &data[i2].10.as_bytes();
-                let hd = levenshtein(&h1, &h2) as usize;
+                let hd = levenshtein(h1, h2) as usize;
                 let l1 = &data[i1].11.as_bytes();
                 let l2 = &data[i2].11.as_bytes();
-                let ld = levenshtein(&l1, &l2) as usize;
+                let ld = levenshtein(l1, l2) as usize;
                 lds.push(ld);
                 let class = 2;
                 let const1 = &data[i1].7;
                 let const2 = &data[i2].7;
-                if svg_file1.len() == 0 {
+                if svg_file1.is_empty() {
                     println!("{class},{donor1},{donor2},{const1},{const2},{hd},{ld}");
                 }
                 points1.push((0, (0, 0, 255), hd as f32, ld as f32));
@@ -271,7 +270,7 @@ fn main() {
 
     // Make plots.
 
-    if svg_file1.len() > 0 {
+    if !svg_file1.is_empty() {
         for pass in 1..=2 {
             let mut points = if pass == 1 {
                 points1.clone()
@@ -289,7 +288,7 @@ fn main() {
                     }
                     j += 1;
                 }
-                let mut p = points[i].clone();
+                let mut p = points[i];
                 let n = j - i;
                 let r = (n as f64).sqrt();
                 p.0 = r.round() as u32;

@@ -15,7 +15,7 @@ pub fn mammalian_pwms() -> Vec<(String, String, usize, Vec<Vec<(u32, u8)>>)> {
             for j in 0..w.len() {
                 ppp.push((
                     w[j].before(":").force_usize() as u32,
-                    w[j].after(":").as_bytes()[0] as u8,
+                    w[j].after(":").as_bytes()[0],
                 ));
             }
             pp.push(ppp);

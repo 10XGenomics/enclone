@@ -32,7 +32,7 @@ fn main() {
     let mut tof = HashMap::<String, usize>::new();
     for line in f.lines() {
         let s = line.unwrap();
-        if s.starts_with("#") {
+        if s.starts_with('#') {
             continue;
         }
         let fields = s.split(',').collect::<Vec<&str>>();
@@ -57,7 +57,7 @@ fn main() {
     let mut tof = HashMap::<String, usize>::new();
     for line in f.lines() {
         let s = line.unwrap();
-        if s.starts_with("#") {
+        if s.starts_with('#') {
             continue;
         }
         let fields = s.split(',').collect::<Vec<&str>>();
@@ -95,7 +95,7 @@ fn main() {
     )>::new();
     for line in f.lines() {
         let s = line.unwrap();
-        if s.starts_with("#") {
+        if s.starts_with('#') {
             continue;
         }
         let fields = s.split(',').collect::<Vec<&str>>();
@@ -224,6 +224,6 @@ fn main() {
     rows.push(row);
 
     let mut log = String::new();
-    print_tabular_vbox(&mut log, &rows, 0, &b"r|r|r|r".to_vec(), false, false);
+    print_tabular_vbox(&mut log, &rows, 0, b"r|r|r|r".as_ref(), false, false);
     println!("\n{}", log);
 }

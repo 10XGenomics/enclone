@@ -43,16 +43,16 @@ const LOUPE_OUT_FILENAME: &str = "testx/__test_proto";
 
 fn valid_link(link: &str) -> bool {
     use attohttpc::*;
-    let req = attohttpc::get(link.clone()).read_timeout(Duration::new(10, 0));
+    let req = attohttpc::get(link).read_timeout(Duration::new(10, 0));
     let response = req.send();
     if response.is_err() {
-        return false;
+        false
     } else {
         let response = response.unwrap();
         if response.is_success() {
             return true;
         }
-        return false;
+        false
     }
 }
 
@@ -72,12 +72,12 @@ fn test_for_parseable_redundancy() {
         "PRE=../enclone-data/big_inputs/version{}",
         TEST_FILES_VERSION
     );
-    let args = parse_bsv(&test);
+    let args = parse_bsv(test);
     let new = Command::new(env!("CARGO_BIN_EXE_enclone"))
         .arg(&pre_arg)
         .args(&args)
         .output()
-        .expect(&format!("failed to execute test_for_parseable_redundancy"));
+        .expect("failed to execute test_for_parseable_redundancy");
     if new.status.code() != Some(0) {
         eprint!(
             "\neparseable redundancy test: failed to execute, stderr =\n{}",
@@ -91,7 +91,7 @@ fn test_for_parseable_redundancy() {
     let s = f.lines().next().unwrap().unwrap();
     let mut fields = s.split(',').collect::<Vec<&str>>();
     fields.sort();
-    assert!(fields.len() > 0);
+    assert!(!fields.is_empty());
     let mut i = 0;
     while i < fields.len() {
         let j = next_diff(&fields, i);
@@ -136,7 +136,7 @@ fn test_help_pages_edited() {
         let f = f.to_str().unwrap();
         if f.contains(".help.") {
             let mut edited = false;
-            let h = open_for_read![&format!("{}", f)];
+            let h = open_for_read![&f.to_string()];
             for line in h.lines() {
                 let s = line.unwrap();
                 if s.contains("googletag") {
@@ -151,10 +151,10 @@ fn test_help_pages_edited() {
                 panic!("failed");
             }
         }
-        let h = open_for_read![&format!("{}", f)];
+        let h = open_for_read![&f.to_string()];
         for line in h.lines() {
             let s = line.unwrap();
-            if s.contains("\\") {
+            if s.contains('\\') {
                 eprintln!("\nIllegal backslash in {}, line is:\n{}\n", f, s);
                 fail = true;
             }
@@ -235,7 +235,7 @@ fn test_curl_command() {
                 command = "cat ../install.sh | bash -s small testx/outputs force_wget";
                 version = "local";
             }
-            let o = Command::new("sh").arg("-c").arg(&command).output().unwrap();
+            let o = Command::new("sh").arg("-c").arg(command).output().unwrap();
             if o.status.code().unwrap() != 0 {
                 eprintln!(
                     "\nAttempt to run enclone install command using {} version of \
@@ -286,12 +286,11 @@ fn test_curl_command() {
                     let f = open_for_read![&p];
                     let s = f.lines().next().unwrap().unwrap();
                     println!("see version {}", s);
-                    if s.starts_with('v') {
-                        if s.contains('.') {
-                            if s.between("v", ".").parse::<usize>().is_ok() {
-                                ok = true;
-                            }
-                        }
+                    if s.starts_with('v')
+                        && s.contains('.')
+                        && s.between("v", ".").parse::<usize>().is_ok()
+                    {
+                        ok = true;
                     }
 
                     if !ok {
@@ -323,7 +322,7 @@ fn test_curl_command() {
                                 let s = line.unwrap();
                                 eprintln!("{}", s);
                             }
-                            eprintln!("");
+                            eprintln!();
                         }
                         panic!("failed");
                     }
@@ -384,7 +383,7 @@ fn test_datasets_sha256() {
     let sha1 = sha1.stdout;
     let sha2 = Command::new("sh")
         .arg("-c")
-        .arg(&sha_command2)
+        .arg(sha_command2)
         .output()
         .unwrap()
         .stdout;
@@ -410,7 +409,7 @@ fn test_datasets_sha256() {
         .stdout;
     let sha2 = Command::new("sh")
         .arg("-c")
-        .arg(&sha_command2)
+        .arg(sha_command2)
         .output()
         .unwrap()
         .stdout;

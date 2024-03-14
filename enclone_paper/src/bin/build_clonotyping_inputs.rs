@@ -26,8 +26,8 @@ pub fn main() {
     let mut args: Vec<String> = env::args().collect();
     for i in 1..args.len() {
         replace_at_test(&mut args[i]);
-        args[i] = args[i].replace(":", ",");
-        args[i] = args[i].replace(";", ",");
+        args[i] = args[i].replace(':', ",");
+        args[i] = args[i].replace(';', ",");
     }
     let ids0 = args[1].split(',').collect::<Vec<&str>>();
     let mut ids = Vec::<usize>::new();
@@ -136,7 +136,7 @@ pub fn main() {
         if count1 != count2 {
             eprintln!("\ninconsistency");
             eprintme!(l, count1, count2);
-            eprintln!("");
+            eprintln!();
             std::process::exit(1);
         }
     }

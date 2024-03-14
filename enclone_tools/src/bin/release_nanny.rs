@@ -19,8 +19,8 @@ use string_utils::{strme, TextUtils};
 fn mail(address: &str, title: &str) {
     let process = std::process::Command::new("mail")
         .arg("-s")
-        .arg(&title)
-        .arg(&address)
+        .arg(title)
+        .arg(address)
         .stdin(Stdio::piped())
         .stdout(Stdio::piped())
         .spawn();
@@ -118,7 +118,7 @@ fn main() {
                     github_version, remote_version
                 );
                 msg += &mut format!("\nThe github location line is\n{}", location_line);
-                msg += &mut format!("\nYou might want to try running release_nanny aain.");
+                msg += &mut "\nYou might want to try running release_nanny aain.".to_string();
                 mail(&address, &msg);
                 eprintln!("{}\n", msg);
                 std::process::exit(1);

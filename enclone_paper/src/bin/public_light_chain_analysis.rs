@@ -50,26 +50,10 @@ const UNSWITCHED: [usize; 24] = [
 
 fn main() {
     let args: Vec<String> = env::args().collect();
-    let opt_flow = if args.len() >= 3 && args[2] == "FLOW" {
-        true
-    } else {
-        false
-    };
-    let opt_naive = if args.len() >= 3 && args[2] == "NAIVE" {
-        true
-    } else {
-        false
-    };
-    let opt_no_paralogs = if args.len() >= 3 && args[2] == "NO_PARALOGS" {
-        true
-    } else {
-        false
-    };
-    let opt_reverse = if args.len() >= 3 && args[2] == "REVERSE" {
-        true
-    } else {
-        false
-    };
+    let opt_flow = args.len() >= 3 && args[2] == "FLOW";
+    let opt_naive = args.len() >= 3 && args[2] == "NAIVE";
+    let opt_no_paralogs = args.len() >= 3 && args[2] == "NO_PARALOGS";
+    let opt_reverse = args.len() >= 3 && args[2] == "REVERSE";
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -94,7 +78,7 @@ fn main() {
     )>::new();
     for line in f.lines() {
         let s = line.unwrap();
-        if s.starts_with("#") {
+        if s.starts_with('#') {
             continue;
         }
         let fields = s.split(',').collect::<Vec<&str>>();
@@ -143,7 +127,7 @@ fn main() {
 
     if !opt_no_paralogs && !opt_reverse {
         for i in 0..data.len() {
-            data[i].4 = data[i].4.replace("D", "");
+            data[i].4 = data[i].4.replace('D', "");
         }
     }
 
@@ -363,7 +347,7 @@ fn main() {
                 let mut row = vec![names[i].to_string()];
                 for j in 0..5 {
                     if counts[i][j].1 > 0 {
-                        row.push(format!("{}", add_commas(counts[i][j].1)));
+                        row.push(add_commas(counts[i][j].1).to_string());
                     } else {
                         row.push(String::new());
                     }
@@ -371,7 +355,7 @@ fn main() {
                 rows.push(row);
             }
             let mut log = String::new();
-            print_tabular_vbox(&mut log, &rows, 0, &b"l|r|r|r|r|r".to_vec(), false, false);
+            print_tabular_vbox(&mut log, &rows, 0, b"l|r|r|r|r|r".as_ref(), false, false);
             println!("{}", log);
             println!("naive cell fractions");
             let mut rows = vec![row1.clone()];
@@ -391,7 +375,7 @@ fn main() {
                 rows.push(row);
             }
             let mut log = String::new();
-            print_tabular_vbox(&mut log, &rows, 0, &b"l|r|r|r|r|r".to_vec(), false, false);
+            print_tabular_vbox(&mut log, &rows, 0, b"l|r|r|r|r|r".as_ref(), false, false);
             println!("{}", log);
             std::process::exit(0);
         }
@@ -408,12 +392,12 @@ fn main() {
         let d = &data[i].11;
         if dref == 0 {
             naive.1 += 1;
-            if d.contains(":") {
+            if d.contains(':') {
                 naive.0 += 1;
             }
         } else {
             memory.1 += 1;
-            if d.contains(":") {
+            if d.contains(':') {
                 memory.0 += 1;
             }
         }
@@ -432,10 +416,10 @@ fn main() {
     // Compute DD stuff.
 
     let mut i = 0;
-    let mut total = vec![0; 2];
+    let mut total = [0; 2];
     let mut dd_memory = 0;
     let mut dd_naive = 0;
-    println!("");
+    println!();
     while i < data.len() {
         let mut j = i + 1;
         while j < data.len() {
@@ -454,12 +438,12 @@ fn main() {
                 let dref = data[k].5;
                 if dref == 0 {
                     total[1] += 1;
-                    if data[k].11.contains(":") {
+                    if data[k].11.contains(':') {
                         dd_naive += 1;
                     }
                 } else {
                     total[0] += 1;
-                    if data[k].11.contains(":") {
+                    if data[k].11.contains(':') {
                         dd_memory += 1;
                     }
                 }
@@ -563,10 +547,8 @@ fn main() {
                         if d1 != "d2" || d2 != "d4" {
                             continue;
                         }
-                    } else {
-                        if d1 != "d3" || d2 != "d4" {
-                            continue;
-                        }
+                    } else if d1 != "d3" || d2 != "d4" {
+                        continue;
                     }
 
                     // Add to results.
@@ -660,7 +642,7 @@ fn main() {
             &mut log,
             &rows,
             0,
-            &b"l|r|r|r|r|r|r|r|r".to_vec(),
+            b"l|r|r|r|r|r|r|r|r".as_ref(),
             false,
             false,
         );

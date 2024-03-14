@@ -16,7 +16,7 @@ fn main() {
     let fields = args[1].split(',').collect::<Vec<&str>>();
     let mut x = Vec::<usize>::new();
     for i in 0..fields.len() {
-        if !fields[i].contains("-") {
+        if !fields[i].contains('-') {
             x.push(fields[i].force_usize());
         } else {
             let a = fields[i].before("-").force_usize();

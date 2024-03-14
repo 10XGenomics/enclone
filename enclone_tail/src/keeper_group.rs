@@ -57,7 +57,7 @@ pub fn keeper_group(
             return false;
         }
     }
-    if ctl.clono_group_opt.cdr3.len() > 0 {
+    if !ctl.clono_group_opt.cdr3.is_empty() {
         let mut found = false;
         for j in 0..o.len() {
             let x = o[j] as usize;
@@ -121,7 +121,7 @@ pub fn keeper_group(
             return false;
         }
     }
-    if ctl.clono_group_opt.donor.len() > 0 {
+    if !ctl.clono_group_opt.donor.is_empty() {
         for d in ctl.clono_group_opt.donor.iter() {
             let mut found = false;
             for j in 0..o.len() {

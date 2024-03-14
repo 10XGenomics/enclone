@@ -46,7 +46,7 @@ pub fn plot_clonotypes(
     groups: &Vec<Vec<(i32, String)>>,
     svg: &mut String,
 ) -> Result<(), String> {
-    let t = Instant::now();
+    let _t = Instant::now();
     if plot_opt.plot_file.is_empty() {
         return Ok(());
     }
@@ -110,10 +110,10 @@ pub fn plot_clonotypes(
     let mut barcode_to_cat_var_color = HashMap::<(usize, String), String>::new();
     let mut cat_var_labels = Vec::<String>::new();
     setup_cat_var(
-        &plot_opt,
-        &exacts,
-        &exact_clonotypes,
-        &out_datas,
+        plot_opt,
+        exacts,
+        exact_clonotypes,
+        out_datas,
         &mut by_cat_var,
         &mut barcode_to_cat_var_color,
         &mut cat_var_labels,
@@ -258,7 +258,7 @@ pub fn plot_clonotypes(
 
     // Traverse the shading groups.  In the default case, there is just one!!!!!!!!!!!!!!!!!!!!!!!!
 
-    let t = Instant::now();
+    let _t = Instant::now();
     let using_shading = ngroups > 1 || !group_color[0].is_empty();
     let mut blacklist = Vec::<Polygon>::new();
     let mut shades = Vec::<Polygon>::new();
@@ -486,7 +486,7 @@ pub fn plot_clonotypes(
 
     // Build the svg file.
 
-    let t = Instant::now();
+    let _t = Instant::now();
     for i in 0..clusters.len() {
         for j in 0..clusters[i].coords.len() {
             clusters[i].coords[j].0 += centers[i].0;
@@ -701,7 +701,7 @@ pub fn plot_clonotypes(
         legend_xstop_shading = legend_xstart + legend_width;
         for i in 0..n {
             // Determine y start.
-            let y = legend_ystart as f64
+            let y = legend_ystart
                 + BOUNDARY as f64 * 2.5
                 + ((font_size + BOUNDARY / 2) * i) as f64
                 + i as f64 * vsep;
@@ -717,7 +717,7 @@ pub fn plot_clonotypes(
             // Add color bar.
             *svg += &format!(
                 "<rect x=\"{}\" y=\"{}\" width=\"{}\" height=\"{}\" fill=\"{}\" />\n",
-                legend_xstart + (BOUNDARY * 1) as f64,
+                legend_xstart + BOUNDARY as f64,
                 y - BOUNDARY as f64 * 2.0,
                 color_bar_width,
                 font_size + BOUNDARY / 2,
@@ -734,7 +734,7 @@ pub fn plot_clonotypes(
 
     // Add legend for color by variable.
 
-    let t = Instant::now();
+    let _t = Instant::now();
     let mut dcx = Vec::<Vec<u8>>::new();
     if need_default_colors || by_cat_var {
         dcx = default_colors();
@@ -747,9 +747,7 @@ pub fn plot_clonotypes(
     }
     if by_var && plot_opt.use_legend {
         if VAR_LOW.lock().unwrap()[0].1 == f64::MAX && VAR_HIGH.lock().unwrap()[0].1 == f64::MIN {
-            return Err(format!(
-                "\nVariable used for color in plot has no numeric values.\n"
-            ));
+            return Err("\nVariable used for color in plot has no numeric values.\n".to_string());
         }
         add_legend_for_color_by_variable(plot_opt, svg, &color, actual_width, actual_height);
     } else if plot_opt.use_legend
@@ -857,9 +855,7 @@ pub fn plot_clonotypes(
             legend_xstart, legend_ystart, legend_width, legend_height, LEGEND_BOX_STROKE_WIDTH
         );
         for i in 0..labels.len() {
-            let y = legend_ystart as f64
-                + BOUNDARY as f64 * 2.5
-                + ((font_size + BOUNDARY / 2) * i) as f64;
+            let y = legend_ystart + BOUNDARY as f64 * 2.5 + ((font_size + BOUNDARY / 2) * i) as f64;
             *svg += &format!(
                 "<text x=\"{}\" y=\"{}\" font-family=\"Arial\" \
                  font-size=\"{}\">{}</text>\n",
@@ -877,7 +873,7 @@ pub fn plot_clonotypes(
             );
         }
         let new_height = actual_height.max(legend_height as f64) + BOUNDARY as f64 + 5.0;
-        let new_width = actual_width + legend_width as f64 + 20.0 + BOUNDARY as f64;
+        let new_width = actual_width + legend_width + 20.0 + BOUNDARY as f64;
         if !using_shading {
             set_svg_height(svg, new_height);
             set_svg_width(svg, new_width);

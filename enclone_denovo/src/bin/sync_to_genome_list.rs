@@ -24,7 +24,7 @@ fn main() {
         }
     }
     let (mut acc2, mut fns2) = (Vec::<String>::new(), Vec::<String>::new());
-    let all = read_dir(&dir).unwrap();
+    let all = read_dir(dir).unwrap();
     for f in all {
         let f = f.unwrap().path();
         let f = f.to_str().unwrap();

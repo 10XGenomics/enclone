@@ -22,7 +22,7 @@ fn main() {
         required = args[3].to_string();
     }
     let dir = "/mnt/deck5/david.jaffe/denovo_ref";
-    let refs = std::fs::read_dir(&dir).unwrap();
+    let refs = std::fs::read_dir(dir).unwrap();
     for f in refs {
         let f = f.unwrap().path();
         let f = f.to_str().unwrap();

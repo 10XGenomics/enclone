@@ -14,7 +14,7 @@ fn main() {
         SRA/sratoolkit.2.9.2-centos_linux64/bin/fastq-dump",
     )
     .arg("--fasta")
-    .arg(&acc)
+    .arg(acc)
     .output()
     .expect("failed to execute fastq-dump");
     if o.status.code().unwrap() != 0 {

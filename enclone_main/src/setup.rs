@@ -66,7 +66,7 @@ pub fn critical_args(args: &Vec<String>, ctl: &mut EncloneControl) -> Result<Vec
             if key.starts_with("ENCLONE_") {
                 print!(" ***** SETTING ENCLONE VAR ***** ");
             }
-            println!("");
+            println!();
         }
         if key.ends_with("USER") && value.ends_with("10xgenomics.com") {
             if ctl.gen_opt.evil_eye {
@@ -203,12 +203,12 @@ pub fn critical_args(args: &Vec<String>, ctl: &mut EncloneControl) -> Result<Vec
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 pub fn setup(
-    mut ctl: &mut EncloneControl,
+    ctl: &mut EncloneControl,
     args: &Vec<String>,
     argsx: &mut Vec<String>,
     args_orig: &Vec<String>,
 ) -> Result<(), String> {
-    let t = Instant::now();
+    let _t = Instant::now();
     let mut using_pager = false;
     // Provide help if requested.
 
@@ -352,7 +352,7 @@ pub fn setup(
 
     // Process args (and set defaults for them).
 
-    proc_args(&mut ctl, args)?;
+    proc_args(ctl, args)?;
     if ctl.gen_opt.split {
         return Ok(());
     }

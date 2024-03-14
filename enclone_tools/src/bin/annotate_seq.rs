@@ -98,7 +98,7 @@ fn main() {
     // Make reference data.
 
     let mut refdata = RefData::new();
-    if ref_fasta.len() > 0 {
+    if !ref_fasta.is_empty() {
         let refx = std::fs::read_to_string(&ref_fasta).unwrap();
         let ext_ref = String::new();
         make_vdj_ref_data_core(&mut refdata, &refx, &ext_ref, true, true, None);
@@ -117,7 +117,7 @@ fn main() {
 
     // Traverse the sequences.
 
-    println!("");
+    println!();
     for i in 0..seqs.len() {
         if !is_dna {
             println!("{}\n", headers[i]);
@@ -154,7 +154,7 @@ fn main() {
             let (mut vstart, mut jstop) = (0, 0);
             for i in 0..ann.len() {
                 let t = ann[i].ref_id as usize;
-                if refdata.rtype[t] == 0 as i32 || refdata.rtype[t] == 4 as i32 {
+                if refdata.rtype[t] == 0_i32 || refdata.rtype[t] == 4_i32 {
                     if refdata.is_v(t) {
                         v = Some(t);
                     } else if refdata.is_j(t) {
@@ -190,7 +190,7 @@ fn main() {
 
                         // Align the VDJ sequence on the contig to the reference concatenation.
 
-                        let al = aligner.semiglobal(&tig, &concat);
+                        let al = aligner.semiglobal(tig, &concat);
                         let mut m = 0;
                         let mut pos = al.xstart;
                         let mut rpos = (al.ystart as isize) - (refdata.refs[v].len() as isize);
@@ -283,7 +283,7 @@ fn main() {
 
         // Print.
 
-        print!("{}\n", stringme(&log));
+        println!("{}", stringme(&log));
     }
 }
 

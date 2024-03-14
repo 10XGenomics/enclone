@@ -38,7 +38,7 @@ pub fn main() {
     if (args.len() != 4 && args.len() != 5)
         || (!args[1].ends_with(".csv") && !args[1].ends_with(".tsv"))
         || !args[2].ends_with(".csv")
-        || !args[3].parse::<usize>().is_ok()
+        || args[3].parse::<usize>().is_err()
         || (args.len() == 5 && args[4] != "VERBOSE")
     {
         eprintln!("\nPlease read the usage in the source file.\n");
@@ -129,7 +129,7 @@ pub fn main() {
                     seq_id = seq_id.replace("-1-", "-");
                 }
                 let clone_id = fields[n_clone.unwrap()].clone();
-                if clone_id == "" || clone_id == "NA" {
+                if clone_id.is_empty() || clone_id == "NA" {
                     unassigned += 1;
                     continue;
                 }
@@ -227,7 +227,7 @@ pub fn main() {
     println!("{} lines with clonotype unspecified\n", unassigned);
     let mut sizes = Vec::<usize>::new();
     for i in 0..clono.len() {
-        if clono[i].len() > 0 {
+        if !clono[i].is_empty() {
             sizes.push(clono[i].len());
         }
     }
@@ -245,7 +245,7 @@ pub fn main() {
             max_donor = max(max_donor, clono[i][j].0);
         }
     }
-    let mut cells_by_donor = vec![0 as usize; max_donor + 1];
+    let mut cells_by_donor = vec![0_usize; max_donor + 1];
     let mut merges2 = 0;
     let mut mixes = 0;
     let mut wrongotypes = 0;

@@ -17,17 +17,17 @@ fn main() {
     }
     let s = strme(&new.stdout);
     let mut v = s.after("git version ").to_string();
-    if v.contains(" ") {
+    if v.contains(' ') {
         v = v.before(" ").to_string();
     }
-    if v.contains("\n") {
+    if v.contains('\n') {
         v = v.before("\n").to_string();
     }
     let x = v.split('.').collect::<Vec<&str>>();
     if x.len() < 3
-        || !x[0].parse::<usize>().is_ok()
-        || !x[1].parse::<usize>().is_ok()
-        || !x[2].parse::<usize>().is_ok()
+        || x[0].parse::<usize>().is_err()
+        || x[1].parse::<usize>().is_err()
+        || x[2].parse::<usize>().is_err()
     {
         eprintln!("\nCould not parse git version {v}.\n");
         std::process::exit(1);

@@ -734,7 +734,7 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) -> Resu
         h.print("\\boldblue{16. How can I cite enclone?}\n\n")?;
         let mut log = Vec::<u8>::new();
         emit_green_escape(&mut log);
-        h.print(&strme(&log).to_string())?;
+        h.print(strme(&log))?;
         if !ctl.gen_opt.stable_doc {
             h.print(&format!(
                 "10x Genomics, https://github.com/10XGenomics/enclone,\nversion {}.\n",
@@ -748,7 +748,7 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) -> Resu
         }
         let mut log = Vec::<u8>::new();
         emit_end_escape(&mut log);
-        h.print(&strme(&log).to_string())?;
+        h.print(strme(&log))?;
         h.print(
             "You can cite the enclone preprint, which can be found on bioRxiv in the link below \
             or by using the DOI 10.1101/2022.04.21.489084. The latest version of the preprint \

@@ -246,7 +246,7 @@ pub fn align_n(
                             // Compensate for indel.  Code here and next work imperfectly and
                             // there would be value in investigating the error cases.
 
-                            if ex.share[r].ins.len() > 0 {
+                            if !ex.share[r].ins.is_empty() {
                                 vstart -= ex.share[r].ins[0].1.len();
                             } else if ex.share[r].seq.len() < ex.share[r].seq_del.len() {
                                 vstart += ex.share[r].seq_del.len() - ex.share[r].seq.len();
@@ -263,10 +263,10 @@ pub fn align_n(
                             if jun {
                                 vref = vref[vstart..vref.len()].to_vec();
                             }
-                            if pass == 1 && !cols1.contains(&*col) {
+                            if pass == 1 && !cols1.contains(col) {
                                 continue;
                             }
-                            if pass == 2 && !cols2.contains(&*col) {
+                            if pass == 2 && !cols2.contains(col) {
                                 continue;
                             }
                             let mut concat = vref.clone();

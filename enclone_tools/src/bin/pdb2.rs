@@ -78,18 +78,17 @@ pub fn cdr3_start_longer(aa: &[u8], _chain_type: &str, _verbose: bool) -> usize 
 
 pub fn fetch_atoms(pdb: &PdbStructure, chain: usize, seq: &[u8]) -> Vec<[f32; 3]> {
     for i in 0..pdb.chains[chain].len() {
-        if pdb.chains[chain][i..].starts_with(&seq) {
+        if pdb.chains[chain][i..].starts_with(seq) {
             let mut u = Vec::<[f32; 3]>::new();
             for j in 0..pdb.atoms.len() {
-                if pdb.atoms[j].chain as usize == chain {
-                    if (pdb.atoms[j].chain_pos as usize) >= i
-                        && (pdb.atoms[j].chain_pos as usize) < i + seq.len()
-                    {
-                        let x_s = pdb.atoms[j].x;
-                        let y_s = pdb.atoms[j].y;
-                        let z_s = pdb.atoms[j].z;
-                        u.push([x_s, y_s, z_s]);
-                    }
+                if pdb.atoms[j].chain as usize == chain
+                    && (pdb.atoms[j].chain_pos as usize) >= i
+                    && (pdb.atoms[j].chain_pos as usize) < i + seq.len()
+                {
+                    let x_s = pdb.atoms[j].x;
+                    let y_s = pdb.atoms[j].y;
+                    let z_s = pdb.atoms[j].z;
+                    u.push([x_s, y_s, z_s]);
                 }
             }
             return u;
@@ -137,17 +136,15 @@ fn main() {
         let pdb_list = include_str!("antibody_antigen_structures");
         let mut results = Vec::<(String, PdbStructure)>::new();
         for line in pdb_list.lines() {
-            if !line.starts_with('#') && line.len() > 0 {
-                if !line.contains("hiv") || hiv {
-                    let mut x = line.after(" ").split(',').collect::<Vec<&str>>();
-                    if !equal {
-                        x.truncate(1);
-                    }
-                    for p in x.iter() {
-                        results.push((p.to_string(), PdbStructure::default()));
-                        codes.push(p.to_string());
-                        antigens.push(line.before(" ").to_string());
-                    }
+            if !line.starts_with('#') && !line.is_empty() && (!line.contains("hiv") || hiv) {
+                let mut x = line.after(" ").split(',').collect::<Vec<&str>>();
+                if !equal {
+                    x.truncate(1);
+                }
+                for p in x.iter() {
+                    results.push((p.to_string(), PdbStructure::default()));
+                    codes.push(p.to_string());
+                    antigens.push(line.before(" ").to_string());
                 }
             }
         }
@@ -239,8 +236,8 @@ fn main() {
         let light_thru_cdr3 = &pdb.chains[light][0..light_fwr4_stop - 9];
         let heavy_cdr3_stop = heavy_thru_cdr3.len();
         let light_cdr3_stop = light_thru_cdr3.len();
-        let heavy_cdr3_start = cdr3_start_longer(&heavy_thru_cdr3, "IGH", false) - 1;
-        let light_cdr3_start = cdr3_start_longer(&light_thru_cdr3, &light_chain_type, false) - 1;
+        let heavy_cdr3_start = cdr3_start_longer(heavy_thru_cdr3, "IGH", false) - 1;
+        let light_cdr3_start = cdr3_start_longer(light_thru_cdr3, &light_chain_type, false) - 1;
         let heavy_trim_stop = min(heavy_cdr3_start + 10, heavy_thru_cdr3.len());
         let heavy_trim = format!(
             "MXXXXXXXXXXXXXXXXXXX{}",
@@ -379,7 +376,7 @@ fn main() {
                     _code = &codes[z2];
                 }
                 if args[1] != "all" {
-                    println!("");
+                    println!();
                     for i in 0..pdb.chain_names.len() {
                         println!(
                             "{} = {} (len = {})",
@@ -423,9 +420,9 @@ fn main() {
                 let light_thru_cdr3 = &pdb.chains[light][0..light_fwr4_stop - 9];
                 let heavy_cdr3_stop = heavy_thru_cdr3.len();
                 let light_cdr3_stop = light_thru_cdr3.len();
-                let heavy_cdr3_start = cdr3_start_longer(&heavy_thru_cdr3, "IGH", false) - 1;
+                let heavy_cdr3_start = cdr3_start_longer(heavy_thru_cdr3, "IGH", false) - 1;
                 let light_cdr3_start =
-                    cdr3_start_longer(&light_thru_cdr3, &light_chain_type, false) - 1;
+                    cdr3_start_longer(light_thru_cdr3, &light_chain_type, false) - 1;
 
                 // Find best V gene match for heavy chain.  First we truncate to fwr1..fwr3.
 
@@ -437,7 +434,7 @@ fn main() {
                 aa = aa[f1..].to_vec();
                 let mut r = 1000000;
                 for j in 0..vs.len() {
-                    let dist = edit_distance(&strme(&aa), &strme(&vs[j]));
+                    let dist = edit_distance(strme(&aa), strme(&vs[j]));
                     if dist < r {
                         r = dist;
                         ref_id = j;
@@ -457,7 +454,7 @@ fn main() {
                 aa = aa[f1..].to_vec();
                 let mut r = 1000000;
                 for j in 0..vs.len() {
-                    let dist = edit_distance(&strme(&aa), &strme(&vs[j]));
+                    let dist = edit_distance(strme(&aa), strme(&vs[j]));
                     if dist < r {
                         r = dist;
                         ref_id = j;
@@ -530,14 +527,14 @@ fn main() {
                 let heavy_fwr4 = &pdb.chains[heavy][heavy_fwr4_stop - 10..heavy_fwr4_stop];
                 let light_fwr4 = &pdb.chains[heavy][light_fwr4_stop - 9..light_fwr4_stop];
                 if args[1] != "all" {
-                    println!("heavy cdr2 = IGH : {}", strme(&heavy_cdr2));
-                    println!("light cdr2 = {} : {}", light_chain_type, strme(&light_cdr2));
-                    println!("heavy fwr3 = IGH : {}", strme(&heavy_fwr3));
-                    println!("heavy cdr3 = IGH : {}", strme(&heavy_cdr3));
-                    println!("light fwr3 = {} : {}", light_chain_type, strme(&light_fwr3));
-                    println!("light cdr3 = {} : {}", light_chain_type, strme(&light_cdr3));
-                    println!("heavy fwr4 = IGH : {}", strme(&heavy_fwr4));
-                    println!("light fwr4 = {} : {}", light_chain_type, strme(&light_fwr4));
+                    println!("heavy cdr2 = IGH : {}", strme(heavy_cdr2));
+                    println!("light cdr2 = {} : {}", light_chain_type, strme(light_cdr2));
+                    println!("heavy fwr3 = IGH : {}", strme(heavy_fwr3));
+                    println!("heavy cdr3 = IGH : {}", strme(heavy_cdr3));
+                    println!("light fwr3 = {} : {}", light_chain_type, strme(light_fwr3));
+                    println!("light cdr3 = {} : {}", light_chain_type, strme(light_cdr3));
+                    println!("heavy fwr4 = IGH : {}", strme(heavy_fwr4));
+                    println!("light fwr4 = {} : {}", light_chain_type, strme(light_fwr4));
                 }
                 let mut spike = 0;
                 for j in 0..3 {
@@ -547,16 +544,16 @@ fn main() {
                 }
                 spike_seq.push(pdb.chains[spike].clone());
                 hfwr1[pi] = stringme(&heavy_fwr1);
-                hcdr1[pi] = stringme(&heavy_cdr1);
-                lcdr1[pi] = stringme(&light_cdr1);
-                hcdr2[pi] = stringme(&heavy_cdr2);
-                lcdr2[pi] = stringme(&light_cdr2);
-                hfwr3[pi] = stringme(&heavy_fwr3);
-                lfwr3[pi] = stringme(&light_fwr3);
-                hcdr3[pi] = stringme(&heavy_cdr3);
-                lcdr3[pi] = stringme(&light_cdr3);
-                hfwr4[pi] = stringme(&heavy_fwr4);
-                lfwr4[pi] = stringme(&light_fwr4);
+                hcdr1[pi] = stringme(heavy_cdr1);
+                lcdr1[pi] = stringme(light_cdr1);
+                hcdr2[pi] = stringme(heavy_cdr2);
+                lcdr2[pi] = stringme(light_cdr2);
+                hfwr3[pi] = stringme(heavy_fwr3);
+                lfwr3[pi] = stringme(light_fwr3);
+                hcdr3[pi] = stringme(heavy_cdr3);
+                lcdr3[pi] = stringme(light_cdr3);
+                hfwr4[pi] = stringme(heavy_fwr4);
+                lfwr4[pi] = stringme(light_fwr4);
             }
 
             // Compute edit distance.
@@ -631,7 +628,7 @@ fn main() {
             // Compare distances.
 
             if args[1] != "all" && show {
-                println!("");
+                println!();
             }
             let mut sum = 0.0_f32;
             let mut n = 0;
@@ -642,30 +639,31 @@ fn main() {
                         if distances[z1].1[i][k1].0 == distances[z2].1[i][k2].0 {
                             let d1 = distances[z1].1[i][k1].1;
                             let d2 = distances[z2].1[i][k2].1;
-                            if d1 <= MAX_DIST || d2 <= MAX_DIST {
-                                if d1 < 1_000_000_000.0 && d2 < 1_000_000_000.0 {
-                                    n += 1;
-                                    let d = d1 - d2;
-                                    sum += d * d;
-                                    if args[1] != "all" && show {
-                                        let x = &distances[z1].1[i][k1].0;
-                                        let mut pos = 0;
-                                        for j in 0..spike_seq[0].len() {
-                                            if spike_seq[0][j..].starts_with(&x) {
-                                                pos = j + 3;
-                                            }
+                            if (d1 <= MAX_DIST || d2 <= MAX_DIST)
+                                && d1 < 1_000_000_000.0
+                                && d2 < 1_000_000_000.0
+                            {
+                                n += 1;
+                                let d = d1 - d2;
+                                sum += d * d;
+                                if args[1] != "all" && show {
+                                    let x = &distances[z1].1[i][k1].0;
+                                    let mut pos = 0;
+                                    for j in 0..spike_seq[0].len() {
+                                        if spike_seq[0][j..].starts_with(x) {
+                                            pos = j + 3;
                                         }
-                                        let mut log = Vec::<u8>::new();
-                                        fwriteln!(
-                                            log,
-                                            "{} at distances {:.1} and {:.1} from {}",
-                                            pos,
-                                            d1,
-                                            d2,
-                                            cdrs[i]
-                                        );
-                                        lines.push((pos, stringme(&log)));
                                     }
+                                    let mut log = Vec::<u8>::new();
+                                    fwriteln!(
+                                        log,
+                                        "{} at distances {:.1} and {:.1} from {}",
+                                        pos,
+                                        d1,
+                                        d2,
+                                        cdrs[i]
+                                    );
+                                    lines.push((pos, stringme(&log)));
                                 }
                             }
                         }
@@ -686,7 +684,7 @@ fn main() {
                 seq_dist += 10;
             }
             const MAX_REF_DIFFS: usize = 0;
-            let ref_diffs = edit_distance(&strme(&vs[hvrefs[0]]), &strme(&vs[hvrefs[1]]));
+            let ref_diffs = edit_distance(strme(&vs[hvrefs[0]]), strme(&vs[hvrefs[1]]));
             let hdiffs = edit_distance(&heavyy[0], &heavyy[1]);
             if ref_diffs > MAX_REF_DIFFS && hdiffs > 1 && edit_distance(&hcdr3[0], &hcdr3[1]) >= 1 {
                 seq_dist += 10;
@@ -749,7 +747,7 @@ fn main() {
                 if args[1] != "all" {
                     fwriteln!(log, "");
                 }
-                if antigens[z1].len() > 0 {
+                if !antigens[z1].is_empty() {
                     fwrite!(log, "{} ", antigens[z1]);
                 }
                 fwrite!(
@@ -872,7 +870,7 @@ fn main() {
                 for j in 0..o.len() {
                     print!(" {}", codes[o[j] as usize]);
                 }
-                println!("");
+                println!();
             }
         }
     }

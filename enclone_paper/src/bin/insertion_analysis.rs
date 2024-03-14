@@ -38,7 +38,7 @@ fn main() {
     )>::new();
     for line in f.lines() {
         let s = line.unwrap();
-        if s.starts_with("#") {
+        if s.starts_with('#') {
             continue;
         }
         let fields = s.split(',').collect::<Vec<&str>>();
@@ -71,7 +71,7 @@ fn main() {
     // Replace paralogs.
 
     for i in 0..data.len() {
-        data[i].4 = data[i].4.replace("D", "");
+        data[i].4 = data[i].4.replace('D', "");
     }
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -122,7 +122,7 @@ fn main() {
             }
             println!("mean = {:.1}", total as f64 / x.len() as f64);
             println!("\nsubstitution rates");
-            let mut bins = vec![0; 21];
+            let mut bins = [0; 21];
             for i in 0..rates.len() {
                 bins[(20.0 * rates[i]).floor() as usize] += 1;
             }
@@ -136,7 +136,7 @@ fn main() {
                     );
                 }
             }
-            println!("");
+            println!();
         }
         println!(
             "mean substitution rate = {:.2}%",
@@ -181,7 +181,7 @@ fn main() {
     }
     let total: f64 = rates.iter().sum();
     println!("\nsubstitution rates for public naive cells");
-    let mut bins = vec![0; 21];
+    let mut bins = [0; 21];
     for i in 0..rates.len() {
         bins[(20.0 * rates[i]).floor() as usize] += 1;
     }
@@ -197,7 +197,7 @@ fn main() {
     }
     println!(
         "mean substitution rate = {:.1}%",
-        100.0 * total as f64 / rates.len() as f64
+        100.0 * total / rates.len() as f64
     );
 
     // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -233,7 +233,7 @@ fn main() {
     // Compute jun_ins frequency for memory and naive cells.
 
     let mut ins = vec![vec![0; 1000]; 2];
-    let mut total = vec![0; 2];
+    let mut total = [0; 2];
     for pass in 0..2 {
         for i in 0..data.len() {
             let dref = data[i].5;
@@ -295,8 +295,8 @@ fn main() {
     let mut last = String::new();
     let mut ins_mem = vec![0; 100];
     let mut ins = vec![vec![0; 1000]; 2];
-    let mut total = vec![0; 2];
-    println!("");
+    let mut total = [0; 2];
+    println!();
     while i < data.len() {
         let mut j = i + 1;
         while j < data.len() {
@@ -394,14 +394,12 @@ fn main() {
         }
         for k1 in i..j {
             for k2 in k1 + 1..j {
-                if data[k1].5 > 0 && data[k2].5 > 0 {
-                    if data[k1].3 != data[k2].3 {
-                        let ins = data[k1].9;
-                        if ins == data[k2].9 {
-                            n[ins] += 1;
-                            if data[k1].4 == data[k2].4 {
-                                same[ins] += 1;
-                            }
+                if data[k1].5 > 0 && data[k2].5 > 0 && data[k1].3 != data[k2].3 {
+                    let ins = data[k1].9;
+                    if ins == data[k2].9 {
+                        n[ins] += 1;
+                        if data[k1].4 == data[k2].4 {
+                            same[ins] += 1;
                         }
                     }
                 }
@@ -478,16 +476,16 @@ fn main() {
                     }
                     let ident = 100.0 * samex as f64 / data[k1].2.len() as f64;
                     let ident = ident.floor() as usize;
-                    if ident >= min_ident {
-                        if data[k1].5 > 0 && data[k2].5 > 0 {
-                            if data[k1].3 != data[k2].3 {
-                                let ins = data[k1].9;
-                                if ins == data[k2].9 {
-                                    res.3[ins] += 1;
-                                    if data[k1].4 == data[k2].4 {
-                                        res.2[ins] += 1;
-                                    }
-                                }
+                    if ident >= min_ident
+                        && data[k1].5 > 0
+                        && data[k2].5 > 0
+                        && data[k1].3 != data[k2].3
+                    {
+                        let ins = data[k1].9;
+                        if ins == data[k2].9 {
+                            res.3[ins] += 1;
+                            if data[k1].4 == data[k2].4 {
+                                res.2[ins] += 1;
                             }
                         }
                     }
@@ -531,5 +529,5 @@ fn main() {
             n_big,
         );
     }
-    println!("");
+    println!();
 }

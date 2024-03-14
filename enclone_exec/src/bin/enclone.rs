@@ -4,14 +4,11 @@
 // zero.  As far as we know, in all other cases where it is not run from the command line, it
 // returns exit status zero.
 
-use chrono::prelude::*;
-use enclone_core::combine_group_pics::combine_group_pics;
 use enclone_main::main_enclone::main_enclone;
 use enclone_main::USING_PAGER;
-use flate2::write::GzEncoder;
-use flate2::Compression;
+
 use io_utils::*;
-use itertools::Itertools;
+
 #[cfg(not(target_os = "windows"))]
 use nix::sys::signal::{kill, SIGINT};
 #[cfg(not(target_os = "windows"))]
@@ -20,13 +17,12 @@ use nix::unistd::getppid;
 use nix::unistd::Pid;
 
 use std::env;
-use std::io::Write;
+
 use std::process::Command;
 use std::sync::atomic::Ordering::SeqCst;
 use std::thread;
 use std::time::Duration;
 use string_utils::*;
-use vector_utils::unique_sort;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -57,7 +53,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 home = value.clone();
             }
         }
-        if home.len() == 0 {
+        if home.is_empty() {
             eprintln!("Weird, unable to determine your home directory.\n");
             std::process::exit(1);
         }

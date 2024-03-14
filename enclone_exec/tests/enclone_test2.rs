@@ -336,7 +336,7 @@ fn test_extended() {
 /// over time based on discovery of pathologies in particular PUBLIC datasets.
 /// All run with certain shared options.
 fn test_crash() {
-    let t = Instant::now();
+    let _t = Instant::now();
     let crash_tests: Vec<_> = [
         (1, "CONP SEQC SUM MEAN BARCODES DIFF_STYLE=C1 GROUP_VJ_REFNAME"),
         (2, "CONX FULL_SEQC DIFF_STYLE=C2 POUT=stdout PCOLS=count_CAR"),
@@ -480,7 +480,7 @@ fn test_for_broken_links_and_spellcheck() {
         let page = page.unwrap().path();
         let page = page.to_str().unwrap();
         if page.ends_with(".html") {
-            htmls.push(format!("{}", page));
+            htmls.push(page.to_string());
         }
     }
     let auto = read_dir("../pages/auto").unwrap();
@@ -488,7 +488,7 @@ fn test_for_broken_links_and_spellcheck() {
         let page = page.unwrap().path();
         let page = page.to_str().unwrap();
         if page.ends_with(".html") {
-            htmls.push(format!("{}", page));
+            htmls.push(page.to_string());
         }
     }
 
@@ -559,10 +559,10 @@ fn test_for_broken_links_and_spellcheck() {
                 chars.push(c);
             }
             let mut i = 0;
-            let terminators = vec![',', ' ', '\'', '"', ')', '}', '<', '#', '\n'];
+            let terminators = [',', ' ', '\'', '"', ')', '}', '<', '#', '\n'];
             while i < chars.len() {
-                let http = chars[i..].starts_with(&vec!['h', 't', 't', 'p', ':']);
-                let https = chars[i..].starts_with(&vec!['h', 't', 't', 'p', 's', ':']);
+                let http = chars[i..].starts_with(&['h', 't', 't', 'p', ':']);
+                let https = chars[i..].starts_with(&['h', 't', 't', 'p', 's', ':']);
                 if http || https {
                     for j in i + 5..chars.len() {
                         if terminators.contains(&chars[j])
@@ -744,7 +744,7 @@ fn test_for_broken_links_and_spellcheck() {
         }
     }
     if dict_fail {
-        eprintln!("");
+        eprintln!();
         panic!("failed");
     }
 }

@@ -7,9 +7,9 @@ use string_utils::*;
 fn main() {
     let pdb_list = include_str!("antibody_antigen_structures");
     for line in pdb_list.lines() {
-        if !line.starts_with('#') && line.len() > 0 {
+        if !line.starts_with('#') && !line.is_empty() {
             let x = line.after(" ").split(',').collect::<Vec<&str>>();
-            let pdb = fetch_pdb_structure(&x[0]).unwrap();
+            let pdb = fetch_pdb_structure(x[0]).unwrap();
             let (mut heavy, mut light) = (None, None);
             for i in 0..pdb.chain_names.len() {
                 if pdb.chain_names[i].contains("light")
@@ -30,7 +30,7 @@ fn main() {
                     heavy = Some(i);
                 }
             }
-            let s = line.after(" ").replace(",", "=");
+            let s = line.after(" ").replace(',', "=");
             println!(
                 "{} {} {}",
                 s,
