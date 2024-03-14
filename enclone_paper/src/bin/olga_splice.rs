@@ -17,7 +17,7 @@ use std::env;
 use std::io::{BufRead, Write};
 use string_utils::strme;
 use string_utils::TextUtils;
-use vdj_ann::annotate::{annotate_seq, get_cdr3_using_ann};
+use vdj_ann::annotate::{annotate_seq, get_cdr3_using_ann, Annotation};
 use vdj_ann::refx::make_vdj_ref_data_core;
 use vdj_ann::refx::RefData;
 use vdj_ann_ref::human_ref;
@@ -205,11 +205,11 @@ fn main() {
         fwriteln!(log, "\ncdr3[{}] = {}\n", i + 1, cdr3[i]);
         fwriteln!(log, "seq[{}] = {}\n", i + 1, strme(&seq));
         let x = DnaString::from_dna_string(&strme(&seq));
-        let mut ann = Vec::<(i32, i32, i32, i32, i32)>::new();
+        let mut ann = Vec::<Annotation>::new();
         annotate_seq(&x, &refdata, &mut ann, true, false, true);
-        let mut annv = Vec::<(i32, i32, i32, i32, i32)>::new();
+        let mut annv = Vec::<Annotation>::new();
         for i in 0..ann.len() {
-            let t = ann[i].2 as usize;
+            let t = ann[i].ref_id as usize;
             if refdata.is_v(t) {
                 annv.push(ann[i]);
             }
@@ -255,7 +255,7 @@ fn main() {
             let mut v_ref_id = None;
             let mut j_ref_id = None;
             for i in 0..ann.len() {
-                let t = ann[i].2 as usize;
+                let t = ann[i].ref_id as usize;
                 if refdata.is_v(t) {
                     v_ref_id = Some(t);
                 } else if refdata.is_j(t) {
@@ -325,8 +325,8 @@ fn main() {
                 let mut seq_start = vstart as isize;
                 // probably not exactly right
                 if annv.len() > 1 {
-                    let q1 = annv[0].0 + ann[0].1;
-                    let q2 = annv[1].0;
+                    let q1 = annv[0].tig_start + ann[0].match_len;
+                    let q2 = annv[1].tig_start;
                     seq_start += q2 as isize - q1 as isize;
                 }
                 let mut seq_end = seq.len() - (jref.len() - jend);
