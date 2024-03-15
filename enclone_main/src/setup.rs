@@ -21,7 +21,7 @@ use itertools::Itertools;
 use std::env;
 use std::io::BufRead;
 use std::sync::atomic::Ordering::SeqCst;
-use std::time::Instant;
+
 use string_utils::TextUtils;
 use vector_utils::erase_if;
 
@@ -208,7 +208,6 @@ pub fn setup(
     argsx: &mut Vec<String>,
     args_orig: &Vec<String>,
 ) -> Result<(), String> {
-    let _t = Instant::now();
     let mut using_pager = false;
     // Provide help if requested.
 

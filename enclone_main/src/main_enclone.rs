@@ -186,7 +186,6 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
 
     let gex_info = get_gex_info(&mut ctl)?;
     check_lvars(&ctl, &gex_info)?;
-    let _twoof = Instant::now();
     check_gvars(&ctl)?;
     check_pcols(
         &ctl,
@@ -248,7 +247,6 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
 
     // Check DVARS.
 
-    let _tfcell = Instant::now();
     if !ctl.gen_opt.dvars.is_empty() {
         let known_features = get_known_features(&gex_info)?;
         for j in 0..ctl.gen_opt.dvars.len() {
@@ -325,7 +323,6 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
 
     // Start of code to determine the reference sequence that is to be used.
 
-    let _tr = Instant::now();
     let mut refx = String::new();
     let ann;
     if !ctl.gen_opt.cellranger {
@@ -340,7 +337,6 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
 
     // Build reference data.
 
-    let _tr = Instant::now();
     let refx2 = &refx;
     let mut refdata = RefData::new();
     let ext_refx = String::new();

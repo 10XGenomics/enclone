@@ -336,7 +336,6 @@ fn test_extended() {
 /// over time based on discovery of pathologies in particular PUBLIC datasets.
 /// All run with certain shared options.
 fn test_crash() {
-    let _t = Instant::now();
     let crash_tests: Vec<_> = [
         (1, "CONP SEQC SUM MEAN BARCODES DIFF_STYLE=C1 GROUP_VJ_REFNAME"),
         (2, "CONX FULL_SEQC DIFF_STYLE=C2 POUT=stdout PCOLS=count_CAR"),

@@ -66,7 +66,6 @@ pub fn group_and_print_clonotypes(
 ) -> Result<(), String> {
     // Build index to join info.
 
-    let _t = Instant::now();
     let mut to_join_info = vec![Vec::<usize>::new(); exact_clonotypes.len()];
     for i in 0..join_info.len() {
         to_join_info[join_info[i].0].push(i);
@@ -186,7 +185,6 @@ pub fn group_and_print_clonotypes(
 
     // Echo command.
 
-    let _t = Instant::now();
     let mut last_width = 0;
     let mut logx = Vec::<u8>::new();
     if ctl.gen_opt.echo {
@@ -818,7 +816,6 @@ pub fn group_and_print_clonotypes(
 
     // Output clonotype plot (if it was generated and directed to stdout).
 
-    let _t = Instant::now();
     if ctl.plot_opt.plot_file == "stdout" || ctl.plot_opt.plot_file == "gui_stdout" {
         print!("{}", svg);
         if !ctl.gen_opt.noprint {
