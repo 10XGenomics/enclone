@@ -6,6 +6,7 @@ use crate::group::group_and_print_clonotypes;
 use enclone_core::barcode_fate::BarcodeFate;
 use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype, GexInfo};
 
+use enclone_core::enclone_structs::JoinInfo;
 use enclone_proto::types::DonorReferenceItem;
 use io_utils::fwrite;
 use ndarray::s;
@@ -32,7 +33,7 @@ pub fn tail_code(
     exact_clonotypes: &Vec<ExactClonotype>,
     ctl: &EncloneControl,
     out_datas: &mut Vec<Vec<HashMap<String, String>>>,
-    join_info: &Vec<(usize, usize, bool, Vec<u8>)>,
+    join_info: &Vec<JoinInfo>,
     gex_info: &GexInfo,
     vdj_cells: &Vec<Vec<String>>,
     fate: &Vec<HashMap<String, BarcodeFate>>,

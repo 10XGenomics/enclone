@@ -25,6 +25,7 @@ use enclone_build::version_string;
 use enclone_core::barcode_fate::BarcodeFate;
 use enclone_core::combine_group_pics::combine_group_pics;
 use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype, GexInfo};
+use enclone_core::enclone_structs::JoinInfo;
 use enclone_core::mammalian_fixed_len::mammalian_fixed_len_peer_groups;
 use enclone_core::set_speakers::set_speakers;
 use enclone_help::help_utils::font_face_in_css;
@@ -54,7 +55,7 @@ pub fn group_and_print_clonotypes(
     exact_clonotypes: &Vec<ExactClonotype>,
     ctl: &EncloneControl,
     out_datas: &mut Vec<Vec<HashMap<String, String>>>,
-    join_info: &Vec<(usize, usize, bool, Vec<u8>)>,
+    join_info: &Vec<JoinInfo>,
     gex_info: &GexInfo,
     vdj_cells: &Vec<Vec<String>>,
     fate: &Vec<HashMap<String, BarcodeFate>>,
@@ -68,8 +69,8 @@ pub fn group_and_print_clonotypes(
 
     let mut to_join_info = vec![Vec::<usize>::new(); exact_clonotypes.len()];
     for i in 0..join_info.len() {
-        to_join_info[join_info[i].0].push(i);
-        to_join_info[join_info[i].1].push(i);
+        to_join_info[join_info[i].index1].push(i);
+        to_join_info[join_info[i].index2].push(i);
     }
 
     // Set up for parseable output.
@@ -436,7 +437,7 @@ pub fn group_and_print_clonotypes(
             }
             unique_sort(&mut ji);
             for i in 0..ji.len() {
-                fwriteln!(glog, "{}", strme(&join_info[ji[i]].3));
+                fwriteln!(glog, "{}", strme(&join_info[ji[i]].log));
             }
 
             // Implement ALIGN<n> and JALIGN<n>.
@@ -548,7 +549,7 @@ pub fn group_and_print_clonotypes(
                         } else {
                             let mut k = 0;
                             while k < pg[id].len() {
-                                let l = next_diff1_3(&pg[id], k as i32) as usize;
+                                let l = next_diff1_3(&pg[id], k);
                                 let mut s = Vec::<String>::new();
                                 for m in k..l {
                                     s.push(format!("{}={}", pg[id][m].1 as char, pg[id][m].2));
@@ -583,7 +584,7 @@ pub fn group_and_print_clonotypes(
                     } else {
                         let mut k = 0;
                         while k < pg[id].len() {
-                            let l = next_diff1_3(&pg[id], k as i32) as usize;
+                            let l = next_diff1_3(&pg[id], k);
                             let mut s = Vec::<String>::new();
                             for m in k..l {
                                 s.push(format!("{}={}", pg[id][m].1 as char, pg[id][m].2));
