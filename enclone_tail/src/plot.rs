@@ -227,7 +227,7 @@ pub fn plot_clonotypes(
             let mut ny = Vec::<(usize, String)>::new();
             let mut i = 0;
             while i < nx.len() {
-                let j = next_diff1_2(&nx, i as i32) as usize;
+                let j = next_diff1_2(&nx, i);
                 let mut n = 0;
                 for k in i..j {
                     n += nx[k].1;
@@ -375,7 +375,7 @@ pub fn plot_clonotypes(
                 // On a given iteration of the while loop, we process all the constant-color
                 // clusters that have the same size.  First we do the clusters that contains
                 // just one cell, and so forth.
-                let j = next_diff1_3(&ccc, i as i32) as usize;
+                let j = next_diff1_3(&ccc, i);
                 let mut angle = vec![(0.0, 0); j - i];
                 for k in i..j {
                     let id = ccc[k].2;
@@ -427,7 +427,7 @@ pub fn plot_clonotypes(
                 ccc.sort();
                 let mut i = 0;
                 while i < ccc.len() {
-                    let j = next_diff1_3(&ccc, i as i32) as usize;
+                    let j = next_diff1_3(&ccc, i);
                     let mut angle = vec![(0.0, 0); j - i];
                     for k in i..j {
                         let id = ccc[k].2;

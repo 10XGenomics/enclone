@@ -549,7 +549,7 @@ pub fn group_and_print_clonotypes(
                         } else {
                             let mut k = 0;
                             while k < pg[id].len() {
-                                let l = next_diff1_3(&pg[id], k as i32) as usize;
+                                let l = next_diff1_3(&pg[id], k);
                                 let mut s = Vec::<String>::new();
                                 for m in k..l {
                                     s.push(format!("{}={}", pg[id][m].1 as char, pg[id][m].2));
@@ -584,7 +584,7 @@ pub fn group_and_print_clonotypes(
                     } else {
                         let mut k = 0;
                         while k < pg[id].len() {
-                            let l = next_diff1_3(&pg[id], k as i32) as usize;
+                            let l = next_diff1_3(&pg[id], k);
                             let mut s = Vec::<String>::new();
                             for m in k..l {
                                 s.push(format!("{}={}", pg[id][m].1 as char, pg[id][m].2));

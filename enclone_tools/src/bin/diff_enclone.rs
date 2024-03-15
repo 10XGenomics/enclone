@@ -141,7 +141,7 @@ fn main() {
     for v in 0..2 {
         let mut i = 0;
         while i < group[v].len() {
-            let j = next_diff1_2(&group[v], i as i32) as usize;
+            let j = next_diff1_2(&group[v], i);
             for k in i + 1..j {
                 e.join(
                     bin_position(&bc, &group[v][i].1) as i32,

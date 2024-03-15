@@ -386,7 +386,7 @@ pub fn print_stats(
         let row = vec!["\\hline".to_string(); 4];
         rows.push(row);
         while i < ncc.len() {
-            let j = next_diff1_2(&ncc, i as i32) as usize;
+            let j = next_diff1_2(&ncc, i);
             let nchains_this = ncc[i].0;
             let nclono_this = j - i;
             let mut ncells_this = 0;
