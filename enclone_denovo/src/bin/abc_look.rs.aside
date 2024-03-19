@@ -51,7 +51,7 @@ fn analyze_expanded( dataset: &str, pout: &str, heavies: &mut Vec<Vec<u8>>,
                 heavies.push(aa);
                 vs.push(fields[ff+1].to_string());
                 let v_ref_id = fields[ff+2].force_usize() - 1;
-                let mut aa = aa_seq(&bases[v_ref_id].to_ascii_vec(), 0);
+                let mut aa = nucleotide_to_aminoacid_sequence(&bases[v_ref_id].to_ascii_vec(), 0);
                 let f1 = fr1_start(&aa, &chain_type);
                 let c3 = cdr3_start(&aa, &chain_type, false);
                 aa = aa[f1..c3].to_vec();
@@ -243,7 +243,7 @@ fn main() {
                     } else {
                         chain = "IGL";
                     }
-                    let mut aa = aa_seq(&basesp[i].to_ascii_vec(), 0);
+                    let mut aa = nucleotide_to_aminoacid_sequence(&basesp[i].to_ascii_vec(), 0);
                     let f1 = fr1_start(&aa, &chain);
                     let c3 = cdr3_start(&aa, &chain, false);
                     aa = aa[f1..c3].to_vec();

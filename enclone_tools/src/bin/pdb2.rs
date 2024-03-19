@@ -177,7 +177,7 @@ fn main() {
         for i in 0..basesp.len() {
             let h = &headers[i];
             if h.contains("V-REGION") {
-                let mut aa = aa_seq(&basesp[i].to_ascii_vec(), 0);
+                let mut aa = nucleotide_to_aminoacid_sequence(&basesp[i].to_ascii_vec(), 0);
                 let f1 = fr1_start(&aa, "IGH");
                 let c3 = cdr3_start(&aa, "IGH", false);
                 aa = aa[f1..c3].to_vec();

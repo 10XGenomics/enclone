@@ -1,6 +1,6 @@
 // Copyright (c) 2021 10x Genomics, Inc. All rights reserved.
 
-use amino::aa_seq;
+use amino::nucleotide_to_aminoacid_sequence;
 use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype};
 use io_utils::fwriteln;
 use std::io::Write;
@@ -122,9 +122,17 @@ pub fn generate_fasta(
                         let mut cseq = refdata.refs[cid.unwrap()].to_ascii_vec();
                         seq.append(&mut cseq);
                         if ctl.gen_opt.fasta_aa_filename != *"stdout" {
-                            fwriteln!(faaout, "{}", strme(&aa_seq(&seq, 0)));
+                            fwriteln!(
+                                faaout,
+                                "{}",
+                                strme(&nucleotide_to_aminoacid_sequence(&seq, 0))
+                            );
                         } else {
-                            fwriteln!(logx, "{}", strme(&aa_seq(&seq, 0)));
+                            fwriteln!(
+                                logx,
+                                "{}",
+                                strme(&nucleotide_to_aminoacid_sequence(&seq, 0))
+                            );
                         }
                     }
                 }

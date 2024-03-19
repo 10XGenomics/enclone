@@ -170,8 +170,7 @@ fn main() {
                     break;
                 }
             }
-            let mut cdr3 = Vec::<(usize, Vec<u8>, usize, usize)>::new();
-            get_cdr3_using_ann(&seq, &refdata, &ann, &mut cdr3);
+            let cdr3 = get_cdr3_using_ann(&seq, &refdata, &ann);
             if v.is_some() && j.is_some() && cdr3.len() == 1 {
                 let tig = seq.to_ascii_vec();
                 let tig = &tig[vstart..jstop];
@@ -179,7 +178,7 @@ fn main() {
                 let mut results = Vec::<(usize, usize, String)>::new();
                 let score = |a: u8, b: u8| if a == b { 1i32 } else { -1i32 };
                 let mut aligner = Aligner::new(-6, -1, &score);
-                let start = cdr3[0].0 - vstart;
+                let start = cdr3[0].start_position_on_contig - vstart;
                 let stop = jstop - vstart;
                 for z in 0..refdata.ds.len() {
                     let d = refdata.ds[z];
