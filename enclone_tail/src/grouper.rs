@@ -81,7 +81,7 @@ pub fn grouper(
                 all.sort();
                 let mut i = 0;
                 while i < all.len() {
-                    let j = next_diff1_2(&all, i as i32) as usize;
+                    let j = next_diff1_2(&all, i);
                     let mut g = Vec::<usize>::new();
                     for k in i..j {
                         g.push(all[k].1);
@@ -123,7 +123,7 @@ pub fn grouper(
                 all.sort();
                 let mut i = 0;
                 while i < all.len() {
-                    let j = next_diff1_2(&all, i as i32) as usize;
+                    let j = next_diff1_2(&all, i);
                     let mut g = Vec::<usize>::new();
                     for k in i..j {
                         g.push(all[k].1);
@@ -155,7 +155,7 @@ pub fn grouper(
                 all.sort();
                 let mut i = 0;
                 while i < all.len() {
-                    let j = next_diff1_2(&all, i as i32) as usize;
+                    let j = next_diff1_2(&all, i);
                     if all[i].0.is_empty() {
                         for k in i..j {
                             let g = vec![all[k].1];
@@ -196,7 +196,7 @@ pub fn grouper(
                 all.sort();
                 let mut i = 0;
                 while i < all.len() {
-                    let j = next_diff1_2(&all, i as i32) as usize;
+                    let j = next_diff1_2(&all, i);
                     if all[i].0.is_empty() {
                         for k in i..j {
                             let g = vec![all[k].1];
@@ -245,7 +245,7 @@ pub fn grouper(
                 all.sort();
                 let mut i = 0;
                 while i < all.len() {
-                    let j = next_diff1_2(&all, i as i32) as usize;
+                    let j = next_diff1_2(&all, i);
                     if all[i].0.is_empty() {
                         for k in i..j {
                             let g = vec![all[k].1];
@@ -283,7 +283,7 @@ pub fn grouper(
                 all.sort();
                 let mut i = 0;
                 while i < all.len() {
-                    let j = next_diff1_2(&all, i as i32) as usize;
+                    let j = next_diff1_2(&all, i);
                     let mut g = Vec::<usize>::new();
                     for k in i..j {
                         g.push(all[k].1);
@@ -314,7 +314,7 @@ pub fn grouper(
                 all.sort();
                 let mut i = 0;
                 while i < all.len() {
-                    let j = next_diff1_2(&all, i as i32) as usize;
+                    let j = next_diff1_2(&all, i);
                     let mut g = Vec::<usize>::new();
                     for k in i..j {
                         g.push(all[k].1);
@@ -347,7 +347,7 @@ pub fn grouper(
                 all.sort();
                 let mut i = 0;
                 while i < all.len() {
-                    let j = next_diff1_2(&all, i as i32) as usize;
+                    let j = next_diff1_2(&all, i);
                     let mut g = Vec::<usize>::new();
                     for k in i..j {
                         g.push(all[k].1);
@@ -380,7 +380,7 @@ pub fn grouper(
                 all.sort();
                 let mut i = 0;
                 while i < all.len() {
-                    let j = next_diff1_2(&all, i as i32) as usize;
+                    let j = next_diff1_2(&all, i);
                     let mut g = Vec::<usize>::new();
                     for k in i..j {
                         g.push(all[k].1);

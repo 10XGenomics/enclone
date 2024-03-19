@@ -95,7 +95,7 @@ fn main() {
     let mut bounds = Vec::<(usize, usize, Vec<Vec<(usize, usize, usize, usize)>>)>::new();
     let mut i = 0;
     while i < data.len() {
-        // let j = next_diff12_9(&data, i as i32) as usize;
+        // let j = next_diff12_9(&data, i);
         let mut j = i + 1;
         while j < data.len() {
             if data[j].0 != data[i].0 || data[j].1 != data[i].1 {
