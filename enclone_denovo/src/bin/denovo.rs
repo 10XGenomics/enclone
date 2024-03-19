@@ -139,7 +139,7 @@ and fails GT|GC test after exon 1; note that the leader that's shown is short to
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-use amino::{aa_seq, codon_to_aa};
+use amino::{codon_to_aa, nucleotide_to_aminoacid_sequence};
 use bio::alignment::pairwise::banded::Aligner;
 use bio::alignment::AlignmentOperation::Del;
 use bio::alignment::AlignmentOperation::Ins;
@@ -1105,7 +1105,7 @@ fn main() {
             } else {
                 chain_type = "IGL";
             }
-            let aa = aa_seq(&zref[i].to_ascii_vec(), 0);
+            let aa = nucleotide_to_aminoacid_sequence(&zref[i].to_ascii_vec(), 0);
 
             // Skip short transcripts.  There is one, one of the two IGHV1-12 sequences, which has
             // length 60 amino acids, and should be deleted from the reference rather than
@@ -1991,7 +1991,7 @@ fn main() {
                 } else if print_aa {
                     println!(">{}", gene);
                     let n = (seq.len() - 1) % 3;
-                    println!("{}", strme(&aa_seq(seq, n)));
+                    println!("{}", strme(&nucleotide_to_aminoacid_sequence(seq, n)));
                 }
                 if print_fasta {
                     fwriteln!(fasta_log, "{}", strme(seq));
@@ -2554,7 +2554,7 @@ fn main() {
             }
         }
         for frame in 0..3 {
-            let aa = aa_seq(&r, frame);
+            let aa = nucleotide_to_aminoacid_sequence(&r, frame);
             let mut j = 0;
             while j < aa.len() {
                 if aa[j] == b'*' {
@@ -2675,7 +2675,7 @@ fn main() {
                         if start + l + 1 >= r.len() {
                             break;
                         }
-                        let bb = aa_seq(&r[start..start + l], 0);
+                        let bb = nucleotide_to_aminoacid_sequence(&r[start..start + l], 0);
                         if bb.contains(&b'*') {
                             continue;
                         }
@@ -2707,7 +2707,7 @@ fn main() {
                     if start < 10 {
                         continue;
                     }
-                    let bb = aa_seq(&r[start..start + l], 0);
+                    let bb = nucleotide_to_aminoacid_sequence(&r[start..start + l], 0);
                     for mx in LOW_INTRON..=HIGH_INTRON {
                         let start2 = start + l + mx;
                         if start2 > r.len() || r.len() - start2 < 10 {
@@ -2741,7 +2741,7 @@ fn main() {
 
                         // Keep going.
 
-                        let cc = aa_seq(&r[start2 + 2..stop2], 0);
+                        let cc = nucleotide_to_aminoacid_sequence(&r[start2 + 2..stop2], 0);
                         let mid = vec![r[start + l - 1], r[start2], r[start2 + 1]];
                         let mut s = String::new();
                         if show_transition {

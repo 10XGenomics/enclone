@@ -4,7 +4,7 @@
 // amino acid frequency table.
 
 use crate::vdj_features::{cdr3_score, cdr3_start, fr3_start};
-use amino::aa_seq;
+use amino::nucleotide_to_aminoacid_sequence;
 use debruijn::dna_string::DnaString;
 use fasta_tools::read_fasta_into_vec_dna_string_plus_headers;
 use std::fs::read_dir;
@@ -112,7 +112,7 @@ pub fn make_fwr3_freqs() -> Vec<Vec<Vec<(u32, u8)>>> {
                 continue;
             }
             let seq = refs[i].to_ascii_vec();
-            let aa = aa_seq(&seq, 0);
+            let aa = nucleotide_to_aminoacid_sequence(&seq, 0);
             let chain_type = headers[i].after("REGION|").between("|", "|");
 
             // Exclude junk for the non-10x references.  (MOOT NOW.)
@@ -144,7 +144,7 @@ pub fn make_fwr3_freqs() -> Vec<Vec<Vec<(u32, u8)>>> {
                         let mut seqx = seq.clone();
                         for _ in 1..=2 {
                             let _ = seqx.remove(3 * j);
-                            let aax = aa_seq(&seqx, 0);
+                            let aax = nucleotide_to_aminoacid_sequence(&seqx, 0);
                             if !aax.contains(&b'*') {
                                 fixable = true;
                             }
@@ -164,7 +164,7 @@ pub fn make_fwr3_freqs() -> Vec<Vec<Vec<(u32, u8)>>> {
                     let score = cdr3_score(&aa, chain_type, false);
                     let mut frameshift = false;
                     for del in 1..=2 {
-                        let aad = aa_seq(&seq, del);
+                        let aad = nucleotide_to_aminoacid_sequence(&seq, del);
                         if score <= 6 && cdr3_score(&aad, chain_type, false) >= 3 + score {
                             // println!("frameshift = {} = {}", species, headers[i].before(" "));
                             // use io_utils::*;

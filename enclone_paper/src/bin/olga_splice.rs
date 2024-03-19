@@ -213,13 +213,12 @@ fn main() {
                 annv.push(ann[i]);
             }
         }
-        let mut cdr3x = Vec::<(usize, Vec<u8>, usize, usize)>::new();
-        get_cdr3_using_ann(&x, &refdata, &ann, &mut cdr3x);
-        if cdr3x.len() != 1 || strme(&cdr3x[0].1) != cdr3[i] {
+        let cdr3x = get_cdr3_using_ann(&x, &refdata, &ann);
+        if cdr3x.len() != 1 || strme(&cdr3x[0].aa_seq) != cdr3[i] {
             fwriteln!(log, "failed to find unique or matching CDR3\n");
             fwriteln!(log, "found {} CDR3s\n", cdr3x.len());
             for i in 0..cdr3x.len() {
-                fwriteln!(log, "CDR3 = {}", strme(&cdr3x[i].1));
+                fwriteln!(log, "CDR3 = {}", strme(&cdr3x[i].aa_seq));
             }
             res.1 = Data {
                 out: log,
@@ -232,12 +231,12 @@ fn main() {
                 cdrh3_len: 0,
             };
         } else {
-            fwriteln!(log, "CDR3 = {}", strme(&cdr3x[0].1));
+            fwriteln!(log, "CDR3 = {}", strme(&cdr3x[0].aa_seq));
 
             // Analyze the junction, following hcomp.rs.
 
             let mut vref = vseq.clone();
-            let cdr3_start = cdr3x[0].0;
+            let cdr3_start = cdr3x[0].start_position_on_contig;
             let vstart = cdr3_start - 2;
             vref = vref[vstart..vref.len()].to_vec();
             let mut concat = vref.clone();
@@ -289,7 +288,7 @@ fn main() {
                     j_ref_id,
                     &seq,
                     &ann,
-                    strme(&cdr3x[0].1),
+                    strme(&cdr3x[0].aa_seq),
                     &refdata,
                     &Vec::new(),
                     &mut scores,

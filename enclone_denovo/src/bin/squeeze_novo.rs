@@ -6,7 +6,7 @@
 // e.g. squeeze_novo FWR3 39
 // optional extra arg: a string that full reference names should match
 
-use amino::aa_seq;
+use amino::nucleotide_to_aminoacid_sequence;
 use enclone_denovo::vdj_features::{cdr1, cdr2, fwr1, fwr2, fwr3};
 use fasta_tools::read_fasta_to_vec_vec_u8;
 
@@ -35,7 +35,7 @@ fn main() {
             for i in (0..x.len()).step_by(2) {
                 let chain_type = strme(&x[i]).before("V");
                 if chain_type == "IGH" {
-                    let aa = aa_seq(&x[i + 1], 0);
+                    let aa = nucleotide_to_aminoacid_sequence(&x[i + 1], 0);
                     let bb;
                     if feature == "FWR1" {
                         bb = fwr1(&aa, chain_type, false).unwrap();

@@ -8,7 +8,7 @@
 //               to be printed
 
 use crate::keeper_group::keeper_group;
-use amino::aa_seq;
+use amino::nucleotide_to_aminoacid_sequence;
 use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype};
 use enclone_proto::types::DonorReferenceItem;
 use equiv::EquivRel;
@@ -574,7 +574,10 @@ pub fn grouper(
                                             continue;
                                         }
                                         let dna2 = &ex2.share[p2].seq;
-                                        let (aa1, aa2) = (aa_seq(dna1, 0), aa_seq(dna2, 0));
+                                        let (aa1, aa2) = (
+                                            nucleotide_to_aminoacid_sequence(dna1, 0),
+                                            nucleotide_to_aminoacid_sequence(dna2, 0),
+                                        );
                                         let d = levenshtein(&aa1, &aa2) as usize;
                                         let r1 = if d <= aa1.len() { aa1.len() - d } else { 0 };
                                         let r1 = r1 as f64 / aa1.len() as f64;

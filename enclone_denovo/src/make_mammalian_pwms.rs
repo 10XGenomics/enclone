@@ -18,7 +18,7 @@
 // and then the PWM is updated.  We ignore sequences that have insertions.
 
 use crate::vdj_features::{cdr1, cdr2, cdr3_score, fwr1, fwr2, fwr3};
-use amino::aa_seq;
+use amino::nucleotide_to_aminoacid_sequence;
 use bio::alignment::pairwise::banded::Aligner;
 use bio::alignment::AlignmentOperation::Del;
 use bio::alignment::AlignmentOperation::Ins;
@@ -116,7 +116,7 @@ pub fn make_mammalian_pwms() -> Vec<(String, String, usize, Vec<Vec<(u32, u8)>>)
                 continue;
             }
             let seq = refs[i].to_ascii_vec();
-            let aa = aa_seq(&seq, 0);
+            let aa = nucleotide_to_aminoacid_sequence(&seq, 0);
             let chain_type = headers[i].after("REGION|").between("|", "|");
 
             // Exclude junk for the non-10x references.
@@ -146,7 +146,7 @@ pub fn make_mammalian_pwms() -> Vec<(String, String, usize, Vec<Vec<(u32, u8)>>)
                     let mut seqx = seq.clone();
                     for _ in 1..=2 {
                         let _ = seqx.remove(3 * j);
-                        let aax = aa_seq(&seqx, 0);
+                        let aax = nucleotide_to_aminoacid_sequence(&seqx, 0);
                         if !aax.contains(&b'*') {
                             fixable = true;
                         }
@@ -166,7 +166,7 @@ pub fn make_mammalian_pwms() -> Vec<(String, String, usize, Vec<Vec<(u32, u8)>>)
                 let score = cdr3_score(&aa, chain_type, false);
                 let mut frameshift = false;
                 for del in 1..=2 {
-                    let aad = aa_seq(&seq, del);
+                    let aad = nucleotide_to_aminoacid_sequence(&seq, del);
                     if score <= 6 && cdr3_score(&aad, chain_type, false) >= 3 + score {
                         // println!("frameshift = {} = {}", species, headers[i].before(" "));
                         // use io_utils::*;

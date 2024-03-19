@@ -35,7 +35,7 @@ fn main() {
             for i in (0..x.len()).step_by(2) {
                 let chain_type = strme(&x[i]).before("V");
                 if chain_type == "IGH" {
-                    let aa = aa_seq(&x[i+1], 0);
+                    let aa = nucleotide_to_aminoacid_sequence(&x[i+1], 0);
                     let f1 = fwr1(&aa, &chain_type, false).unwrap();
                     if f1.len() == 25 {
                         denovo.push(f1.clone());
