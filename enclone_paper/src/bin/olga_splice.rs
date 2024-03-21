@@ -204,8 +204,7 @@ fn main() {
         fwriteln!(log, "\ncdr3[{}] = {}\n", i + 1, cdr3[i]);
         fwriteln!(log, "seq[{}] = {}\n", i + 1, strme(&seq));
         let x = DnaString::from_dna_string(strme(&seq));
-        let mut ann = Vec::<Annotation>::new();
-        annotate_seq(&x, &refdata, &mut ann, true, false, true);
+        let ann = annotate_seq(&x, &refdata, true, false, true);
         let mut annv = Vec::<Annotation>::new();
         for i in 0..ann.len() {
             let t = ann[i].ref_id as usize;
