@@ -137,8 +137,7 @@ pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<EncloneState
         in_center,
         mut rsi,
         mut out_datas,
-        tests,
-        controls,
+        gene_scan_result,
     } = print_clonotypes(
         is_bcr,
         to_bc,
@@ -158,6 +157,34 @@ pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<EncloneState
         fate,
         allele_data,
     )?;
+
+    // Gather some data for gene scan.
+    let (mut tests, mut controls) = (vec![], vec![]);
+    if ctl.gen_opt.gene_scan.is_some() {
+        if !ctl.gen_opt.gene_scan_exact {
+            for (i, in_sets) in gene_scan_result.iter().enumerate() {
+                for in_set in in_sets {
+                    if in_set.test {
+                        tests.push(i);
+                    }
+                    if in_set.control {
+                        controls.push(i);
+                    }
+                }
+            }
+        } else {
+            for (in_sets, e) in gene_scan_result.iter().zip(exacts.iter()) {
+                for (&ej, in_set) in e.iter().zip(in_sets) {
+                    if in_set.test {
+                        tests.push(ej);
+                    }
+                    if in_set.control {
+                        controls.push(ej);
+                    }
+                }
+            }
+        }
+    }
 
     // Process the SUBSET_JSON option.
 
