@@ -74,7 +74,7 @@ pub fn tail_code(
 
     // Do gene scan.
 
-    if ctl.gen_opt.gene_scan_test.is_some() {
+    if ctl.gen_opt.gene_scan.is_some() {
         println!("\nFEATURE SCAN\n");
         let mut test_cells = 0;
         if !ctl.gen_opt.gene_scan_exact {
@@ -279,7 +279,7 @@ pub fn tail_code(
             }
             control_mean /= control_values.len() as f64;
             let mut vals = Vec::<f64>::new();
-            let threshold = ctl.gen_opt.gene_scan_threshold.clone().unwrap();
+            let threshold = ctl.gen_opt.gene_scan.as_ref().unwrap().threshold.clone();
             for i in 0..threshold.var.len() {
                 if threshold.var[i] == *"t" {
                     vals.push(test_mean);
