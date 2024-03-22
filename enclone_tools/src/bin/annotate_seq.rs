@@ -134,8 +134,7 @@ fn main() {
             fwriteln!(log, "\nFW ANNOTATION VERSUS PLAIN REFERENCE\n");
         }
         print_annotations(&seq, &refdata, &mut log, false, true, verbose);
-        let mut ann = Vec::<Annotation>::new();
-        annotate_seq(&seq, &refdata, &mut ann, true, false, true);
+        let ann = annotate_seq(&seq, &refdata, true, false, true);
         print_cdr3_using_ann(&seq, &refdata, &ann, &mut log);
         print_start_codon_positions(&seq, &mut log);
         if is_productive_contig(&seq, &refdata, &ann).0 {
