@@ -63,19 +63,19 @@ split-debuginfo = "unpacked"
 # improved.
 
 [workspace.dependencies]
-align_tools = { path = "../enclone_ranger/align_tools" }
-amino = { path = "../enclone_ranger/amino" }
+align_tools = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/split-up-finding-and-printing" }
+amino = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/split-up-finding-and-printing" }
 anyhow = "1"
-ansi_escape = { path = "../enclone_ranger/ansi_escape" }
+ansi_escape = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/split-up-finding-and-printing" }
 arboard = "2"
 assert_cmd = "2"
 async-trait = "0.1"
 attohttpc = { version = "0.18", default-features = false, features = ["compress", "tls-rustls"] }
 backtrace = "0.3"
 base64 = "0.13"
-binary_vec_io = { path = "../enclone_ranger/binary_vec_io" }
+binary_vec_io = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/split-up-finding-and-printing" }
 bio = "0.39"
-bio_edit = { path = "../enclone_ranger/bio_edit" }
+bio_edit = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/split-up-finding-and-printing" }
 byteorder = "1"
 bytes = "1"
 chrono = { version = "0.4", default-features = false, features = ["std", "clock"] }
@@ -86,41 +86,41 @@ core-graphics = "0.22"
 crc = "2"
 debruijn = "0.3"
 dirs = "4"
-dna = { path = "../enclone_ranger/dna" }
+dna = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/split-up-finding-and-printing" }
 edit-distance = "2"
-enclone_args = { path = "../enclone_ranger/enclone_args" }
-enclone_core = { path = "../enclone_ranger/enclone_core" }
+enclone_args = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/split-up-finding-and-printing" }
+enclone_core = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/split-up-finding-and-printing" }
 enclone_denovo = { path = "../enclone_denovo" }
 enclone_help = { path = "../enclone_help" }
-enclone = { path = "../enclone_ranger/enclone" }
-enclone_print = { path = "../enclone_ranger/enclone_print" }
-enclone_proto = { path = "../enclone_ranger/enclone_proto" }
-enclone_ranger = { path = "../enclone_ranger/enclone_ranger" }
+enclone = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/split-up-finding-and-printing" }
+enclone_print = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/split-up-finding-and-printing" }
+enclone_proto = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/split-up-finding-and-printing" }
+enclone_ranger = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/split-up-finding-and-printing" }
 enclone_server_proto = { path = "../enclone_server_proto" }
-enclone_stuff = { path = "../enclone_ranger/enclone_stuff" }
+enclone_stuff = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/split-up-finding-and-printing" }
 enclone_tail = { path = "../enclone_tail" }
-enclone_vars = { path = "../enclone_ranger/enclone_vars" }
+enclone_vars = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/split-up-finding-and-printing" }
 enclone_version = { path = "../enclone_version" }
-equiv = { path = "../enclone_ranger/equiv" }
+equiv = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/split-up-finding-and-printing" }
 evalexpr = "7"
-expr_tools = { path = "../enclone_ranger/expr_tools" }
-fasta_tools = { path = "../enclone_ranger/fasta_tools" }
+expr_tools = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/split-up-finding-and-printing" }
+fasta_tools = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/split-up-finding-and-printing" }
 file-lock = "2"
 flate2 = "1"
 float-ord = "0.3"
 fontdb = "0.7"
 fs_extra = "1"
 git = "https://github.com/10xGenomics/hdf5-rust.git"
-graph_simple = { path = "../enclone_ranger/graph_simple" }
+graph_simple = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/split-up-finding-and-printing" }
 hdf5 = { git = "https://github.com/10XGenomics/hdf5-rust.git", branch = "conda_nov2021", features = ["conda"], default-features = false }
 home = "0.5"
-hyperbase = { path = "../enclone_ranger/hyperbase" }
+hyperbase = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/split-up-finding-and-printing" }
 image = { version = "0.23", features = ["jpeg", "png", "jpeg_rayon"], default-features = false }
 include_dir = { version = "0.6", features = ["search"] }
-io_utils = { path = "../enclone_ranger/io_utils" }
+io_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/split-up-finding-and-printing" }
 itertools = "0.10"
 jpeg-decoder = "0.2"
-kmer_lookup = { path = "../enclone_ranger/kmer_lookup" }
+kmer_lookup = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/split-up-finding-and-printing" }
 lazy_static = "1"
 libc = "0.2"
 log = "0.4"
@@ -133,7 +133,7 @@ num-traits = "0.2"
 objc = "0.2"
 pager = "0.16"
 palette = "0.6"
-perf_stats = { path = "../enclone_ranger/perf_stats" }
+perf_stats = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/split-up-finding-and-printing" }
 permutation = "0.4"
 petgraph = "0.6"
 plotters = { version = "0.3", default_features = false, features = ["svg_backend", "point_series"] }
@@ -154,12 +154,12 @@ serde = "1"
 serde_derive = "1"
 serde_json = "1"
 sha2 = "0.10"
-stats_utils = { path = "../enclone_ranger/stats_utils" }
+stats_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/split-up-finding-and-printing" }
 statrs = "0.15"
-stirling_numbers = { path = "../enclone_ranger/stirling_numbers" }
-string_utils = { path = "../enclone_ranger/string_utils" }
+stirling_numbers = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/split-up-finding-and-printing" }
+string_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/split-up-finding-and-printing" }
 superslice = "1"
-tables = { path = "../enclone_ranger/tables" }
+tables = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/split-up-finding-and-printing" }
 tar = "0.4"
 thiserror = "1"
 tilde-expand = "0.1"
@@ -171,9 +171,9 @@ tonic-build = { version = "0.6", default-features = false, features = ["transpor
 triple_accel = "0.4"
 users = "0.11"
 usvg = { version = "0.19", features = ["text"] }
-vdj_types = { path = "../enclone_ranger/vdj_types" }
-vdj_ann = { path = "../enclone_ranger/vdj_ann" }
-vdj_ann_ref = { path = "../enclone_ranger/vdj_ann_ref" }
-vector_utils = { path = "../enclone_ranger/vector_utils" }
+vdj_types = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/split-up-finding-and-printing" }
+vdj_ann = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/split-up-finding-and-printing" }
+vdj_ann_ref = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/split-up-finding-and-printing" }
+vector_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/split-up-finding-and-printing" }
 whoami = "1"
 yaml-rust = "0.4"
