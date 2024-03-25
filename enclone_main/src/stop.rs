@@ -22,7 +22,7 @@ pub fn main_enclone_stop(
     setup: &EncloneSetup,
     exacts: &EncloneExacts,
     fate: Vec<BarcodeFates>,
-) -> Result<MainEncloneOutput, String> {
+) -> Result<(), String> {
     // Unpack inputs.
 
     let to_bc = &exacts.to_bc;
@@ -297,19 +297,5 @@ pub fn main_enclone_stop(
     if !(ctl.gen_opt.noprint && ctl.parseable_opt.pout == "stdout") && !ctl.gen_opt.no_newline {
         println!();
     }
-    let outs = MainEncloneOutput {
-        pics: group_pics,
-        last_widths,
-        svgs,
-        summary,
-        metrics: gex_info.metrics.clone(),
-        dataset_names: ctl.origin_info.dataset_id.clone(),
-        parseable_stdouth: ctl.parseable_opt.pout == "stdouth",
-        noprint: ctl.gen_opt.noprint,
-        noprintx: ctl.gen_opt.noprintx,
-        html: ctl.gen_opt.html,
-        ngroup: ctl.clono_group_opt.ngroup,
-        pretty: ctl.pretty,
-    };
-    Ok(outs)
+    Ok(())
 }

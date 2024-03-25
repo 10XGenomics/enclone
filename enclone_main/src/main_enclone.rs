@@ -28,7 +28,7 @@ use vector_utils::{bin_member, next_diff, unique_sort};
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub fn main_enclone(args: &Vec<String>) -> Result<MainEncloneOutput, String> {
+pub fn main_enclone(args: &Vec<String>) -> Result<(), String> {
     let setup = main_enclone_setup(args)?;
     if setup.tall.is_none() {
         return Ok(Default::default());
