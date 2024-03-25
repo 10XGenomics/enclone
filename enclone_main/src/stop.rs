@@ -37,7 +37,6 @@ pub fn main_enclone_stop(
     let sr = &inter.ex.sr;
     let ann = &inter.setup.ann;
     let ctl = &inter.setup.ctl;
-    let is_bcr = inter.ex.is_bcr;
     let tall = &inter.setup.tall.unwrap();
     let allele_data = &inter.ex.allele_data;
 
@@ -141,23 +140,12 @@ pub fn main_enclone_stop(
         mut out_datas,
         gene_scan_result,
     } = print_clonotypes(
-        is_bcr,
-        to_bc,
-        sr,
-        refdata,
-        drefs,
-        ctl,
-        exact_clonotypes,
-        info,
-        orbits,
-        raw_joins,
-        gex_info,
-        vdj_cells,
+        &inter.setup,
+        &inter.ex,
         &d_readers,
         &ind_readers,
         &h5_data,
         &fate,
-        allele_data,
     )?;
 
     // Gather some data for gene scan.
