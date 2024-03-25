@@ -90,11 +90,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Standard run of enclone.
 
     if args.len() < 2 || args[1] != "SERVER" {
-        let res = main_enclone(&mut args);
-
         // Test for error.
 
-        if res.is_err() {
+        if let Err(err) = main_enclone(&args) {
             // TURNED OFF BECAUSE WE GOT EXIT STATUS ZERO SOMETIMES WHEN WE USED THROUGH COMMAND.
             //
             // If there was an error and we had used the pager, then std::process::exit(1) will
@@ -108,7 +106,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             //
             // The kill makes the screen flash.  This is pretty horrible.
 
-            eprintln!("{}", res.as_ref().err().unwrap());
+            eprintln!("{err}");
             if !no_kill && USING_PAGER.load(SeqCst) && 0 == 1 {
                 thread::sleep(Duration::from_millis(10));
                 #[cfg(not(target_os = "windows"))]
