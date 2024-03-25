@@ -28,16 +28,16 @@ use vector_utils::{bin_member, next_diff, unique_sort};
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub fn main_enclone(args: &Vec<String>) -> Result<EncloneState, String> {
+pub fn main_enclone(args: &Vec<String>) -> Result<MainEncloneOutput, String> {
     let setup = main_enclone_setup(args)?;
     if setup.tall.is_none() {
-        return Ok(EncloneState::default());
+        return Ok(Default::default());
     }
-    let (inter, fate) = main_enclone_start(setup)?;
-    if inter.setup.tall.is_none() {
-        return Ok(EncloneState::default());
+    let (exacts, fate) = main_enclone_start(&setup)?;
+    if setup.tall.is_none() {
+        return Ok(Default::default());
     }
-    main_enclone_stop(inter, fate)
+    main_enclone_stop(&setup, &exacts, fate)
 }
 
 pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
