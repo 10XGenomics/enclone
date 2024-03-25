@@ -6,14 +6,15 @@ use crate::alluvial_fb::*;
 use crate::fate::print_fate;
 use crate::print_dataset_vars::print_dataset_vars;
 // use crate::sens_spec::*;
-use enclone_core::barcode_fate::BarcodeFate;
+
 use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype, GexInfo};
+use enclone_core::enclone_structs::BarcodeFates;
 use enclone_core::median::median;
 use io_utils::{fwrite, fwriteln};
 
 use stats_utils::percent_ratio;
 use std::cmp::max;
-use std::collections::HashMap;
+
 use std::io::Write;
 use std::time::Instant;
 use string_utils::{add_commas, TextUtils};
@@ -30,7 +31,7 @@ pub fn print_stats(
     ctl: &EncloneControl,
     gex_info: &GexInfo,
     vdj_cells: &Vec<Vec<String>>,
-    fate: &Vec<HashMap<String, BarcodeFate>>,
+    fate: &[BarcodeFates],
     logx: &mut Vec<u8>,
     nclono2: &mut usize,
     two_chain: &mut usize,

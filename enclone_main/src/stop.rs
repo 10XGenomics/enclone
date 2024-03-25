@@ -2,7 +2,7 @@
 
 use crate::opt_d_val::make_opt_d_val;
 use crate::subset::subset_json;
-use enclone_core::defs::ColInfo;
+
 use enclone_core::enclone_structs::*;
 use enclone_print::print_clonotypes::{print_clonotypes, PrintClonotypesResult};
 use enclone_tail::grouper::grouper;
@@ -18,7 +18,10 @@ use hdf5::Reader;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<EncloneState, String> {
+pub fn main_enclone_stop(
+    inter: EncloneIntermediates,
+    fate: Vec<BarcodeFates>,
+) -> Result<EncloneState, String> {
     // Unpack inputs.
 
     let to_bc = &inter.ex.to_bc;
@@ -33,7 +36,6 @@ pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<EncloneState
     let gex_info = &inter.setup.gex_info;
     let sr = &inter.ex.sr;
     let ann = &inter.setup.ann;
-    let fate = &mut inter.ex.fate;
     let ctl = &inter.setup.ctl;
     let is_bcr = inter.ex.is_bcr;
     let tall = &inter.setup.tall.unwrap();
@@ -154,7 +156,7 @@ pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<EncloneState
         &d_readers,
         &ind_readers,
         &h5_data,
-        fate,
+        &fate,
         allele_data,
     )?;
 
@@ -265,7 +267,7 @@ pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<EncloneState
         join_info,
         gex_info,
         vdj_cells,
-        fate,
+        &fate,
         &tests,
         &controls,
         &h5_data,
