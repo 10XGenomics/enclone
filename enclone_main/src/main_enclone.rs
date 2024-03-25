@@ -340,14 +340,15 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
     let refx2 = &refx;
     let mut refdata = RefData::new();
     let ext_refx = String::new();
-    let (mut is_tcr, mut is_bcr) = (true, true);
-    if ctl.gen_opt.tcr {
-        is_bcr = false;
-    }
-    if ctl.gen_opt.bcr {
-        is_tcr = false;
-    }
-    make_vdj_ref_data_core(&mut refdata, refx2, &ext_refx, is_tcr, is_bcr, None);
+
+    make_vdj_ref_data_core(
+        &mut refdata,
+        refx2,
+        &ext_refx,
+        ctl.gen_opt.is_tcr(),
+        ctl.gen_opt.is_bcr(),
+        None,
+    );
 
     // Determine if the species is human or mouse or unknown.
 
@@ -403,6 +404,5 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
         ann: ann.to_string(),
         gex_info,
         tall: Some(tall),
-        is_bcr,
     })
 }
