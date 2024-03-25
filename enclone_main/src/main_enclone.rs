@@ -33,11 +33,11 @@ pub fn main_enclone(args: &Vec<String>) -> Result<EncloneState, String> {
     if setup.tall.is_none() {
         return Ok(EncloneState::default());
     }
-    let inter = main_enclone_start(setup)?;
+    let (inter, fate) = main_enclone_start(setup)?;
     if inter.setup.tall.is_none() {
         return Ok(EncloneState::default());
     }
-    main_enclone_stop(inter)
+    main_enclone_stop(inter, fate)
 }
 
 pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
