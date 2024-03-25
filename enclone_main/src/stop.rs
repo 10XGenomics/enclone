@@ -19,26 +19,27 @@ use hdf5::Reader;
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 pub fn main_enclone_stop(
-    inter: EncloneIntermediates,
+    setup: &EncloneSetup,
+    exacts: &EncloneExacts,
     fate: Vec<BarcodeFates>,
-) -> Result<EncloneState, String> {
+) -> Result<MainEncloneOutput, String> {
     // Unpack inputs.
 
-    let to_bc = &inter.ex.to_bc;
-    let exact_clonotypes = &inter.ex.exact_clonotypes;
-    let raw_joins = &inter.ex.raw_joins;
-    let info = &inter.ex.info;
-    let orbits = &inter.ex.orbits;
-    let vdj_cells = &inter.ex.vdj_cells;
-    let refdata = &inter.setup.refdata;
-    let join_info = &inter.ex.join_info;
-    let drefs = &inter.ex.drefs;
-    let gex_info = &inter.setup.gex_info;
-    let sr = &inter.ex.sr;
-    let ann = &inter.setup.ann;
-    let ctl = &inter.setup.ctl;
-    let tall = &inter.setup.tall.unwrap();
-    let allele_data = &inter.ex.allele_data;
+    let to_bc = &exacts.to_bc;
+    let exact_clonotypes = &exacts.exact_clonotypes;
+    let raw_joins = &exacts.raw_joins;
+    let info = &exacts.info;
+    let orbits = &exacts.orbits;
+    let vdj_cells = &exacts.vdj_cells;
+    let refdata = &setup.refdata;
+    let join_info = &exacts.join_info;
+    let drefs = &exacts.drefs;
+    let gex_info = &setup.gex_info;
+    let sr = &exacts.sr;
+    let ann = &setup.ann;
+    let ctl = &setup.ctl;
+    let tall = &setup.tall.unwrap();
+    let allele_data = &exacts.allele_data;
 
     // Load the GEX and FB data.  This is quite horrible: the code and computation are duplicated
     // verbatim in fcell.rs.
@@ -139,14 +140,7 @@ pub fn main_enclone_stop(
         mut rsi,
         mut out_datas,
         gene_scan_result,
-    } = print_clonotypes(
-        &inter.setup,
-        &inter.ex,
-        &d_readers,
-        &ind_readers,
-        &h5_data,
-        &fate,
-    )?;
+    } = print_clonotypes(setup, exacts, &d_readers, &ind_readers, &h5_data, &fate)?;
 
     // Gather some data for gene scan.
     let (mut tests, mut controls) = (vec![], vec![]);
@@ -317,5 +311,5 @@ pub fn main_enclone_stop(
         ngroup: ctl.clono_group_opt.ngroup,
         pretty: ctl.pretty,
     };
-    Ok(EncloneState { inter, outs })
+    Ok(outs)
 }
