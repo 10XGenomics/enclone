@@ -348,10 +348,6 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
         is_tcr = false;
     }
     make_vdj_ref_data_core(&mut refdata, refx2, &ext_refx, is_tcr, is_bcr, None);
-    let mut to_ref_index = HashMap::<usize, usize>::new();
-    for i in 0..refdata.refs.len() {
-        to_ref_index.insert(refdata.id[i] as usize, i);
-    }
 
     // Determine if the species is human or mouse or unknown.
 
@@ -408,6 +404,5 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
         gex_info,
         tall: Some(tall),
         is_bcr,
-        to_ref_index,
     })
 }
