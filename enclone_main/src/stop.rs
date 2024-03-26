@@ -35,32 +35,7 @@ pub fn main_enclone_stop(
     let ctl = &setup.ctl;
     let tall = &setup.tall.unwrap();
 
-    // Load the GEX and FB data.  This is quite horrible: the code and computation are duplicated
-    // verbatim in fcell.rs.
-
-    let mut d_readers = Vec::<Option<Reader>>::new();
-    let mut ind_readers = Vec::<Option<Reader>>::new();
-    for li in 0..ctl.origin_info.n() {
-        if !ctl.origin_info.gex_path[li].is_empty() {
-            let x = gex_info.h5_data[li].as_ref();
-            d_readers.push(Some(x.unwrap().as_reader()));
-            ind_readers.push(Some(gex_info.h5_indices[li].as_ref().unwrap().as_reader()));
-        } else {
-            d_readers.push(None);
-            ind_readers.push(None);
-        }
-    }
-    let mut h5_data = Vec::<(usize, Vec<u32>, Vec<u32>)>::new();
-    for li in 0..ctl.origin_info.n() {
-        h5_data.push((li, Vec::new(), Vec::new()));
-    }
-    h5_data.par_iter_mut().for_each(|res| {
-        let li = res.0;
-        if !ctl.origin_info.gex_path[li].is_empty() && ctl.gen_opt.h5_pre {
-            res.1 = d_readers[li].as_ref().unwrap().read_raw().unwrap();
-            res.2 = ind_readers[li].as_ref().unwrap().read_raw().unwrap();
-        }
-    });
+    let gex_readers = setup.create_gex_readers();
 
     // Find and print clonotypes.  (But we don't actually print them here.)
     if !ctl.gen_opt.trace_barcode.is_empty() {
@@ -85,7 +60,7 @@ pub fn main_enclone_stop(
         mut rsi,
         mut out_datas,
         gene_scan_result,
-    } = print_clonotypes(setup, exacts, &d_readers, &ind_readers, &h5_data, &fate)?;
+    } = print_clonotypes(setup, exacts, &gex_readers, &fate)?;
 
     // Gather some data for gene scan.
     let (mut tests, mut controls) = (vec![], vec![]);
@@ -197,9 +172,7 @@ pub fn main_enclone_stop(
         &fate,
         &tests,
         &controls,
-        &h5_data,
-        &d_readers,
-        &ind_readers,
+        &gex_readers,
         drefs,
         &groups,
         &opt_d_val,
