@@ -35,7 +35,7 @@ dependencies = [
 [[package]]
 name = "align_tools"
 version = "0.1.12"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/unfold-two-pass-loop#85778842cfa58749dfb35eb43b89354171422fc9"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/unfold-two-pass-loop#2cfd2315884e213b7a70d72f6cea6907d5c17747"
 dependencies = [
  "bio_edit",
  "debruijn",
@@ -47,7 +47,7 @@ dependencies = [
 [[package]]
 name = "amino"
 version = "0.1.7"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/unfold-two-pass-loop#85778842cfa58749dfb35eb43b89354171422fc9"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/unfold-two-pass-loop#2cfd2315884e213b7a70d72f6cea6907d5c17747"
 dependencies = [
  "debruijn",
  "string_utils",
@@ -56,7 +56,7 @@ dependencies = [
 [[package]]
 name = "ansi_escape"
 version = "0.1.3"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/unfold-two-pass-loop#85778842cfa58749dfb35eb43b89354171422fc9"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/unfold-two-pass-loop#2cfd2315884e213b7a70d72f6cea6907d5c17747"
 dependencies = [
  "string_utils",
  "vector_utils",
@@ -248,7 +248,7 @@ dependencies = [
 [[package]]
 name = "bio_edit"
 version = "0.1.1"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/unfold-two-pass-loop#85778842cfa58749dfb35eb43b89354171422fc9"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/unfold-two-pass-loop#2cfd2315884e213b7a70d72f6cea6907d5c17747"
 dependencies = [
  "bio-types",
  "bit-set",
@@ -624,7 +624,7 @@ dependencies = [
 [[package]]
 name = "dna"
 version = "0.1.3"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/unfold-two-pass-loop#85778842cfa58749dfb35eb43b89354171422fc9"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/unfold-two-pass-loop#2cfd2315884e213b7a70d72f6cea6907d5c17747"
 
 [[package]]
 name = "doc-comment"
@@ -647,7 +647,7 @@ checksum = "e78d4f1cc4ae33bbfc157ed5d5a5ef3bc29227303d595861deb238fcec4e9457"
 [[package]]
 name = "enclone"
 version = "0.5.219"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/unfold-two-pass-loop#85778842cfa58749dfb35eb43b89354171422fc9"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/unfold-two-pass-loop#2cfd2315884e213b7a70d72f6cea6907d5c17747"
 dependencies = [
  "amino",
  "ansi_escape",
@@ -672,7 +672,7 @@ dependencies = [
 [[package]]
 name = "enclone_args"
 version = "0.5.219"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/unfold-two-pass-loop#85778842cfa58749dfb35eb43b89354171422fc9"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/unfold-two-pass-loop#2cfd2315884e213b7a70d72f6cea6907d5c17747"
 dependencies = [
  "debruijn",
  "enclone_core",
@@ -708,7 +708,7 @@ dependencies = [
 [[package]]
 name = "enclone_core"
 version = "0.5.219"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/unfold-two-pass-loop#85778842cfa58749dfb35eb43b89354171422fc9"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/unfold-two-pass-loop#2cfd2315884e213b7a70d72f6cea6907d5c17747"
 dependencies = [
  "amino",
  "ansi_escape",
@@ -853,7 +853,7 @@ dependencies = [
 [[package]]
 name = "enclone_print"
 version = "0.5.219"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/unfold-two-pass-loop#85778842cfa58749dfb35eb43b89354171422fc9"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/unfold-two-pass-loop#2cfd2315884e213b7a70d72f6cea6907d5c17747"
 dependencies = [
  "amino",
  "ansi_escape",
@@ -885,7 +885,7 @@ dependencies = [
 [[package]]
 name = "enclone_proto"
 version = "0.5.219"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/unfold-two-pass-loop#85778842cfa58749dfb35eb43b89354171422fc9"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/unfold-two-pass-loop#2cfd2315884e213b7a70d72f6cea6907d5c17747"
 dependencies = [
  "bio_edit",
  "byteorder",
@@ -898,7 +898,7 @@ dependencies = [
 [[package]]
 name = "enclone_ranger"
 version = "0.5.219"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/unfold-two-pass-loop#85778842cfa58749dfb35eb43b89354171422fc9"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/unfold-two-pass-loop#2cfd2315884e213b7a70d72f6cea6907d5c17747"
 dependencies = [
  "enclone",
  "enclone_args",
@@ -914,7 +914,7 @@ dependencies = [
 [[package]]
 name = "enclone_stuff"
 version = "0.5.219"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/unfold-two-pass-loop#85778842cfa58749dfb35eb43b89354171422fc9"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/unfold-two-pass-loop#2cfd2315884e213b7a70d72f6cea6907d5c17747"
 dependencies = [
  "amino",
  "debruijn",
@@ -1019,7 +1019,7 @@ dependencies = [
 [[package]]
 name = "enclone_vars"
 version = "0.5.219"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/unfold-two-pass-loop#85778842cfa58749dfb35eb43b89354171422fc9"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/unfold-two-pass-loop#2cfd2315884e213b7a70d72f6cea6907d5c17747"
 dependencies = [
  "io_utils",
  "itertools",
@@ -1058,7 +1058,7 @@ dependencies = [
 [[package]]
 name = "equiv"
 version = "0.1.3"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/unfold-two-pass-loop#85778842cfa58749dfb35eb43b89354171422fc9"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/unfold-two-pass-loop#2cfd2315884e213b7a70d72f6cea6907d5c17747"
 
 [[package]]
 name = "errno"
@@ -1100,7 +1100,7 @@ checksum = "1d4fd7bd9e32c1205549decf6f36772d7b606a579b26afaffa335ae148151a5d"
 [[package]]
 name = "exons"
 version = "0.1.5"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/unfold-two-pass-loop#85778842cfa58749dfb35eb43b89354171422fc9"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/unfold-two-pass-loop#2cfd2315884e213b7a70d72f6cea6907d5c17747"
 dependencies = [
  "io_utils",
  "string_utils",
@@ -1110,7 +1110,7 @@ dependencies = [
 [[package]]
 name = "expr_tools"
 version = "0.1.3"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/unfold-two-pass-loop#85778842cfa58749dfb35eb43b89354171422fc9"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/unfold-two-pass-loop#2cfd2315884e213b7a70d72f6cea6907d5c17747"
 dependencies = [
  "evalexpr",
  "statrs",
@@ -1121,7 +1121,7 @@ dependencies = [
 [[package]]
 name = "fasta_tools"
 version = "0.1.8"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/unfold-two-pass-loop#85778842cfa58749dfb35eb43b89354171422fc9"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/unfold-two-pass-loop#2cfd2315884e213b7a70d72f6cea6907d5c17747"
 dependencies = [
  "debruijn",
  "flate2",
@@ -1285,7 +1285,7 @@ checksum = "6fb8d784f27acf97159b40fc4db5ecd8aa23b9ad5ef69cdd136d3bc80665f0c0"
 [[package]]
 name = "graph_simple"
 version = "0.1.5"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/unfold-two-pass-loop#85778842cfa58749dfb35eb43b89354171422fc9"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/unfold-two-pass-loop#2cfd2315884e213b7a70d72f6cea6907d5c17747"
 dependencies = [
  "petgraph",
  "vector_utils",
@@ -1330,7 +1330,7 @@ name = "hdf5-sys"
 version = "0.8.1"
 source = "git+https://github.com/10XGenomics/hdf5-rust.git?branch=conda_nov2021#2d4a40b7ef75de530bc53fd2eb0fe75047e083ad"
 dependencies = [
- "attohttpc 0.18.0",
+ "attohttpc 0.19.1",
  "bzip2",
  "libc",
  "libloading",
@@ -1392,7 +1392,7 @@ dependencies = [
 [[package]]
 name = "hyperbase"
 version = "0.1.8"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/unfold-two-pass-loop#85778842cfa58749dfb35eb43b89354171422fc9"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/unfold-two-pass-loop#2cfd2315884e213b7a70d72f6cea6907d5c17747"
 dependencies = [
  "debruijn",
  "equiv",
@@ -1426,7 +1426,7 @@ dependencies = [
 [[package]]
 name = "io_utils"
 version = "0.3.2"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/unfold-two-pass-loop#85778842cfa58749dfb35eb43b89354171422fc9"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/unfold-two-pass-loop#2cfd2315884e213b7a70d72f6cea6907d5c17747"
 dependencies = [
  "bincode",
  "flate2",
@@ -1492,7 +1492,7 @@ dependencies = [
 [[package]]
 name = "kmer_lookup"
 version = "0.1.5"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/unfold-two-pass-loop#85778842cfa58749dfb35eb43b89354171422fc9"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/unfold-two-pass-loop#2cfd2315884e213b7a70d72f6cea6907d5c17747"
 dependencies = [
  "debruijn",
  "rayon",
@@ -2545,12 +2545,12 @@ dependencies = [
 [[package]]
 name = "stats_utils"
 version = "0.1.3"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/unfold-two-pass-loop#85778842cfa58749dfb35eb43b89354171422fc9"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/unfold-two-pass-loop#2cfd2315884e213b7a70d72f6cea6907d5c17747"
 
 [[package]]
 name = "string_utils"
 version = "0.1.4"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/unfold-two-pass-loop#85778842cfa58749dfb35eb43b89354171422fc9"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/unfold-two-pass-loop#2cfd2315884e213b7a70d72f6cea6907d5c17747"
 dependencies = [
  "vector_utils",
 ]
@@ -2614,7 +2614,7 @@ dependencies = [
 [[package]]
 name = "tables"
 version = "0.1.5"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/unfold-two-pass-loop#85778842cfa58749dfb35eb43b89354171422fc9"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/unfold-two-pass-loop#2cfd2315884e213b7a70d72f6cea6907d5c17747"
 dependencies = [
  "io_utils",
  "itertools",
@@ -2904,7 +2904,7 @@ dependencies = [
 [[package]]
 name = "vdj_ann"
 version = "0.4.4"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/unfold-two-pass-loop#85778842cfa58749dfb35eb43b89354171422fc9"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/unfold-two-pass-loop#2cfd2315884e213b7a70d72f6cea6907d5c17747"
 dependencies = [
  "align_tools",
  "amino",
@@ -2926,7 +2926,7 @@ dependencies = [
 [[package]]
 name = "vdj_ann_ref"
 version = "0.2.1"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/unfold-two-pass-loop#85778842cfa58749dfb35eb43b89354171422fc9"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/unfold-two-pass-loop#2cfd2315884e213b7a70d72f6cea6907d5c17747"
 dependencies = [
  "debruijn",
  "exons",
@@ -2942,7 +2942,7 @@ dependencies = [
 [[package]]
 name = "vdj_types"
 version = "0.2.0"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/unfold-two-pass-loop#85778842cfa58749dfb35eb43b89354171422fc9"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/unfold-two-pass-loop#2cfd2315884e213b7a70d72f6cea6907d5c17747"
 dependencies = [
  "serde",
 ]
@@ -2959,7 +2959,7 @@ dependencies = [
 [[package]]
 name = "vector_utils"
 version = "0.1.5"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/unfold-two-pass-loop#85778842cfa58749dfb35eb43b89354171422fc9"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=macklin/unfold-two-pass-loop#2cfd2315884e213b7a70d72f6cea6907d5c17747"
 dependencies = [
  "permutation",
  "superslice",
