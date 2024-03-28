@@ -4,17 +4,15 @@ use crate::opt_d_val::make_opt_d_val;
 use crate::subset::subset_json;
 
 use enclone_core::enclone_structs::*;
-use enclone_print::print_clonotypes::{print_clonotypes, PrintClonotypesResult};
+use enclone_process::process_clonotypes::process_clonotypes;
 use enclone_tail::grouper::grouper;
+use enclone_tail::print_clonotypes::{EncloneOrbitProcessor, PrintClonotypesResult};
 use enclone_tail::tail::tail_code;
-use io_utils::{dir_list, open_for_read, path_exists};
-use rayon::prelude::*;
+use io_utils::open_for_read;
 use stats_utils::percent_ratio;
-use std::{collections::HashMap, env, io::BufRead, thread, time};
+use std::{collections::HashMap, io::BufRead};
 use string_utils::TextUtils;
 use vector_utils::*;
-
-use hdf5::Reader;
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
@@ -53,6 +51,10 @@ pub fn main_enclone_stop(
         }
     }
 
+    let mut proc = EncloneOrbitProcessor::new(setup, &exacts.vdj_cells);
+
+    process_clonotypes(setup, exacts, &gex_readers, &fate, &mut proc)?;
+
     let PrintClonotypesResult {
         mut pics,
         mut exacts,
@@ -60,7 +62,7 @@ pub fn main_enclone_stop(
         mut rsi,
         mut out_datas,
         gene_scan_result,
-    } = print_clonotypes(setup, exacts, &gex_readers, &fate)?;
+    } = proc.result;
 
     // Gather some data for gene scan.
     let (mut tests, mut controls) = (vec![], vec![]);

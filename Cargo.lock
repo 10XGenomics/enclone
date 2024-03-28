@@ -35,7 +35,7 @@ dependencies = [
 [[package]]
 name = "align_tools"
 version = "0.1.12"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=main#8b3ca8f173fb5680fe5991d737deaa22ad458079"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=main#cbd15ef94236a91ada7227322303593166b63cde"
 dependencies = [
  "bio_edit",
  "debruijn",
@@ -47,7 +47,7 @@ dependencies = [
 [[package]]
 name = "amino"
 version = "0.1.7"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=main#8b3ca8f173fb5680fe5991d737deaa22ad458079"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=main#cbd15ef94236a91ada7227322303593166b63cde"
 dependencies = [
  "debruijn",
  "string_utils",
@@ -56,7 +56,7 @@ dependencies = [
 [[package]]
 name = "ansi_escape"
 version = "0.1.3"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=main#8b3ca8f173fb5680fe5991d737deaa22ad458079"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=main#cbd15ef94236a91ada7227322303593166b63cde"
 dependencies = [
  "string_utils",
  "vector_utils",
@@ -232,7 +232,7 @@ dependencies = [
 [[package]]
 name = "bio_edit"
 version = "0.1.1"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=main#8b3ca8f173fb5680fe5991d737deaa22ad458079"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=main#cbd15ef94236a91ada7227322303593166b63cde"
 dependencies = [
  "bio-types",
  "bit-set",
@@ -608,7 +608,7 @@ dependencies = [
 [[package]]
 name = "dna"
 version = "0.1.3"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=main#8b3ca8f173fb5680fe5991d737deaa22ad458079"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=main#cbd15ef94236a91ada7227322303593166b63cde"
 
 [[package]]
 name = "doc-comment"
@@ -631,7 +631,7 @@ checksum = "e78d4f1cc4ae33bbfc157ed5d5a5ef3bc29227303d595861deb238fcec4e9457"
 [[package]]
 name = "enclone"
 version = "0.5.219"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=main#8b3ca8f173fb5680fe5991d737deaa22ad458079"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=main#cbd15ef94236a91ada7227322303593166b63cde"
 dependencies = [
  "amino",
  "ansi_escape",
@@ -656,7 +656,7 @@ dependencies = [
 [[package]]
 name = "enclone_args"
 version = "0.5.219"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=main#8b3ca8f173fb5680fe5991d737deaa22ad458079"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=main#cbd15ef94236a91ada7227322303593166b63cde"
 dependencies = [
  "debruijn",
  "enclone_core",
@@ -692,7 +692,7 @@ dependencies = [
 [[package]]
 name = "enclone_core"
 version = "0.5.219"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=main#8b3ca8f173fb5680fe5991d737deaa22ad458079"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=main#cbd15ef94236a91ada7227322303593166b63cde"
 dependencies = [
  "amino",
  "ansi_escape",
@@ -790,7 +790,7 @@ dependencies = [
  "enclone_build",
  "enclone_core",
  "enclone_help",
- "enclone_print",
+ "enclone_process",
  "enclone_proto",
  "enclone_stuff",
  "enclone_tail",
@@ -834,9 +834,9 @@ dependencies = [
 ]
 
 [[package]]
-name = "enclone_print"
+name = "enclone_process"
 version = "0.5.219"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=main#8b3ca8f173fb5680fe5991d737deaa22ad458079"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=main#cbd15ef94236a91ada7227322303593166b63cde"
 dependencies = [
  "amino",
  "ansi_escape",
@@ -868,7 +868,7 @@ dependencies = [
 [[package]]
 name = "enclone_proto"
 version = "0.5.219"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=main#8b3ca8f173fb5680fe5991d737deaa22ad458079"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=main#cbd15ef94236a91ada7227322303593166b63cde"
 dependencies = [
  "bio_edit",
  "byteorder",
@@ -881,12 +881,12 @@ dependencies = [
 [[package]]
 name = "enclone_ranger"
 version = "0.5.219"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=main#8b3ca8f173fb5680fe5991d737deaa22ad458079"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=main#cbd15ef94236a91ada7227322303593166b63cde"
 dependencies = [
  "enclone",
  "enclone_args",
  "enclone_core",
- "enclone_print",
+ "enclone_process",
  "enclone_stuff",
  "hdf5",
  "rayon",
@@ -897,14 +897,14 @@ dependencies = [
 [[package]]
 name = "enclone_stuff"
 version = "0.5.219"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=main#8b3ca8f173fb5680fe5991d737deaa22ad458079"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=main#cbd15ef94236a91ada7227322303593166b63cde"
 dependencies = [
  "amino",
  "debruijn",
  "enclone",
  "enclone_args",
  "enclone_core",
- "enclone_print",
+ "enclone_process",
  "enclone_proto",
  "equiv",
  "evalexpr",
@@ -929,12 +929,17 @@ dependencies = [
  "align_tools",
  "amino",
  "ansi_escape",
+ "bio_edit",
  "crc",
+ "enclone_args",
  "enclone_build",
  "enclone_core",
  "enclone_help",
+ "enclone_process",
  "enclone_proto",
+ "enclone_vars",
  "equiv",
+ "expr_tools",
  "float-ord",
  "fontdb",
  "hdf5",
@@ -943,9 +948,12 @@ dependencies = [
  "lazy_static",
  "ndarray",
  "palette",
+ "permutation",
  "plotters",
  "rayon",
+ "regex",
  "resvg",
+ "serde_json",
  "stats_utils",
  "string_utils",
  "superslice",
@@ -1002,7 +1010,7 @@ dependencies = [
 [[package]]
 name = "enclone_vars"
 version = "0.5.219"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=main#8b3ca8f173fb5680fe5991d737deaa22ad458079"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=main#cbd15ef94236a91ada7227322303593166b63cde"
 dependencies = [
  "io_utils",
  "itertools",
@@ -1041,7 +1049,7 @@ dependencies = [
 [[package]]
 name = "equiv"
 version = "0.1.3"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=main#8b3ca8f173fb5680fe5991d737deaa22ad458079"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=main#cbd15ef94236a91ada7227322303593166b63cde"
 
 [[package]]
 name = "errno"
@@ -1083,7 +1091,7 @@ checksum = "1d4fd7bd9e32c1205549decf6f36772d7b606a579b26afaffa335ae148151a5d"
 [[package]]
 name = "exons"
 version = "0.1.5"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=main#8b3ca8f173fb5680fe5991d737deaa22ad458079"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=main#cbd15ef94236a91ada7227322303593166b63cde"
 dependencies = [
  "io_utils",
  "string_utils",
@@ -1093,7 +1101,7 @@ dependencies = [
 [[package]]
 name = "expr_tools"
 version = "0.1.3"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=main#8b3ca8f173fb5680fe5991d737deaa22ad458079"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=main#cbd15ef94236a91ada7227322303593166b63cde"
 dependencies = [
  "evalexpr",
  "statrs",
@@ -1104,7 +1112,7 @@ dependencies = [
 [[package]]
 name = "fasta_tools"
 version = "0.1.8"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=main#8b3ca8f173fb5680fe5991d737deaa22ad458079"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=main#cbd15ef94236a91ada7227322303593166b63cde"
 dependencies = [
  "debruijn",
  "flate2",
@@ -1268,7 +1276,7 @@ checksum = "6fb8d784f27acf97159b40fc4db5ecd8aa23b9ad5ef69cdd136d3bc80665f0c0"
 [[package]]
 name = "graph_simple"
 version = "0.1.5"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=main#8b3ca8f173fb5680fe5991d737deaa22ad458079"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=main#cbd15ef94236a91ada7227322303593166b63cde"
 dependencies = [
  "petgraph",
  "vector_utils",
@@ -1375,7 +1383,7 @@ dependencies = [
 [[package]]
 name = "hyperbase"
 version = "0.1.8"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=main#8b3ca8f173fb5680fe5991d737deaa22ad458079"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=main#cbd15ef94236a91ada7227322303593166b63cde"
 dependencies = [
  "debruijn",
  "equiv",
@@ -1409,7 +1417,7 @@ dependencies = [
 [[package]]
 name = "io_utils"
 version = "0.3.2"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=main#8b3ca8f173fb5680fe5991d737deaa22ad458079"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=main#cbd15ef94236a91ada7227322303593166b63cde"
 dependencies = [
  "bincode",
  "flate2",
@@ -1475,7 +1483,7 @@ dependencies = [
 [[package]]
 name = "kmer_lookup"
 version = "0.1.5"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=main#8b3ca8f173fb5680fe5991d737deaa22ad458079"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=main#cbd15ef94236a91ada7227322303593166b63cde"
 dependencies = [
  "debruijn",
  "rayon",
@@ -2528,12 +2536,12 @@ dependencies = [
 [[package]]
 name = "stats_utils"
 version = "0.1.3"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=main#8b3ca8f173fb5680fe5991d737deaa22ad458079"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=main#cbd15ef94236a91ada7227322303593166b63cde"
 
 [[package]]
 name = "string_utils"
 version = "0.1.4"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=main#8b3ca8f173fb5680fe5991d737deaa22ad458079"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=main#cbd15ef94236a91ada7227322303593166b63cde"
 dependencies = [
  "vector_utils",
 ]
@@ -2597,7 +2605,7 @@ dependencies = [
 [[package]]
 name = "tables"
 version = "0.1.5"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=main#8b3ca8f173fb5680fe5991d737deaa22ad458079"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=main#cbd15ef94236a91ada7227322303593166b63cde"
 dependencies = [
  "io_utils",
  "itertools",
@@ -2887,7 +2895,7 @@ dependencies = [
 [[package]]
 name = "vdj_ann"
 version = "0.4.4"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=main#8b3ca8f173fb5680fe5991d737deaa22ad458079"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=main#cbd15ef94236a91ada7227322303593166b63cde"
 dependencies = [
  "align_tools",
  "amino",
@@ -2909,7 +2917,7 @@ dependencies = [
 [[package]]
 name = "vdj_ann_ref"
 version = "0.2.1"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=main#8b3ca8f173fb5680fe5991d737deaa22ad458079"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=main#cbd15ef94236a91ada7227322303593166b63cde"
 dependencies = [
  "debruijn",
  "exons",
@@ -2925,7 +2933,7 @@ dependencies = [
 [[package]]
 name = "vdj_types"
 version = "0.2.0"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=main#8b3ca8f173fb5680fe5991d737deaa22ad458079"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=main#cbd15ef94236a91ada7227322303593166b63cde"
 dependencies = [
  "serde",
 ]
@@ -2942,7 +2950,7 @@ dependencies = [
 [[package]]
 name = "vector_utils"
 version = "0.1.5"
-source = "git+https://github.com/10XGenomics/enclone_ranger?branch=main#8b3ca8f173fb5680fe5991d737deaa22ad458079"
+source = "git+https://github.com/10XGenomics/enclone_ranger?branch=main#cbd15ef94236a91ada7227322303593166b63cde"
 dependencies = [
  "permutation",
  "superslice",

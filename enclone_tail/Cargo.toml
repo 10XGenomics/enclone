@@ -15,6 +15,7 @@ authors = ["""David Jaffe <david.jaffe@10xgenomics.com>,
 edition = "2018"
 license-file = "LICENSE.txt"
 publish = false
+include = ["src/*.rs", "LICENSE.txt", "src/mammalian_fixed_len.table"]
 
 
 # To keep compile time down, this file should *not* access the enclone crate.
@@ -23,20 +24,28 @@ publish = false
 align_tools.workspace = true
 amino.workspace = true
 ansi_escape.workspace = true
+bio_edit.workspace = true
 crc.workspace = true
+enclone_args.workspace = true
 enclone_core.workspace = true
 enclone_proto.workspace = true
+enclone_process.workspace = true
+enclone_vars.workspace = true
 equiv.workspace = true
+expr_tools.workspace = true
 float-ord.workspace = true
 fontdb.workspace = true
 io_utils.workspace = true
 itertools.workspace = true
 lazy_static.workspace = true
 ndarray.workspace = true
+permutation.workspace = true
 palette.workspace = true
 plotters.workspace = true
 rayon.workspace = true
+regex.workspace = true
 resvg.workspace = true
+serde_json.workspace = true
 stats_utils.workspace = true
 string_utils.workspace = true
 superslice.workspace = true
