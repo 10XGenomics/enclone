@@ -6,7 +6,7 @@ use crate::group::group_and_print_clonotypes;
 
 use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype, GexInfo};
 
-use enclone_core::enclone_structs::{BarcodeFates, JoinInfo};
+use enclone_core::enclone_structs::{BarcodeFates, GexReaders, JoinInfo};
 use enclone_proto::types::DonorReferenceItem;
 use io_utils::fwrite;
 use ndarray::s;
@@ -39,9 +39,7 @@ pub fn tail_code(
     fate: &[BarcodeFates],
     tests: &Vec<usize>,
     controls: &Vec<usize>,
-    h5_data: &Vec<(usize, Vec<u32>, Vec<u32>)>,
-    d_readers: &Vec<Option<Reader>>,
-    ind_readers: &Vec<Option<Reader>>,
+    gex_readers: &[Option<GexReaders<'_>>],
     dref: &Vec<DonorReferenceItem>,
     groups: &Vec<Vec<(i32, String)>>,
     opt_d_val: &Vec<(usize, Vec<Vec<Vec<usize>>>)>,
@@ -175,23 +173,11 @@ pub fn tail_code(
                                     let z2 = gex_info.h5_indptr[li][p as usize + 1] as usize;
                                     let d: Vec<u32>;
                                     let ind: Vec<u32>;
-                                    if ctl.gen_opt.h5_pre {
-                                        d = h5_data[li].1[z1..z2].to_vec();
-                                        ind = h5_data[li].2[z1..z2].to_vec();
-                                    } else {
-                                        d = d_readers[li]
-                                            .as_ref()
-                                            .unwrap()
-                                            .read_slice(s![z1..z2])
-                                            .unwrap()
-                                            .to_vec();
-                                        ind = ind_readers[li]
-                                            .as_ref()
-                                            .unwrap()
-                                            .read_slice(s![z1..z2])
-                                            .unwrap()
-                                            .to_vec();
-                                    }
+                                    let (d, ind) = gex_readers[li]
+                                        .as_ref()
+                                        .unwrap()
+                                        .get_range(z1..z2)
+                                        .unwrap();
                                     for j in 0..d.len() {
                                         if ind[j] == fid as u32 {
                                             raw_count = d[j] as f64;
@@ -228,23 +214,8 @@ pub fn tail_code(
                                 let z2 = gex_info.h5_indptr[li][p as usize + 1] as usize;
                                 let d: Vec<u32>;
                                 let ind: Vec<u32>;
-                                if ctl.gen_opt.h5_pre {
-                                    d = h5_data[li].1[z1..z2].to_vec();
-                                    ind = h5_data[li].2[z1..z2].to_vec();
-                                } else {
-                                    d = d_readers[li]
-                                        .as_ref()
-                                        .unwrap()
-                                        .read_slice(s![z1..z2])
-                                        .unwrap()
-                                        .to_vec();
-                                    ind = ind_readers[li]
-                                        .as_ref()
-                                        .unwrap()
-                                        .read_slice(s![z1..z2])
-                                        .unwrap()
-                                        .to_vec();
-                                }
+                                let (d, ind) =
+                                    gex_readers[li].as_ref().unwrap().get_range(z1..z2).unwrap();
                                 for j in 0..d.len() {
                                     if ind[j] == fid as u32 {
                                         raw_count = d[j] as f64;
