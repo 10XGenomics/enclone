@@ -2,17 +2,14 @@
 
 use enclone_core::barcode_fate::BarcodeFate;
 use enclone_core::defs::EncloneControl;
+use enclone_core::enclone_structs::BarcodeFates;
 use io_utils::*;
-use std::collections::HashMap;
+
 use std::io::Write;
 use tables::*;
 use vector_utils::*;
 
-pub fn print_fate(
-    ctl: &EncloneControl,
-    fate: &Vec<HashMap<String, BarcodeFate>>,
-    logx: &mut Vec<u8>,
-) {
+pub fn print_fate(ctl: &EncloneControl, fate: &[BarcodeFates], logx: &mut Vec<u8>) {
     // Print barcode fate.
 
     fwriteln!(logx, "2. barcode fate");

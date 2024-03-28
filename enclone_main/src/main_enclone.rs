@@ -28,16 +28,16 @@ use vector_utils::{bin_member, next_diff, unique_sort};
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub fn main_enclone(args: &Vec<String>) -> Result<EncloneState, String> {
+pub fn main_enclone(args: &Vec<String>) -> Result<(), String> {
     let setup = main_enclone_setup(args)?;
     if setup.tall.is_none() {
-        return Ok(EncloneState::default());
+        return Ok(Default::default());
     }
-    let inter = main_enclone_start(setup)?;
-    if inter.setup.tall.is_none() {
-        return Ok(EncloneState::default());
+    let (exacts, fate) = main_enclone_start(&setup)?;
+    if setup.tall.is_none() {
+        return Ok(Default::default());
     }
-    main_enclone_stop(inter)
+    main_enclone_stop(&setup, &exacts, fate)
 }
 
 pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
@@ -340,18 +340,15 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
     let refx2 = &refx;
     let mut refdata = RefData::new();
     let ext_refx = String::new();
-    let (mut is_tcr, mut is_bcr) = (true, true);
-    if ctl.gen_opt.tcr {
-        is_bcr = false;
-    }
-    if ctl.gen_opt.bcr {
-        is_tcr = false;
-    }
-    make_vdj_ref_data_core(&mut refdata, refx2, &ext_refx, is_tcr, is_bcr, None);
-    let mut to_ref_index = HashMap::<usize, usize>::new();
-    for i in 0..refdata.refs.len() {
-        to_ref_index.insert(refdata.id[i] as usize, i);
-    }
+
+    make_vdj_ref_data_core(
+        &mut refdata,
+        refx2,
+        &ext_refx,
+        ctl.gen_opt.is_tcr(),
+        ctl.gen_opt.is_bcr(),
+        None,
+    );
 
     // Determine if the species is human or mouse or unknown.
 
@@ -407,7 +404,5 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
         ann: ann.to_string(),
         gex_info,
         tall: Some(tall),
-        is_bcr,
-        to_ref_index,
     })
 }
