@@ -63,19 +63,19 @@ split-debuginfo = "unpacked"
 # improved.
 
 [workspace.dependencies]
-align_tools = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/h5-loading-interface" }
-amino = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/h5-loading-interface" }
+align_tools = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/unfold-two-pass-loop" }
+amino = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/unfold-two-pass-loop" }
 anyhow = "1"
-ansi_escape = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/h5-loading-interface" }
+ansi_escape = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/unfold-two-pass-loop" }
 arboard = "2"
 assert_cmd = "2"
 async-trait = "0.1"
 attohttpc = { version = "0.18", default-features = false, features = ["compress", "tls-rustls"] }
 backtrace = "0.3"
 base64 = "0.13"
-binary_vec_io = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/h5-loading-interface" }
+binary_vec_io = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/unfold-two-pass-loop" }
 bio = "0.39"
-bio_edit = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/h5-loading-interface" }
+bio_edit = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/unfold-two-pass-loop" }
 byteorder = "1"
 bytes = "1"
 chrono = { version = "0.4", default-features = false, features = ["std", "clock"] }
@@ -86,41 +86,41 @@ core-graphics = "0.22"
 crc = "2"
 debruijn = "0.3"
 dirs = "4"
-dna = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/h5-loading-interface" }
+dna = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/unfold-two-pass-loop" }
 edit-distance = "2"
-enclone_args = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/h5-loading-interface" }
-enclone_core = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/h5-loading-interface" }
+enclone_args = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/unfold-two-pass-loop" }
+enclone_core = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/unfold-two-pass-loop" }
 enclone_denovo = { path = "../enclone_denovo" }
 enclone_help = { path = "../enclone_help" }
-enclone = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/h5-loading-interface" }
-enclone_print = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/h5-loading-interface" }
-enclone_proto = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/h5-loading-interface" }
-enclone_ranger = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/h5-loading-interface" }
+enclone = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/unfold-two-pass-loop" }
+enclone_print = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/unfold-two-pass-loop" }
+enclone_proto = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/unfold-two-pass-loop" }
+enclone_ranger = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/unfold-two-pass-loop" }
 enclone_server_proto = { path = "../enclone_server_proto" }
-enclone_stuff = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/h5-loading-interface" }
+enclone_stuff = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/unfold-two-pass-loop" }
 enclone_tail = { path = "../enclone_tail" }
-enclone_vars = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/h5-loading-interface" }
+enclone_vars = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/unfold-two-pass-loop" }
 enclone_version = { path = "../enclone_version" }
-equiv = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/h5-loading-interface" }
+equiv = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/unfold-two-pass-loop" }
 evalexpr = "7"
-expr_tools = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/h5-loading-interface" }
-fasta_tools = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/h5-loading-interface" }
+expr_tools = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/unfold-two-pass-loop" }
+fasta_tools = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/unfold-two-pass-loop" }
 file-lock = "2"
 flate2 = "1"
 float-ord = "0.3"
 fontdb = "0.7"
 fs_extra = "1"
 git = "https://github.com/10xGenomics/hdf5-rust.git"
-graph_simple = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/h5-loading-interface" }
+graph_simple = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/unfold-two-pass-loop" }
 hdf5 = { git = "https://github.com/10XGenomics/hdf5-rust.git", branch = "conda_nov2021", features = ["conda"], default-features = false }
 home = "0.5"
-hyperbase = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/h5-loading-interface" }
+hyperbase = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/unfold-two-pass-loop" }
 image = { version = "0.23", features = ["jpeg", "png", "jpeg_rayon"], default-features = false }
 include_dir = { version = "0.6", features = ["search"] }
-io_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/h5-loading-interface" }
+io_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/unfold-two-pass-loop" }
 itertools = "0.10"
 jpeg-decoder = "0.2"
-kmer_lookup = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/h5-loading-interface" }
+kmer_lookup = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/unfold-two-pass-loop" }
 lazy_static = "1"
 libc = "0.2"
 log = "0.4"
@@ -133,7 +133,7 @@ num-traits = "0.2"
 objc = "0.2"
 pager = "0.16"
 palette = "0.6"
-perf_stats = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/h5-loading-interface" }
+perf_stats = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/unfold-two-pass-loop" }
 permutation = "0.4"
 petgraph = "0.6"
 plotters = { version = "0.3", default_features = false, features = ["svg_backend", "point_series"] }
@@ -153,12 +153,12 @@ serde = "1"
 serde_derive = "1"
 serde_json = "1"
 sha2 = "0.10"
-stats_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/h5-loading-interface" }
+stats_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/unfold-two-pass-loop" }
 statrs = "0.15"
-stirling_numbers = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/h5-loading-interface" }
-string_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/h5-loading-interface" }
+stirling_numbers = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/unfold-two-pass-loop" }
+string_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/unfold-two-pass-loop" }
 superslice = "1"
-tables = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/h5-loading-interface" }
+tables = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/unfold-two-pass-loop" }
 tar = "0.4"
 thiserror = "1"
 tilde-expand = "0.1"
@@ -170,9 +170,9 @@ tonic-build = { version = "0.6", default-features = false, features = ["transpor
 triple_accel = "0.4"
 users = "0.11"
 usvg = { version = "0.19", features = ["text"] }
-vdj_types = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/h5-loading-interface" }
-vdj_ann = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/h5-loading-interface" }
-vdj_ann_ref = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/h5-loading-interface" }
-vector_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/h5-loading-interface" }
+vdj_types = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/unfold-two-pass-loop" }
+vdj_ann = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/unfold-two-pass-loop" }
+vdj_ann_ref = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/unfold-two-pass-loop" }
+vector_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/unfold-two-pass-loop" }
 whoami = "1"
 yaml-rust = "0.4"
