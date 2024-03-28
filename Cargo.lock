@@ -1329,7 +1329,7 @@ name = "hdf5-sys"
 version = "0.8.1"
 source = "git+https://github.com/10XGenomics/hdf5-rust.git?branch=conda_nov2021#2d4a40b7ef75de530bc53fd2eb0fe75047e083ad"
 dependencies = [
- "attohttpc 0.18.0",
+ "attohttpc 0.19.1",
  "bzip2",
  "libc",
  "libloading",
