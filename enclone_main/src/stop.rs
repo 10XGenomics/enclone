@@ -4,7 +4,7 @@ use crate::opt_d_val::make_opt_d_val;
 use crate::subset::subset_json;
 use enclone_core::defs::ColInfo;
 use enclone_core::enclone_structs::*;
-use enclone_print::print_clonotypes::print_clonotypes;
+use enclone_print::print_clonotypes::{print_clonotypes, PrintClonotypesResult};
 use enclone_tail::grouper::grouper;
 use enclone_tail::tail::tail_code;
 use io_utils::{dir_list, open_for_read, path_exists};
@@ -116,14 +116,6 @@ pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<EncloneState
     });
 
     // Find and print clonotypes.  (But we don't actually print them here.)
-
-    let mut pics = Vec::<String>::new();
-    let mut exacts = Vec::<Vec<usize>>::new(); // ugly reuse of name
-    let mut in_center = Vec::<bool>::new();
-    let mut rsi = Vec::<ColInfo>::new(); // ditto
-    let mut out_datas = Vec::<Vec<HashMap<String, String>>>::new();
-    let mut tests = Vec::<usize>::new();
-    let mut controls = Vec::<usize>::new();
     if !ctl.gen_opt.trace_barcode.is_empty() {
         for u in 0..exact_clonotypes.len() {
             let ex = &exact_clonotypes[u];
@@ -138,7 +130,15 @@ pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<EncloneState
             }
         }
     }
-    print_clonotypes(
+
+    let PrintClonotypesResult {
+        mut pics,
+        mut exacts,
+        in_center,
+        mut rsi,
+        mut out_datas,
+        gene_scan_result,
+    } = print_clonotypes(
         is_bcr,
         to_bc,
         sr,
@@ -154,16 +154,37 @@ pub fn main_enclone_stop(mut inter: EncloneIntermediates) -> Result<EncloneState
         &d_readers,
         &ind_readers,
         &h5_data,
-        &mut pics,
-        &mut exacts,
-        &mut in_center,
-        &mut rsi,
-        &mut out_datas,
-        &mut tests,
-        &mut controls,
         fate,
         allele_data,
     )?;
+
+    // Gather some data for gene scan.
+    let (mut tests, mut controls) = (vec![], vec![]);
+    if ctl.gen_opt.gene_scan.is_some() {
+        if !ctl.gen_opt.gene_scan_exact {
+            for (i, in_sets) in gene_scan_result.iter().enumerate() {
+                for in_set in in_sets {
+                    if in_set.test {
+                        tests.push(i);
+                    }
+                    if in_set.control {
+                        controls.push(i);
+                    }
+                }
+            }
+        } else {
+            for (in_sets, e) in gene_scan_result.iter().zip(exacts.iter()) {
+                for (&ej, in_set) in e.iter().zip(in_sets) {
+                    if in_set.test {
+                        tests.push(ej);
+                    }
+                    if in_set.control {
+                        controls.push(ej);
+                    }
+                }
+            }
+        }
+    }
 
     // Process the SUBSET_JSON option.
 
