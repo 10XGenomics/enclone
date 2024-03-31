@@ -55,7 +55,7 @@ pub fn main_enclone_stop(
         }
     }
 
-    let mut proc = EncloneOrbitProcessor::default();
+    let mut proc = EncloneOrbitProcessor::new(setup, &exacts.vdj_cells);
 
     print_clonotypes(setup, exacts, &gex_readers, &fate, &mut proc)?;
 
