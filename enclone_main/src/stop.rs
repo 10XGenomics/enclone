@@ -4,7 +4,9 @@ use crate::opt_d_val::make_opt_d_val;
 use crate::subset::subset_json;
 
 use enclone_core::enclone_structs::*;
-use enclone_print::print_clonotypes::{print_clonotypes, PrintClonotypesResult};
+use enclone_print::print_clonotypes::{
+    print_clonotypes, EncloneOrbitProcessor, PrintClonotypesResult,
+};
 use enclone_tail::grouper::grouper;
 use enclone_tail::tail::tail_code;
 use io_utils::{dir_list, open_for_read, path_exists};
@@ -53,6 +55,10 @@ pub fn main_enclone_stop(
         }
     }
 
+    let mut proc = EncloneOrbitProcessor::default();
+
+    print_clonotypes(setup, exacts, &gex_readers, &fate, &mut proc)?;
+
     let PrintClonotypesResult {
         mut pics,
         mut exacts,
@@ -60,7 +66,7 @@ pub fn main_enclone_stop(
         mut rsi,
         mut out_datas,
         gene_scan_result,
-    } = print_clonotypes(setup, exacts, &gex_readers, &fate)?;
+    } = proc.result;
 
     // Gather some data for gene scan.
     let (mut tests, mut controls) = (vec![], vec![]);
