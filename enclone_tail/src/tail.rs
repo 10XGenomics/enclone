@@ -3,10 +3,10 @@
 // Group and print clonotypes.  For now, limited grouping functionality.
 
 use crate::group::group_and_print_clonotypes;
-use enclone_core::barcode_fate::BarcodeFate;
+
 use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype, GexInfo};
 
-use enclone_core::enclone_structs::JoinInfo;
+use enclone_core::enclone_structs::{BarcodeFates, JoinInfo};
 use enclone_proto::types::DonorReferenceItem;
 use io_utils::fwrite;
 use ndarray::s;
@@ -36,7 +36,7 @@ pub fn tail_code(
     join_info: &Vec<JoinInfo>,
     gex_info: &GexInfo,
     vdj_cells: &Vec<Vec<String>>,
-    fate: &Vec<HashMap<String, BarcodeFate>>,
+    fate: &[BarcodeFates],
     tests: &Vec<usize>,
     controls: &Vec<usize>,
     h5_data: &Vec<(usize, Vec<u32>, Vec<u32>)>,
