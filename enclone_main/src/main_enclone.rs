@@ -324,7 +324,7 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
 
     let mut refx = String::new();
     let ann;
-    if !ctl.gen_opt.cellranger {
+    if !ctl.gen_opt.cellranger.cellranger {
         ann = "all_contig_annotations.json";
     } else {
         ann = "contig_annotations.json";

@@ -48,12 +48,12 @@ pub fn critical_args(args: &Vec<String>, ctl: &mut EncloneControl) -> Result<Vec
                 println!("the evil eye is on");
             }
         } else if is_simple_arg(&args[i], "CELLRANGER")? {
-            ctl.gen_opt.cellranger = true;
+            ctl.gen_opt.cellranger.cellranger = true;
         }
     }
 
     // Determine PRE.
-    if !ctl.gen_opt.cellranger {
+    if !ctl.gen_opt.cellranger.cellranger {
         let home = dirs::home_dir().unwrap().to_str().unwrap().to_string();
         ctl.gen_opt.pre = vec![
             format!("{}/enclone/datasets_me", home),
@@ -244,7 +244,7 @@ pub fn setup(
         }
     }
 
-    if !nopretty && !ctl.gen_opt.cellranger {
+    if !nopretty && !ctl.gen_opt.cellranger.cellranger {
         set_panic_handler(args_orig);
         let mut nopager = false;
         for i in 1..args_orig.len() {
