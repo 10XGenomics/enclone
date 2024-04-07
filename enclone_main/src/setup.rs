@@ -134,7 +134,7 @@ pub fn setup(
     args_orig: &Vec<String>,
 ) -> Result<(), String> {
     // Provide help if requested.
-
+    let mut nopager = false;
     {
         for i in 2..args.len() {
             if args[i] == "help" {
@@ -148,7 +148,8 @@ pub fn setup(
         let mut plain = false;
         let mut long_help = false;
         for i in 1..args.len() {
-            if args[i] == "EVIL_EYE" {
+            if args[i] == "NOPAGER" || args[i] == "EVIL_EYE" {
+                nopager = true;
                 to_delete[i] = true;
             } else if args[i] == "HTML" {
                 ctl.gen_opt.html = true;
@@ -191,7 +192,7 @@ pub fn setup(
         }
         erase_if(&mut args, &to_delete);
         *argsx = args.clone();
-        if !ctl.cr_opt.nopager && (args.len() == 1 || args.contains(&"help".to_string())) {
+        if !nopager && (args.len() == 1 || args.contains(&"help".to_string())) {
             setup_pager(true);
         }
         let mut help_all = false;
@@ -202,6 +203,7 @@ pub fn setup(
         for i in 0..args_orig.len() {
             if args_orig[i] != "HTML"
                 && args_orig[i] != "STABLE_DOC"
+                && args_orig[i] != "NOPAGER"
                 && args_orig[i] != "LONG_HELP"
                 && !args_orig[i].starts_with("PRE=")
                 && !args_orig[i].starts_with("PREPOST=")
@@ -230,7 +232,7 @@ pub fn setup(
         }
     }
 
-    if !ctl.cr_opt.nopager {
+    if !nopager {
         setup_pager(true);
     }
 
