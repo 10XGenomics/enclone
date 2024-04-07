@@ -521,9 +521,9 @@ fn test_ranger() {
         args.push(format!("PROTO={}", proto_out));
         args.push(format!("DONOR_REF_FILE={}", donor_ref_out));
         if pass == 1 {
-            main_enclone_ranger(args.clone()).unwrap();
+            main_enclone_ranger(args).unwrap();
         } else {
-            main_enclone(&args).unwrap();
+            main_enclone(args).unwrap();
         }
         if !path_exists(proto_out) {
             eprintln!("pass = {}, can't find proto_out", pass);

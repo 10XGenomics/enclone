@@ -5,34 +5,20 @@
 // returns exit status zero.
 
 use enclone_main::main_enclone::main_enclone;
-use enclone_main::USING_PAGER;
 
 use io_utils::*;
-
-#[cfg(not(target_os = "windows"))]
-use nix::sys::signal::{kill, SIGINT};
-#[cfg(not(target_os = "windows"))]
-use nix::unistd::getppid;
-#[cfg(not(target_os = "windows"))]
-use nix::unistd::Pid;
 
 use std::env;
 
 use std::process::Command;
-use std::sync::atomic::Ordering::SeqCst;
-use std::thread;
-use std::time::Duration;
 use string_utils::*;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let mut args: Vec<String> = env::args().collect();
-    let mut no_kill = false;
+    let args: Vec<String> = env::args().collect();
     let mut update = false;
     for i in 1..args.len() {
-        if args[i] == "NO_KILL" {
-            no_kill = true;
-        } else if args[i] == "UPDATE" {
+        if args[i] == "UPDATE" {
             update = true;
         }
     }
@@ -92,7 +78,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     if args.len() < 2 || args[1] != "SERVER" {
         // Test for error.
 
-        if let Err(err) = main_enclone(&args) {
+        if let Err(err) = main_enclone(args) {
             // TURNED OFF BECAUSE WE GOT EXIT STATUS ZERO SOMETIMES WHEN WE USED THROUGH COMMAND.
             //
             // If there was an error and we had used the pager, then std::process::exit(1) will
@@ -107,17 +93,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             // The kill makes the screen flash.  This is pretty horrible.
 
             eprintln!("{err}");
-            if !no_kill && USING_PAGER.load(SeqCst) && 0 == 1 {
-                thread::sleep(Duration::from_millis(10));
-                #[cfg(not(target_os = "windows"))]
-                {
-                    let ppid = getppid();
-                    kill(Pid::from_raw(i32::from(ppid)), SIGINT).unwrap();
-                }
-                thread::sleep(Duration::from_millis(10));
-            } else {
-                std::process::exit(1);
-            }
+            std::process::exit(1);
         }
 
         // Done.

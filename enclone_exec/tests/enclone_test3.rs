@@ -53,7 +53,6 @@ fn test_site_examples() {
         let mut in_stuff = Vec::<u8>::new();
         f.read_to_end(&mut in_stuff).unwrap();
         let mut args = parse_bsv(test);
-        args.push("NO_KILL");
         let new = Command::new(env!("CARGO_BIN_EXE_enclone"))
             .args(&args)
             .output()
@@ -187,7 +186,6 @@ fn test_enclone_examples() {
             new = new.arg(arg);
         }
         let new = new
-            .arg("NO_KILL")
             .output()
             .expect("failed to execute test_enclone_examples");
         let new2 = stringme(&new.stdout);
@@ -303,10 +301,7 @@ fn test_help_output() {
         args.push("NOPAGER".to_string());
         let mut new = Command::new(env!("CARGO_BIN_EXE_enclone"));
         let new = new.args(&args);
-        let new = new
-            .arg("NO_KILL")
-            .output()
-            .expect("failed to execute test_help_output");
+        let new = new.output().expect("failed to execute test_help_output");
         if new.status.code() != Some(0) {
             eprintln!("Attempt to run {} failed.\n", command);
             eprintln!("stderr = {}", strme(&new.stderr));
@@ -338,10 +333,7 @@ fn test_help_no_stable() {
     new = new.arg("all");
     new = new.arg("HTML");
     new = new.arg("NOPAGER");
-    let new = new
-        .arg("NO_KILL")
-        .output()
-        .expect("failed to execute test_help_output");
+    let new = new.output().expect("failed to execute test_help_output");
     if new.status.code() != Some(0) {
         eprintln!("Attempt to run enclone help all without STABLE_DOC failed.\n");
         panic!("failed");
@@ -380,7 +372,6 @@ fn test_enclone_prebuild() {
     }
     // dubious use of expect:
     let new = new
-        .arg("NO_KILL")
         .output()
         .expect("failed to execute test_enclone_prebuild");
     // let new_err = strme(&new.stderr).split('\n').collect::<Vec<&str>>();
@@ -409,7 +400,6 @@ fn test_enclone_prebuild() {
     }
     // dubious use of expect:
     let new = new
-        .arg("NO_KILL")
         .output()
         .expect("failed to execute enclone_test_prebuild");
     // let new_err = strme(&new.stderr).split('\n').collect::<Vec<&str>>();
@@ -485,7 +475,6 @@ fn test_proto_write() -> Result<(), Error> {
         // FIXME: It would be nicer to use the enclone API here
         std::process::Command::new(env!("CARGO_BIN_EXE_enclone"))
             .args([&pre_arg, *t, &binary_arg, &proto_arg])
-            .arg("NO_KILL")
             .output()
             .expect("failed to execute enclone for test_proto_write");
 
@@ -608,7 +597,6 @@ fn test_subset_json() {
         let new = Command::new(env!("CARGO_BIN_EXE_enclone"))
             // .arg(&pre_arg)
             .args(&args)
-            .arg("NO_KILL")
             .output()
             .unwrap_or_else(|_| panic!("failed to execute test_subset_json 1, pass = {}", pass));
         if new.status.code() != Some(0) {
@@ -629,7 +617,6 @@ fn test_subset_json() {
         }
         let new = Command::new(env!("CARGO_BIN_EXE_enclone"))
             .args(&args)
-            .arg("NO_KILL")
             .output()
             .unwrap_or_else(|_| panic!("failed to execute test_subset_json 2, pass = {}", pass));
         if new.status.code() != Some(0) {
@@ -692,7 +679,6 @@ fn test_cell_exact() {
                     .arg("POUT=stdout")
                     .arg(&format!("PCOLS={}", varp))
                     .arg("PCELL")
-                    .arg("NO_KILL")
                     .output()
                     .expect("failed to execute test_cel_exact");
                 if new.status.code() != Some(0) {
@@ -726,7 +712,6 @@ fn test_ref_only() {
     let args = parse_bsv(test);
     let new = Command::new(env!("CARGO_BIN_EXE_enclone"))
         .args(&args)
-        .arg("NO_KILL")
         .output()
         .expect("failed to execute test_subset_json 1");
     if new.status.code() == Some(0) {

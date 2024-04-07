@@ -13,7 +13,7 @@ use enclone_args::load_gex::get_gex_info;
 use enclone_args::proc_args2::is_simple_arg;
 use enclone_args::proc_args_check::{check_gvars, check_lvars, check_pcols, get_known_features};
 use enclone_core::cell_color::CellColor;
-use enclone_core::defs::EncloneControl;
+use enclone_core::defs::{CellrangerOpt, EncloneControl};
 use enclone_core::enclone_structs::*;
 use enclone_stuff::start::*;
 use enclone_stuff::vars::match_vars;
@@ -28,7 +28,7 @@ use vector_utils::{bin_member, next_diff, unique_sort};
 
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
-pub fn main_enclone(args: &Vec<String>) -> Result<(), String> {
+pub fn main_enclone(args: Vec<String>) -> Result<(), String> {
     let setup = main_enclone_setup(args)?;
     if setup.tall.is_none() {
         return Ok(Default::default());
@@ -40,7 +40,7 @@ pub fn main_enclone(args: &Vec<String>) -> Result<(), String> {
     main_enclone_stop(&setup, &exacts, fate)
 }
 
-pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
+pub fn main_enclone_setup(args: Vec<String>) -> Result<EncloneSetup, String> {
     let tall = Instant::now();
 
     // Test for enclone --check.
@@ -80,8 +80,14 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
     // Set up stuff, read args, etc.
 
     let args_orig = args.clone();
-    let mut ctl = EncloneControl::default();
-    let args = critical_args(args, &mut ctl)?;
+
+    let (cr_opt, args) = CellrangerOpt::from_args(args).map_err(|e| e.to_string())?;
+    let mut ctl = EncloneControl {
+        cr_opt,
+        ..Default::default()
+    };
+
+    let args = critical_args(&args, &mut ctl)?;
     ctl.start_time = Some(tall);
 
     for i in 1..args.len() {
@@ -129,7 +135,6 @@ pub fn main_enclone_setup(args: &Vec<String>) -> Result<EncloneSetup, String> {
         if args_orig[i] != "HTML"
             && args_orig[i] != "STABLE_DOC"
             && args_orig[i] != "NOPAGER"
-            && args_orig[i] != "NO_KILL"
             && !args_orig[i].starts_with("PRE=")
             && !args_orig[i].starts_with("PREPOST=")
             && !args_orig[i].starts_with("MAX_CORES=")

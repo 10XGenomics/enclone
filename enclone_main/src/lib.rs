@@ -7,7 +7,3 @@ pub mod sec_mem;
 pub mod setup;
 pub mod stop;
 pub mod subset;
-
-use std::sync::atomic::AtomicBool;
-
-pub static USING_PAGER: AtomicBool = AtomicBool::new(false);

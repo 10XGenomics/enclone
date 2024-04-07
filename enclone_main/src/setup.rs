@@ -2,7 +2,6 @@
 //
 // See README for documentation.
 
-use crate::USING_PAGER;
 use enclone::misc1::setup_pager;
 use enclone_args::proc_args::proc_args;
 use enclone_args::proc_args2::is_simple_arg;
@@ -39,7 +38,7 @@ pub fn critical_args(args: &Vec<String>, ctl: &mut EncloneControl) -> Result<Vec
         }
     }
 
-    // Check for EVIL_EYE and CELLRANGER.
+    // Check for EVIL_EYE.
 
     for i in 1..args.len() {
         if args[i] == "EVIL_EYE" {
@@ -47,8 +46,6 @@ pub fn critical_args(args: &Vec<String>, ctl: &mut EncloneControl) -> Result<Vec
             if ctl.gen_opt.evil_eye {
                 println!("the evil eye is on");
             }
-        } else if is_simple_arg(&args[i], "CELLRANGER")? {
-            ctl.cr_opt.cellranger = true;
         }
     }
 
@@ -147,13 +144,10 @@ pub fn setup(
         }
         let mut args = args.clone();
         let mut to_delete = vec![false; args.len()];
-        let mut nopager = false;
         let mut plain = false;
         let mut long_help = false;
         for i in 1..args.len() {
-            if args[i] == "NOPAGER" || args[i] == "EVIL_EYE" {
-                nopager = true;
-                ctl.gen_opt.nopager = true;
+            if args[i] == "EVIL_EYE" {
                 to_delete[i] = true;
             } else if args[i] == "HTML" {
                 ctl.gen_opt.html = true;
@@ -186,8 +180,6 @@ pub fn setup(
                 plain = true;
             } else if args[i] == "SPLIT" {
                 ctl.gen_opt.split = true;
-            } else if args[i] == "NO_KILL" {
-                to_delete[i] = true;
             }
         }
 
@@ -198,7 +190,7 @@ pub fn setup(
         }
         erase_if(&mut args, &to_delete);
         *argsx = args.clone();
-        if !nopager && (args.len() == 1 || args.contains(&"help".to_string())) {
+        if !ctl.cr_opt.nopager && (args.len() == 1 || args.contains(&"help".to_string())) {
             using_pager = true;
             setup_pager(true);
         }
@@ -211,7 +203,6 @@ pub fn setup(
             if args_orig[i] != "HTML"
                 && args_orig[i] != "STABLE_DOC"
                 && args_orig[i] != "NOPAGER"
-                && args_orig[i] != "NO_KILL"
                 && args_orig[i] != "LONG_HELP"
                 && !args_orig[i].starts_with("PRE=")
                 && !args_orig[i].starts_with("PREPOST=")
@@ -257,7 +248,6 @@ pub fn setup(
             setup_pager(!nopager);
         }
     }
-    USING_PAGER.store(using_pager, SeqCst);
 
     // Process args (and set defaults for them).
 
