@@ -1,10 +1,10 @@
-use enclone_tools::AnnotationWithDataset;
+use enclone_main::subset::AnnotationWithDataset;
 // Copyright (c) 2022 10X Genomics, Inc. All rights reserved.
 //
 // Make filtered_contig.fasta and filtered_contig_annotations.csv from all_contig_annotations.json.
 use io_utils::{fwriteln, open_for_write_new, open_maybe_compressed};
 use std::io::Write;
-use string_utils::*;
+use string_utils::TextUtils;
 use vdj_types::VdjRegion;
 
 fn main() {

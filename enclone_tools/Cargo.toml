@@ -28,6 +28,7 @@ edit-distance.workspace = true
 enclone.workspace = true
 enclone_core.workspace = true
 enclone_denovo = { path = "../enclone_denovo" }
+enclone_main = { path = "../enclone_main" }
 enclone_testlist = { path = "../enclone_testlist" }
 equiv.workspace = true
 evalexpr.workspace = true

@@ -1,11 +1,19 @@
 // Copyright (c) 2021 10X Genomics, Inc. All rights reserved.
 
 // Process the SUBSET_JSON option.
-
 use enclone_core::defs::{EncloneControl, ExactClonotype};
-use enclone_tools::AnnotationWithDataset;
 use io_utils::{open_for_write_new, open_maybe_compressed, path_exists};
+use serde::{Deserialize, Serialize};
+use vdj_ann::annotate::ContigAnnotation;
 use vector_utils::{bin_member, unique_sort};
+
+/// Add an optional dataset string to a ContigAnnotation.
+#[derive(Serialize, Deserialize)]
+pub struct AnnotationWithDataset {
+    pub dataset: Option<String>,
+    #[serde(flatten)]
+    pub data: ContigAnnotation,
+}
 
 pub fn subset_json(
     ctl: &EncloneControl,

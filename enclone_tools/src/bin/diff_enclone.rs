@@ -16,7 +16,7 @@
 //
 // Do not use any of the grouping arguments.
 
-use enclone::misc1::setup_pager;
+use enclone_main::setup::setup_pager;
 use equiv::EquivRel;
 use itertools::Itertools;
 
