@@ -12,6 +12,7 @@ use enclone::secret::fetch_secmem;
 use enclone_args::load_gex::get_gex_info;
 use enclone_args::proc_args2::is_simple_arg;
 use enclone_args::proc_args_check::{check_gvars, check_lvars, check_pcols, get_known_features};
+use enclone_build::set_panic_handler;
 use enclone_core::cell_color::CellColor;
 use enclone_core::defs::{CellrangerOpt, EncloneControl};
 use enclone_core::enclone_structs::*;
@@ -21,7 +22,7 @@ use enclone_vars::decode_arith;
 use expr_tools::vars_of_node;
 use io_utils::{open_for_read, open_userfile_for_read, path_exists};
 use itertools::Itertools;
-use std::{collections::HashMap, env, fs, fs::read_to_string, io::BufRead, time::Instant};
+use std::{env, fs, fs::read_to_string, io::BufRead, time::Instant};
 use string_utils::TextUtils;
 use vdj_ann::refx;
 use vector_utils::{bin_member, next_diff, unique_sort};
@@ -29,13 +30,14 @@ use vector_utils::{bin_member, next_diff, unique_sort};
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 
 pub fn main_enclone(args: Vec<String>) -> Result<(), String> {
+    set_panic_handler(&args);
     let setup = main_enclone_setup(args)?;
     if setup.tall.is_none() {
-        return Ok(Default::default());
+        return Ok(());
     }
     let (exacts, fate) = main_enclone_start(&setup)?;
     if setup.tall.is_none() {
-        return Ok(Default::default());
+        return Ok(());
     }
     main_enclone_stop(&setup, &exacts, fate)
 }
@@ -134,7 +136,6 @@ pub fn main_enclone_setup(args: Vec<String>) -> Result<EncloneSetup, String> {
     for i in 0..args_orig.len() {
         if args_orig[i] != "HTML"
             && args_orig[i] != "STABLE_DOC"
-            && args_orig[i] != "NOPAGER"
             && !args_orig[i].starts_with("PRE=")
             && !args_orig[i].starts_with("PREPOST=")
             && !args_orig[i].starts_with("MAX_CORES=")

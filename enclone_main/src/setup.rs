@@ -18,7 +18,6 @@ use io_utils::{open_for_read, path_exists};
 use itertools::Itertools;
 use std::env;
 use std::io::BufRead;
-use std::sync::atomic::Ordering::SeqCst;
 
 use string_utils::TextUtils;
 use vector_utils::erase_if;
@@ -132,7 +131,7 @@ pub fn setup(
     argsx: &mut Vec<String>,
     args_orig: &Vec<String>,
 ) -> Result<(), String> {
-    let mut using_pager = false;
+    // Provide help if requested.
 
     {
         for i in 2..args.len() {
@@ -191,7 +190,6 @@ pub fn setup(
         erase_if(&mut args, &to_delete);
         *argsx = args.clone();
         if !ctl.cr_opt.nopager && (args.len() == 1 || args.contains(&"help".to_string())) {
-            using_pager = true;
             setup_pager(true);
         }
         let mut help_all = false;
@@ -202,7 +200,6 @@ pub fn setup(
         for i in 0..args_orig.len() {
             if args_orig[i] != "HTML"
                 && args_orig[i] != "STABLE_DOC"
-                && args_orig[i] != "NOPAGER"
                 && args_orig[i] != "LONG_HELP"
                 && !args_orig[i].starts_with("PRE=")
                 && !args_orig[i].starts_with("PREPOST=")
@@ -225,28 +222,14 @@ pub fn setup(
     // Pretest for some options.
 
     ctl.pretty = true;
-    let mut nopretty = false;
     for i in 1..args.len() {
         if is_simple_arg(&args[i], "PLAIN")? {
             ctl.pretty = false;
         }
-        if is_simple_arg(&args[i], "NOPRETTY")? {
-            nopretty = true;
-        }
     }
 
-    if !nopretty && !ctl.cr_opt.cellranger {
-        set_panic_handler(args_orig);
-        let mut nopager = false;
-        for i in 1..args_orig.len() {
-            if args_orig[i] == "NOPAGER" {
-                nopager = true;
-            }
-        }
-        if !nopager {
-            using_pager = true;
-            setup_pager(!nopager);
-        }
+    if !ctl.cr_opt.nopager {
+        setup_pager(true);
     }
 
     // Process args (and set defaults for them).
