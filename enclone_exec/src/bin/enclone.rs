@@ -79,19 +79,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         // Test for error.
 
         if let Err(err) = main_enclone(args) {
-            // TURNED OFF BECAUSE WE GOT EXIT STATUS ZERO SOMETIMES WHEN WE USED THROUGH COMMAND.
-            //
-            // If there was an error and we had used the pager, then std::process::exit(1) will
-            // result in exit status 0 if enclone was invoked from a terminal window, and
-            // probably not otherwise.  To get nonzero exit status, we instead kill the parent
-            // process, which is less.  That's a little surprising, but that's how it works:
-            // it is the parent that is less.
-            //
-            // The little bit of sleep seems to prevent printing of an extra newline, but this
-            // is flaky.
-            //
-            // The kill makes the screen flash.  This is pretty horrible.
-
             eprintln!("{err}");
             std::process::exit(1);
         }
