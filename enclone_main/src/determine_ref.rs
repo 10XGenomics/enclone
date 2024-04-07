@@ -21,7 +21,7 @@ pub fn determine_ref(ctl: &mut EncloneControl, refx: &mut String) -> Result<(), 
     // First check for the existence of a json file.
 
     let ann;
-    if !ctl.gen_opt.cellranger.cellranger {
+    if !ctl.cr_opt.cellranger {
         ann = "all_contig_annotations.json";
     } else {
         ann = "contig_annotations.json";

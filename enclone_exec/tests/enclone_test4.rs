@@ -521,7 +521,7 @@ fn test_ranger() {
         args.push(format!("PROTO={}", proto_out));
         args.push(format!("DONOR_REF_FILE={}", donor_ref_out));
         if pass == 1 {
-            main_enclone_ranger(&args).unwrap();
+            main_enclone_ranger(args.clone()).unwrap();
         } else {
             main_enclone(&args).unwrap();
         }
