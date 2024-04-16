@@ -85,23 +85,23 @@ pub fn determine_ref(ctl: &mut EncloneControl, refx: &mut String) -> Result<(), 
 
     // Step 3.  Test to see if REF is specified.
 
-    if refx.is_empty() && !ctl.gen_opt.refname.is_empty() {
-        if std::path::Path::new(&ctl.gen_opt.refname).is_dir() {
+    if refx.is_empty() && !ctl.cr_opt.refname.is_empty() {
+        if std::path::Path::new(&ctl.cr_opt.refname).is_dir() {
             return Err(format!(
                 "\nProblem with REF: \"{}\"\nis a directory, not a file.\n",
-                ctl.gen_opt.refname
+                ctl.cr_opt.refname
             ));
         }
         if ctl.gen_opt.descrip {
-            println!("using reference = {}", ctl.gen_opt.refname);
+            println!("using reference = {}", ctl.cr_opt.refname);
         }
-        let fx = File::open(&ctl.gen_opt.refname);
+        let fx = File::open(&ctl.cr_opt.refname);
         if fx.is_err() {
             return Err(format!(
                 "\nProblem with REF: unable to read from the file\n\
                  \"{}\".\nPlease check that that path makes sense and that you have read \
                  permission along that path.\n",
-                ctl.gen_opt.refname
+                ctl.cr_opt.refname
             ));
         }
         let f = BufReader::new(fx.unwrap());
@@ -123,7 +123,7 @@ pub fn determine_ref(ctl: &mut EncloneControl, refx: &mut String) -> Result<(), 
                         "\nThe header line\n{}\nin the FASTA file specified by\nREF={}\n\
                         does not have the required structure for a cellranger or \
                         enclone VDJ reference.",
-                        s, ctl.gen_opt.refname,
+                        s, ctl.cr_opt.refname,
                     ));
                 }
             } else {
@@ -148,7 +148,7 @@ pub fn determine_ref(ctl: &mut EncloneControl, refx: &mut String) -> Result<(), 
 
     // Step 4.  Test for presence of a reference file in the VDJ directories.
 
-    if refx.is_empty() && ctl.gen_opt.refname.is_empty() {
+    if refx.is_empty() && ctl.cr_opt.refname.is_empty() {
         let rpaths = [
             "outs/vdj_reference/fasta/regions.fa",
             "vdj_reference/fasta/regions.fa",
