@@ -38,7 +38,7 @@ pub fn print_fate(ctl: &EncloneControl, fate: &[BarcodeFates], logx: &mut Vec<u8
                     }
                 }
                 BarcodeFate::Umi => {
-                    if !ctl.clono_filt_opt_def.umi_filt {
+                    if !ctl.cr_opt.umi_filt {
                         continue;
                     }
                 }
