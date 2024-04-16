@@ -82,6 +82,7 @@ pub fn main_enclone_setup(args: Vec<String>) -> Result<EncloneSetup, String> {
     // Set up stuff, read args, etc.
 
     let args_orig = args.clone();
+    let args = proc_n_all(args);
 
     let (cr_opt, args) = CellrangerOpt::from_args(args).map_err(|e| e.to_string())?;
     let mut ctl = EncloneControl {
@@ -411,4 +412,49 @@ pub fn main_enclone_setup(args: Vec<String>) -> Result<EncloneSetup, String> {
         gex_info,
         tall: Some(tall),
     })
+}
+
+fn proc_n_all(mut args: Vec<String>) -> Vec<String> {
+    // Preprocess NALL and NALL_GEX.
+    // FIXME: these should be implmeneted as a direct action on opt rather than
+    // pushing additional command line args.
+    let mut to_append = Vec::new();
+    for arg in &args[1..] {
+        if arg == "NALL" || arg == "NALL_CELL" || arg == "NALL_GEX" {
+            for arg_to_append in [
+                "NCELL",
+                "NGEX",
+                "NCROSS",
+                "NDOUBLET",
+                "NUMI",
+                "NUMI_RATIO",
+                "NGRAPH_FILTER",
+                "NMAX",
+                "NQUAL",
+                "NWEAK_CHAINS",
+                "NWEAK_ONESIES",
+                "NFOURSIE_KILL",
+                "NWHITEF",
+                "NBC_DUP",
+                "MIX_DONORS",
+                "NIMPROPER",
+                "NSIG",
+            ] {
+                if arg_to_append == "NCELL" {
+                    if arg != "NALL_CELL" {
+                        to_append.push(arg_to_append.to_string());
+                    }
+                } else if arg_to_append == "NGEX" {
+                    if arg != "NALL_GEX" {
+                        to_append.push(arg_to_append.to_string());
+                    }
+                } else {
+                    to_append.push(arg_to_append.to_string());
+                }
+            }
+            break;
+        }
+    }
+    args.append(&mut to_append);
+    args
 }
