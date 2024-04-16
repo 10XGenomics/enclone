@@ -53,29 +53,20 @@ pub fn critical_args(args: &Vec<String>, ctl: &mut EncloneControl) -> Result<Vec
     // Determine PRE.
     if !ctl.cr_opt.cellranger {
         let home = dirs::home_dir().unwrap().to_str().unwrap().to_string();
-        ctl.gen_opt.pre = vec![
+        ctl.cr_opt.pre = vec![
             format!("{}/enclone/datasets_me", home),
             format!("{}/enclone/datasets", home),
             format!("{}/enclone/datasets2", home),
         ];
     }
-    for i in 1..args.len() {
-        if args[i].starts_with("PRE=") {
-            let pre = args[i].after("PRE=").split(',').collect::<Vec<&str>>();
-            ctl.gen_opt.pre.clear();
-            for x in pre.iter() {
-                ctl.gen_opt.pre.push(x.to_string());
-            }
-        }
-    }
     for i in (1..args.len()).rev() {
         if args[i].starts_with("PREPOST=") {
             let prepost = args[i].after("PREPOST=");
             let mut pre_plus = Vec::<String>::new();
-            for p in ctl.gen_opt.pre.iter() {
+            for p in ctl.cr_opt.pre.iter() {
                 pre_plus.push(format!("{p}/{prepost}"));
             }
-            ctl.gen_opt.pre.append(&mut pre_plus);
+            ctl.cr_opt.pre.append(&mut pre_plus);
             break;
         }
     }
@@ -89,7 +80,7 @@ pub fn critical_args(args: &Vec<String>, ctl: &mut EncloneControl) -> Result<Vec
             let mut f2 = f.to_string();
             tilde_expand_me(&mut f2);
             let mut f2s = vec![f2.clone()];
-            for pre in ctl.gen_opt.pre.iter() {
+            for pre in ctl.cr_opt.pre.iter() {
                 f2s.push(format!("{}/{}", pre, f2));
             }
             let mut found = false;
@@ -116,7 +107,7 @@ pub fn critical_args(args: &Vec<String>, ctl: &mut EncloneControl) -> Result<Vec
                     "\nUnable to find SOURCE file {}.\n\
                     This was using PRE={}.\n",
                     f,
-                    ctl.gen_opt.pre.iter().format(","),
+                    ctl.cr_opt.pre.iter().format(","),
                 ));
             }
         }
