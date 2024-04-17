@@ -73,7 +73,7 @@ pub fn print_fate(ctl: &EncloneControl, fate: &[BarcodeFates], logx: &mut Vec<u8
                     }
                 }
                 BarcodeFate::Doublet => {
-                    if !ctl.clono_filt_opt_def.doublet {
+                    if !ctl.cr_opt.doublet {
                         continue;
                     }
                 }
