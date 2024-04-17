@@ -78,7 +78,7 @@ pub fn print_fate(ctl: &EncloneControl, fate: &[BarcodeFates], logx: &mut Vec<u8
                     }
                 }
                 BarcodeFate::Signature => {
-                    if !ctl.clono_filt_opt_def.signature {
+                    if !ctl.cr_opt.signature {
                         continue;
                     }
                 }
