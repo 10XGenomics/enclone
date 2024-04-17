@@ -18,7 +18,7 @@ pub fn print_fate(ctl: &EncloneControl, fate: &[BarcodeFates], logx: &mut Vec<u8
         for f in fate[i].iter() {
             match f.1 {
                 BarcodeFate::WeakChains => {
-                    if !ctl.clono_filt_opt_def.weak_chains {
+                    if !ctl.cr_opt.weak_chains {
                         continue;
                     }
                 }
