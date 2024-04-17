@@ -68,7 +68,7 @@ pub fn print_fate(ctl: &EncloneControl, fate: &[BarcodeFates], logx: &mut Vec<u8
                     }
                 }
                 BarcodeFate::GraphFilter => {
-                    if ctl.gen_opt.ngraph_filter {
+                    if ctl.cr_opt.ngraph_filter {
                         continue;
                     }
                 }
