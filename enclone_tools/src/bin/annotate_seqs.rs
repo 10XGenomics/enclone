@@ -76,8 +76,7 @@ fn main() {
         let mut log = Vec::<u8>::new();
         fwriteln!(log, ", len = {}", len);
         print_annotations(&seq, &refdata, &mut log, false, true, false);
-        let mut ann = Vec::<Annotation>::new();
-        annotate_seq(&seq, &refdata, &mut ann, true, false, true);
+        let ann = annotate_seq(&seq, &refdata, true, false, true);
         let (valid, _) = is_productive_contig(&seq, &refdata, &ann);
         let mut shift = false;
         for i in 1..ann.len() {
