@@ -187,7 +187,6 @@ fn test_enclone_examples() {
             new = new.arg(arg);
         }
         let new = new
-            .arg("FORCE_EXTERNAL")
             .arg("NO_KILL")
             .output()
             .expect("failed to execute test_enclone_examples");
@@ -305,7 +304,6 @@ fn test_help_output() {
         let mut new = Command::new(env!("CARGO_BIN_EXE_enclone"));
         let new = new.args(&args);
         let new = new
-            .arg("FORCE_EXTERNAL")
             .arg("NO_KILL")
             .output()
             .expect("failed to execute test_help_output");
@@ -341,7 +339,6 @@ fn test_help_no_stable() {
     new = new.arg("HTML");
     new = new.arg("NOPAGER");
     let new = new
-        .arg("FORCE_EXTERNAL")
         .arg("NO_KILL")
         .output()
         .expect("failed to execute test_help_output");
@@ -383,7 +380,6 @@ fn test_enclone_prebuild() {
     }
     // dubious use of expect:
     let new = new
-        .arg("FORCE_EXTERNAL")
         .arg("NO_KILL")
         .output()
         .expect("failed to execute test_enclone_prebuild");
@@ -413,7 +409,6 @@ fn test_enclone_prebuild() {
     }
     // dubious use of expect:
     let new = new
-        .arg("FORCE_EXTERNAL")
         .arg("NO_KILL")
         .output()
         .expect("failed to execute enclone_test_prebuild");

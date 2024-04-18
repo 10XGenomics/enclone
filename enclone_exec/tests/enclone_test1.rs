@@ -459,8 +459,7 @@ fn test_cpu() {
     // Speed test 1.
 
     let it = 1;
-    let test =
-        "BI=10 NCROSS NGEX NOPRINT PRINT_CPU NCORES BUILT_IN EXPECT_OK EXPECT_NULL NO_PRE NFORCE";
+    let test = "BI=10 NCROSS NGEX NOPRINT PRINT_CPU NCORES BUILT_IN EXPECT_OK EXPECT_NULL NO_PRE";
     let expect = 16638;
     let percent_dev = 6.0;
     println!("\nSpeed test 1");
@@ -526,7 +525,7 @@ fn test_cpu() {
 
     let it = 2;
     let test =
-        "BI=1-2,5-12 MIX_DONORS NOPRINT PRINT_CPU NCORES BUILT_IN EXPECT_OK EXPECT_NULL NO_PRE NFORCE";
+        "BI=1-2,5-12 MIX_DONORS NOPRINT PRINT_CPU NCORES BUILT_IN EXPECT_OK EXPECT_NULL NO_PRE";
     let expect = 137.6;
     let percent_dev = 6.0;
     println!("Speed test 2");

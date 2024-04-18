@@ -230,28 +230,6 @@ pub fn print_stats(
         }
         fwriteln!(logx, "   • original number of cells = {}", vcells);
 
-        // Print mean reads per cell if known.
-
-        let mut known = true;
-        for i in 0..ctl.origin_info.n() {
-            if ctl.origin_info.cells_cellranger[i].is_none() {
-                known = false;
-            } else if ctl.origin_info.mean_read_pairs_per_cell_cellranger[i].is_none() {
-                known = false;
-            }
-        }
-        let (mut cells, mut read_pairs) = (0, 0);
-        if known {
-            for i in 0..ctl.origin_info.n() {
-                let c = ctl.origin_info.cells_cellranger[i].unwrap();
-                let rpc = ctl.origin_info.mean_read_pairs_per_cell_cellranger[i].unwrap();
-                cells += c;
-                read_pairs += cells * rpc;
-            }
-            let rpc = ((read_pairs as f64) / (cells as f64)).round();
-            fwriteln!(logx, "   • read pairs per cell = {}", rpc);
-        }
-
         // Compute marking stats.
 
         let (mut nmarked, mut nmarked_good, mut ndubious) = (0, 0, 0);
@@ -546,16 +524,6 @@ pub fn print_stats(
             "   • for reads contributing to UMIs in reported chains, mean reads per UMI = {:.2}",
             nreads as f64 / numis as f64,
         );
-        if known && ctl.gen_opt.internal_run {
-            if ctl.gen_opt.no_uncap_sim {
-                nreads_adjusted = nreads as f64;
-            }
-            fwriteln!(
-                logx,
-                "   • read utilization = {:.1}%\n     (please see notes in the file UNDOCUMENTED)",
-                100.0 * nreads_adjusted / read_pairs as f64
-            );
-        }
 
         // Print validated UMI stats.
 

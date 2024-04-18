@@ -9,7 +9,6 @@
 // filtered_contig.fasta
 // filtered_contig_annotations.csv.
 
-use enclone_core::defs::get_config;
 use enclone_core::test_def::replace_at_test;
 use enclone_testlist::TEST_FILES_VERSION;
 use io_utils::*;
@@ -46,17 +45,18 @@ pub fn main() {
 
     // Get configuration.
 
-    let mut config = HashMap::<String, String>::new();
-    let mut config_file = String::new();
-    for (key, value) in env::vars() {
-        if key == "ENCLONE_CONFIG" {
-            config_file = value.to_string();
-            if config_file.contains(',') {
-                config_file = config_file.after(",").to_string();
-            }
-        }
-    }
-    let _ = get_config(&config_file, &mut config);
+    let config: HashMap<String, String> = HashMap::new();
+    // let mut config = HashMap::<String, String>::new();
+    // let mut config_file = String::new();
+    // for (key, value) in env::vars() {
+    //     if key == "ENCLONE_CONFIG" {
+    //         config_file = value.to_string();
+    //         if config_file.contains(',') {
+    //             config_file = config_file.after(",").to_string();
+    //         }
+    //     }
+    // }
+    // let _ = get_config(&config_file, &mut config);
 
     // Location of files.
 

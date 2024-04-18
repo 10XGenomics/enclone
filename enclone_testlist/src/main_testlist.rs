@@ -603,9 +603,8 @@ pub const TESTS: [(usize, &str, &str); 305] = [
     (249, "an example that triggered an internal inconsistency test, which we subsequently removed; \
           there are three chains and the middle one was the problem",
     r###"TCR=testx/inputs/flaky6 BARCODE=CCAGCGAAGTGTTGAA-1 REPROD EXPECT_OK"###),
-    (250, "test MOUSE + IMGT; note that specifying by number forces BCR+TCR reference checks. \
-          Added FORCE_EXTERNAL because couldn't reproduce the result.  Don't understand.",
-    r###"74396 MOUSE NOPRINT SUMMARY SUMMARY_CLEAN IMGT ACCEPT_BROKEN FORCE_EXTERNAL"###),
+    (250, "test MOUSE + IMGT; note that specifying by number forces BCR+TCR reference checks.",
+    r###"74396 MOUSE NOPRINT SUMMARY SUMMARY_CLEAN IMGT ACCEPT_BROKEN"###),
     (251, "test mouse + IMGT; note that specifying by number forces BCR+TCR reference checks",
     r###"74396 MOUSE REQUIRE_UNBROKEN_OK IMGT ACCEPT_BROKEN EXPECT_NULL"###),
     (252, "this exhibits what happens when signature filtering is ON, see next. \

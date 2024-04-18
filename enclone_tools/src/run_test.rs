@@ -53,7 +53,6 @@ pub fn run_test(
     let mut expect_ok = false;
     let mut set_in_stone = false;
     let mut no_pre = false;
-    let mut nforce = false;
     let mut ncores = false;
     if test.contains(" EXPECT_NULL") {
         test = test.replace(" EXPECT_NULL", "");
@@ -74,10 +73,6 @@ pub fn run_test(
     if test.contains(" NO_PRE") {
         test = test.replace(" NO_PRE", "");
         no_pre = true;
-    }
-    if test.contains(" NFORCE") {
-        test = test.replace(" NFORCE", "");
-        nforce = true;
     }
     if test.contains(" NCORES") {
         test = test.replace(" NCORES", "");
@@ -131,9 +126,6 @@ pub fn run_test(
     }
     for arg in args.iter().skip(1) {
         new = new.arg(arg);
-    }
-    if !nforce {
-        new = new.arg("FORCE_EXTERNAL")
     }
     if !ncores && max_cores == 0 {
         // Cap number of cores at 24.  Surprisingly, for testing on a 64-core
