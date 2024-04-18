@@ -270,9 +270,8 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) -> Resu
 
         h.print(
             "\\bold{Distance formula.}  This could in principle be any function that takes as \
-            input two clonotypes and returns a number.  For now we allow only:\n\
-            \\bold{AG_DIST_FORMULA=cdr3_edit_distance}\n\
-            which is the \"Levenshtein CDR3 edit distance between two clonotypes\".  This is the \
+            input two clonotypes and returns a number.  For now we use the \
+            \"Levenshtein CDR3 edit distance between two clonotypes\".  This is the \
             minimum, over all pairs of exact subclonotypes, one from each of the two clonotypes, \
             of the edit distance between two exact subclonotypes, which is the sum of the edit \
             distances between the heavy chains and between the light chains.\n\n",
