@@ -208,25 +208,25 @@ fn test_grouping() {
                 10,
                 "test of AGROUP",
                 r###"BCR=123085 AGROUP AG_CENTER=from_filters CDR3=CARHSYSSGWYDEWDYW
-             AG_DIST_FORMULA=cdr3_edit_distance AG_DIST_BOUND=top=2"###,
+             AG_DIST_BOUND=top=2"###,
             ),
             (
                 11,
                 "test of AGROUP",
                 r###"BCR=123085 AGROUP AG_CENTER=from_filters CDR3=CAKDGGEHYYDSSGYYASYYFDYW 
-             AG_DIST_FORMULA=cdr3_edit_distance AG_DIST_BOUND=max=14"###,
+             AG_DIST_BOUND=max=14"###,
             ),
             (
                 12,
                 "test of AGROUP",
                 r###"BCR=123085 AGROUP AG_CENTER=from_filters CDR3=CAKDGGEHYYDSSGYYASYYFDYW 
-             AG_DIST_FORMULA=cdr3_edit_distance AG_DIST_BOUND=max=13"###,
+             AG_DIST_BOUND=max=13"###,
             ),
             (
                 13,
                 "test of AGROUP",
                 r###"BCR=123085 AGROUP AG_CENTER=copy_filters MIN_CELLS=2 MAX_CELLS=2
-             AG_DIST_FORMULA=cdr3_edit_distance AG_DIST_BOUND=max=3 MIN_GROUP=2"###,
+             AG_DIST_BOUND=max=3 MIN_GROUP=2"###,
             ),
             (
                 14,
