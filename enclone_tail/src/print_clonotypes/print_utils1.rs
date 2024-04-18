@@ -368,7 +368,7 @@ pub fn make_table(
         // *** bullets now off ***
         if c == '$' {
             if ctl.pretty {
-                if !ctl.nogray {
+                if !ctl.clono_print_opt.nogray {
                     write!(*logz, "[38;5;{TEXTCOLOR}m[48;5;{BACKGROUND}m ").unwrap();
                     barcode = true;
                 } else {
