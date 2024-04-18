@@ -163,26 +163,6 @@ pub fn main_enclone_setup(args: Vec<String>) -> Result<EncloneSetup, String> {
         }
     }
 
-    // Read external data.
-
-    if !ctl.gen_opt.ext.is_empty() {
-        let f = open_userfile_for_read(&ctl.gen_opt.ext);
-        let mut exts = Vec::<String>::new();
-        for line in f.lines() {
-            let s = line.unwrap();
-            let fields = s.split(' ').collect::<Vec<&str>>();
-            exts.push(fields[2].to_string());
-        }
-        ctl.clono_print_opt.lvars.push("ext".to_string());
-        exts.sort();
-        let mut i = 0;
-        while i < exts.len() {
-            let j = next_diff(&exts, i);
-            ctl.gen_opt.extn.insert(exts[i].clone(), j - i);
-            i = j;
-        }
-    }
-
     // Get gene expression and feature barcode counts.  Sanity check variables in cases where that
     // has to occur after loading GEX data.  This could also occur after loading only the feature
     // list, which would be better.
