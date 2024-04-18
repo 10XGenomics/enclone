@@ -171,10 +171,6 @@ pub fn main_enclone_setup(args: Vec<String>) -> Result<EncloneSetup, String> {
         for line in f.lines() {
             let s = line.unwrap();
             let fields = s.split(' ').collect::<Vec<&str>>();
-            ctl.gen_opt.extc.insert(
-                (fields[0].to_string(), fields[1].to_string()),
-                fields[2].to_string(),
-            );
             exts.push(fields[2].to_string());
         }
         ctl.clono_print_opt.lvars.push("ext".to_string());
