@@ -300,7 +300,7 @@ pub fn make_table(
 
     let log0 = stringme(mlog);
     let mut log = String::new();
-    if ctl.debug_table_printing {
+    if ctl.clono_print_opt.debug_table_printing {
         for (i, row) in rows.iter().enumerate() {
             println!();
             for (j, rj) in row.iter().enumerate() {
@@ -315,8 +315,15 @@ pub fn make_table(
         }
         println!();
     }
-    print_tabular_vbox(&mut log, rows, 2, justify, ctl.debug_table_printing, false);
-    if ctl.debug_table_printing {
+    print_tabular_vbox(
+        &mut log,
+        rows,
+        2,
+        justify,
+        ctl.clono_print_opt.debug_table_printing,
+        false,
+    );
+    if ctl.clono_print_opt.debug_table_printing {
         println!("{log}");
     }
     let mut cs = vec![Vec::<char>::new(); rows.len() + 2];
