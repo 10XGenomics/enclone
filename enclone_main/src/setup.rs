@@ -7,15 +7,14 @@ use enclone::misc1::setup_pager;
 use enclone_args::proc_args::proc_args;
 use enclone_args::proc_args2::is_simple_arg;
 use enclone_build::set_panic_handler;
-use enclone_core::defs::{get_config, EncloneControl};
-use enclone_core::{require_readable_file, tilde_expand_me, REMOTE_HOST};
+use enclone_core::defs::EncloneControl;
+use enclone_core::{require_readable_file, tilde_expand_me};
 use enclone_help::help1::help1;
 use enclone_help::help2::help2;
 use enclone_help::help3::help3;
 use enclone_help::help4::help4;
 use enclone_help::help5::help5;
 use enclone_help::help_utils::HelpDesk;
-use enclone_testlist::TEST_FILES_VERSION;
 use io_utils::{open_for_read, path_exists};
 use itertools::Itertools;
 use std::env;
@@ -40,12 +39,10 @@ pub fn critical_args(args: &Vec<String>, ctl: &mut EncloneControl) -> Result<Vec
         }
     }
 
-    // Check for CONFIG and EVIL_EYE and CELLRANGER.
+    // Check for EVIL_EYE and CELLRANGER.
 
     for i in 1..args.len() {
-        if args[i].starts_with("CONFIG=") {
-            ctl.gen_opt.config_file = args[i].after("CONFIG=").to_string();
-        } else if args[i] == "EVIL_EYE" {
+        if args[i] == "EVIL_EYE" {
             ctl.gen_opt.evil_eye = true;
             if ctl.gen_opt.evil_eye {
                 println!("the evil eye is on");
@@ -55,84 +52,14 @@ pub fn critical_args(args: &Vec<String>, ctl: &mut EncloneControl) -> Result<Vec
         }
     }
 
-    // Test for internal run and get configuration.
-
-    if ctl.gen_opt.evil_eye {
-        println!("testing for internal run");
-    }
-    for (key, value) in env::vars() {
-        if ctl.gen_opt.evil_eye {
-            print!("see env {} = {}", key, value);
-            if key.starts_with("ENCLONE_") {
-                print!(" ***** SETTING ENCLONE VAR ***** ");
-            }
-            println!();
-        }
-        if key.ends_with("USER") && value.ends_with("10xgenomics.com") {
-            if ctl.gen_opt.evil_eye {
-                println!("getting config");
-            }
-            if get_config(&ctl.gen_opt.config_file, &mut ctl.gen_opt.config) {
-                ctl.gen_opt.internal_run = true;
-            }
-            if ctl.gen_opt.evil_eye {
-                println!("got config");
-            }
-            break;
-        }
-    }
-    for i in 1..args.len() {
-        if args[i] == *"FORCE_EXTERNAL" {
-            ctl.gen_opt.internal_run = false;
-        }
-    }
-
-    // Get configuration info.
-
-    if ctl.gen_opt.internal_run {
-        if ctl.gen_opt.evil_eye {
-            println!("detected internal run");
-        }
-        let earth_path = format!(
-            "{}/current{}",
-            ctl.gen_opt.config["earth"], TEST_FILES_VERSION
-        );
-        ctl.gen_opt.internal_data_dir = earth_path;
-        let cloud_path = format!(
-            "{}/current{}",
-            ctl.gen_opt.config["cloud"], TEST_FILES_VERSION
-        );
-        if path_exists(&cloud_path) {
-            ctl.gen_opt.internal_data_dir = cloud_path;
-        }
-    }
-    if ctl.gen_opt.config_file.contains(':') {
-        let remote_host = ctl.gen_opt.config_file.before(":").to_string();
-        REMOTE_HOST.lock().unwrap().clear();
-        REMOTE_HOST.lock().unwrap().push(remote_host);
-    }
-
     // Determine PRE.
-
-    if ctl.gen_opt.internal_run {
-        ctl.gen_opt.pre = vec![
-            ctl.gen_opt.internal_data_dir.clone(),
-            "enclone/test/inputs".to_string(),
-            "enclone_exec".to_string(),
-        ];
-    } else if !ctl.gen_opt.cellranger {
+    if !ctl.gen_opt.cellranger {
         let home = dirs::home_dir().unwrap().to_str().unwrap().to_string();
         ctl.gen_opt.pre = vec![
             format!("{}/enclone/datasets_me", home),
             format!("{}/enclone/datasets", home),
             format!("{}/enclone/datasets2", home),
         ];
-    }
-    if ctl.gen_opt.config.contains_key("prep") {
-        let prep = ctl.gen_opt.config["prep"].split(',').collect::<Vec<&str>>();
-        for pre in prep.clone() {
-            ctl.gen_opt.pre.push(pre.to_string());
-        }
     }
     for i in 1..args.len() {
         if args[i].starts_with("PRE=") {
@@ -209,9 +136,7 @@ pub fn setup(
     args_orig: &Vec<String>,
 ) -> Result<(), String> {
     let mut using_pager = false;
-    // Provide help if requested.
 
-    let mut bug_reports = "enclone@10xgenomics.com".to_string();
     {
         for i in 2..args.len() {
             if args[i] == "help" {
@@ -248,8 +173,6 @@ pub fn setup(
             } else if args[i] == "STABLE_DOC" {
                 ctl.gen_opt.stable_doc = true;
                 to_delete[i] = true;
-            } else if args[i] == "FORCE_EXTERNAL" {
-                to_delete[i] = true;
             } else if args[i] == "LONG_HELP" {
                 long_help = true;
                 to_delete[i] = true;
@@ -263,21 +186,9 @@ pub fn setup(
                 plain = true;
             } else if args[i] == "SPLIT" {
                 ctl.gen_opt.split = true;
-            } else if args[i] == "BUG_REPORTS" {
-                bug_reports = "".to_string();
-            } else if args[i].starts_with("BUG_REPORTS=") {
-                bug_reports = args[i].after("BUG_REPORTS=").to_string();
             } else if args[i] == "NO_KILL" {
                 to_delete[i] = true;
             }
-        }
-        for (key, value) in env::vars() {
-            if key == "ENCLONE_BUG_REPORTS" {
-                bug_reports = value.to_string();
-            }
-        }
-        if ctl.gen_opt.internal_run && ctl.gen_opt.config.contains_key("bug_reports") {
-            bug_reports = ctl.gen_opt.config["bug_reports"].clone();
         }
 
         // Proceed.
@@ -300,7 +211,6 @@ pub fn setup(
             if args_orig[i] != "HTML"
                 && args_orig[i] != "STABLE_DOC"
                 && args_orig[i] != "NOPAGER"
-                && args_orig[i] != "FORCE_EXTERNAL"
                 && args_orig[i] != "NO_KILL"
                 && args_orig[i] != "LONG_HELP"
                 && !args_orig[i].starts_with("PRE=")

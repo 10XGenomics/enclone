@@ -292,37 +292,37 @@ fn test_extended() {
         0,
         &[
             (1, "Make sure that POUT works on full dataset. If we experience failures on other PUBLIC ids, we can add them to this list.",
-            r###"BCR=86237 RE POUT=/dev/null NOPRINT EXPECT_OK NO_PRE NFORCE"###),
+            r###"BCR=86237 RE POUT=/dev/null NOPRINT EXPECT_OK NO_PRE"###),
             (2, "tests nd2",
             r###"BCR=47199,47200,47212 AMINO=cdr3 NCROSS LVARS=nd2 CDR3=CVKGKSGSFWYYFENW
-             NO_PRE NFORCE"###),
+             NO_PRE"###),
             (3, "test sec and mem [requires samtools]",
             r###"BCR=123085 GEX=123217 LVARSP=sec,mem CDR3=CVKDRVTGTITELDYW"###),
             (4, "crashed at one point",
-            r###"BCR=128037,128040 GEX=127798,127801 LVARSP=pe1 NOPRINT EXPECT_OK NO_PRE NFORCE"###),
+            r###"BCR=128037,128040 GEX=127798,127801 LVARSP=pe1 NOPRINT EXPECT_OK NO_PRE"###),
             //
             (5, "this added because it got better when a bug in bads detection was fixed",
-            r###"TCR=163914 CDR3=CASRLGGEETQYF NO_PRE NFORCE"###),
+            r###"TCR=163914 CDR3=CASRLGGEETQYF NO_PRE"###),
             (6, "Test PCHAINS=max.  For this we need a clonotype having at least five chains, and the \
                 question is whether the header line represents cvars for all the chains.  The output of
                 this is expected to change whenever variables are added.",
             r###"BCR=123085,123089,124547 NWEAK_CHAINS NDOUBLET MIN_CHAINS=5 POUT=stdout PCHAINS=max
-             NOPRINT RE NO_PRE NFORCE"###),
+             NOPRINT RE NO_PRE"###),
             (7, "test MIN_GROUP_DONORS",
-            r###"BCR="40953;43899" MIX_DONORS MIN_GROUP=2 NO_PRE NFORCE
+            r###"BCR="40953;43899" MIX_DONORS MIN_GROUP=2 NO_PRE
              GROUP="cdr3_len,cdr3_aa_heavy>=85%,cdr3_aa_light>=85%,vj_refname" MIN_GROUP_DONORS=2"###),
             (8, "this asserted at one point",
             r###"BUILT_IN GROUP=vj_refname,cdr3_aa_heavy≥90% MIN_CHAINS_EXACT=2 MIN_GROUP=2 
-             KEEP_CLONO_IF_CELL_MEAN="cdr3_len1>=18" BCR=1018096-1018098 JALIGN1 NO_PRE NFORCE
+             KEEP_CLONO_IF_CELL_MEAN="cdr3_len1>=18" BCR=1018096-1018098 JALIGN1 NO_PRE
              EXPECT_OK"###),
             (9, "this clonotype included a junk chain before we made a change, and test /outs",
-            r###"TCR=163911/outs CDR3=CAPSAGDKIIF AMINO=donor NO_PRE NFORCE"###),
+            r###"TCR=163911/outs CDR3=CAPSAGDKIIF AMINO=donor NO_PRE"###),
             (10, "test case where digit rows are just barely present",
-            r###"TCR=163911 CDR3=CASSLVQPSTDTQYF AMINO=donor NO_PRE NFORCE"###),
+            r###"TCR=163911 CDR3=CASSLVQPSTDTQYF AMINO=donor NO_PRE"###),
             (11, "this added because it got better when a noise filter was added, also tests u_max",
-            r###"TCR=163914 CDR3=CASSLVQPSTDTQYF CVARSP=u_max NO_PRE NFORCE"###),
+            r###"TCR=163914 CDR3=CASSLVQPSTDTQYF CVARSP=u_max NO_PRE"###),
             (12, "this added because it got better when a noise filter was added; also test FASTA",
-            r###"TCR=163914 CDR3=CAFRGGSYIPTF FASTA=stdout NO_PRE NFORCE"###),
+            r###"TCR=163914 CDR3=CAFRGGSYIPTF FASTA=stdout NO_PRE"###),
         ],
     );
 }
@@ -337,15 +337,39 @@ fn test_extended() {
 /// All run with certain shared options.
 fn test_crash() {
     let crash_tests: Vec<_> = [
-        (1, "CONP SEQC SUM MEAN BARCODES DIFF_STYLE=C1 GROUP_VJ_REFNAME"),
-        (2, "CONX FULL_SEQC DIFF_STYLE=C2 POUT=stdout PCOLS=count_CAR"),
-        (3, "AMINO=fwr1,cdr1,fwr2,cdr2,fwr3,cdr3,fwr4 CVARS=d1_name,d2_name,d_delta,d_Δ,cigar"),
-        (4, "PLOT_BY_ISOTYPE=stdout MIN_CELLS=3 GROUP_VJ_REFNAME_HEAVY ALIGN1 JALIGN1"),
-        (5, "GROUP_VDJ_REFNAME_HEAVY GVARS=d_inconsistent_%,d_inconsistent_n"),
+        (
+            1,
+            "CONP SEQC SUM MEAN BARCODES DIFF_STYLE=C1 GROUP_VJ_REFNAME",
+        ),
+        (
+            2,
+            "CONX FULL_SEQC DIFF_STYLE=C2 POUT=stdout PCOLS=count_CAR",
+        ),
+        (
+            3,
+            "AMINO=fwr1,cdr1,fwr2,cdr2,fwr3,cdr3,fwr4 CVARS=d1_name,d2_name,d_delta,d_Δ,cigar",
+        ),
+        (
+            4,
+            "PLOT_BY_ISOTYPE=stdout MIN_CELLS=3 GROUP_VJ_REFNAME_HEAVY ALIGN1 JALIGN1",
+        ),
+        (
+            5,
+            "GROUP_VDJ_REFNAME_HEAVY GVARS=d_inconsistent_%,d_inconsistent_n",
+        ),
         (6, "GROUP=vj_refname,cdr3_aa_heavy≥90%,cdr3_aa_light≥90%"),
-    ].iter().map(|(num, crash_set)| (num, "crash test", format!(
-            "BCR=\"45977;123085;testx/inputs/flaky\" {crash_set} NOPRINT BUILT_IN EXPECT_OK NO_PRE NFORCE",
-        ))).collect();
+    ]
+    .iter()
+    .map(|(num, crash_set)| {
+        (
+            num,
+            "crash test",
+            format!(
+            "BCR=\"45977;123085;testx/inputs/flaky\" {crash_set} NOPRINT BUILT_IN EXPECT_OK NO_PRE",
+        ),
+        )
+    })
+    .collect();
     run_tests(
         env!("CARGO_BIN_EXE_enclone"),
         "crash_test",
@@ -368,7 +392,7 @@ fn test_internal() {
         40,
         &[
             (1, "gave wrong result",
-            r###"123085 CDR3=CARDRIAGRFGYGMDVW NFORCE"###),
+            r###"123085 CDR3=CARDRIAGRFGYGMDVW"###),
             (2, "test human + IMGT; note that specifying by number forces BCR+TCR reference checks",
             r###"123085 REQUIRE_UNBROKEN_OK IMGT ACCEPT_BROKEN EXPECT_NULL"###),
             (3, "this crashed; it is not exactly an internal feature test but uses an internal feature (IMGT) to exhibit the phenomenon",

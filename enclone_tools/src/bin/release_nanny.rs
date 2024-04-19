@@ -3,7 +3,6 @@
 // Runs continuously, waiting for a new release to appear, and when that happens, updates the
 // remote linux binary, and exits.  This is launched by start_release.
 
-use enclone_core::defs::get_config;
 use io_utils::*;
 
 use std::collections::HashMap;
@@ -79,16 +78,17 @@ fn main() {
 
         // Get version number of enclone on remote server.
 
-        let mut config = HashMap::<String, String>::new();
-        let mut config_file = String::new();
-        for (key, value) in env::vars() {
-            if key == "ENCLONE_CONFIG" {
-                config_file = value.to_string();
-            }
-        }
+        let config = HashMap::<String, String>::new();
+        // let mut config_file = String::new();
+        // for (key, value) in env::vars() {
+        //     if key == "ENCLONE_CONFIG" {
+        //         config_file = value.to_string();
+        //     }
+        // }
         let mut remote_version_file = String::new();
         let mut remote_version = None;
-        if get_config(&config_file, &mut config) {
+        // if get_config(&config_file, &mut config) {
+        if false {
             let bin = &config["enclone_linux_bin"];
             remote_version_file = format!("{}/version", bin);
             let version = std::fs::read_to_string(&remote_version_file).unwrap();

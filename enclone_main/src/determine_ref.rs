@@ -3,7 +3,7 @@
 // Start of code to determine the reference sequence that is to be used.
 
 use enclone_core::defs::EncloneControl;
-use io_utils::{open_for_read, open_maybe_compressed, path_exists};
+use io_utils::{open_maybe_compressed, path_exists};
 use martian_filetypes::json_file::{Json, LazyJsonReader};
 use martian_filetypes::LazyRead;
 use std::collections::HashMap;
@@ -81,43 +81,6 @@ pub fn determine_ref(ctl: &mut EncloneControl, refx: &mut String) -> Result<(), 
         if ctl.gen_opt.built_in {
             ctl.gen_opt.reannotate = true;
         }
-    }
-
-    // Step 2. Test to see if IMGT is specified.
-
-    if ctl.gen_opt.imgt && ctl.gen_opt.internal_run {
-        if !ctl.gen_opt.mouse {
-            let imgt = &ctl.gen_opt.config["imgt_human"];
-            if ctl.gen_opt.descrip {
-                println!("using IMGT human reference");
-            }
-            let f = open_for_read![imgt];
-            for line in f.lines() {
-                let mut s = line.unwrap();
-                if ctl.gen_opt.imgt_fix {
-                    // Fix IGHJ6.
-                    if s == *"ATTACTACTACTACTACGGTATGGACGTCTGGGGCCAAGGGACCACGGTCACCGTCTCCTCA"
-                        || s == *"ATTACTACTACTACTACTACATGGACGTCTGGGGCAAAGGGACCACGGTCACCGTCTCCTCA"
-                    {
-                        s += "G";
-                    }
-                }
-                *refx += &s;
-                *refx += "\n";
-            }
-        } else {
-            let imgt = &ctl.gen_opt.config["imgt_mouse"];
-            if ctl.gen_opt.descrip {
-                println!("using IMGT mouse reference");
-            }
-            let f = open_for_read![imgt];
-            for line in f.lines() {
-                let s = line.unwrap();
-                *refx += &s;
-                *refx += "\n";
-            }
-        }
-        ctl.gen_opt.reannotate = true;
     }
 
     // Step 3.  Test to see if REF is specified.

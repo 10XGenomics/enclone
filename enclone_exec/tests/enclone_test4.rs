@@ -510,7 +510,6 @@ fn test_ranger() {
         args.push("enclone".to_string());
         args.push("CELLRANGER".to_string());
         args.push("PRE=".to_string());
-        args.push("FORCE_EXTERNAL".to_string());
         args.push("NOPAGER".to_string());
         args.push("NOPRINT".to_string());
         args.push("MAX_CORES=8".to_string());
