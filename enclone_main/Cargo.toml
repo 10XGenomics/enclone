@@ -21,7 +21,7 @@ publish = false
 dirs.workspace = true
 enclone_core.workspace = true
 enclone_help = { path = "../enclone_help" }
-enclone_print.workspace = true
+enclone_process.workspace = true
 enclone_proto.workspace = true
 enclone_stuff.workspace = true
 enclone_tail = { path = "../enclone_tail" }

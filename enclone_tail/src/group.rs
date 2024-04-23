@@ -23,11 +23,11 @@ use ansi_escape::ansi_to_html::{
 use ansi_escape::{emit_bold_escape, emit_eight_bit_color_escape, emit_end_escape};
 use enclone_build::version_string;
 
+use super::mammalian_fixed_len::mammalian_fixed_len_peer_groups;
+use super::set_speakers::set_speakers;
 use enclone_core::combine_group_pics::combine_group_pics;
 use enclone_core::defs::{ColInfo, EncloneControl, ExactClonotype, GexInfo};
 use enclone_core::enclone_structs::{BarcodeFates, JoinInfo};
-use enclone_core::mammalian_fixed_len::mammalian_fixed_len_peer_groups;
-use enclone_core::set_speakers::set_speakers;
 use enclone_help::help_utils::font_face_in_css;
 use enclone_proto::types::DonorReferenceItem;
 use io_utils::{fwrite, fwriteln, open_for_write_new};
