@@ -50,8 +50,8 @@ pub fn critical_args(args: &Vec<String>, ctl: &mut EncloneControl) -> Result<Vec
         }
     }
 
-    // Determine PRE.
-    if !ctl.cr_opt.cellranger {
+    // Set default PRE if none was set.
+    if !ctl.cr_opt.cellranger && ctl.cr_opt.pre.is_empty() {
         let home = dirs::home_dir().unwrap().to_str().unwrap().to_string();
         ctl.cr_opt.pre = vec![
             format!("{}/enclone/datasets_me", home),
