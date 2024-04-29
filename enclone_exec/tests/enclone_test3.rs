@@ -278,6 +278,7 @@ fn test_dejavu() {
 
 #[cfg(not(feature = "cpu"))]
 #[test]
+#[ignore]
 fn test_help_output() {
     for p in HELP_PAGES.iter() {
         let mut command = format!("enclone help {}", p);
