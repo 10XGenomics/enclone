@@ -63,19 +63,19 @@ split-debuginfo = "unpacked"
 # improved.
 
 [workspace.dependencies]
-align_tools = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/clean-up-cli-arg-handling" }
-amino = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/clean-up-cli-arg-handling" }
+align_tools = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/extract-enclone-only-paths" }
+amino = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/extract-enclone-only-paths" }
 anyhow = "1"
-ansi_escape = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/clean-up-cli-arg-handling" }
+ansi_escape = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/extract-enclone-only-paths" }
 arboard = "2"
 assert_cmd = "2"
 async-trait = "0.1"
 attohttpc = { version = "0.18", default-features = false, features = ["compress", "tls-rustls"] }
 backtrace = "0.3"
 base64 = "0.13"
-binary_vec_io = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/clean-up-cli-arg-handling" }
+binary_vec_io = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/extract-enclone-only-paths" }
 bio = "0.39"
-bio_edit = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/clean-up-cli-arg-handling" }
+bio_edit = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/extract-enclone-only-paths" }
 byteorder = "1"
 bytes = "1"
 chrono = { version = "0.4", default-features = false, features = ["std", "clock"] }
@@ -86,41 +86,41 @@ core-graphics = "0.22"
 crc = "2"
 debruijn = "0.3"
 dirs = "4"
-dna = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/clean-up-cli-arg-handling" }
+dna = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/extract-enclone-only-paths" }
 edit-distance = "2"
-enclone_args = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/clean-up-cli-arg-handling" }
-enclone_core = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/clean-up-cli-arg-handling" }
+enclone_args = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/extract-enclone-only-paths" }
+enclone_core = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/extract-enclone-only-paths" }
 enclone_denovo = { path = "../enclone_denovo" }
 enclone_help = { path = "../enclone_help" }
-enclone = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/clean-up-cli-arg-handling" }
-enclone_process = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/clean-up-cli-arg-handling" }
-enclone_proto = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/clean-up-cli-arg-handling" }
-enclone_ranger = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/clean-up-cli-arg-handling" }
+enclone = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/extract-enclone-only-paths" }
+enclone_process = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/extract-enclone-only-paths" }
+enclone_proto = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/extract-enclone-only-paths" }
+enclone_ranger = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/extract-enclone-only-paths" }
 enclone_server_proto = { path = "../enclone_server_proto" }
-enclone_stuff = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/clean-up-cli-arg-handling" }
+enclone_stuff = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/extract-enclone-only-paths" }
 enclone_tail = { path = "../enclone_tail" }
-enclone_vars = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/clean-up-cli-arg-handling" }
+enclone_vars = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/extract-enclone-only-paths" }
 enclone_version = { path = "../enclone_version" }
-equiv = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/clean-up-cli-arg-handling" }
+equiv = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/extract-enclone-only-paths" }
 evalexpr = "7"
-expr_tools = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/clean-up-cli-arg-handling" }
-fasta_tools = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/clean-up-cli-arg-handling" }
+expr_tools = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/extract-enclone-only-paths" }
+fasta_tools = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/extract-enclone-only-paths" }
 file-lock = "2"
 flate2 = "1"
 float-ord = "0.3"
 fontdb = "0.7"
 fs_extra = "1"
 git = "https://github.com/10xGenomics/hdf5-rust.git"
-graph_simple = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/clean-up-cli-arg-handling" }
+graph_simple = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/extract-enclone-only-paths" }
 hdf5 = { git = "https://github.com/10XGenomics/hdf5-rust.git", branch = "conda_nov2021", features = ["conda"], default-features = false }
 home = "0.5"
-hyperbase = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/clean-up-cli-arg-handling" }
+hyperbase = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/extract-enclone-only-paths" }
 image = { version = "0.23", features = ["jpeg", "png", "jpeg_rayon"], default-features = false }
 include_dir = { version = "0.6", features = ["search"] }
-io_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/clean-up-cli-arg-handling" }
+io_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/extract-enclone-only-paths" }
 itertools = "0.10"
 jpeg-decoder = "0.2"
-kmer_lookup = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/clean-up-cli-arg-handling" }
+kmer_lookup = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/extract-enclone-only-paths" }
 lazy_static = "1"
 libc = "0.2"
 log = "0.4"
@@ -133,7 +133,7 @@ num-traits = "0.2"
 objc = "0.2"
 pager = "0.16"
 palette = "0.6"
-perf_stats = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/clean-up-cli-arg-handling" }
+perf_stats = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/extract-enclone-only-paths" }
 permutation = "0.4"
 petgraph = "0.6"
 plotters = { version = "0.3", default_features = false, features = ["svg_backend", "point_series"] }
@@ -153,12 +153,12 @@ serde = "1"
 serde_derive = "1"
 serde_json = "1"
 sha2 = "0.10"
-stats_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/clean-up-cli-arg-handling" }
+stats_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/extract-enclone-only-paths" }
 statrs = "0.15"
-stirling_numbers = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/clean-up-cli-arg-handling" }
-string_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/clean-up-cli-arg-handling" }
+stirling_numbers = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/extract-enclone-only-paths" }
+string_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/extract-enclone-only-paths" }
 superslice = "1"
-tables = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/clean-up-cli-arg-handling" }
+tables = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/extract-enclone-only-paths" }
 tar = "0.4"
 thiserror = "1"
 tilde-expand = "0.1"
@@ -170,9 +170,9 @@ tonic-build = { version = "0.6", default-features = false, features = ["transpor
 triple_accel = "0.4"
 users = "0.11"
 usvg = { version = "0.19", features = ["text"] }
-vdj_types = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/clean-up-cli-arg-handling" }
-vdj_ann = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/clean-up-cli-arg-handling" }
-vdj_ann_ref = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/clean-up-cli-arg-handling" }
-vector_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/clean-up-cli-arg-handling" }
+vdj_types = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/extract-enclone-only-paths" }
+vdj_ann = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/extract-enclone-only-paths" }
+vdj_ann_ref = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/extract-enclone-only-paths" }
+vector_utils = { git = "https://github.com/10XGenomics/enclone_ranger", branch = "macklin/extract-enclone-only-paths" }
 whoami = "1"
 yaml-rust = "0.4"
