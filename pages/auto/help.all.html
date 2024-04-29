@@ -2,49 +2,37 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <!--  -->
 <html xmlns="http://www.w3.org/1999/xhtml">
-
 <head>
-  <meta http-equiv="Content-Type" content="application/xml+xhtml; charset=UTF-8" />
-  <title>enclone help faq</title>
-  <style type="text/css">
-    @font-face {
-      font-family: "DejaVuSansMono";
-      src:
-        local("Menlo Regular"),
-        url('https://cdn.jsdelivr.net/npm/@deathbeds/jupyterlab-font-dejavu-sans-mono@1.0.0/style/fonts/DejaVuSansMono.woff2') format("woff2"),
-        url('https://cdn.jsdelivr.net/npm/dejavu-fonts-ttf@2.37.3/ttf/DejaVuSansMono.ttf') format("truetype"),
-        url('../fonts/DejaVuLGCSansMono.ttf') format("truetype"),
-        local("Courier New");
-    }
-
-    @font-face {
-      font-family: "DejaVuSansMono";
-      font-weight: bold;
-      src:
-        local("Menlo Bold"),
-        url('https://cdn.jsdelivr.net/npm/@deathbeds/jupyterlab-font-dejavu-sans-mono@1.0.0/style/fonts/DejaVuSansMono-Bold.woff2') format("woff2"),
-        url('https://cdn.jsdelivr.net/npm/dejavu-fonts-ttf@2.37.3/ttf/DejaVuSansMono-Bold.ttf') format("truetype"),
-        url('../fonts/DejaVuLGCSansMono-Bold.ttf') format("truetype"),
-        local("Courier New Bold");
-    }
-  </style>
-  <!-- Global site tag (gtag.js) - Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-58278925-3"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag() { { dataLayer.push(arguments); } }
-    gtag('js', new Date());
-    gtag('config', 'UA-58278925-3');
-  </script>
+<meta http-equiv="Content-Type" content="application/xml+xhtml; charset=UTF-8"/>
+<title>enclone help faq</title>
+<style type="text/css">
+@font-face {
+    font-family: "DejaVuSansMono";
+    src:
+    local("Menlo Regular"),
+    url('https://cdn.jsdelivr.net/npm/@deathbeds/jupyterlab-font-dejavu-sans-mono@1.0.0/style/fonts/DejaVuSansMono.woff2')
+    format("woff2"),
+    url('https://cdn.jsdelivr.net/npm/dejavu-fonts-ttf@2.37.3/ttf/DejaVuSansMono.ttf')
+    format("truetype"),
+    url('../fonts/DejaVuLGCSansMono.ttf') format("truetype"),
+    local("Courier New");
+}
+@font-face {
+    font-family: "DejaVuSansMono";
+    font-weight: bold;
+    src:
+    local("Menlo Bold"),
+    url('https://cdn.jsdelivr.net/npm/@deathbeds/jupyterlab-font-dejavu-sans-mono@1.0.0/style/fonts/DejaVuSansMono-Bold.woff2')
+    format("woff2"),
+    url('https://cdn.jsdelivr.net/npm/dejavu-fonts-ttf@2.37.3/ttf/DejaVuSansMono-Bold.ttf')
+    format("truetype"),
+    url('../fonts/DejaVuLGCSansMono-Bold.ttf') format("truetype"),
+    local("Courier New Bold");
+}
+</style>
 </head>
-
 <body>
-
-  <br>
-  <a href="../../index.html#help">
-    <img src="../../img/enclone_banner.png" alt="enclone banner" title="enclone banner" width=100% />
-  </a>
-  <pre style='font-family: "DejaVuSansMono"; line-height: 110%'><span style="font-size: 14px">
+<pre style='font-family: "DejaVuSansMono"; line-height: 110%'><span style="font-size: 14px">
 <span style="color:#5833ff;">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 enclone main help page (what you get by typing "enclone")
 ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span>
@@ -177,7 +165,7 @@ dataset.
 Only one page of output is shown at a time.  To navigate within the full output, use the space bar
 to go forward and the b key to go backward.
 
-See <a href="../../pages/auto/help.example1.html"><code>enclone help example1</code></a> for a detailed guide to how to read the enclone output.  A few key
+See <span style="font-weight:bold;">enclone help example1</span> for a detailed guide to how to read the enclone output.  A few key
 things you should know:
 
 1. You'll see numbers near the top.  These are amino acid position numbers, and
@@ -321,7 +309,7 @@ p*N > C.  The constant 15 is modifiable via the argument <span style="font-weigh
 • As a second exception to the key join criterion, we first compute heavy chain join complexity. 
 This is done by finding the optimal D gene, allowing no D, or DD), and aligning the junction
 region on the contig to the concatenated reference.  (This choice can be visualized using the
-option <span style="font-weight:bold;">JALIGN1</span>, see <a href="../../pages/auto/help.display.html"><code>enclone help display</code></a>.)  The heavy chain join complexity hcomp is then a sum
+option <span style="font-weight:bold;">JALIGN1</span>, see "enclone help display".)  The heavy chain join complexity hcomp is then a sum
 as follows: each inserted base counts one, each substitution counts one, and each deletion
 (regardless of length) counts one.  Then we allow a join if it has hcomp - cd ≥ 8, so long as the
 number of differences between both chains outside the junction regions is at most 80, even if p*N
@@ -508,7 +496,7 @@ There is a lot to explain about the compression, so please read carefully.
 • u = median UMI count for a chain in the exact subclonotype.
 • const = const region name for a chain in the exact subclonotype.
 
-The view you see here is configurable: see the documentation at <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> and <span style="font-weight:bold;">enclone
+The view you see here is configurable: see the documentation at <span style="font-weight:bold;">enclone help lvars</span> and <span style="font-weight:bold;">enclone
 help cvars</span>.
 
 <span style="color:#5833ff;">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -555,13 +543,13 @@ via a supplementary metadata file. Only one mechanism may be used at a time.
 In both cases, you will need to provide paths to directories where the outputs of the Cell Ranger
 pipeline may be found.  enclone uses only some of the pipeline output files, so it is enough that
 those files are present in given directory, and the particular files that are needed may be found
-by typing <a href="../../pages/auto/help.input_tech.html"><code>enclone help input_tech</code></a>.
+by typing <span style="font-weight:bold;">enclone help input_tech</span>.
 
 ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
 ┃If you use the argument <span style="font-weight:bold;">PRE=p</span> then <span style="font-weight:bold;">p/</span> will be prepended to all pipeline paths.  A comma-separated ┃
 ┃list is also allowed <span style="font-weight:bold;">PRE=p1,...,pn</span>, in which case these directories are searched from left to     ┃
 ┃right, until one works, and if all fail, the path is used without prepending anything.  Lastly,   ┃
-┃(see <a href="../../pages/auto/help.command.html"><code>enclone help command</code></a>), you can avoid putting <span style="font-weight:bold;">PRE</span> on the command line by setting the          ┃
+┃(see <span style="font-weight:bold;">enclone help command</span>), you can avoid putting <span style="font-weight:bold;">PRE</span> on the command line by setting the          ┃
 ┃environment variable <span style="font-weight:bold;">ENCLONE_PRE</span> to the desired value.  The default value for <span style="font-weight:bold;">PRE</span> is              ┃
 ┃<span style="font-weight:bold;">~/enclone/datasets_me,~/enclone/datasets,~/enclone/datasets2</span>.  There is also an argument <span style="font-weight:bold;">PREPOST=x</span>┃
 ┃that causes <span style="font-weight:bold;">/x</span> to be appended to all entries in <span style="font-weight:bold;">PRE</span>.                                              ┃
@@ -619,7 +607,7 @@ dataset name, and which enables the information to be split up to mirror the spe
 or <span style="font-weight:bold;">BCR</span>.
 
 The argument <span style="font-weight:bold;">BC=...</span> or equivalently <span style="font-weight:bold;">BC_JOINT=filename</span> may be used on conjunction with
-<span style="font-weight:bold;">KEEP_CELL_IF=...</span> (see <a href="../../pages/auto/help.special.html"><code>enclone help special</code></a>) to restrict the barcodes used by enclone to a
+<span style="font-weight:bold;">KEEP_CELL_IF=...</span> (see "enclone help special") to restrict the barcodes used by enclone to a
 specified set.
 
 <span style="color:#c23621;font-weight:bold;">█ 2 █</span> To specify a metadata file, use the command line argument
@@ -653,7 +641,7 @@ you would otherwise put in the <span style="font-weight:bold;">META</span> file.
 associated to particular immune receptor sequences.  This is done using <span style="font-weight:bold;">INFO=path.csv</span>; The CSV
 file must have fields <span style="font-weight:bold;">vj_seq1</span>, specifying the full heavy or TRB sequence from the beginning of the
 V segment to the end of the J segment, and <span style="font-weight:bold;">vj_seq2</span>, for the light or TRA chain.  The other fields
-are then made accessible as lvars (see <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a>), which are populated for any exact
+are then made accessible as lvars (see "enclone help lvars"), which are populated for any exact
 subclonotype having exactly two chains (heavy/light or TRB/TRA) that match the data in the CSV
 file.  By default, one cannot have two lines for the same antibody, however a separate argument
 <span style="font-weight:bold;">INFO_RESOLVE</span> may be used to "pick the first one".<span style="color:#5833ff;">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -665,7 +653,7 @@ that appear once for each chain in each clonotype, and have one entry for each e
  Please note that for medians of integers, we actually report the "rounded median", the result of
 rounding the true median up to the nearest integer, so that e.g. 6.5 is rounded up to 7.
 
-See also <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> and the inventory of all variables at
+See also "enclone help lvars" and the inventory of all variables at
             https://10xgenomics.github.io/enclone/pages/auto/inventory.html.
 
 Per-column variables are specified using
@@ -735,7 +723,7 @@ where each xi is one of:
 │fwr*_dna         │  the FWR*_DNA sequence, or "unknown" if not computed                         │
 │fwr*_dna_ref     │  same, for the universal reference sequences                                 │
 │                 │  For all of these, * is 1 or 2 or 3 (or 4, for the fwr variables).           │
-│                 │  For CDR1 and CDR2, please see <a href="../../pages/auto/help.amino.html"><code>enclone help amino</code></a> and the page on            │
+│                 │  For CDR1 and CDR2, please see "enclone help amino" and the page on          │
 │                 │  <span style="color:#25bc24;">bit.ly/enclone</span> on V(D)J features.                                           │
 ├─────────────────┼──────────────────────────────────────────────────────────────────────────────┤
 │v_start          │  start of V segment on full DNA sequence                                     │
@@ -827,10 +815,10 @@ where each xi is one of:
 <span style="background-color:#cbcccd;"> </span> └──────────┴───────────────────────────────┴──────────┴──────────────┴─────────────┴────────────┘
 <span style="background-color:#cbcccd;"> </span> Some explanation is required.  If you use enclone without certain options, you get the "visual"
 <span style="background-color:#cbcccd;"> </span> column.
-<span style="background-color:#cbcccd;"> </span> • Add the option <span style="font-weight:bold;">PER_CELL</span> (see <a href="../../pages/auto/help.display.html"><code>enclone help display</code></a>) and then you get visual output with extra
+<span style="background-color:#cbcccd;"> </span> • Add the option <span style="font-weight:bold;">PER_CELL</span> (see "enclone help display") and then you get visual output with extra
 <span style="background-color:#cbcccd;"> </span> lines for each cell within an exact subclonotype, and each of those extra lines is described by
 <span style="background-color:#cbcccd;"> </span> the "visual (one cell)" column.
-<span style="background-color:#cbcccd;"> </span> • If you generate parseable output (see <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a>), then you get the "parseable"
+<span style="background-color:#cbcccd;"> </span> • If you generate parseable output (see "enclone help parseable"), then you get the "parseable"
 <span style="background-color:#cbcccd;"> </span> column for that output, unless you specify <span style="font-weight:bold;">PCELL</span>, and then you get the last column.
 <span style="background-color:#cbcccd;"> </span> • For the forms with μ and Σ, the Greek letters are only used in column headings for visual output
 <span style="background-color:#cbcccd;"> </span> (to save space), and optionally, in names of fields on the command line.
@@ -939,7 +927,7 @@ command line.
 <span style="color:#c23621;font-weight:bold;">parseable output fields</span>
 <span style="color:#c23621;font-weight:bold;">───────────────────────</span>
 
-See also <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a>, <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a>, and the inventory of all variables at
+See also "enclone help lvars", "enclone help cvars", and the inventory of all variables at
 https://10xgenomics.github.io/enclone/pages/auto/inventory.html.
 
 <span style="font-weight:bold;">1. per clonotype group fields</span>
@@ -982,7 +970,7 @@ each of these has the same value for each exact clonotype</span>
 │&lt;dataset>_barcode      │  if PCELL is specified, barcode for one cell, or null, if the barcode is│
 │                       │  not from the given dataset                                             │
 ├───────────────────────┴─────────────────────────────────────────────────────────────────────────┤
-│In addition, every lead variable may be specified as a field.  See <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a>.           │
+│In addition, every lead variable may be specified as a field.  See "enclone help lvars".         │
 └─────────────────────────────────────────────────────────────────────────────────────────────────┘
 
 <span style="font-weight:bold;">5. per chain, per exact subclonotype fields, where &lt;i> is 1,2,... (see above)</span>
@@ -1001,7 +989,7 @@ each of these has the same value for each exact clonotype</span>
 ├──────────────┴────────────────────────────────────────────────────────────────────────────┤
 │In addition, every chain variable, after suffixing by &lt;i>, may be used as a field.  However│
 │parametrizable chain variables e.g. <span style="font-weight:bold;">ndiff1vj1</span> must be explicitly listed using <span style="font-weight:bold;">PCOLS</span>;       │
-│they are not in the default list.  See <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a>.                                 │
+│they are not in the default list.  See "enclone help cvars".                               │
 └───────────────────────────────────────────────────────────────────────────────────────────┘
 
 <span style="color:#5833ff;">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -1012,7 +1000,7 @@ enclone help filter
 
 enclone provides filtering by cell, by exact subclonotype, and by clonotype.  This page describes
 filtering by clonotype.  These options cause only certain clonotypes to be printed.  See also
-<a href="../../pages/auto/help.special.html"><code>enclone help special</code></a>, which describes other filtering options.  This page also described
+"enclone help special", which describes other filtering options.  This page also described
 scanning for feature enrichment.
 
 ┌─────────────────────┬───────────────────────────────────────────────────────────────────────────┐
@@ -1067,7 +1055,7 @@ scanning for feature enrichment.
 │BARCODE=bc1,...,bcn  │  only show clonotypes that use one of the given barcodes; note that such  │
 │                     │  clonotypes will typically contain cells that are <span style="font-weight:bold;">not</span> in your             │
 │                     │  list; if you want to fully restrict to a list of barcodes you can use    │
-│                     │  the <span style="font-weight:bold;">KEEP_CELL_IF</span> option, please see <a href="../../pages/auto/help.special.html"><code>enclone help special</code></a>                 │
+│                     │  the <span style="font-weight:bold;">KEEP_CELL_IF</span> option, please see "enclone help special"               │
 ├─────────────────────┼───────────────────────────────────────────────────────────────────────────┤
 │INKT                 │  only show clonotypes for which some exact subclonotype is annotated as   │
 │                     │  having some iNKT evidence, see <span style="color:#25bc24;">bit.ly/enclone</span> for details                │
@@ -1139,7 +1127,7 @@ enclone has the capability to filter by bounding variables, using the command-li
 where L is a linear condition (as defined above).  Multiple bounds may be imposed by using
 multiple instances of <span style="font-weight:bold;">KEEP_CLONO_IF_CELL_MEAN=...</span> .  As explained above, note that
 <span style="font-weight:bold;">KEEP_CLONO_IF_CELL_MEAN=...</span> filters by computing the mean across all cells in the clonotype.  See
-also <span style="font-weight:bold;">KEEP_CELL_IF=</span> at <a href="../../pages/auto/help.special.html"><code>enclone help special</code></a>.
+also <span style="font-weight:bold;">KEEP_CELL_IF=</span> at "enclone help special".
 
 If for a given clonotype and a given variable, not all values are specified (e.g. if for a
 user-specified variable, values are blank), then only the values that are specified are used in
@@ -1381,18 +1369,18 @@ lvars".  At the bottom of this page we provide some other options that are not n
 │                         │  clonotype for which you would like to see a simplified view.       │
 │CONST_IGH="&lt;pattern>"    │  for BCR, keep only exact subclonotypes having a heavy              │
 │                         │  chain whose constant region gene name matches the given            │
-│                         │  pattern (meaning regular expression, see <a href="../../pages/auto/help.filter.html"><code>enclone help filter</code></a>)      │
+│                         │  pattern (meaning regular expression, see "enclone help filter")    │
 │CONST_IGKL="&lt;pattern>"   │  for BCR, keep only exact subclonotypes having a light              │
 │                         │  chain whose constant region gene name matches the given            │
-│                         │  pattern (meaning regular expression, see <a href="../../pages/auto/help.filter.html"><code>enclone help filter</code></a>)      │
+│                         │  pattern (meaning regular expression, see "enclone help filter")    │
 │MAX_HEAVIES=1            │  ignore any cell having more than one IGH or TRB chain              │
 ├─────────────────────────┼─────────────────────────────────────────────────────────────────────┤
 │KEEP_CELL_IF=constraint  │  Let "constraint" be any constraint involving arithmetic            │
 │                         │  and boolean operators, and variables that are specified            │
 │                         │  as fields using the BC option (or equivalently, using              │
-│                         │  bc, via META), see <a href="../../pages/auto/help.input.html"><code>enclone help input</code></a>, or feature                  │
+│                         │  bc, via META), see "enclone help input", or feature                │
 │                         │  variables: &lt;gene>_g or &lt;antibody>_ab or &lt;crispr>_cr or             │
-│                         │  &lt;custom>_cu, as described at <a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a> (but               │
+│                         │  &lt;custom>_cu, as described at "enclone help lvars" (but             │
 │                         │  without regular expressions, as these would conflict               │
 │                         │  with arithmetic operators).  This option filters out               │
 │                         │  all barcodes that do not satisfy the given constraint.             │
@@ -1421,7 +1409,7 @@ lvars".  At the bottom of this page we provide some other options that are not n
 │                         │  would cause only the first barcode to be used.                     │
 │                         │                                                                     │
 │                         │  See also KEEP_CLONO_IF_CELL_MEAN=... and                           │
-│                         │  KEEP_CLONO_IF_CELL_MAX=... at <a href="../../pages/auto/help.filter.html"><code>enclone help filter</code></a>.                 │
+│                         │  KEEP_CLONO_IF_CELL_MAX=... at "enclone help filter".               │
 └─────────────────────────┴─────────────────────────────────────────────────────────────────────┘
 
 <span style="color:#5833ff;">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
@@ -1440,7 +1428,7 @@ one entry for each exact subclonotype row.
 Note that for medians of integers, we actually report the "rounded median", the result of rounding
 the true median up to the nearest integer, so that e.g. 6.5 is rounded up to 7.
 
-See also <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a> and the inventory of all variables at
+See also "enclone help cvars" and the inventory of all variables at
             https://10xgenomics.github.io/enclone/pages/auto/inventory.html.
 
 Lead variables are specified using <span style="font-weight:bold;">LVARS=x1,...,xn</span> where each xi is one of:
@@ -1479,7 +1467,7 @@ Lead variables are specified using <span style="font-weight:bold;">LVARS=x1,...,
 │count_&lt;reg>       │  Number of matches of the V..J amino acid sequences of all chains to the given│
 │                  │  regular expression, which is treated as a subset match, so for example,      │
 │                  │  count_CAR would count the total number of occurrences of the string CAR in   │
-│                  │  all the chains.  Please see <a href="../../pages/auto/help.filter.html"><code>enclone help filter</code></a> for a discussion             │
+│                  │  all the chains.  Please see "enclone help filter" for a discussion           │
 │                  │  about regular expressions.  We also allow the form abbr:count_&lt;regex>,       │
 │                  │  where abbr is an abbreviation that will appear as the field label.           │
 │count_&lt;f>_&lt;reg>   │  Supposing that f is in {cdr1,..,cdr3,fwr1,..,fwr4,cdr,fwr}, this is similar  │
@@ -1518,11 +1506,11 @@ Lead variables are specified using <span style="font-weight:bold;">LVARS=x1,...,
 │                  │  problems for you.  And cred makes much better sense for datasets that        │
 │                  │  consist of mixed cell types, rather than consisting of pure B or T cells.    │
 ├──────────────────┼───────────────────────────────────────────────────────────────────────────────┤
-│filter            │  See <a href="../../pages/auto/help.special.html"><code>enclone help special</code></a>.  Use with PER_CELL.  If you turn off some          │
+│filter            │  See "enclone help special".  Use with PER_CELL.  If you turn off some        │
 │                  │  default filters (or all default filters, e.g. with NALL_CELL), and this      │
 │                  │  cell would have been deleted by one of the default filters, then this will   │
 │                  │  show the name of the last filter that would have been applied to delete the  │
-│                  │  cell.  (There are exceptions, please see <a href="../../pages/auto/help.special.html"><code>enclone help special</code></a>.)  Note        │
+│                  │  cell.  (There are exceptions, please see "enclone help special".)  Note      │
 │                  │  that there are complex interactions between filters, so the actual effect    │
 │                  │  with all default filters on may be significantly different.  Note also that  │
 │                  │  use of NALL_CELL will typically result in peculiar artifacts, so this        │
@@ -1543,7 +1531,7 @@ For gene expression and feature barcode stats, such data must be provided as inp
 ● Example: IG.*_g matches all genes that begin with IG, and TR(A|B).*_g matches all genes that
 begin with TRA or TRB.  Double quotes as in <span style="font-weight:bold;">LVARS="..."</span> may be needed.  The regular expression
 must be in the alphabet A-Za-z0-9+_-.[]()|* and is only interpreted as a regular expression if it
-contains a character in []()|*.  See <a href="../../pages/auto/help.filter.html"><code>enclone help filter</code></a> for more information about regular
+contains a character in []()|*.  See "enclone help filter" for more information about regular
 expressions.
 
 <span style="background-color:#cbcccd;"> </span> <span style="color:#c23621;">●</span> These variables have some alternate versions, as shown in the table below.
@@ -1564,10 +1552,10 @@ expressions.
 <span style="background-color:#cbcccd;"> </span> └──────────┴───────────────────────────────┴──────────┴──────────────┴─────────────┴────────────┘
 <span style="background-color:#cbcccd;"> </span> Some explanation is required.  If you use enclone without certain options, you get the "visual"
 <span style="background-color:#cbcccd;"> </span> column.
-<span style="background-color:#cbcccd;"> </span> • Add the option <span style="font-weight:bold;">PER_CELL</span> (see <a href="../../pages/auto/help.display.html"><code>enclone help display</code></a>) and then you get visual output with extra
+<span style="background-color:#cbcccd;"> </span> • Add the option <span style="font-weight:bold;">PER_CELL</span> (see "enclone help display") and then you get visual output with extra
 <span style="background-color:#cbcccd;"> </span> lines for each cell within an exact subclonotype, and each of those extra lines is described by
 <span style="background-color:#cbcccd;"> </span> the "visual (one cell)" column.
-<span style="background-color:#cbcccd;"> </span> • If you generate parseable output (see <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a>), then you get the "parseable"
+<span style="background-color:#cbcccd;"> </span> • If you generate parseable output (see "enclone help parseable"), then you get the "parseable"
 <span style="background-color:#cbcccd;"> </span> column for that output, unless you specify <span style="font-weight:bold;">PCELL</span>, and then you get the last column.
 <span style="background-color:#cbcccd;"> </span> • For the forms with μ and Σ, the Greek letters are only used in column headings for visual output
 <span style="background-color:#cbcccd;"> </span> (to save space), and optionally, in names of fields on the command line.
@@ -1614,7 +1602,7 @@ enclone help display
 │               │  consensus across the clonotype, with X for each variant residue              │
 │CONP           │  add an additional row to each clonotype table, showing the amino acid        │
 │               │  consensus across the clonotype, with a property symbol whenever two different│
-│               │  amino acids are observed, see <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a>                             │
+│               │  amino acids are observed, see "enclone help cvars"                           │
 ├───────────────┼───────────────────────────────────────────────────────────────────────────────┤
 │ALIGN&lt;n>       │  exhibit a visual alignment for chain n (for each exact subclonotype) to the  │
 │               │  donor V(D)J reference, picking the best D for heavy chains / TRB             │
@@ -1711,10 +1699,10 @@ the center or not.
 └─────────────────────────────────────────────────────────────────────────────────────────────┘
 
 <span style="font-weight:bold;">Distance formula.</span>  This could in principle be any function that takes as input two clonotypes and
-returns a number.  For now we use the "Levenshtein CDR3 edit distance between two clonotypes".  This is the minimum, over
-all pairs of exact subclonotypes, one from each of the two clonotypes, of the edit distance
-between two exact subclonotypes, which is the sum of the edit distances between the heavy chains
-and between the light chains.
+returns a number.  For now we use the "Levenshtein CDR3 edit distance between two clonotypes". 
+This is the minimum, over all pairs of exact subclonotypes, one from each of the two clonotypes,
+of the edit distance between two exact subclonotypes, which is the sum of the edit distances
+between the heavy chains and between the light chains.
 
 Technical note.  This is the explanation for the case where there are two chains of different
 types.  Here is the explanation for the "non-standard" cases.  We take the sum, over all pairs of
@@ -1756,7 +1744,7 @@ a table in the summary, and not otherwise used (currently).  These may be specif
 &lt;feature>_cellular_u
 which are, respectively, the percentage of reads [UMIs] for the given feature that are in cells
 that were called by the cellranger pipeline.  A feature is e.g. IGHG1_g etc. as discussed at
-<a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a>.  To compute the metrics, the cellranger output file per_feature_metrics.csv
+"enclone help lvars".  To compute the metrics, the cellranger output file per_feature_metrics.csv
 is read.  In addition, one may also use numeric values defined in the file
 metrics_summary_json.json, but this file is in general not available.  To get it, it may be
 necessary to rerun the cellranger pipeline using --vdrmode=disable and then copy the json file to
@@ -1868,7 +1856,7 @@ to any enclone command.
 We know of two methods to get enclone output into another document, along with colors:
 1. Take a screenshot.
 2. Open a new terminal window, type the enclone command, and then convert the terminal window into
-a pdf.  See <a href="../../pages/auto/help.faq.html"><code>enclone help faq</code></a> for related instructions.
+a pdf.  See <span style="font-weight:bold;">enclone help faq</span> for related instructions.
 
 <span style="color:#5833ff;">▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 enclone help faq
@@ -1930,7 +1918,7 @@ are aware of several things that could be done to speed up enclone.
 
 There are several parts to the answer:
 • enclone is a standalone executable that by default produces human-readable output.
-• You can also run enclone to produce parseable output (see <a href="../../pages/auto/help.parseable.html"><code>enclone help parseable</code></a>), and that
+• You can also run enclone to produce parseable output (see <span style="font-weight:bold;">enclone help parseable</span>), and that
 output can be digested using code that you write (for example, in R).
 • When you run Cell Ranger to process 10x single cell immune profiling data, it in effect calls
 enclone with a special option that yields only an output file for the 10x visualization tool
@@ -1969,7 +1957,7 @@ recompute annotations, and that will slow down enclone somewhat.
 
 <span style="color:#5833ff;font-weight:bold;">8. Can I provide data from more than one donor?</span>
 
-Yes.  Type <a href="../../pages/auto/help.input.html"><code>enclone help input</code></a> for details.  The default behavior of enclone is to prevent cells
+Yes.  Type <span style="font-weight:bold;">enclone help input</span> for details.  The default behavior of enclone is to prevent cells
 from different donors from being placed in the same clonotype.  The <span style="font-weight:bold;">MIX_DONORS</span> option may be used
 to turn off this behavior.  If you employ this option, then clonotypes containing cells from more
 than one donor will be flagged as errors, unless you use the <span style="font-weight:bold;">NWARN</span> option to turn off those
@@ -1990,7 +1978,7 @@ Yes, unless output of enclone is going to a terminal.  In that case, you'll alwa
 <span style="color:#5833ff;font-weight:bold;">11. Could a cell be missing from an enclone clonotype?</span>
 
 Yes, some cells are deliberately deleted.  The cell might have been deleted by one of the filters
-described in <a href="../../pages/auto/help.special.html"><code>enclone help special</code></a>, and which you can turn off.  We also delete cells for which
+described in <span style="font-weight:bold;">enclone help special</span>, and which you can turn off.  We also delete cells for which
 more than four chains were found.
 
 <span style="color:#5833ff;font-weight:bold;">12. Can enclone print summary stats?</span>
@@ -2065,7 +2053,7 @@ MAX_DIFFS=200
 MAX_DEGRADATION=150,
 however this will in general be very slow and not produce useful results.  Depending on what your
 goal is, you may find it helpful to use some of these arguments, and with lower values.  You can
-see the meaning of the arguments and their default values by typing <a href="../../pages/auto/help.how.html"><code>enclone help how</code></a>.
+see the meaning of the arguments and their default values by typing "enclone help how".
 
 <span style="color:#5833ff;font-weight:bold;">20. How can I send the developers an example?</span>
 
@@ -2080,5 +2068,4 @@ only some clonotypes are selected.
 
 </span></pre>
 </body>
-
 </html>

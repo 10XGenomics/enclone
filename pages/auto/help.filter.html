@@ -30,27 +30,14 @@
     local("Courier New Bold");
 }
 </style>
-<!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-58278925-3"></script>
-<script>
-window.dataLayer = window.dataLayer || [];
-function gtag(){{dataLayer.push(arguments);}}
-gtag('js', new Date());
-gtag('config', 'UA-58278925-3');
-</script>
 </head>
 <body>
-
-<br>
-<a href="../../index.html#help">
-<img src="../../img/enclone_banner.png" alt="enclone banner" title="enclone banner" width=100% />
-</a>
 <pre style='font-family: "DejaVuSansMono"; line-height: 110%'><span style="font-size: 14px">
 <span style="font-weight:bold;">clonotype filtering options</span>
 
 enclone provides filtering by cell, by exact subclonotype, and by clonotype.  This page describes
 filtering by clonotype.  These options cause only certain clonotypes to be printed.  See also
-<a href="../../pages/auto/help.special.html"><code>enclone help special</code></a>, which describes other filtering options.  This page also described
+"enclone help special", which describes other filtering options.  This page also described
 scanning for feature enrichment.
 
 ┌─────────────────────┬───────────────────────────────────────────────────────────────────────────┐
@@ -105,7 +92,7 @@ scanning for feature enrichment.
 │BARCODE=bc1,...,bcn  │  only show clonotypes that use one of the given barcodes; note that such  │
 │                     │  clonotypes will typically contain cells that are <span style="font-weight:bold;">not</span> in your             │
 │                     │  list; if you want to fully restrict to a list of barcodes you can use    │
-│                     │  the <span style="font-weight:bold;">KEEP_CELL_IF</span> option, please see <a href="../../pages/auto/help.special.html"><code>enclone help special</code></a>                 │
+│                     │  the <span style="font-weight:bold;">KEEP_CELL_IF</span> option, please see "enclone help special"               │
 ├─────────────────────┼───────────────────────────────────────────────────────────────────────────┤
 │INKT                 │  only show clonotypes for which some exact subclonotype is annotated as   │
 │                     │  having some iNKT evidence, see <span style="color:#25bc24;">bit.ly/enclone</span> for details                │
@@ -177,7 +164,7 @@ enclone has the capability to filter by bounding variables, using the command-li
 where L is a linear condition (as defined above).  Multiple bounds may be imposed by using
 multiple instances of <span style="font-weight:bold;">KEEP_CLONO_IF_CELL_MEAN=...</span> .  As explained above, note that
 <span style="font-weight:bold;">KEEP_CLONO_IF_CELL_MEAN=...</span> filters by computing the mean across all cells in the clonotype.  See
-also <span style="font-weight:bold;">KEEP_CELL_IF=</span> at <a href="../../pages/auto/help.special.html"><code>enclone help special</code></a>.
+also <span style="font-weight:bold;">KEEP_CELL_IF=</span> at "enclone help special".
 
 If for a given clonotype and a given variable, not all values are specified (e.g. if for a
 user-specified variable, values are blank), then only the values that are specified are used in

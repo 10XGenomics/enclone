@@ -30,21 +30,8 @@
     local("Courier New Bold");
 }
 </style>
-<!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-58278925-3"></script>
-<script>
-window.dataLayer = window.dataLayer || [];
-function gtag(){{dataLayer.push(arguments);}}
-gtag('js', new Date());
-gtag('config', 'UA-58278925-3');
-</script>
 </head>
 <body>
-
-<br>
-<a href="../../index.html#help">
-<img src="../../img/enclone_banner.png" alt="enclone banner" title="enclone banner" width=100% />
-</a>
 <pre style='font-family: "DejaVuSansMono"; line-height: 110%'><span style="font-size: 14px">
 <span style="font-weight:bold;">information about how enclone works</span>
 
@@ -160,7 +147,7 @@ p*N > C.  The constant 15 is modifiable via the argument <span style="font-weigh
 • As a second exception to the key join criterion, we first compute heavy chain join complexity. 
 This is done by finding the optimal D gene, allowing no D, or DD), and aligning the junction
 region on the contig to the concatenated reference.  (This choice can be visualized using the
-option <span style="font-weight:bold;">JALIGN1</span>, see <a href="../../pages/auto/help.display.html"><code>enclone help display</code></a>.)  The heavy chain join complexity hcomp is then a sum
+option <span style="font-weight:bold;">JALIGN1</span>, see "enclone help display".)  The heavy chain join complexity hcomp is then a sum
 as follows: each inserted base counts one, each substitution counts one, and each deletion
 (regardless of length) counts one.  Then we allow a join if it has hcomp - cd ≥ 8, so long as the
 number of differences between both chains outside the junction regions is at most 80, even if p*N

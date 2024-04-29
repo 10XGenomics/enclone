@@ -2,49 +2,37 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <!--  -->
 <html xmlns="http://www.w3.org/1999/xhtml">
-
 <head>
-    <meta http-equiv="Content-Type" content="application/xml+xhtml; charset=UTF-8" />
-    <title>enclone help display</title>
-    <style type="text/css">
-        @font-face {
-            font-family: "DejaVuSansMono";
-            src:
-                local("Menlo Regular"),
-                url('https://cdn.jsdelivr.net/npm/@deathbeds/jupyterlab-font-dejavu-sans-mono@1.0.0/style/fonts/DejaVuSansMono.woff2') format("woff2"),
-                url('https://cdn.jsdelivr.net/npm/dejavu-fonts-ttf@2.37.3/ttf/DejaVuSansMono.ttf') format("truetype"),
-                url('../fonts/DejaVuLGCSansMono.ttf') format("truetype"),
-                local("Courier New");
-        }
-
-        @font-face {
-            font-family: "DejaVuSansMono";
-            font-weight: bold;
-            src:
-                local("Menlo Bold"),
-                url('https://cdn.jsdelivr.net/npm/@deathbeds/jupyterlab-font-dejavu-sans-mono@1.0.0/style/fonts/DejaVuSansMono-Bold.woff2') format("woff2"),
-                url('https://cdn.jsdelivr.net/npm/dejavu-fonts-ttf@2.37.3/ttf/DejaVuSansMono-Bold.ttf') format("truetype"),
-                url('../fonts/DejaVuLGCSansMono-Bold.ttf') format("truetype"),
-                local("Courier New Bold");
-        }
-    </style>
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-58278925-3"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag() { { dataLayer.push(arguments); } }
-        gtag('js', new Date());
-        gtag('config', 'UA-58278925-3');
-    </script>
+<meta http-equiv="Content-Type" content="application/xml+xhtml; charset=UTF-8"/>
+<title>enclone help display</title>
+<style type="text/css">
+@font-face {
+    font-family: "DejaVuSansMono";
+    src:
+    local("Menlo Regular"),
+    url('https://cdn.jsdelivr.net/npm/@deathbeds/jupyterlab-font-dejavu-sans-mono@1.0.0/style/fonts/DejaVuSansMono.woff2')
+    format("woff2"),
+    url('https://cdn.jsdelivr.net/npm/dejavu-fonts-ttf@2.37.3/ttf/DejaVuSansMono.ttf')
+    format("truetype"),
+    url('../fonts/DejaVuLGCSansMono.ttf') format("truetype"),
+    local("Courier New");
+}
+@font-face {
+    font-family: "DejaVuSansMono";
+    font-weight: bold;
+    src:
+    local("Menlo Bold"),
+    url('https://cdn.jsdelivr.net/npm/@deathbeds/jupyterlab-font-dejavu-sans-mono@1.0.0/style/fonts/DejaVuSansMono-Bold.woff2')
+    format("woff2"),
+    url('https://cdn.jsdelivr.net/npm/dejavu-fonts-ttf@2.37.3/ttf/DejaVuSansMono-Bold.ttf')
+    format("truetype"),
+    url('../fonts/DejaVuLGCSansMono-Bold.ttf') format("truetype"),
+    local("Courier New Bold");
+}
+</style>
 </head>
-
 <body>
-
-    <br>
-    <a href="../../index.html#help">
-        <img src="../../img/enclone_banner.png" alt="enclone banner" title="enclone banner" width=100% />
-    </a>
-    <pre style='font-family: "DejaVuSansMono"; line-height: 110%'><span style="font-size: 14px">
+<pre style='font-family: "DejaVuSansMono"; line-height: 110%'><span style="font-size: 14px">
 <span style="font-weight:bold;">other options that control clonotype display</span>
 
 ┌───────────────┬───────────────────────────────────────────────────────────────────────────────┐
@@ -75,7 +63,7 @@
 │               │  consensus across the clonotype, with X for each variant residue              │
 │CONP           │  add an additional row to each clonotype table, showing the amino acid        │
 │               │  consensus across the clonotype, with a property symbol whenever two different│
-│               │  amino acids are observed, see <a href="../../pages/auto/help.cvars.html"><code>enclone help cvars</code></a>                             │
+│               │  amino acids are observed, see "enclone help cvars"                           │
 ├───────────────┼───────────────────────────────────────────────────────────────────────────────┤
 │ALIGN&lt;n>       │  exhibit a visual alignment for chain n (for each exact subclonotype) to the  │
 │               │  donor V(D)J reference, picking the best D for heavy chains / TRB             │
@@ -172,10 +160,10 @@ the center or not.
 └─────────────────────────────────────────────────────────────────────────────────────────────┘
 
 <span style="font-weight:bold;">Distance formula.</span>  This could in principle be any function that takes as input two clonotypes and
-returns a number.  For now we use the "Levenshtein CDR3 edit distance between two clonotypes".  This is the minimum, over
-all pairs of exact subclonotypes, one from each of the two clonotypes, of the edit distance
-between two exact subclonotypes, which is the sum of the edit distances between the heavy chains
-and between the light chains.
+returns a number.  For now we use the "Levenshtein CDR3 edit distance between two clonotypes". 
+This is the minimum, over all pairs of exact subclonotypes, one from each of the two clonotypes,
+of the edit distance between two exact subclonotypes, which is the sum of the edit distances
+between the heavy chains and between the light chains.
 
 Technical note.  This is the explanation for the case where there are two chains of different
 types.  Here is the explanation for the "non-standard" cases.  We take the sum, over all pairs of
@@ -217,7 +205,7 @@ a table in the summary, and not otherwise used (currently).  These may be specif
 &lt;feature>_cellular_u
 which are, respectively, the percentage of reads [UMIs] for the given feature that are in cells
 that were called by the cellranger pipeline.  A feature is e.g. IGHG1_g etc. as discussed at
-<a href="../../pages/auto/help.lvars.html"><code>enclone help lvars</code></a>.  To compute the metrics, the cellranger output file per_feature_metrics.csv
+"enclone help lvars".  To compute the metrics, the cellranger output file per_feature_metrics.csv
 is read.  In addition, one may also use numeric values defined in the file
 metrics_summary_json.json, but this file is in general not available.  To get it, it may be
 necessary to rerun the cellranger pipeline using --vdrmode=disable and then copy the json file to
@@ -237,5 +225,4 @@ Please see https://10xgenomics.github.io/enclone/pages/auto/d_genes.html for mor
 
 </span></pre>
 </body>
-
 </html>
