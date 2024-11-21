@@ -9,7 +9,7 @@
 
 <p style="border: 2px; border-style: solid; border-color: black; background-color: #EBF4FC; 
 padding: 8px; font-size: 110%">
-#The enclone tool is deprecated and will no longer receive updates or feature enhancements. 
+#enclone is deprecated and will no longer receive updates or feature enhancements. 
 #It will remain available for a limited time but will be fully disabled the future. We recommend transitioning to the enhanced functionality now integrated directly within Cell Ranger.
 </p>
 
