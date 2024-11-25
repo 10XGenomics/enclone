@@ -34,21 +34,6 @@ characteristics of your connection.</p>
 
 <hr>
 
-<h2>Case 3: installation seems to succeed but you get <code>command not found</code></h2>
-
-<p>In this case, the install script appears to succeed, but when you 
-<b>open a new terminal window</b> and
-type #enclone, you get a message about the command not being found.</p>
-
-<p>This should not happen, and we do not know <i>why</i> it happened to you, but we provide 
-instructions here on how you can report the problem to us.  Please do this and we will try to
-find a solution.</p>
-
-<p>Please <b>open a new terminal window</b>, type the following commands, and then cut and paste 
-the entirety (commands plus responses) as <b>text</b> into an email to
-<a href="mailto:enclone@10xgenomics.com">#enclone@10xgenomics.com</a>.
-
-<br>
 
 <p><b>1.</b> <code>enclone --check</code></p>
 
@@ -90,11 +75,6 @@ operating system on it.  Your options are:
 </p>
 
 <hr>
-
-<h2>Case 6: something else goes wrong</h2>
-
-Then please write to us at
-<a href="mailto:enclone@10xgenomics.com">#enclone@10xgenomics.com</a>.</p>
 
 </body>
 </html>
