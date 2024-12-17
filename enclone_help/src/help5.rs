@@ -535,9 +535,8 @@ pub fn help5(args: &Vec<String>, ctl: &EncloneControl, h: &mut HelpDesk) -> Resu
         h.begin_doc("faq")?;
         h.print("\n\\boldred{Frequently Asked Questions}\n\n")?;
         h.print(
-            "We're sorry you're having difficulty!  Please see the answers below, check out \
-             the other help guides, and if you're still stuck, write to us at \
-             enclone@10xgenomics.com.\n\n",
+            "We're sorry you're having difficulty! Please see the answers below or check out \
+             the other help guides.\n\n",
         )?;
 
         h.print("\\boldblue{1. Why is my enclone output garbled?}\n\n")?;

@@ -90,7 +90,6 @@ main() {
     if ! $_have_curl && ! check_cmd wget; then
         printf "\nenclone installation failed because neither the command curl nor the\n"
         printf "command wget could be found.  This is strange and unexpected.\n"
-        printf "If you're stuck please ask for help by emailing enclone@10xgenomics.com.\n\n"
         exit 1
     fi
 
@@ -104,7 +103,6 @@ main() {
         echo
         echo "enclone install script fails because operating system type ${_ostype}" \
             "is unknown."
-        echo "If you're stuck please ask for help by emailing enclone@10xgenomics.com."
         echo
         exit 1
     fi
@@ -117,7 +115,6 @@ main() {
         printf "\nTo install or update enclone, please supply the single argument SIZE to the\n"
         printf "curl command shown on bit.ly/enclone.  The argument SIZE can be small, medium, "
         printf "large, or colossus.\n"
-        echo "If you're stuck please ask for help by emailing enclone@10xgenomics.com."
         echo
         exit 1
     fi
@@ -146,7 +143,6 @@ main() {
             if ! [ "$?" -eq "0" ]; then
                 printf "\nfailed: wget -q $raw_repo/master/datasets_small_checksum\n"
                 printf "This is strange and unexpected.\n"
-                echo "If you're stuck please ask for help by emailing enclone@10xgenomics.com."
                 echo
                 exit 1
             fi
@@ -167,7 +163,6 @@ main() {
             if ! [ "$?" -eq "0" ]; then
                 printf "\nfailed: wget -q $raw_repo/master/datasets_medium_checksum\n"
                 printf "This is strange and unexpected.\n"
-                echo "If you're stuck please ask for help by emailing enclone@10xgenomics.com."
                 echo
                 exit 1
             fi
