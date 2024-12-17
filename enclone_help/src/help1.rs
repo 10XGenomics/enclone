@@ -98,8 +98,7 @@ pub fn help1(args: &Vec<String>, h: &mut HelpDesk) -> Result<(), String> {
              The purpose of this first page is to help you make sure that you're set up properly\n\
              to run enclone.  PLEASE READ!\n\n\
              (for the main help page, please type instead: enclone)\n\n\
-             Here we go through several setup tests.  If you have any problem that you can't\n\
-             resolve, please email us at enclone@10xgenomics.com.\n\n\n\
+             Here we go through several setup tests.\n\n\
              1. Are you using a fixed width font?\n\
              Look at this:\n\
              A FAT BROWN CAT JUMPED OVER THE WALL\n\

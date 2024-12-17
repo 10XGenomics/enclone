@@ -36,8 +36,7 @@ pub fn set_panic_handler(args: &[String]) {
     let trailer = format!(
         "You have probably encountered an internal \
             error in enclone.\n\n\
-            Please email us at enclone@10xgenomics.com, including the traceback shown\n\
-            above and also the following version information:\n\
+            Version information:\n\
             {} : {}.\n\n\
             Your command was:\n\n{}\n\n\
             {}\
